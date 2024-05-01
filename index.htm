@@ -34,24 +34,17 @@ img {
 
 <script>
 $(document).ready(function() {  
-    $("h3").on("click", function() {  
-        var $nextP = $(this).nextAll('p').first();  
-        if ($nextP.length > 0) {   
-            var text = $nextP.text();   
-            var contentAfterEmoji = text.match(/🅱([^<>\s]+)/);   
-            if (contentAfterEmoji) {  
-                var textToCopy = contentAfterEmoji[1];  
-                var $tempTextArea = $("<textarea>");  
-                $("body").append($tempTextArea);   
-                $tempTextArea.val(textToCopy);  
-                $tempTextArea.select();  
-                try {  
-                    var successful = document.execCommand("copy"); 
-                } catch (err) {      
-                }  
-                $tempTextArea.remove();
-            }  
+    $("h3").on("click", function() {   
+        var textToCopy = $(this).text(); 
+        var $tempTextArea = $("<textarea>");  
+        $("body").append($tempTextArea);   
+        $tempTextArea.val(textToCopy);    
+        $tempTextArea.select();   
+        try {  
+            var successful = document.execCommand("copy");  
+        } catch (err) {  
         }  
+        $tempTextArea.remove();  
     });  
 });
 
@@ -71,6 +64,27 @@ $(document).ready(function() {
                 } catch (err) {   
                 }  
                 $tempTextArea.remove(); 
+            }  
+        }  
+    });  
+});
+
+$(document).ready(function() {  
+    $("a").on("click", "img", function(e) {  
+        e.preventDefault(); 
+        var $p = $(this).closest('a').find('p');  
+        var text = $p.text(); 
+        var contentAfterEmoji = text.match(/🅱(.*)$/);  
+        if (contentAfterEmoji && contentAfterEmoji[1]) {  
+            var textToCopy = contentAfterEmoji[1].trim();   
+            var $tempTextArea = $("<textarea>");  
+            $("body").append($tempTextArea);  
+            $tempTextArea.val(textToCopy).select();    
+            try {  
+                var successful = document.execCommand("copy");  
+            } catch (err) {  
+            } finally {  
+                $tempTextArea.remove();  
             }  
         }  
     });  
