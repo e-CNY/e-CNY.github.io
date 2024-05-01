@@ -33,6 +33,20 @@ img {
 </style>
 
 <script>
+<!--跳转到B站-->
+$(document).ready(function() {  
+    $("a img").on("click", function(e) {  
+        e.preventDefault();   
+        var $p = $(this).closest('a').find('p');  
+        var textAfterEmoji = $p.text().match(/🅱([^<>\s]+)/);  
+        if (textAfterEmoji && textAfterEmoji[1]) {    
+            var newUrl = "https://www.bilibili.com/video/" + encodeURIComponent(textAfterEmoji[1]);  
+            window.location.href = newUrl;  
+        }  
+    });  
+});
+
+<!--复制商品名称-->
 $(document).ready(function() {  
     $("h3").on("click", function() {   
         var textToCopy = $(this).text(); 
@@ -47,7 +61,7 @@ $(document).ready(function() {
         $tempTextArea.remove();  
     });  
 });
-
+<!--复制淘口令-->
 $(document).ready(function() {  
     $("p").on("click", function() {  
         var text = $(this).text(); 
@@ -68,33 +82,12 @@ $(document).ready(function() {
         }  
     });  
 });
-
-$(document).ready(function() {  
-    $("a").on("click", "img", function(e) {  
-        e.preventDefault(); 
-        var $p = $(this).closest('a').find('p');  
-        var text = $p.text(); 
-        var contentAfterEmoji = text.match(/🅱(.*)$/);  
-        if (contentAfterEmoji && contentAfterEmoji[1]) {  
-            var textToCopy = contentAfterEmoji[1].trim();   
-            var $tempTextArea = $("<textarea>");  
-            $("body").append($tempTextArea);  
-            $tempTextArea.val(textToCopy).select();    
-            try {  
-                var successful = document.execCommand("copy");  
-            } catch (err) {  
-            } finally {  
-                $tempTextArea.remove();  
-            }  
-        }  
-    });  
-});
-
+<!--搜索栏提示-->
 $(document).ready(function() {  
   var hasAlerted = false; 
   $('#Filter').on('click', function() {  
     if (!hasAlerted) { 
-      alert('温馨提示：👆V打开Λ合上(Λ时在这里搜索商品) ┃👆上方大字自动复制BV号(可粘贴到哔哩哔哩APP搜索栏) 👆下方小字自动复制淘口令(打开淘宝APP可识别) 跳转到商品链接┃ B站上的淘宝链接V你推荐仅供参考');  
+      alert('温馨提示：👆V打开Λ合上(Λ时在这里搜索商品) ┃👆图片跳转到B站视频┃👆上方大字自动商品名称、下方小字自动复制淘口令(打开淘宝APP可识别) 跳转到商品链接┃ B站上的淘宝链接V你推荐仅供参考');  
       hasAlerted = true; 
     }  
   });  
@@ -114,7 +107,7 @@ $(document).ready(function() {
 
 <div data-role="content" id="content">
 	  <form class="ui-filterable">
-	       <input id="Filter" data-type="search" placeholder="👆V打开Λ合上(Λ时在这里搜索商品) ┃👆大字复制BV号(可粘贴到哔哩哔哩APP) 👆小字复制淘口令(可粘贴到淘宝APP) 跳转到商品链接┃ B站视频淘宝链接V你推荐仅供参考">
+	       <input id="Filter" data-type="search" placeholder="👆V打开Λ合上(Λ时在这里搜索商品) ┃👆图片跳转到B站视频┃👆上方大字自动商品名称、下方小字自动复制淘口令(打开淘宝APP可识别) 跳转到商品链接┃ B站上的淘宝链接V你推荐仅供参考">
 	     </form>
 
 
