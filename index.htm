@@ -38,9 +38,9 @@ $(document).ready(function() {
     $("a img").on("click", function(e) {  
         e.preventDefault();   
         var $p = $(this).closest('a').find('p');  
-        var textAfterEmoji = $p.text().match(/🅱([^<>\s]+)/);  
-        if (textAfterEmoji && textAfterEmoji[1]) {    
-            var newUrl = "https://www.bilibili.com/video/" + encodeURIComponent(textAfterEmoji[1]);  
+        var contentBeforeDelimiter = $p.text().match(/(.*?) ┃/);  
+        if (contentBeforeDelimiter && contentBeforeDelimiter[1]) {    
+            var newUrl = "https://www.bilibili.com/video/" + encodeURIComponent(contentBeforeDelimiter[1]);  
             window.location.href = newUrl;  
         }  
     });  
@@ -62,25 +62,25 @@ $(document).ready(function() {
     });  
 });
 <!--复制淘口令-->
-$(document).ready(function() {  
-    $("p").on("click", function() {  
-        var text = $(this).text(); 
-        var contentBeforeEmoji = text.match(/(.*?)🅱/);
-        if (contentBeforeEmoji) {  
-            var textToCopy = contentBeforeEmoji[1].trim(); 
-            if (textToCopy) {   
-                var $tempTextArea = $("<textarea>");  
-                $("body").append($tempTextArea); 
-                $tempTextArea.val(textToCopy);  
-                $tempTextArea.select(); 
-                try {  
-                    var successful = document.execCommand("copy");
-                } catch (err) {   
-                }  
-                $tempTextArea.remove(); 
-            }  
-        }  
-    });  
+$(document).ready(function() {    
+    $("p").on("click", function() {    
+        var text = $(this).text();   
+        var contentAfterDelimiter = text.match(/┃(.*)$/);  
+        if (contentAfterDelimiter) {    
+            var textToCopy = contentAfterDelimiter[1].trim();   
+            if (textToCopy) {     
+                var $tempTextArea = $("<textarea>");    
+                $("body").append($tempTextArea);   
+                $tempTextArea.val(textToCopy);    
+                $tempTextArea.select();   
+                try {     
+                    document.execCommand("copy");  
+                } catch (err) {     
+                }    
+                $tempTextArea.remove();   
+            }    
+        }    
+    });    
 });
 <!--搜索栏提示-->
 $(document).ready(function() {  
@@ -121,42 +121,42 @@ $(document).ready(function() {
 	<a href="https://m.tb.cn/h.gbjJW6N">
 	<img src="https://gw.alicdn.com/imgextra/i4/660736298/O1CN01DQw81c1wOX6qg5JQA_!!660736298.jpg">
 	<h3>航嘉WD750K电脑电源750W模组台式机额定850W金牌游戏电竞主机700W</h3>
-	<p>1$7jW3WsNzDRo$:// CZ6144 &nbsp;&nbsp;&nbsp;🅱BV1su4m1P7PV</p></a>
+	<p>BV1su4m1P7PV ┃ 1$7jW3WsNzDRo$:// CZ6144</p></a>
 </li>
 
 <li data-icon="false">
 	<a href="https://m.tb.cn/h.gYV8ZuA">
 	<img src="https://gw.alicdn.com/bao/uploaded/i1/3325264091/O1CN01ijih6x1g5jB4ozNYu_!!3325264091.jpg">
 	<h3>利民TL-P9 W S ARGB 神光同步AURA温控PWM机箱9cm9025CPU散热风扇</h3>
-	<p>7$D6peWH6vuow$:// CZ3148 &nbsp;&nbsp;&nbsp;🅱BV1su4m1P7PV</p></a>
+	<p>BV1su4m1P7PV ┃ 7$D6peWH6vuow$:// CZ3148</p></a>
 </li>
 
 <li data-icon="false">
 	<a href="https://m.tb.cn/h.gYV8o05">
 	<img src="https://gw.alicdn.com/imgextra/i3/3325264091/O1CN01dL7fyq1g5imHCIv95_!!3325264091.jpg">
 	<h3>猫头鹰NF-A8 PWM/FLX/ULN温控电脑8cm台式机箱风扇8025风扇12v/5v</h3>
-	<p>6$ci7iWH6vYsJ$:// MU5183 &nbsp;&nbsp;&nbsp;🅱BV1uB4y1979Z</p></a>
+	<p>BV1uB4y1979Z ┃ 6$ci7iWH6vYsJ$:// MU5183</p></a>
 </li>
 
 <li data-icon="false">
 	<a href="https://m.tb.cn/h.gYV8tyo">
 	<img src="https://gw.alicdn.com/imgextra/i1/3325264091/O1CN011g5imIN8CUbi35t_!!3325264091.jpg">
 	<h3>猫头鹰NF-A9 PWM/A9x14 pwm/FLX/5v 9cm温控台式机箱电脑散热风扇</h3>
-	<p>2$UpLeWH6vzyb$:// CA1710 &nbsp;&nbsp;&nbsp;🅱BV1su4m1P7PV</p></a>
+	<p>BV1su4m1P7PV ┃ 2$UpLeWH6vzyb$:// CA1710</p></a>
 </li>
 
 <li data-icon="false">
 	<a href="https://m.tb.cn/h.gYV71Nz">
 	<img src="https://gw.alicdn.com/imgextra/i2/2201547842656/O1CN017EJ4tO1VUUZgmr2e9_!!2201547842656.jpg">
 	<h3>台式机电脑DIY 2/3/4铜管CPU散热器卡簧 扣具卡扣9cm风扇挂钩线扣</h3>
-	<p>3$EPUlWH6tIwJ$:// MF3106 &nbsp;&nbsp;&nbsp;🅱BV1su4m1P7PV</p></a>
+	<p>BV1su4m1P7PV ┃ 3$EPUlWH6tIwJ$:// MF3106</p></a>
 </li>
 
 <li data-icon="false">
 	<a href="https://m.tb.cn/h.g1SSGxN">
 	<img src="https://gw.alicdn.com/bao/uploaded/i2/38801622/O1CN01F7r17j1NqvM8yGA06_!!38801622.jpg">
 	<h3>信越7921 7868导热硅脂CPU散热膏 笔记本电脑显卡硅胶散热硅脂膏</h3>
-	<p>8$njoGWH6FuBF$:// ZH9114 &nbsp;&nbsp;&nbsp;🅱BV1su4m1P7PV</p></a>
+	<p>BV1su4m1P7PV ┃ 8$njoGWH6FuBF$:// ZH9114</p></a>
 </li>
 
 
@@ -172,28 +172,28 @@ $(document).ready(function() {
 	<a href="https://m.tb.cn/h.gboxuQ6">
 	<img src="https://gw.alicdn.com/imgextra/i4/34492562/TB2E6Y1nbBmpuFjSZFuXXaG_XXa_!!34492562.jpg">
 	<h3>KM盒子软件V9.8版 简单好用的APP制作软件</h3>
-	<p>7$8kEvWHVdMmf$:// CZ6144 &nbsp;&nbsp;&nbsp;🅱BV18u4y1W7iR</p></a>
+	<p>BV18u4y1W7iR ┃ 7$8kEvWHVdMmf$:// CZ6144</p></a>
 </li>
 
 <li data-icon="false">
 	<a href="https://m.tb.cn/h.gY1lX6u">
 	<img src="https://gw.alicdn.com/imgextra/i2/718156835/O1CN018qr6GJ20MTzB5N4BE_!!718156835.png">
 	<h3>万彩动画大师企业版 周租</h3>
-	<p>0$b8IxWHVXvf4$:// MU5183 &nbsp;&nbsp;&nbsp;🅱BV13v4y1V7Ye</p></a>
+	<p>BV13v4y1V7Ye ┃ 0$b8IxWHVXvf4$:// MU5183</p></a>
 </li>
 
 <li data-icon="false">
 	<a href="https://m.tb.cn/h.gboEuid">
 	<img src="https://gw.alicdn.com/imgextra/i2/718156835/O1CN01x2v5nD20MTxuWPnCQ_!!718156835.jpg">
 	<h3>万彩骨骼大师专业版  日租</h3>
-	<p>5$a0dWWHV2e9F$:// CZ6144 &nbsp;&nbsp;&nbsp;🅱BV1pe4y1N7qF</p></a>
+	<p>BV1pe4y1N7qF ┃ 5$a0dWWHV2e9F$:// CZ6144</p></a>
 </li>
 
 <li data-icon="false">
 	<a href="https://m.tb.cn/h.gY1Nu5e">
 	<img src="https://gw.alicdn.com/imgextra/i3/2213960548435/O1CN01BKeoYy2CBHjFt1mGT_!!2213960548435.jpg">
 	<h3>微课制作代做参赛获奖录制剪辑万彩mg动画配音合成视频制作与设计</h3>
-	<p>9$ZA0vWHV3ypD$:// HU7679 &nbsp;&nbsp;&nbsp;🅱BV1z14y1K7PA</p></a>
+	<p>BV1z14y1K7PA ┃ 9$ZA0vWHV3ypD$:// HU7679</p></a>
 </li>
 </div>  
 
@@ -207,7 +207,7 @@ $(document).ready(function() {
 	<a href="https://m.tb.cn/h.gb9xtEL">
 	<img src="https://gw.alicdn.com/imgextra/i1/3170216140/O1CN01oKdM061vEAi7Lw0Qg_!!3170216140.jpg">
 	<h3>Arcade订阅服务arcade苹果美家庭套餐开通自己号NBA海之号角</h3>
-	<p>3$W1RMWsodrfV$:// CZ3457 &nbsp;&nbsp;&nbsp;🅱BV1M84y1m7cz</p></a>
+	<p>BV1M84y1m7cz ┃ 3$W1RMWsodrfV$:// CZ3457</p></a>
 </li>
 
   
