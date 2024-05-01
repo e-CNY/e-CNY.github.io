@@ -76,11 +76,16 @@ $(document).ready(function() {
     });  
 });
 
-     $(document).ready(function() {  
-      $('#Filter').on('click', function() {   
-        alert('温馨提示：👆V打开Λ合上(Λ时在这里搜索商品) ┃👆上方大字自动复制BV号(可粘贴到哔哩哔哩APP搜索栏) 👆下方小字自动复制淘口令(打开淘宝APP可识别) 跳转到商品链接┃ B站上的淘宝链接V你推荐仅供参考');  
-      });  
-    }); 
+$(document).ready(function() {  
+  var hasAlerted = false; 
+  $('#Filter').on('click', function() {  
+    if (!hasAlerted) { 
+      alert('温馨提示：👆V打开Λ合上(Λ时在这里搜索商品) ┃👆上方大字自动复制BV号(可粘贴到哔哩哔哩APP搜索栏) 👆下方小字自动复制淘口令(打开淘宝APP可识别) 跳转到商品链接┃ B站上的淘宝链接V你推荐仅供参考');  
+      hasAlerted = true; 
+    }  
+  });  
+});
+
     </script>  
 
 </head>
