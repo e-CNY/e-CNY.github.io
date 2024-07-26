@@ -33,20 +33,9 @@ img {
 </style>
 
 <script>
-<!--跳转到B站-->
-$(document).ready(function() {  
-    $("a img").on("click", function(e) {  
-        e.preventDefault();   
-        var $p = $(this).closest('a').find('p');  
-        var contentBeforeDelimiter = $p.text().match(/(.*?) ┃/);  
-        if (contentBeforeDelimiter && contentBeforeDelimiter[1]) {    
-            var newUrl = "https://www.bilibili.com/video/" + encodeURIComponent(contentBeforeDelimiter[1]);  
-            window.location.href = newUrl;  
-        }  
-    });  
-});
 
-<!--复制商品名称-->
+
+
 $(document).ready(function() {  
     $("h3").on("click", function() {   
         var textToCopy = $(this).text(); 
@@ -61,37 +50,7 @@ $(document).ready(function() {
         $tempTextArea.remove();  
     });  
 });
-<!--复制BV号-->
-$(document).ready(function() {    
-    $("p").on("click", function() {    
-        var text = $(this).text();   
-        var contentAfterDelimiter = text.match(/(.*?) ┃/);  
-        if (contentAfterDelimiter) {    
-            var textToCopy = contentAfterDelimiter[1].trim();   
-            if (textToCopy) {     
-                var $tempTextArea = $("<textarea>");    
-                $("body").append($tempTextArea);   
-                $tempTextArea.val(textToCopy);    
-                $tempTextArea.select();   
-                try {     
-                    document.execCommand("copy");  
-                } catch (err) {     
-                }    
-                $tempTextArea.remove();   
-            }    
-        }    
-    });    
-});
-<!--搜索栏提示-->
-$(document).ready(function() {  
-  var hasAlerted = false; 
-  $('#Filter').on('click', function() {  
-    if (!hasAlerted) { 
-      alert('点击┃图片跳转到B站视频┃上方大字自动复制商品名称、下方小字自动复制BV号 本方框内任何位置跳转到淘宝链接┃ 链接如有失效私信UP');  
-      hasAlerted = true; 
-    }  
-  });  
-});
+
 
     </script>  
 
@@ -107,124 +66,65 @@ $(document).ready(function() {
 
 <div data-role="content" id="content">
 	  <form class="ui-filterable">
-	       <input id="Filter" data-type="search" placeholder="👆┃图片跳转到B站视频┃上方大字自动复制商品名称、下方小字自动复制BV号 本方框内任何位置跳转到淘宝链接┃ 链接如有失效私信🆙">
+	       <input id="Filter" data-type="search" placeholder="👆文字自动复制并跳转到链接 如有失效私信🆙">
 	     </form>
 
 
 
-             <ul data-role="listview" data-inset="true" data-filter="true" data-input="#Filter">
+<ul data-role="listview" data-inset="true" data-filter="true" data-input="#Filter">
 <li data-icon="false">
 	<a href="">
-	<h3>电脑组装部件</h3>
+	<h3><a href="https://www.bilibili.com/video/BV1su4m1P7PV">BV1su4m1P7PV</a></h3>
 	<p></p></a>
 </li>
 
 <li data-icon="false">
-	<a href="https://m.tb.cn/h.ghVzio3">
+	<a href="https://m.tb.cn/h.gj6EyIu">
 	<img src="https://gw.alicdn.com/bao/uploaded/i2/2215060612602/O1CN01uu9HUK1V5lOOaqV5C_!!2215060612602.jpg">
 	<h3>多孔径机箱PVC防尘网 可定制电脑主机侧板防尘罩磁吸过滤网高密度</h3>
-	<p>BV1su4m1P7PV ┃</p></a>
+	<p></p></a>
 </li>
 
 <li data-icon="false">
-	<a href="https://m.tb.cn/h.ggWRY5V">
+	<a href="https://m.tb.cn/h.gjCpM90">
 	<img src="https://gw.alicdn.com/bao/uploaded/i1/660736298/O1CN01jZpZEU1wOXLGmsvbO_!!660736298.jpg">
 	<h3>航嘉WD750K电脑电源750W模组台式机额定850W金牌游戏电竞主机700W</h3>
-	<p>BV1su4m1P7PV ┃</p></a>
+	<p></p></a>
 </li>
 
 <li data-icon="false">
-	<a href="https://m.tb.cn/h.ggNcWIs">
+	<a href="https://m.tb.cn/h.gjCpQ5f">
 	<img src="https://gw.alicdn.com/bao/uploaded/i1/3325264091/O1CN01ijih6x1g5jB4ozNYu_!!3325264091.jpg">
 	<h3>利民TL-P9 W S ARGB 神光同步AURA温控PWM机箱9cm9025CPU散热风扇</h3>
-	<p>BV1su4m1P7PV ┃</p></a>
+	<p></p></a>
 </li>
 
 <li data-icon="false">
-	<a href="https://m.tb.cn/h.ggWNGQQ">
+	<a href="https://m.tb.cn/h.g8ojbui">
 	<img src="https://gw.alicdn.com/imgextra/i1/3325264091/O1CN011g5imIN8CUbi35t_!!3325264091.jpg">
 	<h3>猫头鹰NF-A9 PWM/A9x14 pwm/FLX/5v 9cm温控台式机箱电脑散热风扇</h3>
-	<p>BV1su4m1P7PV ┃</p></a>
+	<p></p></a>
 </li>
 
 <li data-icon="false">
-	<a href="https://m.tb.cn/h.ggN28sk">
+	<a href="https://m.tb.cn/h.gj6uCMX">
 	<img src="https://gw.alicdn.com/imgextra/i2/2201547842656/O1CN017EJ4tO1VUUZgmr2e9_!!2201547842656.jpg">
 	<h3>台式机电脑DIY 2/3/4铜管CPU散热器卡簧 扣具卡扣9cm风扇挂钩线扣</h3>
-	<p>BV1su4m1P7PV ┃</p></a>
+	<p></p></a>
 </li>
 
 <li data-icon="false">
-	<a href="https://m.tb.cn/h.gTeskYr">
+	<a href="https://m.tb.cn/h.g8ygdcy">
 	<img src="https://gw.alicdn.com/bao/uploaded/i2/38801622/O1CN01F7r17j1NqvM8yGA06_!!38801622.jpg">
 	<h3>信越7921 7868导热硅脂CPU散热膏 笔记本电脑显卡硅胶散热硅脂膏</h3>
-	<p>BV1su4m1P7PV ┃</p></a>
-</li>
-
-
-
-
-
-<li data-icon="false">
-	<a href="">
-	<h3>动画微课制作</h3>
 	<p></p></a>
 </li>
 
 
-<li data-icon="false">
-	<a href="https://m.tb.cn/h.g5GY0zg">
-	<img src="https://gw.alicdn.com/imgextra/i4/34492562/TB2E6Y1nbBmpuFjSZFuXXaG_XXa_!!34492562.jpg">
-	<h3>KM盒子软件V9.8版 简单好用的APP制作软件</h3>
-	<p>BV1hb421i7aQ ┃</p></a>
-</li>
-
-<li data-icon="false">
-	<a href="https://m.tb.cn/h.gTetfgJ">
-	<img src="https://gw.alicdn.com/imgextra/i1/2096996606/O1CN01dvvzEl1yfbBPFpNXp_!!2096996606.jpg">
-	<h3>万彩动画大师企业版微课制作抖音短视频MG动画黑影动画制作软件</h3>
-	<p>BV1Gx4y1J7Y3 ┃</p></a>
-</li>
-
-<li data-icon="false">
-	<a href="https://m.tb.cn/h.g5G12FD">
-	<img src="https://gw.alicdn.com/imgextra/i4/182558663/O1CN01yhUiZs2DrhiVSrjTU_!!2-item_pic.png">
-	<h3>【官方正版】万彩骨骼大师专业版高级版标准版激活码VIP</h3>
-	<p>BV1Gx4y1J7Y3 ┃</p></a>
-</li>
-
-<li data-icon="false">
-	<a href="">
-	<h3>学习辅助工具</h3>
-	<p></p></a>
-</li>
-<li data-icon="false">
-	<a href="https://m.tb.cn/h.g5GcmDu">
-	<img src="https://gw.alicdn.com/bao/uploaded/i2/2216471018217/O1CN012hwFmf2AZRLNEkBbW_!!2216471018217.jpg">
-	<h3>5S生活番茄学习法计时器时间管理器学习专用自律定时提醒电子闹钟</h3>
-	<p>BV1rb421B7bK ┃</p></a>
-</li>
-
-<li data-icon="false">
-	<a href="">
-	<h3>游戏账号订阅</h3>
-	<p></p></a>
-</li>
 
 
-<li data-icon="false">
-	<a href="https://m.tb.cn/h.ggWOOSM">
-	<img src="https://gw.alicdn.com/imgextra/i1/3170216140/O1CN01oKdM061vEAi7Lw0Qg_!!3170216140.jpg">
-	<h3>Arcade订阅服务arcade苹果美家庭套餐开通自己号NBA海之号角</h3>
-	<p>BV1M84y1m7cz ┃</p></a>
-</li>
 
- <li data-icon="false">
-	<a href="https://m.tb.cn/h.g5GdkTt">
-	<img src="https://gw.alicdn.com/imgextra/i3/12162801/O1CN01fTu6Ul1WYuKZS57d7_!!12162801.jpg">
-	<h3>steam账户小号空白新代注册外区账号csgo国阿根廷土美俄罗斯印度</h3>
-	<p>BV17U411o7Lo ┃</p></a>
-</li>  
+
 
 
 
