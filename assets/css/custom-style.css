@@ -27,8 +27,8 @@ body,html{font-size:14px;}
 .header-big .search-type input:checked+label:before{content:'';border-width:8px 8px 0px 8px;border-style:solid;border-color:#ffffff transparent transparent;position:absolute;left:50%;top:0;margin-left:-8px}
 
 /*主页搜索搜索框(头+底部)字体颜色*/
-.header-big:not(.no-bg) .s-type-list{color:#000000}
-.header-big:not(.no-bg) .text-muted,.header-big:not(.no-bg) .search-type .menu-item a,.header-big:not(.no-bg) .big-title .h1{color:#000000!important}
+.header-big:not(.no-bg) .s-type-list{color:#6c757d}
+.header-big:not(.no-bg) .text-muted,.header-big:not(.no-bg) .search-type .menu-item a,.header-big:not(.no-bg) .big-title .h1{color:#6c757d!important}
 
 /*主页header-banner底部宽度*/
 .post-top{padding-bottom:50px}
