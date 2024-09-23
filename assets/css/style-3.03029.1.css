@@ -995,9 +995,9 @@ input.nav-link:disabled,input.nav-link[readonly]{background-color:transparent;op
 /*--------------------------------------------------------------
 ## grey style
 --------------------------------------------------------------*/
-.io-grey-mode .sidebar-logo{background:#fff}
+.io-grey-mode .sidebar-logo{background: linear-gradient(to right, #C7EDCC 99.7%, #E0F8D8 0.3%);}
 .io-grey-mode .page-header{box-shadow:none}
-.io-grey-mode .sidebar-nav-inner{background:#fff}
+.io-grey-mode .sidebar-nav-inner{background: linear-gradient(to right, #C7EDCC 99.7%, #E0F8D8 0.3%);}
 .io-grey-mode .border-color{border-color:transparent!important}
 .io-grey-mode .sidebar-nav .flex-bottom a,.io-grey-mode .sidebar-menu-inner a{color:#515C6B}
 .io-grey-mode .sidebar-item ul{background:none}
