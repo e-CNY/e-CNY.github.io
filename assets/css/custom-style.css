@@ -1,5 +1,5 @@
 /*调整全局字体大小*/
-body,html{font-size:14px;}
+body,html{font-size:15px;}
 
 /*左导航悬浮sidebar-menu-inner宽度调整为90px*/
 .sidebar-popup.sidebar-menu-inner > div > ul > li.sidebar-item>ul{position:absolute;top:0px;left:10px;width:90px;z-index:99}
@@ -98,15 +98,9 @@ footer.main-footer .footer-text a:hover {
     color: red;
 }
 
-/*About页面*/
-.panel .panel-body a {color: #007bff;}
-.panel .panel-body a:hover {color: #979898;}
-
 /*网格背景*/
 .io-grey-mode .page-container .grid-bg {
-    background-image: linear-gradient(rgba(50, 0, 0, 0.05) 1px, transparent 0), linear-gradient(90deg, rgba(50, 0, 0, 0.05) 1px, transparent 0); 
-    background-size: 15px 15px;
-    background-color: #d8d8d8;
+background: linear-gradient(to right, #C7EDCC 0%, #CFEDD3 100%);
 }
 
 
