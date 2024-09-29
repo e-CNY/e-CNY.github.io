@@ -1,5 +1,28 @@
 /*调整全局字体大小*/
-body,html{font-size:15px;}
+body,html{
+    font-size:15px;
+    -webkit-user-select: none; /* Chrome, Safari, Opera */  
+    -moz-user-select: none;    /* Firefox */  
+    -ms-user-select: none;     /* IE 10 and IE 11 */  
+    user-select: none;         /* Standard syntax */  
+  
+    /* 可选：为了防止拖拽文本 */  
+    -webkit-touch-callout: none; /* iOS Safari */  
+    -webkit-user-drag: none;     /* Prevents dragging of images/etc */  
+    -khtml-user-drag: none;      /* Konqueror HTML */  
+    -moz-user-drag: none;        /* Old versions of Firefox */  
+    -ms-user-drag: none;         /* IE/Edge */  
+    user-drag: none;             /* Non-prefixed version, currently not supported */  
+}
+
+a {  
+    -webkit-user-drag: none; /* Safari */  
+    -khtml-user-drag: none;  /* Konqueror HTML */  
+    -moz-user-drag: none;    /* Old versions of Firefox */  
+    -o-user-drag: none;      /* Old Opera */  
+    user-drag: none;         /* Maybe future */  
+    user-select: none;       /* Prevents copying of text */  
+}
 
 /*左导航悬浮sidebar-menu-inner宽度调整为90px*/
 .sidebar-popup.sidebar-menu-inner > div > ul > li.sidebar-item>ul{position:absolute;top:0px;left:10px;width:90px;z-index:99}
