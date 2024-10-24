@@ -6926,6 +6926,19 @@ document.addEventListener('keydown', function(e) {
                 return false;  
             }  
         });  
+        
+ document.addEventListener('keydown', function(event) {  
+            
+            if (event.ctrlKey && event.key === 's' || event.ctrlKey && event.key === 'S') {  
+            
+                event.preventDefault();  
+              
+                console.log('Ctrl+S 被禁止');  
+              
+                event.stopPropagation();  
+                return false;  
+            }  
+        });         
 </script>
 
 </body>
