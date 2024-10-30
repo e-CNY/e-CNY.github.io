@@ -256,17 +256,16 @@
                 <div class="s-type text-center">
                     <div class="s-type-list big">
                         <div class="anchor" style="position: absolute; left: 50%; opacity: 0;"></div>
-                     
-                        <label for="baidu"  data-id="group-a"><span>搜索</span></label> 
-                        <label for="bilibili" data-id="group-b"><span>视频</span></label>
-                        <label for="dazhongdianping" data-id="group-c"><span>社区</span></label>
+                                        
+                        <label for="dongfangcaifuwang" data-id="group-g"><span>财经</span></label> 
                         <label for="jingdong" data-id="group-d"><span>购物</span></label>
                         <label for="aiqiyi" data-id="group-e"><span>剧集</span></label>
-                        <label for="AMiner" data-id="group-f"><span>助手</span></label>
-                        <label for="dongfangcaifuwang" data-id="group-g"><span>财经</span></label>
+                        <label for="dazhongdianping" data-id="group-c"><span>社区</span></label>
+                        <label for="bilibili" data-id="group-b"><span>视频</span></label> 
+                        <label for="baidu"  data-id="group-a"><span>搜索</span></label>   
                         <label for="fenghuangwang" data-id="group-h"><span>新闻</span></label>
                         <label for="kuwoyinyue" data-id="group-i"><span>音乐</span></label>
-                        
+                        <label for="AMiner" data-id="group-f"><span>助手</span></label>
                     </div>
                 </div>
             </div>
@@ -320,19 +319,19 @@
                     <div class="search-group group-b">
                     <ul class="search-type">
 
-                        <li><input hidden="" type="radio" name="type"
-                                id="bilibili"
-                                value="https://search.bilibili.com/all?keyword="
-                                data-placeholder="(゜-゜)つロ 干杯~-bilibili">
-                            <label for="bilibili"><span class="text-muted">哔哩哔哩</span></label>
-                        </li>
+
                        <li><input hidden="" type="radio" name="type"
                                 id="AcFun"
                                 value="https://www.acfun.cn/search?keyword="
                                 data-placeholder="认真你就输啦 (・ω・)ノ- ( ゜- ゜)つロ">
                             <label for="AcFun"><span class="text-muted">AcFun</span></label>
                         </li>
-
+                        <li><input hidden="" type="radio" name="type"
+                                id="bilibili"
+                                value="https://search.bilibili.com/all?keyword="
+                                data-placeholder="(゜-゜)つロ 干杯~-bilibili">
+                            <label for="bilibili"><span class="text-muted">哔哩哔哩</span></label>
+                        </li>
                         <li><input hidden="" type="radio" name="type"
                                  id="douyin"
                                  value="https://www.douyin.com/root/search/"
@@ -372,14 +371,6 @@
                             <label for="douban"><span class="text-muted">豆瓣</span></label>
                         </li>
                         
-                       
-                        <li><input hidden="" type="radio" name="type"
-                                id="zhihu"
-                                value="https://www.zhihu.com/search?type=content&q="
-                                data-placeholder="有问题,就会有答案">
-                            <label for="zhihu"><span class="text-muted">知乎</span></label>
-                        </li>
-                        
                             <li><input hidden="" type="radio" name="type"
                                  id="weibo"
                                  value="https://s.weibo.com/weibo?q="
@@ -393,7 +384,12 @@
                                 data-placeholder="订阅号及文章内容独家收录,一搜即达">
                             <label for="weixin"><span class="text-muted">微信</span></label>
                         </li>
-                        
+                        <li><input hidden="" type="radio" name="type"
+                                id="zhihu"
+                                value="https://www.zhihu.com/search?type=content&q="
+                                data-placeholder="有问题,就会有答案">
+                            <label for="zhihu"><span class="text-muted">知乎</span></label>
+                        </li>
                     </ul>
                 </div>
                 
@@ -510,12 +506,6 @@
                                 value="https://so.eastmoney.com/quotation/s?keyword="                             data-placeholder="财经、股票、行情、证券、基金、理财、银行、保险、信托、期货、黄金、股吧、博客等">
                             <label for="dongfangcaifuwang"><span class="text-muted">东方财富网</span></label>
                         </li>
-                        <li><input hidden="" type="radio" name="type"
-                                id="zhongguozhengquanwang"
-                                value="https://www.cnstock.com/searchResult?word="
-                                data-placeholder="权威 价值 专业">
-                            <label for="zhongguozhengquanwang"><span class="text-muted">中国证券网</span></label>
-                        </li>
                          <li><input hidden="" type="radio" name="type"
                                 id="xinlangcaijing"
                                 value="https://biz.finance.sina.com.cn/suggest/lookup_n.php?country=&q="
@@ -527,6 +517,12 @@
                                 value="https://xueqiu.com/k?q="
                                 data-placeholder="聪明的投资者都在这里">
                             <label for="xueqiu"><span class="text-muted">雪球</span></label>
+                        </li>
+                        <li><input hidden="" type="radio" name="type"
+                                id="zhongguozhengquanwang"
+                                value="https://www.cnstock.com/searchResult?word="
+                                data-placeholder="权威 价值 专业">
+                            <label for="zhongguozhengquanwang"><span class="text-muted">中国证券网</span></label>
                         </li> 
                        
              </ul>
@@ -1013,7 +1009,27 @@
             </a>
             </div>
             </div>
-             
+                         
+            <div class="url-card col-6  col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
+            <div class="url-body default">
+            <a href="https://tushengsheng.com/home" target="_blank"
+            class="card no-c mb-4" data-toggle="tooltip" data-placement="bottom" data-original-title="图生生AI，精美电商图片一键生成，免费试用。AI智能抠图，一键背景变透明，选择场景后即可生成对应图片，可用于电商推广、市场宣传等众多场景。省时，省心，省钱。">
+            <div class="card-body">
+            <div class="url-content d-flex align-items-center">
+            <div class="mr-2 d-flex align-items-center justify-content-center">
+            </div>
+            <div class="url-info flex-fill">
+            <div class="text-sm overflowClip_1">
+            <strong>图生生</strong>
+            </div>
+            <p class="overflowClip_1 m-0 text-muted text-xs">AI商拍，为电商而生</p>
+            </div>
+            </div>
+            </div>
+            </a>
+            </div>
+            </div>
+              
             <div class="url-card col-6  col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
             <div class="url-body default">
             <a href="https://www.shulex.com/" target="_blank"
