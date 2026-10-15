@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 背景移除</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body class="tool-body">
+<div class="tool-page">
+  <a class="back" href="../../">← 返回首页</a>
+  <h1>AI 背景移除</h1>
+  <p style="color:#666;font-size:.85rem;margin-bottom:1rem">
+    使用 RMBG-1.4 FP16 模型（约 88MB），首次使用需下载，之后缓存在本地。
+  </p>
+
+  <input type="file" id="bg-input" accept="image/*">
+  <button onclick="removeBg()" id="bg-btn">移除背景</button>
+  <div class="status" id="bg-status"></div>
+  <div class="result" id="bg-result"></div>
+</div>
+
+<script src="../../assets/js/ort.min.js"></script>
+<script>
+// 强制单线程，避免本地开发时 COOP/COEP 问题
+ort.env.wasm.numThreads = 1;
+ort.env.wasm.wasmPaths = '../../assets/js/';
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+let session = null;
+
+async function loadModel() {
+  if (session) return;
+  document.getElementById('bg-status').textContent = '加载模型（约 88MB）...';
+  session = await ort.InferenceSession.create('../../models/rmbg-1.4/model_fp16.onnx', {
+    executionProviders: ['wasm']
+  });
+}
+
+async function removeBg() {
+  const file = document.getElementById('bg-input').files[0];
+  if (!file) { document.getElementById('bg-status').textContent = '请选择图片'; return; }
+  if (file.size > MAX_FILE_SIZE) {
+    document.getElementById('bg-status').textContent =
+      `文件过大（${(file.size/1024/1024).toFixed(1)}MB），请上传小于 10MB 的图片。`;
+    return;
+  }
+
+  document.getElementById('bg-btn').disabled = true;
+  try {
+    await loadModel();
+    document.getElementById('bg-status').textContent = '处理中...';
+
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    await img.decode();
+
+    const size = 1024;
+    const canvas = document.createElement('canvas');
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, size, size);
+
+    const imageData = ctx.getImageData(0, 0, size, size);
+    const { data } = imageData;
+    const input = new Float32Array(3 * size * size);
+    for (let i = 0; i < size * size; i++) {
+      input[i] = data[i * 4] / 255;
+      input[size * size + i] = data[i * 4 + 1] / 255;
+      input[2 * size * size + i] = data[i * 4 + 2] / 255;
+    }
+    const tensor = new ort.Tensor('float32', input, [1, 3, size, size]);
+
+    const output = await session.run({ input: tensor });
+    const mask = output.output.data;
+
+    const outCanvas = document.createElement('canvas');
+    outCanvas.width = img.naturalWidth;
+    outCanvas.height = img.naturalHeight;
+    const outCtx = outCanvas.getContext('2d');
+    outCtx.drawImage(img, 0, 0);
+
+    const outData = outCtx.getImageData(0, 0, outCanvas.width, outCanvas.height);
+    const maskCanvas = document.createElement('canvas');
+    maskCanvas.width = size; maskCanvas.height = size;
+    const maskCtx = maskCanvas.getContext('2d');
+    const maskImage = maskCtx.createImageData(size, size);
+    for (let i = 0; i < size * size; i++) {
+      const v = Math.round((mask[i] || 0) * 255);
+      maskImage.data[i * 4] = v;
+      maskImage.data[i * 4 + 1] = v;
+      maskImage.data[i * 4 + 2] = v;
+      maskImage.data[i * 4 + 3] = 255;
+    }
+    maskCtx.putImageData(maskImage, 0, 0);
+
+    const scaledMask = document.createElement('canvas');
+    scaledMask.width = outCanvas.width;
+    scaledMask.height = outCanvas.height;
+    scaledMask.getContext('2d').drawImage(maskCanvas, 0, 0, outCanvas.width, outCanvas.height);
+    const maskData = scaledMask.getContext('2d').getImageData(0, 0, outCanvas.width, outCanvas.height).data;
+
+    for (let i = 0; i < outCanvas.width * outCanvas.height; i++) {
+      outData.data[i * 4 + 3] = maskData[i * 4];
+    }
+    outCtx.putImageData(outData, 0, 0);
+
+    const url = outCanvas.toDataURL('image/png');
+    document.getElementById('bg-status').textContent = '✓ 完成';
+    document.getElementById('bg-result').innerHTML =
+      `<img src="${url}" alt="结果"><br><a href="${url}" download="no-bg.png">下载 PNG</a>`;
+  } catch (e) {
+    document.getElementById('bg-status').textContent = '✗ ' + e.message;
+  } finally {
+    document.getElementById('bg-btn').disabled = false;
+  }
+}
+</script>
+</body>
+</html>

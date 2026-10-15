@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCR 多语言识别</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body class="tool-body">
+<div class="tool-page">
+  <a class="back" href="../../">← 返回首页</a>
+  <h1>OCR 文字识别</h1>
+  <p style="color:#666;font-size:.85rem;margin-bottom:1rem">
+    使用 PP-OCRv6 medium 统一模型，支持中/英/日/韩/法/西等语言，首次使用需下载约 138MB。
+  </p>
+
+  <input type="file" id="ocr-input" accept="image/*">
+  <button onclick="runOCR()" id="ocr-btn">识别文字</button>
+  <div class="status" id="ocr-status"></div>
+  <textarea id="ocr-output" readonly style="min-height:150px;margin-top:1rem"></textarea>
+</div>
+
+<script src="../../assets/js/ort.min.js"></script>
+<script>
+ort.env.wasm.wasmPaths = '../../assets/js/';
+ort.env.wasm.numThreads = 1;
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+let detSession = null, recSession = null;
+let charDict = null;
+
+// 加载字典文件
+async function loadDict() {
+  if (charDict) return charDict;
+  const res = await fetch('../../models/pp-ocrv6-medium/ppocrv6_dict.txt');
+  const text = await res.text();
+  charDict = text.split('\n').filter(line => line.length > 0);
+  // 在字典开头和结尾添加特殊 token
+  charDict.unshift('blank');
+  charDict.push(' ');
+  return charDict;
+}
+
+async function loadModels() {
+  if (detSession && recSession) return;
+  document.getElementById('ocr-status').textContent = '加载模型中（约 138MB）...';
+  const modelBase = '../../models/pp-ocrv6-medium/';
+  [detSession, recSession] = await Promise.all([
+    ort.InferenceSession.create(modelBase + 'det.onnx', { executionProviders: ['wasm'] }),
+    ort.InferenceSession.create(modelBase + 'rec.onnx', { executionProviders: ['wasm'] })
+  ]);
+  await loadDict();
+}
+
+async function runOCR() {
+  const file = document.getElementById('ocr-input').files[0];
+  if (!file) { document.getElementById('ocr-status').textContent = '请选择图片'; return; }
+  if (file.size > MAX_FILE_SIZE) {
+    document.getElementById('ocr-status').textContent =
+      `文件过大（${(file.size/1024/1024).toFixed(1)}MB），请上传小于 10MB 的图片。`;
+    return;
+  }
+
+  document.getElementById('ocr-btn').disabled = true;
+  try {
+    await loadModels();
+    document.getElementById('ocr-status').textContent = '识别中...';
+
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    await img.decode();
+
+    const canvas = document.createElement('canvas');
+    const maxSide = 960;
+    const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+    canvas.width = Math.round(img.width * scale);
+    canvas.height = Math.round(img.height * scale);
+    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    const imageData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+    const tensor = imageToTensor(imageData);
+
+    const detOutput = await detSession.run({ x: tensor });
+    const regions = extractRegions(detOutput, canvas.width, canvas.height);
+
+    let fullText = '';
+    for (const region of regions) {
+      const recTensor = cropToTensor(imageData, region);
+      const recOutput = await recSession.run({ x: recTensor });
+      fullText += decodeRec(recOutput) + '\n';
+    }
+
+    document.getElementById('ocr-output').value = fullText || '未识别到文字';
+    document.getElementById('ocr-status').textContent = '✓ 识别完成';
+  } catch (e) {
+    document.getElementById('ocr-status').textContent = '✗ ' + e.message;
+  } finally {
+    document.getElementById('ocr-btn').disabled = false;
+  }
+}
+
+function imageToTensor(imageData) {
+  const { width, height, data } = imageData;
+  const mean = [0.485, 0.456, 0.406];
+  const std = [0.229, 0.224, 0.225];
+  const float = new Float32Array(3 * height * width);
+  for (let i = 0; i < height * width; i++) {
+    float[i] = (data[i * 4] / 255 - mean[0]) / std[0];
+    float[height * width + i] = (data[i * 4 + 1] / 255 - mean[1]) / std[1];
+    float[2 * height * width + i] = (data[i * 4 + 2] / 255 - mean[2]) / std[2];
+  }
+  return new ort.Tensor('float32', float, [1, 3, height, width]);
+}
+
+function extractRegions(detOutput, w, h) {
+  // PP-OCRv6 medium 检测后处理较复杂，此处简化处理
+  // 完整实现需要 DB 后处理：二值化、轮廓提取、透视变换
+  return [{ x: 0, y: 0, width: w, height: h }];
+}
+
+function cropToTensor(imageData, region) {
+  const { x, y, width, height } = region;
+  const crop = new ImageData(width, height);
+  for (let row = 0; row < height; row++) {
+    for (let col = 0; col < width; col++) {
+      const srcIdx = ((y + row) * imageData.width + (x + col)) * 4;
+      const dstIdx = (row * width + col) * 4;
+      crop.data[dstIdx] = imageData.data[srcIdx];
+      crop.data[dstIdx + 1] = imageData.data[srcIdx + 1];
+      crop.data[dstIdx + 2] = imageData.data[srcIdx + 2];
+      crop.data[dstIdx + 3] = 255;
+    }
+  }
+  const chw = new Float32Array(3 * height * width);
+  for (let i = 0; i < height * width; i++) {
+    chw[i] = crop.data[i * 4] / 255;
+    chw[height * width + i] = crop.data[i * 4 + 1] / 255;
+    chw[2 * height * width + i] = crop.data[i * 4 + 2] / 255;
+  }
+  return new ort.Tensor('float32', chw, [1, 3, height, width]);
+}
+
+function decodeRec(output) {
+  // 使用字典解码识别结果
+  if (!charDict) return '[识别结果]';
+  const data = output.output.data;
+  const dims = output.output.dims;
+  let text = '';
+  // 简化 CTC 解码：取每个时间步概率最高的字符
+  for (let i = 0; i < dims[1]; i++) {
+    let maxIdx = 0, maxVal = -Infinity;
+    for (let j = 0; j < dims[2]; j++) {
+      const val = data[i * dims[2] + j];
+      if (val > maxVal) { maxVal = val; maxIdx = j; }
+    }
+    if (maxIdx > 0 && maxIdx < charDict.length && charDict[maxIdx] !== 'blank') {
+      text += charDict[maxIdx];
+    }
+  }
+  return text;
+}
+</script>
+</body>
+</html>

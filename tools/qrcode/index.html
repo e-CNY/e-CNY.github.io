@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>二维码生成与识别</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body class="tool-body">
+<div class="tool-page">
+  <a class="back" href="../../">← 返回首页</a>
+  <h1>二维码工具</h1>
+
+  <h3>生成二维码</h3>
+  <input id="qr-text" placeholder="输入文本或网址">
+  <button onclick="generateQR()">生成</button>
+  <div class="result" id="qr-result"></div>
+
+  <h3>识别二维码</h3>
+  <input type="file" id="qr-image" accept="image/*">
+  <button onclick="decodeQR()">识别</button>
+  <div class="status" id="qr-decode-result"></div>
+</div>
+
+<script src="../../assets/js/qrcode.min.js"></script>
+<script src="../../assets/js/jsQR.min.js"></script>
+<script>
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+function generateQR() {
+  const text = document.getElementById('qr-text').value.trim();
+  if (!text) { alert('请输入要生成二维码的内容'); return; }
+
+  const resultEl = document.getElementById('qr-result');
+  resultEl.innerHTML = '';
+
+  const qrContainer = document.createElement('div');
+  qrContainer.style.display = 'inline-block';
+  resultEl.appendChild(qrContainer);
+
+  new QRCode(qrContainer, {
+    text: text,
+    width: 256,
+    height: 256,
+    colorDark: '#000000',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  setTimeout(() => {
+    const canvas = qrContainer.querySelector('canvas');
+    let dataUrl = '';
+    if (canvas) {
+      dataUrl = canvas.toDataURL('image/png');
+    } else {
+      const img = qrContainer.querySelector('img');
+      if (img) dataUrl = img.src;
+    }
+
+    if (dataUrl) {
+      const downloadLink = document.createElement('a');
+      downloadLink.href = dataUrl;
+      downloadLink.download = 'qrcode.png';
+      downloadLink.textContent = '下载二维码';
+      downloadLink.style.display = 'inline-block';
+      downloadLink.style.marginTop = '0.75rem';
+      downloadLink.style.padding = '0.5rem 1rem';
+      downloadLink.style.background = '#10b981';
+      downloadLink.style.color = '#fff';
+      downloadLink.style.borderRadius = '8px';
+      downloadLink.style.textDecoration = 'none';
+      resultEl.appendChild(document.createElement('br'));
+      resultEl.appendChild(downloadLink);
+    }
+  }, 100);
+}
+
+async function decodeQR() {
+  const file = document.getElementById('qr-image').files[0];
+  if (!file) { document.getElementById('qr-decode-result').textContent = '请选择图片'; return; }
+  if (file.size > MAX_FILE_SIZE) {
+    document.getElementById('qr-decode-result').textContent =
+      `文件过大（${(file.size/1024/1024).toFixed(1)}MB），请上传小于 5MB 的图片。`;
+    return;
+  }
+
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
+  await img.decode();
+
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const code = jsQR(imageData.data, canvas.width, canvas.height);
+  document.getElementById('qr-decode-result').textContent =
+    code ? '识别结果：' + code.data : '未识别到二维码';
+}
+</script>
+</body>
+</html>

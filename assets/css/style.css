@@ -1,0 +1,396 @@
+/* ============================================
+   全局重置
+   ============================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: #f5f7fa;
+  color: #1a1a2e;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
+   主页：九宫格三行三列铺满
+   ============================================ */
+.home-body {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hero {
+  text-align: center;
+  padding: 1rem;
+  flex-shrink: 0;
+}
+
+.hero h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.hero p {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.home-main {
+  flex: 1;
+  display: flex;
+  padding: 0 0.75rem 0.75rem;
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  min-height: 0;
+}
+
+.grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.75rem;
+  min-height: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  min-height: 0;
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  text-decoration: none;
+}
+
+.card-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.card h3 {
+  font-size: 0.85rem;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.card p {
+  font-size: 0.7rem;
+  color: #888;
+  line-height: 1.2;
+}
+
+/* 加载失败提示 */
+.grid-error {
+  grid-column: 1 / -1;
+  padding: 1rem;
+  background: #fee;
+  border-radius: 8px;
+  color: #c00;
+  font-size: 0.9rem;
+}
+
+.grid-error p {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* ============================================
+   工具页：内容居中显示
+   ============================================ */
+.tool-body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.tool-page {
+  width: 100%;
+  max-width: 720px;
+  margin: auto;
+  padding: 2rem 1rem;
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+}
+
+.tool-page h1 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.tool-page h3 {
+  font-size: 1.1rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.tool-page p {
+  line-height: 1.6;
+}
+
+/* 表单元素 */
+.tool-page textarea,
+.tool-page input,
+.tool-page select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  margin-bottom: 0.75rem;
+  background: #fff;
+  color: inherit;
+  transition: border-color 0.15s;
+}
+
+.tool-page textarea:focus,
+.tool-page input:focus,
+.tool-page select:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.tool-page textarea {
+  min-height: 200px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.tool-page input[type="file"] {
+  padding: 0.5rem;
+  background: #f8fafc;
+  cursor: pointer;
+}
+
+.tool-page input[type="range"] {
+  padding: 0;
+  width: auto;
+  vertical-align: middle;
+  margin: 0 0.5rem;
+}
+
+/* 按钮 */
+.tool-page button {
+  padding: 0.7rem 1.5rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: background 0.15s;
+}
+
+.tool-page button:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.tool-page button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* 返回链接 */
+.back {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #2563eb;
+  font-size: 0.9rem;
+}
+
+/* 状态文字 */
+.status {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.5rem;
+  text-align: center;
+  min-height: 1.2em;
+}
+
+/* 结果区 */
+.result {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.result img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.result a {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: #10b981;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.result a:hover {
+  background: #059669;
+  text-decoration: none;
+}
+
+/* 标签页按钮组（文本工具用） */
+.tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.tab-bar button {
+  margin: 0;
+}
+
+.tab-bar button.active {
+  background: #1d4ed8;
+}
+
+/* 输出区域（只读） */
+.tool-page textarea[readonly] {
+  background: #f8fafc;
+  color: #333;
+}
+
+/* ============================================
+   手机适配
+   ============================================ */
+@media (max-width: 600px) {
+  /* 主页 */
+  .hero {
+    padding: 0.75rem 0.5rem 0.5rem;
+  }
+
+  .hero h1 {
+    font-size: 1.2rem;
+  }
+
+  .hero p {
+    font-size: 0.75rem;
+  }
+
+  .home-main {
+    padding: 0 0.5rem 0.5rem;
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  }
+
+  .grid {
+    gap: 0.5rem;
+  }
+
+  .card {
+    padding: 0.4rem 0.25rem;
+    border-radius: 8px;
+  }
+
+  .card-icon {
+    font-size: 1.4rem;
+  }
+
+  .card h3 {
+    font-size: 0.75rem;
+  }
+
+  .card p {
+    display: none; /* 手机上隐藏描述，避免溢出 */
+  }
+
+  /* 工具页 */
+  .tool-page {
+    padding: 1.25rem 0.75rem;
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+  }
+
+  .tool-page h1 {
+    font-size: 1.25rem;
+  }
+
+  .tool-page textarea {
+    min-height: 150px;
+  }
+
+  .tool-page button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* 超窄屏（如 iPhone SE，320px 宽） */
+@media (max-width: 360px) {
+  .card-icon {
+    font-size: 1.2rem;
+  }
+
+  .card h3 {
+    font-size: 0.7rem;
+  }
+
+  .grid {
+    gap: 0.4rem;
+  }
+}
+
+/* 横屏手机（高度很小） */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero {
+    padding: 0.5rem;
+  }
+
+  .hero h1 {
+    font-size: 1rem;
+  }
+
+  .hero p {
+    display: none;
+  }
+
+  .card p {
+    display: none;
+  }
+}

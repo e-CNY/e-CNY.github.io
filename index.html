@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>在线工具箱 - 免费纯本地工具</title>
+  <meta name="description" content="纯浏览器本地运行的工具集合，数据不上传，保护隐私。">
+
+  <!-- 跨域隔离 Service Worker：启用 SharedArrayBuffer 和多线程 WASM -->
+  <script src="./assets/js/coi-serviceworker.js"></script>
+
+  <!-- ONNX Runtime Web 主库 -->
+  <script src="./assets/js/ort.min.js"></script>
+
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body class="home-body">
+  <header class="hero">
+    <h1>在线工具箱</h1>
+    <p>所有工具在浏览器本地运行，数据不会上传服务器</p>
+  </header>
+
+  <main class="home-main">
+    <div class="grid" id="tool-grid"></div>
+  </main>
+
+  <script>
+    // 配置 ONNX Runtime：WASM 文件指向本地 assets/js/
+    ort.env.wasm.wasmPaths = './assets/js/';
+
+    // 检测 WebGPU 是否可用
+    if (navigator.gpu) {
+      console.log('WebGPU 可用，AI 工具将使用 GPU 加速');
+    } else {
+      console.log('WebGPU 不可用，AI 工具将回退到 WASM (CPU)');
+    }
+
+    async function loadTools() {
+      const grid = document.getElementById('tool-grid');
+      try {
+        const res = await fetch('./tools.json', { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+        const tools = await res.json();
+        if (!Array.isArray(tools)) throw new Error('tools.json 格式错误：顶层必须是数组');
+        grid.innerHTML = tools.map(tool => `
+          <a class="card" href="${tool.path}">
+            <span class="card-icon">${tool.icon || '🔧'}</span>
+            <h3>${tool.name || '未命名'}</h3>
+            <p>${tool.desc || ''}</p>
+          </a>
+        `).join('');
+      } catch (err) {
+        console.error('加载 tools.json 失败：', err);
+        grid.innerHTML = `
+          <div class="grid-error">
+            <strong>工具列表加载失败</strong>
+            <p>${err.message}</p>
+            <p>提示：请通过 HTTP 服务器访问，不要直接双击打开 HTML 文件。</p>
+          </div>`;
+      }
+    }
+    loadTools();
+  </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+[
+  { "name": "图片加水印", "desc": "本地添加文字水印", "path": "tools/watermark/", "icon": "💧" },
+  { "name": "图片压缩", "desc": "本地压缩，不上传", "path": "tools/image-compress/", "icon": "🖼️" },
+  { "name": "PDF 工具", "desc": "合并、拆分", "path": "tools/pdf-tools/", "icon": "📄" },
+  { "name": "OCR 识别", "desc": "中英文图片转文字", "path": "tools/ocr/", "icon": "👁️" },
+  { "name": "背景移除", "desc": "AI 自动抠图", "path": "tools/bg-remove/", "icon": "✂️" },
+  { "name": "图片超分", "desc": "AI 放大图片", "path": "tools/image-upscale/", "icon": "🔍" },
+  { "name": "语音转文字", "desc": "Whisper 本地识别", "path": "tools/speech-to-text/", "icon": "🎤" },
+  { "name": "文本翻译", "desc": "中英互译", "path": "tools/translate/", "icon": "🌐" },
+  { "name": "二维码工具", "desc": "生成与识别", "path": "tools/qrcode/", "icon": "📱" }
+]

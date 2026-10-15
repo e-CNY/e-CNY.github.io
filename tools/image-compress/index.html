@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片压缩 - 本地不上传</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body class="tool-body">
+<div class="tool-page">
+  <a class="back" href="../../">← 返回首页</a>
+  <h1>图片压缩</h1>
+  <p style="color:#666;font-size:.85rem;margin-bottom:1rem">图片不会上传，全部在浏览器本地处理。</p>
+
+  <input type="file" id="img-input" accept="image/*">
+  <label style="display:block;margin:.75rem 0;font-size:.9rem">
+    质量：<input type="range" id="quality" min="10" max="100" value="70" style="width:200px;vertical-align:middle">
+    <span id="quality-val">70</span>
+  </label>
+  <button onclick="compress()">压缩</button>
+  <div class="status" id="status"></div>
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+document.getElementById('quality').addEventListener('input', e => {
+  document.getElementById('quality-val').textContent = e.target.value;
+});
+
+async function compress() {
+  const file = document.getElementById('img-input').files[0];
+  if (!file) { document.getElementById('status').textContent = '请先选择图片'; return; }
+  if (file.size > MAX_FILE_SIZE) {
+    document.getElementById('status').textContent =
+      `文件过大（${(file.size / 1024 / 1024).toFixed(1)}MB），请上传小于 10MB 的图片。`;
+    return;
+  }
+
+  const quality = Number(document.getElementById('quality').value) / 100;
+  document.getElementById('status').textContent = '压缩中...';
+
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
+  await img.decode();
+
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  canvas.getContext('2d').drawImage(img, 0, 0);
+
+  const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', quality));
+  const url = URL.createObjectURL(blob);
+  const saved = ((1 - blob.size / file.size) * 100).toFixed(1);
+  document.getElementById('status').textContent =
+    `原始 ${(file.size/1024).toFixed(1)} KB → 压缩后 ${(blob.size/1024).toFixed(1)} KB，节省 ${saved}%`;
+  document.getElementById('result').innerHTML =
+    `<img src="${url}" alt="压缩结果"><br><a href="${url}" download="compressed.jpg">下载压缩图片</a>`;
+}
+</script>
+</body>
+</html>

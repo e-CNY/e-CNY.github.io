@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中英文本翻译</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body class="tool-body">
+<div class="tool-page">
+  <a class="back" href="../../">← 返回首页</a>
+  <h1>中英文本翻译</h1>
+  <p style="color:#666;font-size:.85rem;margin-bottom:1rem">首次使用需下载约 120MB 模型，之后缓存在本地。</p>
+
+  <select id="direction">
+    <option value="zh-en">中文 → English</option>
+    <option value="en-zh">English → 中文</option>
+  </select>
+  <textarea id="trans-input" placeholder="输入要翻译的文本（最多 5000 字符）..."></textarea>
+  <button onclick="translate()" id="trans-btn">翻译</button>
+  <div class="status" id="trans-status"></div>
+  <textarea id="trans-output" readonly style="margin-top:1rem"></textarea>
+</div>
+
+<script type="module">
+import { pipeline, env } from '../../assets/js/transformers.min.js';
+
+env.allowRemoteModels = false;
+env.allowLocalModels = true;
+env.localModelPath = '../../models/';
+env.useBrowserCache = true;
+env.backends.onnx.wasm.wasmPaths = '../../assets/js/';
+
+const MAX_TEXT_LENGTH = 5000;
+let translators = {};
+
+async function getTranslator(dir) {
+  if (translators[dir]) return translators[dir];
+  const modelId = dir === 'zh-en' ? 'opus-mt-zh-en' : 'opus-mt-en-zh';
+  document.getElementById('trans-status').textContent = `加载模型 ${modelId}...`;
+  translators[dir] = await pipeline('translation', modelId, {
+    quantized: true
+  });
+  return translators[dir];
+}
+
+async function translate() {
+  const text = document.getElementById('trans-input').value.trim();
+  if (!text) { document.getElementById('trans-status').textContent = '请输入文本'; return; }
+  if (text.length > MAX_TEXT_LENGTH) {
+    document.getElementById('trans-status').textContent =
+      `文本过长（${text.length} 字符），请控制在 ${MAX_TEXT_LENGTH} 字符以内。`;
+    return;
+  }
+
+  document.getElementById('trans-btn').disabled = true;
+  try {
+    const dir = document.getElementById('direction').value;
+    const translator = await getTranslator(dir);
+    document.getElementById('trans-status').textContent = '翻译中...';
+    const result = await translator(text, { max_new_tokens: 256 });
+    document.getElementById('trans-output').value = result[0].translation_text;
+    document.getElementById('trans-status').textContent = '✓ 完成';
+  } catch (e) {
+    document.getElementById('trans-status').textContent = '✗ ' + e.message;
+  } finally {
+    document.getElementById('trans-btn').disabled = false;
+  }
+}
+</script>
+</body>
+</html>

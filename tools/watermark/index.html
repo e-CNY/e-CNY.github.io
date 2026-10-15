@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片加水印</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body class="tool-body">
+<div class="tool-page">
+  <a class="back" href="../../">← 返回首页</a>
+  <h1>图片加水印</h1>
+  <p style="color:#666;font-size:.85rem;margin-bottom:1rem">图片不会上传，全部在浏览器本地处理。</p>
+
+  <input type="file" id="wm-input" accept="image/*">
+  <input id="wm-text" placeholder="水印文字" value="© 我的水印">
+  <label style="display:block;margin:.75rem 0;font-size:.9rem">
+    透明度：<input type="range" id="wm-opacity" min="0.1" max="1" step="0.1" value="0.5" style="width:200px;vertical-align:middle">
+  </label>
+  <button onclick="addWatermark()" id="wm-btn">添加水印</button>
+  <div class="status" id="wm-status"></div>
+  <div class="result" id="wm-result"></div>
+</div>
+
+<script>
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+async function addWatermark() {
+  const file = document.getElementById('wm-input').files[0];
+  const text = document.getElementById('wm-text').value.trim();
+  if (!file) { document.getElementById('wm-status').textContent = '请选择图片'; return; }
+  if (!text) { document.getElementById('wm-status').textContent = '请输入水印文字'; return; }
+  if (file.size > MAX_FILE_SIZE) {
+    document.getElementById('wm-status').textContent =
+      `文件过大（${(file.size / 1024 / 1024).toFixed(1)}MB），请上传小于 10MB 的图片。`;
+    return;
+  }
+
+  document.getElementById('wm-btn').disabled = true;
+  document.getElementById('wm-status').textContent = '处理中...';
+
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
+  await img.decode();
+
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext('2d');
+
+  ctx.drawImage(img, 0, 0);
+
+  const opacity = document.getElementById('wm-opacity').value;
+  ctx.font = `${Math.max(20, img.naturalWidth / 20)}px sans-serif`;
+  ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+  ctx.strokeStyle = `rgba(0, 0, 0, ${opacity * 0.5})`;
+  ctx.lineWidth = 2;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.strokeText(text, canvas.width / 2, canvas.height / 2);
+  ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+  const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.92));
+  const url = URL.createObjectURL(blob);
+  document.getElementById('wm-status').textContent = '✓ 完成';
+  document.getElementById('wm-result').innerHTML =
+    `<img src="${url}" alt="加水印结果"><br><a href="${url}" download="watermarked.jpg">下载图片</a>`;
+  document.getElementById('wm-btn').disabled = false;
+}
+</script>
+</body>
+</html>

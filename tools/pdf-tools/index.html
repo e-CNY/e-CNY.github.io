@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF 合并拆分</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body class="tool-body">
+<div class="tool-page">
+  <a class="back" href="../../">← 返回首页</a>
+  <h1>PDF 合并 / 拆分</h1>
+
+  <h3>合并 PDF</h3>
+  <input type="file" id="pdf-files" accept=".pdf" multiple>
+  <button onclick="mergePDF()">合并</button>
+
+  <h3>拆分 PDF（提取指定页）</h3>
+  <input type="file" id="pdf-split" accept=".pdf">
+  <input id="page-range" placeholder="页码范围，如 1-3,5">
+  <button onclick="splitPDF()">提取</button>
+
+  <div class="status" id="status"></div>
+</div>
+
+<script src="../../assets/js/pdf-lib.min.js"></script>
+<script>
+const MAX_TOTAL_SIZE = 50 * 1024 * 1024; // 50MB
+
+async function mergePDF() {
+  const files = document.getElementById('pdf-files').files;
+  if (files.length < 2) { document.getElementById('status').textContent = '请选择至少 2 个 PDF'; return; }
+  let totalSize = 0;
+  for (const f of files) totalSize += f.size;
+  if (totalSize > MAX_TOTAL_SIZE) {
+    document.getElementById('status').textContent =
+      `总文件过大（${(totalSize/1024/1024).toFixed(1)}MB），请总大小不超过 50MB。`;
+    return;
+  }
+
+  const { PDFDocument } = PDFLib;
+  const merged = await PDFDocument.create();
+  for (const file of files) {
+    const bytes = await file.arrayBuffer();
+    const doc = await PDFDocument.load(bytes);
+    const pages = await merged.copyPages(doc, doc.getPageIndices());
+    pages.forEach(p => merged.addPage(p));
+  }
+  const pdfBytes = await merged.save();
+  download(pdfBytes, 'merged.pdf');
+  document.getElementById('status').textContent = `已合并 ${files.length} 个 PDF`;
+}
+
+async function splitPDF() {
+  const file = document.getElementById('pdf-split').files[0];
+  if (!file) { document.getElementById('status').textContent = '请选择 PDF'; return; }
+  if (file.size > MAX_TOTAL_SIZE) {
+    document.getElementById('status').textContent =
+      `文件过大（${(file.size/1024/1024).toFixed(1)}MB），请上传小于 50MB 的 PDF。`;
+    return;
+  }
+
+  const { PDFDocument } = PDFLib;
+  const doc = await PDFDocument.load(await file.arrayBuffer());
+  const range = document.getElementById('page-range').value.trim();
+  const pages = parseRange(range, doc.getPageCount());
+  if (!pages.length) { document.getElementById('status').textContent = '页码范围无效'; return; }
+  const newDoc = await PDFDocument.create();
+  const copied = await newDoc.copyPages(doc, pages);
+  copied.forEach(p => newDoc.addPage(p));
+  const pdfBytes = await newDoc.save();
+  download(pdfBytes, 'extracted.pdf');
+  document.getElementById('status').textContent = `已提取 ${pages.length} 页`;
+}
+
+function parseRange(str, max) {
+  const result = [];
+  str.split(',').forEach(part => {
+    part = part.trim();
+    if (part.includes('-')) {
+      const [a, b] = part.split('-').map(Number);
+      for (let i = a; i <= Math.min(b, max); i++) result.push(i - 1);
+    } else {
+      const n = Number(part);
+      if (n >= 1 && n <= max) result.push(n - 1);
+    }
+  });
+  return [...new Set(result)].sort((a, b) => a - b);
+}
+
+function download(bytes, name) {
+  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+}
+</script>
+</body>
+</html>

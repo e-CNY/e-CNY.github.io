@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>语音转文字 - 中文识别</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body class="tool-body">
+<div class="tool-page">
+  <a class="back" href="../../">← 返回首页</a>
+  <h1>语音转文字</h1>
+  <p style="color:#666;font-size:.85rem;margin-bottom:1rem">
+    使用 Whisper tiny 多语言模型，支持中文识别。首次使用需下载约 61MB。
+  </p>
+
+  <input type="file" id="audio-input" accept="audio/*">
+  <button onclick="transcribe()" id="stt-btn">转文字</button>
+  <div class="status" id="stt-status"></div>
+  <textarea id="stt-output" readonly style="min-height:200px;margin-top:1rem"></textarea>
+</div>
+
+<script type="module">
+import { pipeline, env } from '../../assets/js/transformers.min.js';
+
+env.allowRemoteModels = false;
+env.allowLocalModels = true;
+env.localModelPath = '../../models/';
+env.useBrowserCache = true;
+env.backends.onnx.wasm.wasmPaths = '../../assets/js/';
+
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+let transcriber = null;
+
+async function loadWhisper() {
+  if (transcriber) return;
+  document.getElementById('stt-status').textContent = '加载 Whisper tiny 模型（约 61MB）...';
+  transcriber = await pipeline(
+    'automatic-speech-recognition',
+    'Xenova/whisper-tiny',   // ← 多语言模型，不是 .en 版本
+    { quantized: true }
+  );
+}
+
+async function transcribe() {
+  const file = document.getElementById('audio-input').files[0];
+  if (!file) { document.getElementById('stt-status').textContent = '请选择音频文件'; return; }
+  if (file.size > MAX_FILE_SIZE) {
+    document.getElementById('stt-status').textContent =
+      `文件过大（${(file.size/1024/1024).toFixed(1)}MB），请上传小于 25MB 的音频。`;
+    return;
+  }
+
+  document.getElementById('stt-btn').disabled = true;
+  try {
+    await loadWhisper();
+    document.getElementById('stt-status').textContent = '识别中...';
+
+    const arrayBuffer = await file.arrayBuffer();
+    const audioCtx = new AudioContext({ sampleRate: 16000 });
+    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    const audioData = audioBuffer.getChannelData(0);
+
+    const result = await transcriber(audioData, {
+      language: 'chinese',      // ← 指定中文
+      task: 'transcribe',       // ← 转写，不是翻译
+      chunk_length_s: 30
+    });
+
+    document.getElementById('stt-output').value = result.text || '未识别到语音';
+    document.getElementById('stt-status').textContent = '✓ 完成';
+  } catch (e) {
+    document.getElementById('stt-status').textContent = '✗ ' + e.message;
+  } finally {
+    document.getElementById('stt-btn').disabled = false;
+  }
+}
+</script>
+</body>
+</html>
