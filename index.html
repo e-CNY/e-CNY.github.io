@@ -6,33 +6,30 @@
   <title>在线工具箱 - 免费纯本地工具</title>
   <meta name="description" content="纯浏览器本地运行的工具集合，数据不上传，保护隐私。">
 
-  <!-- 跨域隔离 Service Worker：启用 SharedArrayBuffer 和多线程 WASM -->
-  <script src="./assets/js/coi-serviceworker.js"></script>
-
   <!-- ONNX Runtime Web 主库 -->
   <script src="./assets/js/ort.min.js"></script>
 
   <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body class="home-body">
-  <header class="hero">
-    <h1>在线工具箱</h1>
-    <p>所有工具在浏览器本地运行，数据不会上传服务器</p>
-  </header>
-
   <main class="home-main">
     <div class="grid" id="tool-grid"></div>
+
+    <footer class="home-footer">
+      <p>所有工具在浏览器本地运行</p>
+      <p>数据不会上传服务器</p>
+    </footer>
   </main>
 
   <script>
-    // 配置 ONNX Runtime：WASM 文件指向本地 assets/js/
+    // 单线程 WASM，避免跨域隔离问题
+    ort.env.wasm.numThreads = 1;
     ort.env.wasm.wasmPaths = './assets/js/';
 
-    // 检测 WebGPU 是否可用
     if (navigator.gpu) {
-      console.log('WebGPU 可用，AI 工具将使用 GPU 加速');
+      console.log('WebGPU 可用，AI 工具可尝试 GPU 加速');
     } else {
-      console.log('WebGPU 不可用，AI 工具将回退到 WASM (CPU)');
+      console.log('WebGPU 不可用，AI 工具将使用 WASM (CPU)');
     }
 
     async function loadTools() {
