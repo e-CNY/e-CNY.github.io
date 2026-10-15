@@ -11,7 +11,7 @@
   <a class="back" href="../../">← 返回首页</a>
   <h1>OCR 文字识别</h1>
   <p style="color:#666;font-size:.85rem;margin-bottom:1rem">
-    使用 PP-OCRv6 medium 统一模型，支持中/英/日/韩/法/西等语言，首次使用需下载约 138MB。
+    支持中/英/日/韩/法/西等多种语言识别，图片不会上传，首次使用需下载模型（约 138MB）。
   </p>
 
   <input type="file" id="ocr-input" accept="image/*">
@@ -22,8 +22,8 @@
 
 <script src="../../assets/js/ort.min.js"></script>
 <script>
-ort.env.wasm.wasmPaths = '../../assets/js/';
 ort.env.wasm.numThreads = 1;
+ort.env.wasm.wasmPaths = '../../assets/js/';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -36,7 +36,6 @@ async function loadDict() {
   const res = await fetch('../../models/pp-ocrv6-medium/ppocrv6_dict.txt');
   const text = await res.text();
   charDict = text.split('\n').filter(line => line.length > 0);
-  // 在字典开头和结尾添加特殊 token
   charDict.unshift('blank');
   charDict.push(' ');
   return charDict;
@@ -114,7 +113,7 @@ function imageToTensor(imageData) {
 }
 
 function extractRegions(detOutput, w, h) {
-  // PP-OCRv6 medium 检测后处理较复杂，此处简化处理
+  // 简化示例：返回整张图作为一个区域
   // 完整实现需要 DB 后处理：二值化、轮廓提取、透视变换
   return [{ x: 0, y: 0, width: w, height: h }];
 }
@@ -142,12 +141,10 @@ function cropToTensor(imageData, region) {
 }
 
 function decodeRec(output) {
-  // 使用字典解码识别结果
   if (!charDict) return '[识别结果]';
   const data = output.output.data;
   const dims = output.output.dims;
   let text = '';
-  // 简化 CTC 解码：取每个时间步概率最高的字符
   for (let i = 0; i < dims[1]; i++) {
     let maxIdx = 0, maxVal = -Infinity;
     for (let j = 0; j < dims[2]; j++) {
