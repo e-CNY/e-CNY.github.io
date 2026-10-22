@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>工具站</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+<main class="home">
+  <h1>🧰 工具站</h1>
+  <div class="search-wrap">
+    <span class="search-icon" aria-hidden="true">🔍</span>
+    <input id="search" type="search" placeholder="搜索工具…（本地运行，不上传服务器）" autocomplete="off">
+  </div>
+  <nav class="tabs" id="tabs" aria-label="分类"></nav>
+  <section id="grid" class="grid"></section>
+  <p id="empty" hidden>没有找到匹配的工具</p>
+</main>
+<script src="js/home.js" defer></script>
+</body>
+</html>

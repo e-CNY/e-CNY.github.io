@@ -1,0 +1,80 @@
+(function () {
+  // ====== 以后加工具，只改这个数组 ======
+  var tools = [
+    {
+      name: '久坐提醒',
+      emoji: '🪑',
+      desc: '坐下 / 活动 / 站立循环提醒',
+      href: 'tools/sitting-reminder/index.html',
+      category: '生活'
+    }
+  ];
+
+  var search = document.getElementById('search');
+  var tabsEl = document.getElementById('tabs');
+  var gridEl = document.getElementById('grid');
+  var emptyEl = document.getElementById('empty');
+  var activeCat = 'all';
+
+  var cats = ['all'];
+  tools.forEach(function (t) {
+    if (cats.indexOf(t.category) === -1) cats.push(t.category);
+  });
+  cats.forEach(function (c) {
+    var b = document.createElement('button');
+    b.textContent = c === 'all' ? '全部' : c;
+    b.dataset.cat = c;
+    if (c === 'all') b.classList.add('active');
+    tabsEl.appendChild(b);
+  });
+
+  tools.forEach(function (t) {
+    var a = document.createElement('a');
+    a.className = 'card';
+    a.href = t.href;
+    a.dataset.cat = t.category;
+    a.dataset.name = (t.name + ' ' + t.desc).toLowerCase();
+    a.innerHTML =
+      '<span class="emoji"></span>' +
+      '<span class="name"></span>' +
+      '<span class="desc"></span>';
+    a.querySelector('.emoji').textContent = t.emoji;
+    a.querySelector('.name').textContent = t.name;
+    a.querySelector('.desc').textContent = t.desc;
+    gridEl.appendChild(a);
+  });
+
+  var cards = Array.prototype.slice.call(gridEl.children);
+  var tabButtons = Array.prototype.slice.call(tabsEl.children);
+
+  function apply() {
+    var q = search.value.trim().toLowerCase();
+    var visible = 0;
+    cards.forEach(function (card) {
+      var matchCat = activeCat === 'all' || card.dataset.cat === activeCat;
+      var matchText = !q || card.dataset.name.indexOf(q) !== -1;
+      var show = matchCat && matchText;
+      card.hidden = !show;
+      if (show) visible++;
+    });
+    emptyEl.hidden = visible > 0;
+  }
+
+  search.addEventListener('input', apply);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== search) {
+      e.preventDefault();
+      search.focus();
+    }
+  });
+
+  tabButtons.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabButtons.forEach(function (t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      activeCat = tab.dataset.cat;
+      apply();
+    });
+  });
+})();

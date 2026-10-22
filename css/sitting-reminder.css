@@ -1,0 +1,165 @@
+.sr-tool { max-width: 720px; margin: 0 auto; padding: 28px 16px 56px; }
+.sr-header { text-align: center; margin-bottom: 24px; }
+.sr-header h1 { font-size: 1.6rem; margin: 0 0 8px; }
+.sr-header p { margin: 0; color: #64748b; font-size: 0.9rem; }
+.sr-header a { color: #2563eb; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
+
+.sr-rings {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.sr-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px 8px 12px;
+  text-align: center;
+  min-width: 0;
+  transition: box-shadow .2s, border-color .2s, opacity .2s;
+}
+.sr-card.active {
+  border-color: var(--phase-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--phase-color) 22%, transparent);
+}
+.sr-card.dimmed { opacity: .45; }
+
+.sr-ring-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 120px;
+  margin: 0 auto 10px;
+  aspect-ratio: 1;
+}
+.sr-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+.sr-ring-track { fill: none; stroke: #e2e8f0; stroke-width: 8; }
+.sr-ring-progress {
+  fill: none; stroke: var(--phase-color); stroke-width: 8;
+  stroke-linecap: round; transition: stroke-dashoffset .12s linear;
+}
+.sr-ring-text {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px;
+}
+.sr-emoji { font-size: clamp(1.1rem, 4vw, 1.5rem); line-height: 1; }
+.sr-time {
+  font-size: clamp(.78rem, 3.2vw, 1rem);
+  font-weight: 600; font-variant-numeric: tabular-nums; color: #334155;
+}
+
+.sr-label {
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; font-size: .82rem; color: #475569;
+}
+.sr-label input {
+  width: 3.4em; padding: 2px 4px; border: 1px solid #cbd5e1;
+  border-radius: 6px; text-align: center; font-size: .85rem;
+  background: #fff; color: #1e293b;
+}
+.sr-label input:disabled { background: #f1f5f9; color: #94a3b8; }
+
+.sr-controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.sr-controls button {
+  min-width: 96px; padding: 10px 18px; border-radius: 10px;
+  border: 1px solid #cbd5e1; background: #fff; color: #1e293b;
+  font-size: .95rem; cursor: pointer;
+  transition: background .15s, border-color .15s, transform .06s, opacity .15s;
+}
+.sr-controls button:active:not(:disabled) { transform: scale(.97); }
+.sr-controls button.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+.sr-controls button.primary:hover:not(:disabled) { background: #1d4ed8; }
+.sr-controls button:disabled { opacity: .45; cursor: not-allowed; }
+
+.sr-status {
+  margin-top: 18px; min-height: 1.4em; text-align: center;
+  font-size: .88rem; color: #64748b;
+}
+.sr-status.warn { color: #dc2626; }
+
+.sr-alarm-settings {
+  margin-top: 28px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+.sr-alarm-settings h2 {
+  font-size: 1rem;
+  margin: 0 0 14px;
+  color: #334155;
+}
+.sr-volume-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.sr-volume-row label {
+  font-size: .85rem;
+  color: #475569;
+  flex-shrink: 0;
+}
+.sr-volume-row input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  accent-color: #2563eb;
+}
+#sr-volume-val {
+  font-size: .82rem;
+  color: #64748b;
+  min-width: 3em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.sr-audio-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.sr-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #1e293b;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: background .15s;
+}
+.sr-upload-btn:hover { background: #f1f5f9; }
+.sr-audio-name {
+  font-size: .82rem;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
+}
+.sr-audio-clear {
+  padding: 4px 10px;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: .78rem;
+  cursor: pointer;
+}
+.sr-audio-clear:hover { background: #fee2e2; }
+.sr-audio-hint {
+  margin: 10px 0 0;
+  font-size: .75rem;
+  color: #94a3b8;
+  line-height: 1.45;
+}
+
+@media (max-width: 380px) {
+  .sr-label { flex-direction: column; gap: 2px; }
+}
+@media (max-width: 420px) {
+  .sr-audio-name { max-width: 100%; }
+}
