@@ -1,6 +1,5 @@
-/* 霞鹜文楷：本地字体，路径相对本文件（css/ → ../fonts/）。
-   如果你还没把字体文件放进 fonts/lxgw-wenkai/，先把下面这行注释掉，
-   页面会自动回退到系统字体，功能不受影响。 */
+/* 霞鹜文楷：本地字体。若 fonts/lxgw-wenkai/ 里还没放字体文件，
+   先注释掉下面这行，页面会回退到系统字体，功能不受影响。 */
 @import url('../fonts/lxgw-wenkai/result.css');
 
 html {
@@ -8,10 +7,10 @@ html {
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  color: #1e293b;
-  background: #f8fafc;
+  color: #3d3226;
+  background: #efe6d0;
 }
 
 * { box-sizing: border-box; }
 body { margin: 0; }
-button, input, select, textarea { font: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }

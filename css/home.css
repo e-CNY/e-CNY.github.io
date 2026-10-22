@@ -1,10 +1,10 @@
 .home { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
-.home h1 { text-align: center; margin: 0 0 24px; font-size: 1.8rem; }
+.home h1 { text-align: center; margin: 0 0 24px; font-size: 1.8rem; color: #3d3226; }
 
 .search-wrap {
   position: relative;
   max-width: 520px;
-  margin: 0 auto 16px;
+  margin: 0 auto 24px;
 }
 .search-icon {
   position: absolute;
@@ -14,25 +14,49 @@
   font-size: 1rem;
   line-height: 1;
   pointer-events: none;
-  opacity: .65;
+  opacity: .7;
 }
 #search {
   display: block;
   width: 100%;
   padding: 12px 16px 12px 42px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #ddcfb3;
   border-radius: 12px;
-  background: #fff;
+  background: #f9f3e3;
+  color: #3d3226;
   font-size: 1rem;
+  transition: border-color .15s, box-shadow .15s;
 }
-#search:focus { outline: 2px solid #93c5fd; border-color: #60a5fa; }
+#search::placeholder { color: #8a7a5f; }
+#search:focus {
+  outline: none;
+  border-color: #b08a5a;
+  box-shadow: 0 0 0 3px rgba(176, 138, 90, .22);
+}
 
-.tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; }
-.tabs button {
-  padding: 6px 14px; border-radius: 999px; border: 1px solid #cbd5e1;
-  background: #fff; color: #475569; font-size: .85rem; cursor: pointer;
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 24px;
 }
-.tabs button.active { background: #2563eb; border-color: #2563eb; color: #fff; }
+.tabs button {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid #ddcfb3;
+  background: #f9f3e3;
+  color: #6b5d47;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.tabs button:hover { border-color: #c4b48f; }
+.tabs button.active {
+  background: #8a5a2b;
+  border-color: #8a5a2b;
+  color: #fdf8ec;
+}
 
 .grid {
   display: grid;
@@ -40,20 +64,41 @@
   gap: 14px;
 }
 .card {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
-  padding: 16px; border: 1px solid #e2e8f0; border-radius: 14px;
-  background: #fff; text-decoration: none; color: inherit;
-  transition: border-color .15s, box-shadow .15s, transform .15s;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 16px;
+  border: 1px solid #ddcfb3;
+  border-radius: 14px;
+  background: #f9f3e3;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s, box-shadow .15s, transform .15s, background .15s;
 }
 .card:hover {
-  border-color: #93c5fd;
-  box-shadow: 0 6px 20px rgba(37, 99, 235, .08);
+  border-color: #b08a5a;
+  background: #fdf8ec;
+  box-shadow: 0 6px 20px rgba(138, 90, 43, .12);
   transform: translateY(-2px);
 }
+
+/* 核心修复：强制 hidden 生效 */
+.card[hidden] { display: none; }
+
 .emoji { font-size: 1.8rem; line-height: 1; }
-.name { font-weight: 600; font-size: 1rem; }
-.desc { font-size: .82rem; color: #64748b; }
-#empty { text-align: center; color: #94a3b8; margin-top: 32px; }
+.name { font-weight: 600; font-size: 1rem; color: #3d3226; }
+.desc { font-size: .82rem; color: #6b5d47; }
+#empty { text-align: center; color: #8a7a5f; margin-top: 32px; }
+
+/* 优化搜索框右侧自带的小叉号颜色 */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  height: 14px;
+  width: 14px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238a7a5f'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E") no-repeat center;
+  cursor: pointer;
+}
 
 @media (max-width: 420px) {
   #search { font-size: .92rem; padding-left: 38px; }
