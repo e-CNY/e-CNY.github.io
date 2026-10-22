@@ -1,5 +1,4 @@
 (function () {
-  // ====== 以后加工具，只改这个数组 ======
   var tools = [
     {
       name: '久坐提醒',
@@ -33,7 +32,7 @@
     a.className = 'card';
     a.href = t.href;
     a.dataset.cat = t.category;
-    a.dataset.name = (t.name + ' ' + t.desc).toLowerCase();
+    a.dataset.name = String(t.name).toLowerCase();
     a.innerHTML =
       '<span class="emoji"></span>' +
       '<span class="name"></span>' +
@@ -48,24 +47,54 @@
   var tabButtons = Array.prototype.slice.call(tabsEl.children);
 
   function apply() {
-    var q = search.value.trim().toLowerCase();
+    var raw = search.value.trim();
+    var q = raw.toLowerCase();
     var visible = 0;
+
     cards.forEach(function (card) {
       var matchCat = activeCat === 'all' || card.dataset.cat === activeCat;
-      var matchText = !q || card.dataset.name.indexOf(q) !== -1;
-      var show = matchCat && matchText;
-      card.hidden = !show;
-      if (show) visible++;
+      var matchName = !q || card.dataset.name.indexOf(q) !== -1;
+      var show = matchCat && matchName;
+
+      // 双重保险：直接操作 style.display，避免 CSS 优先级冲突
+      if (show) {
+        card.hidden = false;
+        card.style.display = 'flex'; 
+        visible++;
+      } else {
+        card.hidden = true;
+        card.style.display = 'none';
+      }
     });
-    emptyEl.hidden = visible > 0;
+
+    if (visible === 0) {
+      emptyEl.textContent = q
+        ? '没有找到名称包含「' + raw + '」的工具'
+        : '当前分类下没有工具';
+      emptyEl.hidden = false;
+    } else {
+      emptyEl.hidden = true;
+    }
   }
 
-  search.addEventListener('input', apply);
+  var composing = false;
+  search.addEventListener('compositionstart', function () { composing = true; });
+  search.addEventListener('compositionend', function () {
+    composing = false;
+    apply();
+  });
+  search.addEventListener('input', function () {
+    if (!composing) apply();
+  });
 
   document.addEventListener('keydown', function (e) {
     if (e.key === '/' && document.activeElement !== search) {
       e.preventDefault();
       search.focus();
+    }
+    if (e.key === 'Escape' && document.activeElement === search) {
+      search.value = '';
+      apply();
     }
   });
 
@@ -77,4 +106,6 @@
       apply();
     });
   });
+
+  apply();
 })();
