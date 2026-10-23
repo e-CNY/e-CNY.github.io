@@ -1,4 +1,5 @@
 (function () {
+  // ====== 以后加工具，只改这个数组 ======
   var tools = [
     {
       name: '久坐提醒',
@@ -6,6 +7,13 @@
       desc: '坐下 / 活动 / 站立循环提醒',
       href: 'tools/sitting-reminder/index.html',
       category: '生活'
+    },
+    {
+      name: '图片加水印',
+      emoji: '🖼️',
+      desc: '本地处理，自定义字体与九宫格水印',
+      href: 'tools/watermark/index.html',
+      category: '图像'
     }
   ];
 
@@ -15,6 +23,7 @@
   var emptyEl = document.getElementById('empty');
   var activeCat = 'all';
 
+  // 渲染分类标签
   var cats = ['all'];
   tools.forEach(function (t) {
     if (cats.indexOf(t.category) === -1) cats.push(t.category);
@@ -27,6 +36,7 @@
     tabsEl.appendChild(b);
   });
 
+  // 渲染卡片
   tools.forEach(function (t) {
     var a = document.createElement('a');
     a.className = 'card';
@@ -56,7 +66,6 @@
       var matchName = !q || card.dataset.name.indexOf(q) !== -1;
       var show = matchCat && matchName;
 
-      // 双重保险：直接操作 style.display，避免 CSS 优先级冲突
       if (show) {
         card.hidden = false;
         card.style.display = 'flex'; 
@@ -68,9 +77,7 @@
     });
 
     if (visible === 0) {
-      emptyEl.textContent = q
-        ? '没有找到名称包含「' + raw + '」的工具'
-        : '当前分类下没有工具';
+      emptyEl.textContent = q ? '没有找到名称包含「' + raw + '」的工具' : '当前分类下没有工具';
       emptyEl.hidden = false;
     } else {
       emptyEl.hidden = true;

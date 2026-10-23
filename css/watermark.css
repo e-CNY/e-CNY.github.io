@@ -1,0 +1,127 @@
+.wm-tool { max-width: 1040px; margin: 0 auto; padding: 28px 16px 56px; }
+.wm-header { text-align: center; margin-bottom: 28px; }
+.wm-header h1 { font-size: 1.6rem; margin: 0 0 8px; color: #3d3226; }
+.wm-header p { margin: 0; color: #6b5d47; font-size: 0.9rem; }
+.wm-header a { color: #8a5a2b; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
+.wm-header a:hover { text-decoration: underline; }
+
+.wm-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .wm-layout { grid-template-columns: 1fr; }
+}
+
+/* 面板 */
+.wm-panel {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 14px;
+  padding: 16px;
+}
+.wm-section { margin-bottom: 24px; }
+.wm-section:last-child { margin-bottom: 0; }
+.wm-section h2 {
+  font-size: .95rem; margin: 0 0 12px; color: #4b3f2f;
+  border-bottom: 1px solid #e5d9bd; padding-bottom: 6px;
+}
+
+/* 拖拽区 */
+.wm-drop-zone {
+  border: 2px dashed #c4b48f;
+  border-radius: 10px;
+  padding: 24px 12px;
+  text-align: center;
+  cursor: pointer;
+  background: #fdf8ec;
+  transition: border-color .2s, background .2s;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.wm-drop-zone:hover, .wm-drop-zone.dragover {
+  border-color: #8a5a2b;
+  background: #f5ecd5;
+}
+.wm-hint { font-size: .75rem; color: #8a7a5f; }
+
+/* 表单元素 */
+.wm-label { display: block; font-size: .82rem; color: #6b5d47; margin: 12px 0 6px; }
+.wm-input {
+  width: 100%; padding: 8px 12px; border: 1px solid #d5c7a8;
+  border-radius: 8px; background: #fdf8ec; color: #3d3226; font-size: .9rem;
+}
+.wm-input:focus { outline: none; border-color: #b08a5a; box-shadow: 0 0 0 2px rgba(176,138,90,.2); }
+
+.wm-row { display: flex; gap: 12px; margin-top: 8px; align-items: flex-end; }
+.wm-col { flex: 1; min-width: 0; }
+
+.wm-upload-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  width: 100%; padding: 8px; border: 1px solid #d5c7a8; border-radius: 8px;
+  background: #fdf8ec; color: #3d3226; font-size: .82rem; cursor: pointer;
+  transition: background .15s; text-align: center;
+}
+.wm-upload-btn:hover { background: #f5ecd5; }
+.wm-file-name {
+  display: block; font-size: .72rem; color: #8a7a5f; margin-top: 4px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* 圆形颜色选择器 */
+.wm-color-wrap {
+  width: 34px; height: 34px; border-radius: 50%; overflow: hidden;
+  border: 2px solid #d5c7a8; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0; background: #fff; transition: border-color .15s;
+}
+.wm-color-wrap:hover { border-color: #b08a5a; }
+input[type="color"] {
+  padding: 0; border: none; width: 150%; height: 150%;
+  transform: scale(1.5); cursor: pointer;
+}
+
+input[type="range"] { width: 100%; accent-color: #8a5a2b; margin-top: 6px; cursor: pointer; }
+
+/* 九宫格位置 */
+.wm-positions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.wm-positions button {
+  padding: 10px 0; border: 1px solid #d5c7a8; border-radius: 8px;
+  background: #fdf8ec; font-size: 1.1rem; cursor: pointer;
+  transition: all .15s; display: flex; align-items: center; justify-content: center;
+}
+.wm-positions button:hover { background: #f5ecd5; border-color: #b08a5a; }
+.wm-positions button.active {
+  background: #8a5a2b; border-color: #8a5a2b; color: #fdf8ec;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.15);
+}
+.wm-btn-tile { grid-column: span 3; font-size: .85rem !important; padding: 8px 0 !important; }
+
+/* 预览区 */
+.wm-preview { display: flex; flex-direction: column; gap: 16px; }
+.wm-canvas-container {
+  position: relative; min-height: 400px; background: #e5d9bd;
+  border-radius: 12px; border: 1px solid #ddcfb3;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; padding: 16px;
+}
+.wm-placeholder { color: #8a7a5f; font-size: .9rem; pointer-events: none; }
+#wm-canvas {
+  max-width: 100%; max-height: 65vh; display: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,.1); background: #fff;
+  object-fit: contain;
+}
+
+.wm-download-btn {
+  padding: 12px 24px; border: none; border-radius: 10px;
+  background: #7ba05b; color: #fff; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: background .15s, transform .06s;
+}
+.wm-download-btn:hover:not(:disabled) { background: #6b8c4e; }
+.wm-download-btn:active:not(:disabled) { transform: scale(.98); }
+.wm-download-btn:disabled { background: #c4b48f; cursor: not-allowed; }
