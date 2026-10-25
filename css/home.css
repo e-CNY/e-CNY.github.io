@@ -4,7 +4,7 @@
 .search-wrap {
   position: relative;
   max-width: 520px;
-  margin: 0 auto 24px;
+  margin: 0 auto 8px;
 }
 .search-icon {
   position: absolute;
@@ -67,7 +67,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  gap: 6px;
   padding: 16px;
   border: 1px solid #ddcfb3;
   border-radius: 14px;
@@ -75,6 +75,8 @@
   text-decoration: none;
   color: inherit;
   transition: border-color .15s, box-shadow .15s, transform .15s, background .15s;
+  /* 保证卡片在网格中高度对齐 */
+  min-height: 120px; 
 }
 .card:hover {
   border-color: #b08a5a;
@@ -82,13 +84,33 @@
   box-shadow: 0 6px 20px rgba(138, 90, 43, .12);
   transform: translateY(-2px);
 }
-
-/* 核心修复：强制 hidden 生效 */
 .card[hidden] { display: none; }
 
-.emoji { font-size: 1.8rem; line-height: 1; }
-.name { font-weight: 600; font-size: 1rem; color: #3d3226; }
-.desc { font-size: .82rem; color: #6b5d47; }
+.emoji { font-size: 1.8rem; line-height: 1; margin-bottom: 2px; }
+
+.name { 
+  font-weight: 600; 
+  font-size: 1rem; 
+  color: #3d3226; 
+  width: 100%;
+  /* 标题强制单行，超出显示省略号 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.desc { 
+  font-size: .82rem; 
+  color: #6b5d47; 
+  width: 100%;
+  /* 描述限制双行，超出显示省略号 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
 #empty { text-align: center; color: #8a7a5f; margin-top: 32px; }
 
 /* 优化搜索框右侧自带的小叉号颜色 */

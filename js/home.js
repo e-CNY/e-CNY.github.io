@@ -14,6 +14,13 @@
       desc: '本地处理，自定义字体与九宫格水印',
       href: 'tools/watermark/index.html',
       category: '图像'
+    },
+    {
+      name: '二维码工具',
+      emoji: '📱',
+      desc: '生成美观的二维码 / 识别图片中的二维码',
+      href: 'tools/qrcode/index.html',
+      category: '图像'
     }
   ];
 
