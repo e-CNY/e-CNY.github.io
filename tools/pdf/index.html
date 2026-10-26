@@ -11,7 +11,7 @@
 <main class="pdf-tool">
   <header class="pdf-header">
     <h1>📄 PDF 全能工具</h1>
-    <p>合并、拆分、旋转、加水印、图片与 PDF 互转，全程本地处理。</p>
+    <p>合并、拆分、旋转、加水印、图片转 PDF，全程本地处理。</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
 
@@ -29,21 +29,20 @@
     <h2>2. 选择操作</h2>
     <div class="pdf-actions">
       <button class="pdf-action-btn" data-action="merge">🔗 合并</button>
-      <button class="pdf-action-btn" data-action="split">✂️ 拆分</button>
+      <button class="pdf-action-btn" data-action="split">✂️ 拆分 / 提取</button>
       <button class="pdf-action-btn" data-action="rotate">🔄 旋转</button>
-      <button class="pdf-action-btn" data-action="page-number">🔢 加页码</button>
-      <button class="pdf-action-btn" data-action="delete">🗑️ 删页面</button>
-      <button class="pdf-action-btn" data-action="watermark">💧 加水印</button>
-      <button class="pdf-action-btn" data-action="pdf-to-img">🖼️ PDF转图</button>
-      <button class="pdf-action-btn" data-action="img-to-pdf">📄 图转PDF</button>
+      <button class="pdf-action-btn" data-action="page-number">🔢 添加页码</button>
+      <button class="pdf-action-btn" data-action="delete">🗑️ 删除页面</button>
+      <button class="pdf-action-btn" data-action="watermark">💧 添加水印</button>
+      <button class="pdf-action-btn" data-action="img-to-pdf">📄 图片转 PDF</button>
     </div>
     <div id="pdf-params" class="pdf-params"></div>
   </section>
 
   <section class="pdf-section">
-    <h2>3. 预览与执行</h2>
+    <h2>3. 信息与执行</h2>
     <div id="pdf-preview" class="pdf-preview">
-      <p class="pdf-placeholder">上传文件并选择操作后，这里会显示预览</p>
+      <p class="pdf-placeholder">上传文件并选择操作后，这里会显示文件信息</p>
     </div>
     <button id="pdf-execute" class="pdf-execute-btn" disabled>▶️ 执行并下载</button>
     <p id="pdf-status" class="pdf-status"></p>
@@ -52,11 +51,9 @@
 
 <!-- 1. PDF 操作库 -->
 <script src="../../js/libs/pdf-lib.min.js"></script>
-<!-- 2. PDF 渲染库 -->
-<script src="../../js/libs/pdf.min.js"></script>
-<!-- 3. ZIP 打包库 -->
+<!-- 2. ZIP 打包库 (仅用于图片转PDF多图时的压缩包，如果需要的话保留) -->
 <script src="../../js/libs/jszip.min.js"></script>
-<!-- 4. 业务逻辑 -->
+<!-- 3. 业务逻辑 -->
 <script src="../../js/pdf.js" defer></script>
 </body>
 </html>

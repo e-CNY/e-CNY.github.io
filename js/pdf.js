@@ -1,31 +1,11 @@
 (function () {
-  // ================== 核心修复：环境检测与 Worker 路径配置 ==================
-  // 检测核心库是否成功加载
   if (!window.PDFLib) {
-    alert('严重错误：PDF-lib 库未加载，请检查 js/libs/pdf-lib.min.js 路径是否正确。');
+    alert('严重错误：PDF-lib 库未加载！请检查 js/libs/pdf-lib.min.js 文件名是否正确。');
     return;
   }
-  if (!window.pdfjsLib) {
-    alert('严重错误：PDF.js 库未加载，请检查 js/libs/pdf.min.js 路径是否正确。');
-    return;
-  }
-
-  // 动态获取当前脚本所在的绝对路径目录（例如 https://xxx.github.io/repo/js/）
-  var scriptUrl = document.currentScript ? document.currentScript.src : '';
-  var baseDir = scriptUrl.substring(0, scriptUrl.lastIndexOf('/') + 1);
-  
-  // 智能配置 PDF.js 的 Worker 路径
-  if (location.protocol === 'file:') {
-    // 本地双击时，为了绕过浏览器的跨域拦截，不配置 workerSrc，让其退化为同步执行
-  } else {
-    // 线上环境（GitHub Pages），显式指定 Worker 的本地绝对路径
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = baseDir + 'libs/pdf.worker.min.js';
-  }
-  // =========================================================================
 
   var files = [];          
   var currentAction = null; 
-  var pdfDoc = null;       
 
   var dropZone = document.getElementById('pdf-drop-zone');
   var fileInput = document.getElementById('pdf-input');
@@ -90,7 +70,7 @@
         renderFileList();
         
         if (!isImgMode && files.length === 1) {
-          loadPreview(files[0].arrayBuffer);
+          showPdfInfo(files[0].arrayBuffer);
         } else if (isImgMode && files.length === 1) {
           var url = URL.createObjectURL(f);
           var img = new Image();
@@ -127,10 +107,9 @@
         files.splice(idx, 1);
         renderFileList();
         if (files.length > 0) {
-          if (currentAction !== 'img-to-pdf') loadPreview(files[0].arrayBuffer);
+          if (currentAction !== 'img-to-pdf') showPdfInfo(files[0].arrayBuffer);
         } else {
-          pdfDoc = null;
-          previewEl.innerHTML = '<p class="pdf-placeholder">上传文件并选择操作后，这里会显示预览</p>';
+          previewEl.innerHTML = '<p class="pdf-placeholder">上传文件并选择操作后，这里会显示文件信息</p>';
           executeBtn.disabled = true;
         }
       });
@@ -148,39 +127,14 @@
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  // ================= PDF 预览 =================
-  function loadPreview(arrayBuffer) {
-    previewEl.innerHTML = '<p class="pdf-placeholder">正在加载预览…</p>';
-    var data = arrayBuffer.slice(0);
-    window.pdfjsLib.getDocument({ data: data }).promise.then(function (pdf) {
-      pdfDoc = pdf;
-      renderFirstPage(pdf);
-    }).catch(function (err) {
-      console.error(err);
-      previewEl.innerHTML = '<p class="pdf-placeholder" style="color:#a8452a;">预览失败：' + err.message + '</p>';
-    });
-  }
-
-  function renderFirstPage(pdf) {
-    pdf.getPage(1).then(function (page) {
-      var viewport = page.getViewport({ scale: 1.0 });
-      var maxWidth = 600;
-      var scale = Math.min(1.0, maxWidth / viewport.width);
-      viewport = page.getViewport({ scale: scale });
-
-      var canvas = document.createElement('canvas');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      var ctx = canvas.getContext('2d');
-
-      page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function () {
-        previewEl.innerHTML = '';
-        previewEl.appendChild(canvas);
-        var info = document.createElement('p');
-        info.className = 'pdf-placeholder';
-        info.textContent = '共 ' + pdf.numPages + ' 页（预览第 1 页）';
-        previewEl.appendChild(info);
-      });
+  // ================= 纯文本预览 (不依赖 pdf.js) =================
+  function showPdfInfo(arrayBuffer) {
+    previewEl.innerHTML = '<p class="pdf-placeholder">正在读取文件信息…</p>';
+    // 使用 pdf-lib 解析页数，因为不需要渲染画面，速度极快
+    PDFLib.PDFDocument.load(arrayBuffer.slice(0)).then(function(pdf) {
+      previewEl.innerHTML = '<p class="pdf-placeholder" style="color:#7ba05b;font-weight:bold;">✅ 文件已成功加载，共 ' + pdf.getPageCount() + ' 页</p>';
+    }).catch(function(err) {
+      previewEl.innerHTML = '<p class="pdf-placeholder" style="color:#a8452a;">读取文件信息失败：' + err.message + '</p>';
     });
   }
 
@@ -261,15 +215,6 @@
         document.getElementById('pdf-wm-opacity-val').textContent = this.value + '%';
       });
     }
-    else if (currentAction === 'pdf-to-img') {
-      paramsEl.innerHTML = '<div class="pdf-param-row"><label>图片格式</label><select id="pdf-img-format"><option value="image/jpeg">JPG / JPEG</option><option value="image/png">PNG</option></select></div><div class="pdf-param-row" id="pdf-img-quality-row"><label>JPG 质量</label><input type="range" id="pdf-img-quality" min="10" max="100" value="90"><span id="pdf-img-quality-val">90%</span></div><div class="pdf-param-row"><label>清晰度(倍率)</label><input type="number" id="pdf-img-scale" value="2.0" min="1" max="5" step="0.5"></div>';
-      document.getElementById('pdf-img-quality').addEventListener('input', function () {
-        document.getElementById('pdf-img-quality-val').textContent = this.value + '%';
-      });
-      document.getElementById('pdf-img-format').addEventListener('change', function() {
-        document.getElementById('pdf-img-quality-row').style.display = this.value === 'image/png' ? 'none' : 'flex';
-      });
-    }
     else if (currentAction === 'img-to-pdf') {
       paramsEl.innerHTML = '<p class="pdf-placeholder" style="margin:0;color:#6b5d47;font-size:.85rem;">图片将按上传顺序，每张图生成一页匹配尺寸的 PDF。</p>';
     }
@@ -310,11 +255,10 @@
       else if (currentAction === 'delete') await doDelete();
       else if (currentAction === 'page-number') await doPageNumber();
       else if (currentAction === 'watermark') await doWatermark();
-      else if (currentAction === 'pdf-to-img') await doPdfToImage();
       else if (currentAction === 'img-to-pdf') await doImagesToPdf();
     } catch (err) {
       console.error(err);
-      statusEl.textContent = '❌ 处理失败：' + err.message;
+      statusEl.textContent = '❌ 处理失败：' + (err.message || '未知错误');
       statusEl.classList.add('warn');
     } finally {
       executeBtn.disabled = false;
@@ -324,7 +268,7 @@
   async function doMerge() {
     var merged = await PDFLib.PDFDocument.create();
     for (var i = 0; i < files.length; i++) {
-      var src = await PDFLib.PDFDocument.load(files[i].arrayBuffer);
+      var src = await PDFLib.PDFDocument.load(files[i].arrayBuffer.slice(0));
       var pages = await merged.copyPages(src, src.getPageIndices());
       pages.forEach(function (p) { merged.addPage(p); });
     }
@@ -334,7 +278,7 @@
   }
 
   async function doSplit() {
-    var src = await PDFLib.PDFDocument.load(files[0].arrayBuffer);
+    var src = await PDFLib.PDFDocument.load(files[0].arrayBuffer.slice(0));
     var indices = parseRange(document.getElementById('pdf-range').value, src.getPageCount());
     if (indices.length === 0) throw new Error('页码范围为空或无效。');
     var newDoc = await PDFLib.PDFDocument.create();
@@ -346,7 +290,7 @@
   }
 
   async function doRotate() {
-    var src = await PDFLib.PDFDocument.load(files[0].arrayBuffer);
+    var src = await PDFLib.PDFDocument.load(files[0].arrayBuffer.slice(0));
     var angle = parseInt(document.getElementById('pdf-rotate-angle').value, 10);
     var indices = parseRange(document.getElementById('pdf-rotate-range').value, src.getPageCount());
     var pages = src.getPages();
@@ -362,7 +306,7 @@
   }
 
   async function doDelete() {
-    var src = await PDFLib.PDFDocument.load(files[0].arrayBuffer);
+    var src = await PDFLib.PDFDocument.load(files[0].arrayBuffer.slice(0));
     var toDelete = parseRange(document.getElementById('pdf-delete-range').value, src.getPageCount());
     if (toDelete.length === 0) throw new Error('请指定要删除的页码。');
     if (toDelete.length >= src.getPageCount()) throw new Error('不能删除所有页面。');
@@ -373,7 +317,7 @@
   }
 
   async function doPageNumber() {
-    var src = await PDFLib.PDFDocument.load(files[0].arrayBuffer);
+    var src = await PDFLib.PDFDocument.load(files[0].arrayBuffer.slice(0));
     var pos = document.getElementById('pdf-num-pos').value;
     var start = parseInt(document.getElementById('pdf-num-start').value, 10) || 1;
     var size = parseInt(document.getElementById('pdf-num-size').value, 10) || 12;
@@ -397,7 +341,7 @@
   }
 
   async function doWatermark() {
-    var src = await PDFLib.PDFDocument.load(files[0].arrayBuffer);
+    var src = await PDFLib.PDFDocument.load(files[0].arrayBuffer.slice(0));
     var text = document.getElementById('pdf-wm-text').value.trim();
     if (!text) throw new Error('水印文字不能为空。');
 
@@ -447,69 +391,11 @@
     statusEl.textContent = '✅ 水印添加完成，已下载。';
   }
 
-  async function doPdfToImage() {
-    var format = document.getElementById('pdf-img-format').value;
-    var quality = parseInt(document.getElementById('pdf-img-quality').value, 10) / 100;
-    var scale = parseFloat(document.getElementById('pdf-img-scale').value) || 2.0;
-    
-    var data = files[0].arrayBuffer.slice(0);
-    var pdf = await window.pdfjsLib.getDocument({ data: data }).promise;
-    var totalPages = pdf.numPages;
-    
-    if (totalPages === 1) {
-      var blob = await renderPageToBlob(pdf, 1, scale, format, quality);
-      downloadBlob(blob, 'page_1.' + (format === 'image/jpeg' ? 'jpg' : 'png'), format);
-      statusEl.textContent = '✅ 转换完成，已下载。';
-    } else {
-      if (!window.JSZip) {
-        throw new Error('多页转换需要 JSZip 库，请确保 js/libs/jszip.min.js 已存在。');
-      }
-      var zip = new JSZip();
-      for (var i = 1; i <= totalPages; i++) {
-        statusEl.textContent = '⏳ 正在处理第 ' + i + '/' + totalPages + ' 页…';
-        await new Promise(function(r) { setTimeout(r, 50); });
-        var blob = await renderPageToBlob(pdf, i, scale, format, quality);
-        if (!blob) throw new Error('第 ' + i + ' 页生成失败，可能尺寸过大内存溢出。');
-        zip.file('page_' + i + '.' + (format === 'image/jpeg' ? 'jpg' : 'png'), blob);
-      }
-      statusEl.textContent = '⏳ 正在打包 ZIP…';
-      var content = await zip.generateAsync({ type: 'blob' });
-      downloadBlob(content, 'images.zip', 'application/zip');
-      statusEl.textContent = '✅ 转换并打包完成，已下载。';
-    }
-  }
-
-  function renderPageToBlob(pdf, pageNum, scale, format, quality) {
-    return pdf.getPage(pageNum).then(function (page) {
-      var viewport = page.getViewport({ scale: scale });
-      var canvas = document.createElement('canvas');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      var ctx = canvas.getContext('2d');
-      
-      if (format === 'image/jpeg') {
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-      
-      return page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function () {
-        return new Promise(function (resolve) {
-          try {
-            canvas.toBlob(resolve, format, quality);
-          } catch(e) {
-            console.error(e);
-            resolve(null);
-          }
-        });
-      });
-    });
-  }
-
   async function doImagesToPdf() {
     var pdfDoc = await PDFLib.PDFDocument.create();
     for (var i = 0; i < files.length; i++) {
       var item = files[i];
-      var arrBuf = item.arrayBuffer;
+      var arrBuf = item.arrayBuffer.slice(0);
       
       var img;
       if (item.file.type === 'image/png') {
@@ -539,8 +425,6 @@
     var a = document.createElement('a');
     a.href = url;
     a.download = filename.replace('.pdf', '') + '_' + Date.now() + (filename.includes('.') ? filename.substring(filename.lastIndexOf('.')) : '');
-    if (filename.includes('.zip')) a.download = filename;
-    else if (filename.includes('.jpg') || filename.includes('.png')) a.download = filename;
     
     document.body.appendChild(a);
     a.click();
