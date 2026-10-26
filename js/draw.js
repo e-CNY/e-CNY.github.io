@@ -11,9 +11,8 @@
   // 初始化画布大小
   function resizeCanvas() {
     var rect = wrapper.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) return; // 防止在隐藏容器内初始化引发崩溃
+    if (rect.width === 0 || rect.height === 0) return;
 
-    // 阻止清空重绘
     var tempImage = canvasBase.width > 0 ? canvasBase.toDataURL() : null;
 
     canvasBase.width = rect.width * dpr;
@@ -24,7 +23,6 @@
     ctxBase.scale(dpr, dpr);
     ctxTop.scale(dpr, dpr);
 
-    // 恢复画板内容
     if (tempImage) {
       var img = new Image();
       img.onload = function () {
@@ -37,11 +35,10 @@
       ctxBase.fillRect(0, 0, rect.width, rect.height);
     }
     
-    pushHistory(); // 初始化历史
+    pushHistory();
   }
 
   window.addEventListener('resize', resizeCanvas);
-  // 等 DOM 渲染完毕后初始化
   setTimeout(resizeCanvas, 50);
 
   // ================= 状态管理 =================
@@ -114,7 +111,7 @@
     lastX = pos.x;
     lastY = pos.y;
 
-    // 【核心修复】：每次开始绘制时，强制重置所有的绘图状态，防止之前的工具状态污染
+    // 【修复1】：每次落笔，强制重置所有画布状态，防止橡皮擦等工具的复合模式污染
     ctxBase.globalCompositeOperation = 'source-over';
     ctxBase.globalAlpha = 1;
     ctxBase.lineCap = 'round';
@@ -129,7 +126,7 @@
     ctxTop.strokeStyle = currentColor;
     ctxTop.lineWidth = currentSize;
     
-    // 清空顶层预览画布（使用逻辑宽高）
+    // 清空顶层预览画布
     ctxTop.clearRect(0, 0, wrapper.clientWidth, wrapper.clientHeight);
 
     if (currentTool === 'pen' || currentTool === 'marker' || currentTool === 'eraser') {
@@ -161,11 +158,15 @@
     } else {
       // 形状预览绘制在 Top 画布上
       ctxTop.clearRect(0, 0, wrapper.clientWidth, wrapper.clientHeight);
+      
+      // 【修复2】：强制重置形状画布的状态，确保线条颜色正常显示
       ctxTop.globalCompositeOperation = 'source-over';
+      ctxTop.globalAlpha = 1;
       ctxTop.lineWidth = currentSize;
       ctxTop.strokeStyle = currentColor;
       ctxTop.lineCap = 'round';
       ctxTop.lineJoin = 'round';
+      
       ctxTop.beginPath();
 
       if (currentTool === 'line') {
@@ -189,17 +190,20 @@
     
     if (currentTool === 'pen' || currentTool === 'marker' || currentTool === 'eraser') {
       ctxBase.closePath();
-      // 恢复默认状态，防止影响下一笔
-      ctxBase.globalAlpha = 1; 
-      ctxBase.globalCompositeOperation = 'source-over';
     } else {
-      // 【核心修复】：画形状时，确保底层是正常覆盖模式，再把顶层画布盖上去
+      // 【修复3】：合并形状时，确保底层画布处于正常覆盖模式
       ctxBase.globalCompositeOperation = 'source-over';
       ctxBase.globalAlpha = 1;
       ctxBase.drawImage(canvasTop, 0, 0, wrapper.clientWidth, wrapper.clientHeight);
       ctxTop.clearRect(0, 0, wrapper.clientWidth, wrapper.clientHeight);
     }
     
+    // 【修复4】：每次操作结束，全面清理状态
+    ctxBase.globalAlpha = 1;
+    ctxBase.globalCompositeOperation = 'source-over';
+    ctxTop.globalAlpha = 1;
+    ctxTop.globalCompositeOperation = 'source-over';
+
     pushHistory();
   }
 
