@@ -1,0 +1,93 @@
+.pdf-tool { max-width: 960px; margin: 0 auto; padding: 28px 16px 56px; }
+.pdf-header { text-align: center; margin-bottom: 28px; }
+.pdf-header h1 { font-size: 1.6rem; margin: 0 0 8px; color: #3d3226; }
+.pdf-header p { margin: 0; color: #6b5d47; font-size: 0.9rem; }
+.pdf-header a { color: #8a5a2b; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
+.pdf-header a:hover { text-decoration: underline; }
+
+.pdf-section { margin-bottom: 28px; }
+.pdf-section h2 {
+  font-size: .95rem; margin: 0 0 12px; color: #4b3f2f;
+  border-bottom: 1px solid #e5d9bd; padding-bottom: 6px;
+}
+
+/* 上传区 */
+.pdf-drop-zone {
+  border: 2px dashed #c4b48f; border-radius: 12px; padding: 36px 16px;
+  text-align: center; cursor: pointer; background: #fdf8ec;
+  transition: all .2s; display: flex; flex-direction: column; gap: 6px;
+}
+.pdf-drop-zone:hover, .pdf-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
+.pdf-hint { font-size: .75rem; color: #8a7a5f; }
+
+.pdf-file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.pdf-file-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; background: #f9f3e3; border: 1px solid #ddcfb3;
+  border-radius: 8px; font-size: .85rem; color: #3d3226;
+}
+.pdf-file-item .size { color: #8a7a5f; font-size: .75rem; }
+.pdf-remove-file {
+  background: none; border: none; color: #a8452a; cursor: pointer; font-size: 1rem;
+}
+
+/* 操作按钮：缩小了 padding 和字号，保证一行放下 */
+.pdf-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.pdf-action-btn {
+  padding: 8px 12px; border-radius: 8px; border: 1px solid #d5c7a8;
+  background: #fdf8ec; color: #3d3226; font-size: .85rem; cursor: pointer;
+  transition: all .15s; white-space: nowrap;
+}
+.pdf-action-btn:hover { background: #f5ecd5; border-color: #b08a5a; }
+.pdf-action-btn.active {
+  background: #8a5a2b; border-color: #8a5a2b; color: #fdf8ec;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.15);
+}
+
+/* 参数面板 */
+.pdf-params { margin-top: 16px; display: none; background: #f9f3e3; padding: 16px; border-radius: 10px; border: 1px solid #ddcfb3; }
+.pdf-params.active { display: block; }
+.pdf-param-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.pdf-param-row:last-child { margin-bottom: 0; }
+.pdf-param-row label { font-size: .85rem; color: #6b5d47; min-width: 80px; }
+.pdf-param-row input[type="text"], .pdf-param-row input[type="number"] {
+  padding: 8px 12px; border: 1px solid #d5c7a8; border-radius: 8px;
+  background: #fff; color: #3d3226; font-size: .9rem; width: 160px;
+}
+.pdf-param-row select {
+  padding: 8px 12px; border: 1px solid #d5c7a8; border-radius: 8px;
+  background: #fff; color: #3d3226; font-size: .9rem;
+}
+.pdf-param-row input[type="range"] { width: 160px; accent-color: #8a5a2b; }
+.pdf-param-row input[type="color"] {
+  width: 36px; height: 36px; padding: 0; border: 2px solid #d5c7a8;
+  border-radius: 50%; cursor: pointer; background: #fff;
+}
+
+/* 预览区 */
+.pdf-preview {
+  background: #e5d9bd; border-radius: 12px; border: 1px solid #ddcfb3;
+  min-height: 240px; padding: 16px; overflow: auto;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.pdf-placeholder { color: #8a7a5f; font-size: .9rem; margin: auto; }
+.pdf-preview canvas { max-width: 100%; box-shadow: 0 4px 16px rgba(0,0,0,.1); background: #fff; }
+
+/* 执行按钮 */
+.pdf-execute-btn {
+  width: 100%; margin-top: 20px; padding: 14px; border: none; border-radius: 10px;
+  background: #7ba05b; color: #fff; font-size: 1.05rem; font-weight: 600;
+  cursor: pointer; transition: background .15s;
+}
+.pdf-execute-btn:hover:not(:disabled) { background: #6b8c4e; }
+.pdf-execute-btn:disabled { background: #c4b48f; cursor: not-allowed; }
+
+.pdf-status {
+  margin-top: 12px; text-align: center; font-size: .85rem; color: #6b5d47; min-height: 1.4em;
+}
+.pdf-status.warn { color: #a8452a; }
+
+/* 手机端自动折行 */
+@media (max-width: 768px) {
+  .pdf-action-btn { flex: 1 1 calc(50% - 8px); text-align: center; }
+}

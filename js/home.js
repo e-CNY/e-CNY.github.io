@@ -21,8 +21,30 @@
       desc: '生成美观的二维码 / 识别图片中的二维码',
       href: 'tools/qrcode/index.html',
       category: '图像'
+    },
+    {
+      name: 'PDF 工具',
+      emoji: '📄',
+      desc: '互转、合并、拆分、水印、页码等全能处理',
+      href: 'tools/pdf/index.html',
+      category: '文档'
     }
   ];
+
+  // 动态计算当前页面的基础路径，彻底解决 GitHub Pages 相对路径丢失问题
+  var basePath = window.location.pathname;
+  // 如果是以 .html 结尾，去掉文件名
+  if (basePath.endsWith('.html')) {
+    basePath = basePath.substring(0, basePath.lastIndexOf('/') + 1);
+  } 
+  // 如果没有以 / 结尾，补上 / (解决 https://xxx.github.io/repo 丢失 repo 的问题)
+  else if (!basePath.endsWith('/')) {
+    basePath += '/';
+  }
+  // 如果是在本地 file:// 协议直接打开，基础路径就是空
+  if (window.location.protocol === 'file:') {
+    basePath = '';
+  }
 
   var search = document.getElementById('search');
   var tabsEl = document.getElementById('tabs');
@@ -47,7 +69,8 @@
   tools.forEach(function (t) {
     var a = document.createElement('a');
     a.className = 'card';
-    a.href = t.href;
+    // 智能拼接绝对路径，无视用户是否在网址后加了斜杠
+    a.href = basePath + t.href;
     a.dataset.cat = t.category;
     a.dataset.name = String(t.name).toLowerCase();
     a.innerHTML =

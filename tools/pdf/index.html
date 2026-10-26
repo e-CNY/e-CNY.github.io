@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF 工具 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/pdf.css">
+</head>
+<body>
+<main class="pdf-tool">
+  <header class="pdf-header">
+    <h1>📄 PDF 全能工具</h1>
+    <p>合并、拆分、旋转、加水印、图片与 PDF 互转，全程本地处理。</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <section class="pdf-section">
+    <h2>1. 选择文件</h2>
+    <div id="pdf-drop-zone" class="pdf-drop-zone">
+      <span id="pdf-drop-text">📁 点击选择或拖拽 PDF 文件到这里</span>
+      <span id="pdf-drop-hint" class="pdf-hint">支持多选，单个文件最大 50MB</span>
+      <input id="pdf-input" type="file" accept=".pdf,application/pdf" multiple hidden>
+    </div>
+    <div id="pdf-file-list" class="pdf-file-list"></div>
+  </section>
+
+  <section class="pdf-section">
+    <h2>2. 选择操作</h2>
+    <div class="pdf-actions">
+      <button class="pdf-action-btn" data-action="merge">🔗 合并</button>
+      <button class="pdf-action-btn" data-action="split">✂️ 拆分</button>
+      <button class="pdf-action-btn" data-action="rotate">🔄 旋转</button>
+      <button class="pdf-action-btn" data-action="page-number">🔢 加页码</button>
+      <button class="pdf-action-btn" data-action="delete">🗑️ 删页面</button>
+      <button class="pdf-action-btn" data-action="watermark">💧 加水印</button>
+      <button class="pdf-action-btn" data-action="pdf-to-img">🖼️ PDF转图</button>
+      <button class="pdf-action-btn" data-action="img-to-pdf">📄 图转PDF</button>
+    </div>
+    <div id="pdf-params" class="pdf-params"></div>
+  </section>
+
+  <section class="pdf-section">
+    <h2>3. 预览与执行</h2>
+    <div id="pdf-preview" class="pdf-preview">
+      <p class="pdf-placeholder">上传文件并选择操作后，这里会显示预览</p>
+    </div>
+    <button id="pdf-execute" class="pdf-execute-btn" disabled>▶️ 执行并下载</button>
+    <p id="pdf-status" class="pdf-status"></p>
+  </section>
+</main>
+
+<!-- 1. PDF 操作库 -->
+<script src="../../js/libs/pdf-lib.min.js"></script>
+<!-- 2. PDF 渲染库 -->
+<script src="../../js/libs/pdf.min.js"></script>
+<!-- 3. PDF Worker 线程 -->
+<script src="../../js/libs/pdf.worker.min.js"></script>
+<!-- 4. ZIP 打包库 -->
+<script src="../../js/libs/jszip.min.js"></script>
+<!-- 5. 业务逻辑 -->
+<script src="../../js/pdf.js" defer></script>
+</body>
+</html>
