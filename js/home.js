@@ -23,9 +23,16 @@
       category: '图像'
     },
     {
+      name: '在线画板',
+      emoji: '🎨',
+      desc: '支持多种笔刷、形状、撤销重做与保存',
+      href: 'tools/draw/index.html',
+      category: '图像'
+    },
+    {
       name: 'PDF 工具',
       emoji: '📄',
-      desc: '互转、合并、拆分、水印、页码等全能处理',
+      desc: '合并、拆分、水印、页码等全能处理',
       href: 'tools/pdf/index.html',
       category: '文档'
     }
