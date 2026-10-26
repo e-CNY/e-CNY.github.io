@@ -1,4 +1,28 @@
 (function () {
+  // ================== 核心修复：环境检测与 Worker 路径配置 ==================
+  // 检测核心库是否成功加载
+  if (!window.PDFLib) {
+    alert('严重错误：PDF-lib 库未加载，请检查 js/libs/pdf-lib.min.js 路径是否正确。');
+    return;
+  }
+  if (!window.pdfjsLib) {
+    alert('严重错误：PDF.js 库未加载，请检查 js/libs/pdf.min.js 路径是否正确。');
+    return;
+  }
+
+  // 动态获取当前脚本所在的绝对路径目录（例如 https://xxx.github.io/repo/js/）
+  var scriptUrl = document.currentScript ? document.currentScript.src : '';
+  var baseDir = scriptUrl.substring(0, scriptUrl.lastIndexOf('/') + 1);
+  
+  // 智能配置 PDF.js 的 Worker 路径
+  if (location.protocol === 'file:') {
+    // 本地双击时，为了绕过浏览器的跨域拦截，不配置 workerSrc，让其退化为同步执行
+  } else {
+    // 线上环境（GitHub Pages），显式指定 Worker 的本地绝对路径
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = baseDir + 'libs/pdf.worker.min.js';
+  }
+  // =========================================================================
+
   var files = [];          
   var currentAction = null; 
   var pdfDoc = null;       
@@ -126,14 +150,14 @@
 
   // ================= PDF 预览 =================
   function loadPreview(arrayBuffer) {
-    if (!window.pdfjsLib) return;
     previewEl.innerHTML = '<p class="pdf-placeholder">正在加载预览…</p>';
     var data = arrayBuffer.slice(0);
     window.pdfjsLib.getDocument({ data: data }).promise.then(function (pdf) {
       pdfDoc = pdf;
       renderFirstPage(pdf);
     }).catch(function (err) {
-      previewEl.innerHTML = '<p class="pdf-placeholder">预览失败，但操作仍可执行</p>';
+      console.error(err);
+      previewEl.innerHTML = '<p class="pdf-placeholder" style="color:#a8452a;">预览失败：' + err.message + '</p>';
     });
   }
 
@@ -384,7 +408,6 @@
     var hex = document.getElementById('pdf-wm-color').value;
     var rgb = hexToRgb(hex);
     
-    // 直接使用内置字体
     var font = await src.embedFont(PDFLib.StandardFonts.HelveticaBold);
     var pages = src.getPages();
 
@@ -425,7 +448,6 @@
   }
 
   async function doPdfToImage() {
-    if (!window.pdfjsLib) throw new Error('PDF.js 未加载。');
     var format = document.getElementById('pdf-img-format').value;
     var quality = parseInt(document.getElementById('pdf-img-quality').value, 10) / 100;
     var scale = parseFloat(document.getElementById('pdf-img-scale').value) || 2.0;
