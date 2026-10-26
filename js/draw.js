@@ -11,6 +11,8 @@
   // 初始化画布大小
   function resizeCanvas() {
     var rect = wrapper.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return; // 防止在隐藏容器内初始化引发崩溃
+
     // 阻止清空重绘
     var tempImage = canvasBase.width > 0 ? canvasBase.toDataURL() : null;
 
@@ -29,11 +31,11 @@
         ctxBase.drawImage(img, 0, 0, rect.width, rect.height);
       };
       img.src = tempImage;
+    } else {
+      // 填充默认白底
+      ctxBase.fillStyle = '#ffffff';
+      ctxBase.fillRect(0, 0, rect.width, rect.height);
     }
-    
-    // 填充默认白底
-    ctxBase.fillStyle = '#ffffff';
-    ctxBase.fillRect(0, 0, rect.width, rect.height);
     
     pushHistory(); // 初始化历史
   }
@@ -104,7 +106,6 @@
   }
 
   function startDraw(e) {
-    e.preventDefault();
     if (e.button === 2) return; // 忽略右键
     isDrawing = true;
     var pos = getPos(e);
@@ -113,44 +114,53 @@
     lastX = pos.x;
     lastY = pos.y;
 
+    // 【核心修复】：每次开始绘制时，强制重置所有的绘图状态，防止之前的工具状态污染
+    ctxBase.globalCompositeOperation = 'source-over';
+    ctxBase.globalAlpha = 1;
+    ctxBase.lineCap = 'round';
+    ctxBase.lineJoin = 'round';
+    ctxBase.strokeStyle = currentColor;
+    ctxBase.lineWidth = currentSize;
+
+    ctxTop.globalCompositeOperation = 'source-over';
+    ctxTop.globalAlpha = 1;
+    ctxTop.lineCap = 'round';
+    ctxTop.lineJoin = 'round';
+    ctxTop.strokeStyle = currentColor;
+    ctxTop.lineWidth = currentSize;
+    
+    // 清空顶层预览画布（使用逻辑宽高）
+    ctxTop.clearRect(0, 0, wrapper.clientWidth, wrapper.clientHeight);
+
     if (currentTool === 'pen' || currentTool === 'marker' || currentTool === 'eraser') {
       ctxBase.beginPath();
       ctxBase.moveTo(lastX, lastY);
-      ctxBase.lineCap = 'round';
-      ctxBase.lineJoin = 'round';
       
       if (currentTool === 'eraser') {
         ctxBase.globalCompositeOperation = 'destination-out';
-        ctxBase.lineWidth = currentSize * 2; // 橡皮擦稍微大一点
+        ctxBase.lineWidth = currentSize * 2; 
         ctxBase.strokeStyle = 'rgba(0,0,0,1)';
       } else if (currentTool === 'marker') {
-        ctxBase.globalCompositeOperation = 'source-over';
-        ctxBase.lineWidth = currentSize * 3; // 马克笔粗一点
+        ctxBase.lineWidth = currentSize * 3; 
         ctxBase.strokeStyle = currentColor;
-        ctxBase.globalAlpha = 0.3; // 马克笔半透明
-      } else {
-        ctxBase.globalCompositeOperation = 'source-over';
-        ctxBase.lineWidth = currentSize;
-        ctxBase.strokeStyle = currentColor;
-        ctxBase.globalAlpha = 1;
+        ctxBase.globalAlpha = 0.3; 
       }
     }
   }
 
   function draw(e) {
     if (!isDrawing) return;
-    e.preventDefault();
+    e.preventDefault(); // 防止触摸时页面滚动
     var pos = getPos(e);
 
     if (currentTool === 'pen' || currentTool === 'marker' || currentTool === 'eraser') {
-      // 平滑插值绘制（为了不卡顿，用最简单的 lineTo 效果其实已经不错）
       ctxBase.lineTo(pos.x, pos.y);
       ctxBase.stroke();
       lastX = pos.x;
       lastY = pos.y;
     } else {
       // 形状预览绘制在 Top 画布上
-      ctxTop.clearRect(0, 0, canvasTop.width, canvasTop.height);
+      ctxTop.clearRect(0, 0, wrapper.clientWidth, wrapper.clientHeight);
       ctxTop.globalCompositeOperation = 'source-over';
       ctxTop.lineWidth = currentSize;
       ctxTop.strokeStyle = currentColor;
@@ -179,11 +189,15 @@
     
     if (currentTool === 'pen' || currentTool === 'marker' || currentTool === 'eraser') {
       ctxBase.closePath();
-      ctxBase.globalAlpha = 1; // 重置透明度
+      // 恢复默认状态，防止影响下一笔
+      ctxBase.globalAlpha = 1; 
+      ctxBase.globalCompositeOperation = 'source-over';
     } else {
-      // 将 Top 画布上的形状合并到底层
+      // 【核心修复】：画形状时，确保底层是正常覆盖模式，再把顶层画布盖上去
+      ctxBase.globalCompositeOperation = 'source-over';
+      ctxBase.globalAlpha = 1;
       ctxBase.drawImage(canvasTop, 0, 0, wrapper.clientWidth, wrapper.clientHeight);
-      ctxTop.clearRect(0, 0, canvasTop.width, canvasTop.height);
+      ctxTop.clearRect(0, 0, wrapper.clientWidth, wrapper.clientHeight);
     }
     
     pushHistory();
@@ -202,12 +216,10 @@
 
   // ================= 历史记录与撤销重做 =================
   function pushHistory() {
-    // 如果当前不是最新的一步，截断后面的历史
     if (historyIndex < historyStack.length - 1) {
       historyStack = historyStack.slice(0, historyIndex + 1);
     }
     
-    var rect = wrapper.getBoundingClientRect();
     var imageData = ctxBase.getImageData(0, 0, canvasBase.width, canvasBase.height);
     historyStack.push(imageData);
     
@@ -216,7 +228,6 @@
     } else {
       historyIndex++;
     }
-    // 限制撤销索引
     if (historyIndex >= MAX_HISTORY) historyIndex = MAX_HISTORY - 1;
   }
 
@@ -225,7 +236,6 @@
       historyIndex--;
       ctxBase.putImageData(historyStack[historyIndex], 0, 0);
     } else if (historyIndex === 0) {
-      // 回到第一步（白板）
       historyIndex = -1;
       clearCanvas(false);
     }
@@ -242,8 +252,10 @@
   document.getElementById('btn-redo').addEventListener('click', redo);
 
   // ================= 清空与保存 =================
-  function clearCanvas(push = true) {
+  function clearCanvas(push) {
     var rect = wrapper.getBoundingClientRect();
+    ctxBase.globalCompositeOperation = 'source-over';
+    ctxBase.globalAlpha = 1;
     ctxBase.clearRect(0, 0, canvasBase.width, canvasBase.height);
     ctxBase.fillStyle = '#ffffff';
     ctxBase.fillRect(0, 0, rect.width, rect.height);
@@ -253,12 +265,11 @@
 
   document.getElementById('btn-clear').addEventListener('click', function() {
     if (confirm('确定要清空画板吗？此操作不可恢复。')) {
-      clearCanvas();
+      clearCanvas(true);
     }
   });
 
   document.getElementById('btn-save').addEventListener('click', function() {
-    // 必须用 base 的 toDataURL，因为 top 只有临时数据
     var link = document.createElement('a');
     link.download = 'drawing_' + Date.now() + '.png';
     link.href = canvasBase.toDataURL('image/png');
@@ -270,14 +281,13 @@
     if (e.ctrlKey || e.metaKey) {
       if (e.key === 'z' || e.key === 'Z') {
         e.preventDefault();
-        if (e.shiftKey) redo(); // Ctrl+Shift+Z 重做
+        if (e.shiftKey) redo();
         else undo();
       } else if (e.key === 'y' || e.key === 'Y') {
         e.preventDefault();
         redo();
       }
     } else {
-      // [ 和 ] 调整笔刷大小
       if (e.key === '[') {
         brushSize.value = Math.max(1, currentSize - 2);
         brushSize.dispatchEvent(new Event('input'));
