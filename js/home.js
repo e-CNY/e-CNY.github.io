@@ -35,6 +35,13 @@
       desc: '合并、拆分、水印、页码等全能处理',
       href: 'tools/pdf/index.html',
       category: '文档'
+    },
+    {
+      name: '图片转换压缩',
+      emoji: '🗜️',
+      desc: '支持 HEIC、TIFF 等全能格式互转',
+      href: 'tools/image-converter/index.html',
+      category: '图像'
     }
   ];
 

@@ -1,0 +1,72 @@
+.ic-tool { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+.ic-header { text-align: center; margin-bottom: 28px; }
+.ic-header h1 { font-size: 1.6rem; margin: 0 0 8px; color: #3d3226; }
+.ic-header p { margin: 0; color: #6b5d47; font-size: 0.9rem; }
+.ic-header a { color: #8a5a2b; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
+.ic-header a:hover { text-decoration: underline; }
+
+.ic-layout { display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start; }
+@media (max-width: 768px) { .ic-layout { grid-template-columns: 1fr; } }
+
+.ic-sidebar { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 16px; }
+.ic-section { margin-bottom: 24px; }
+.ic-section:last-child { margin-bottom: 0; }
+
+.ic-section-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #e5d9bd; padding-bottom: 6px; margin-bottom: 12px; }
+.ic-section-header h2 { font-size: .95rem; margin: 0; color: #4b3f2f; border: none; padding: 0; }
+.ic-btn-text { background: none; border: none; color: #a8452a; font-size: .8rem; cursor: pointer; padding: 0; }
+.ic-btn-text:hover { text-decoration: underline; }
+
+.ic-drop-zone {
+  border: 2px dashed #c4b48f; border-radius: 10px; padding: 24px 12px;
+  text-align: center; cursor: pointer; background: #fdf8ec;
+  transition: all .2s; display: flex; flex-direction: column; gap: 4px;
+}
+.ic-drop-zone:hover, .ic-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
+.ic-hint { font-size: .75rem; color: #8a7a5f; }
+
+.ic-file-list {
+  list-style: none; padding: 0; margin: 12px 0 0 0;
+  max-height: 150px; overflow-y: auto; font-size: .8rem; color: #3d3226;
+}
+.ic-file-list li { padding: 6px 8px; background: #fdf8ec; border: 1px solid #ddcfb3; border-radius: 6px; margin-bottom: 4px; display: flex; justify-content: space-between; }
+.ic-file-list li span.size { color: #8a7a5f; }
+
+.ic-param-row { margin-bottom: 16px; }
+.ic-param-row label { display: block; font-size: .85rem; color: #6b5d47; margin-bottom: 6px; }
+.ic-param-row select, .ic-param-row input[type="number"] {
+  width: 100%; padding: 8px 10px; border: 1px solid #d5c7a8; border-radius: 6px;
+  background: #fdf8ec; color: #3d3226; font-size: .85rem;
+}
+.ic-param-row input[type="range"] { width: calc(100% - 40px); accent-color: #8a5a2b; vertical-align: middle; }
+.ic-param-row span { font-size: .8rem; color: #6b5d47; display: inline-block; width: 35px; text-align: right; }
+.ic-param-row input[type="number"] { width: 48%; display: inline-block; }
+.ic-param-row input[type="number"]:last-child { float: right; }
+
+.ic-btn-primary {
+  width: 100%; padding: 12px; border: none; border-radius: 10px;
+  background: #7ba05b; color: #fff; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: background .15s;
+}
+.ic-btn-primary:hover:not(:disabled) { background: #6b8c4e; }
+.ic-btn-primary:disabled { background: #c4b48f; cursor: not-allowed; }
+
+.ic-main { background: #e5d9bd; border-radius: 14px; border: 1px solid #ddcfb3; min-height: 400px; padding: 16px; }
+.ic-placeholder { text-align: center; color: #8a7a5f; font-size: .9rem; margin-top: 160px; }
+
+.ic-result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.ic-card {
+  background: #fdf8ec; border-radius: 10px; overflow: hidden;
+  border: 1px solid #ddcfb3; box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  display: flex; flex-direction: column;
+}
+.ic-card-img { width: 100%; height: 140px; object-fit: contain; background: #fff; border-bottom: 1px solid #ddcfb3; }
+.ic-card-info { padding: 12px; font-size: .8rem; color: #3d3226; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.ic-card-info .name { font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 4px; }
+.ic-card-info .size-diff { color: #7ba05b; font-weight: bold; }
+.ic-card-info .size-diff.up { color: #a8452a; }
+.ic-card-info a {
+  display: block; text-align: center; margin-top: 8px; padding: 6px;
+  background: #8a5a2b; color: #fff; text-decoration: none; border-radius: 6px;
+}
+.ic-card-info a:hover { background: #744a22; }

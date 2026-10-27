@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图片转换与压缩 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/image-converter.css">
+</head>
+<body>
+<main class="ic-tool">
+  <header class="ic-header">
+    <h1>🗜️ 图片转换与压缩</h1>
+    <p>支持 HEIC、TIFF、JPG、PNG、WebP、GIF、SVG 等格式，全程在浏览器本地处理。</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="ic-layout">
+    <aside class="ic-sidebar">
+      
+      <div class="ic-section">
+        <div class="ic-section-header">
+          <h2>1. 上传图片</h2>
+          <button id="ic-btn-clear" class="ic-btn-text" style="display:none;">清空</button>
+        </div>
+        <div id="ic-drop-zone" class="ic-drop-zone">
+          <span>📁 点击或拖拽图片</span>
+          <span class="ic-hint">支持批量上传，单个文件最大 50MB</span>
+        </div>
+        <input id="ic-input" type="file" accept="image/*,.heic,.heif,.tiff,.tif" multiple hidden>
+        <ul id="ic-file-list" class="ic-file-list"></ul>
+      </div>
+
+      <div class="ic-section">
+        <h2>2. 转换设置</h2>
+        
+        <div class="ic-param-row">
+          <label>输出格式</label>
+          <select id="ic-format">
+            <option value="image/jpeg">JPG / JPEG</option>
+            <option value="image/png" selected>PNG</option>
+            <option value="image/webp">WebP</option>
+            <option value="image/avif">AVIF (现代浏览器支持)</option>
+          </select>
+        </div>
+
+        <div class="ic-param-row" id="quality-row">
+          <label>压缩质量</label>
+          <input type="range" id="ic-quality" min="10" max="100" value="80">
+          <span id="ic-quality-val">80%</span>
+        </div>
+
+        <div class="ic-param-row">
+          <label>尺寸调整</label>
+          <select id="ic-resize-mode">
+            <option value="none">保持原尺寸</option>
+            <option value="percent">按百分比缩放</option>
+            <option value="pixels">指定最大宽高 (px)</option>
+          </select>
+        </div>
+
+        <div class="ic-param-row" id="resize-percent-row" style="display:none;">
+          <label>缩放比例</label>
+          <input type="range" id="ic-scale" min="10" max="100" value="50">
+          <span id="ic-scale-val">50%</span>
+        </div>
+
+        <div class="ic-param-row" id="resize-pixels-row" style="display:none;">
+          <label>最大宽高</label>
+          <input type="number" id="ic-max-width" placeholder="宽度" value="1920">
+          <input type="number" id="ic-max-height" placeholder="高度" value="1080">
+        </div>
+      </div>
+
+      <div class="ic-section">
+        <button id="ic-btn-process" class="ic-btn-primary" disabled>▶️ 开始转换</button>
+      </div>
+
+    </aside>
+
+    <section class="ic-main">
+      <div id="ic-result-area" class="ic-result-area">
+        <p class="ic-placeholder">上传图片并设置参数后点击开始转换</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- 引入库 -->
+<script src="../../js/libs/heic2any.min.js"></script>
+<script src="../../js/libs/UTIF.js"></script>
+<!-- 引入 pako 和 UPNG 用于 PNG 量化重编码 -->
+<script src="../../js/libs/pako.min.js"></script>
+<script src="../../js/libs/UPNG.min.js"></script>
+<script src="../../js/image-converter.js" defer></script>
+</body>
+</html>
