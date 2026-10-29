@@ -42,6 +42,13 @@
       desc: '支持 HEIC、TIFF 等全能格式互转',
       href: 'tools/image-converter/index.html',
       category: '图像'
+    },
+    {
+      name: '结构化数据工具',
+      emoji: '📦',
+      desc: 'JSON/YAML/XML/TOML 转换、校验、查询、对比',
+      href: 'tools/json-toolbox/index.html',
+      category: '文档'
     }
   ];
 
