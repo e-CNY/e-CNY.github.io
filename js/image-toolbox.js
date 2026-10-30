@@ -33,7 +33,6 @@
 
   var files = [];
 
-  // --- 上传交互 ---
   dropZone.addEventListener('click', function () { fileInput.click(); });
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (eventName) {
     dropZone.addEventListener(eventName, function (e) { e.preventDefault(); e.stopPropagation(); }, false);
@@ -49,7 +48,6 @@
     fileInput.value = '';
   });
 
-  // --- UI 交互 ---
   resizeModeSelect.addEventListener('change', function () {
     percentRow.style.display = this.value === 'percent' ? 'block' : 'none';
     pixelsRow.style.display = this.value === 'pixels' ? 'block' : 'none';
@@ -61,7 +59,6 @@
     resultArea.innerHTML = '<p class="ic-placeholder">上传图片并设置参数后点击开始转换</p>';
   });
 
-  // --- 核心逻辑 ---
   function handleFiles(newFiles) {
     var validFiles = newFiles.filter(function (f) {
       return f.type.match('image.*') || /\.(heic|heif|tiff|tif)$/i.test(f.name);
@@ -234,38 +231,165 @@
   }
 
 
-  // ================== 2. EXIF 逻辑 ==================
+  // ================== 2. EXIF 查看与清除逻辑 ==================
   var exifDrop = document.getElementById('exif-drop-zone');
   var exifInput = document.getElementById('exif-input');
   var exifTable = document.getElementById('exif-table');
   var exifPreview = document.getElementById('exif-preview');
+  var btnCleanExif = document.getElementById('btn-clean-exif');
+  
+  var currentExifImg = null;
+  var currentExifExportMime = 'image/jpeg'; 
+  var currentExifExportExt = 'jpg';
 
   exifDrop.addEventListener('click', function() { exifInput.click(); });
-  exifInput.addEventListener('change', function() {
+  
+  exifInput.addEventListener('change', async function() {
     var file = exifInput.files[0];
     if (!file) return;
+    
+    var ext = file.name.split('.').pop().toLowerCase();
+    var mime = file.type;
+    
+    if (mime === 'image/png' || ext === 'png') {
+      currentExifExportMime = 'image/png';
+      currentExifExportExt = 'png';
+    } else if (mime === 'image/webp' || ext === 'webp') {
+      currentExifExportMime = 'image/webp';
+      currentExifExportExt = 'webp';
+    } else {
+      currentExifExportMime = 'image/jpeg';
+      currentExifExportExt = 'jpg';
+    }
+    
+    btnCleanExif.textContent = '🧹 一键清除并下载 (' + currentExifExportExt.toUpperCase() + ')';
+
+    // 1. 预览图片
     var url = URL.createObjectURL(file);
-    exifPreview.innerHTML = '<img src="' + url + '" style="max-height:200px; border-radius:8px;">';
-    EXIF.getData(file, function() {
-      var allMetaData = EXIF.getAllTags(this);
-      exifTable.style.display = 'table';
-      var tbody = exifTable.querySelector('tbody');
+    var img = new Image();
+    img.onload = function() {
+      currentExifImg = img;
+      exifPreview.innerHTML = '';
+      img.style.maxHeight = '200px';
+      img.style.borderRadius = '8px';
+      exifPreview.appendChild(img);
+      btnCleanExif.disabled = false;
+    };
+    img.src = url;
+
+    // 2. 使用 exifr 解析信息
+    exifTable.style.display = 'table';
+    var tbody = exifTable.querySelector('tbody');
+    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#8a7a5f;">正在解析元数据...</td></tr>';
+    
+    try {
+      var output = await exifr.parse(file, true); 
       tbody.innerHTML = '';
       
-      if (Object.keys(allMetaData).length === 0) {
-        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#8a7a5f;">未找到 EXIF 信息</td></tr>';
-        return;
-      }
-      for (var tag in allMetaData) {
-        if (allMetaData.hasOwnProperty(tag)) {
+      if (!output || Object.keys(output).length === 0) {
+        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#8a7a5f;">未找到元数据信息 (此格式可能不包含 EXIF)</td></tr>';
+      } else {
+        for (var key in output) {
+          var val = output[key];
+          if (val instanceof Date) val = val.toLocaleString();
+          if (typeof val === 'object') val = JSON.stringify(val);
+          
           var tr = document.createElement('tr');
-          tr.innerHTML = '<th>' + tag + '</th><td>' + allMetaData[tag] + '</td>';
+          tr.innerHTML = '<th>' + key + '</th><td>' + String(val) + '</td>';
           tbody.appendChild(tr);
         }
       }
-    });
+    } catch (err) {
+      tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#a8452a;">解析失败: ' + err.message + '</td></tr>';
+    }
     exifInput.value = '';
   });
+
+  // 核心：清除 EXIF 并下载（剔除 JPG 附加的浏览器色彩信息）
+  btnCleanExif.addEventListener('click', function() {
+    if (!currentExifImg) return;
+    var originalText = btnCleanExif.textContent;
+    btnCleanExif.disabled = true;
+    btnCleanExif.textContent = '⏳ 正在清理...';
+
+    var canvas = document.createElement('canvas');
+    canvas.width = currentExifImg.naturalWidth || currentExifImg.width;
+    canvas.height = currentExifImg.naturalHeight || currentExifImg.height;
+    var ctx = canvas.getContext('2d');
+    
+    if (currentExifExportMime === 'image/jpeg') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    ctx.drawImage(currentExifImg, 0, 0);
+
+    canvas.toBlob(async function(blob) {
+      var finalBlob = blob;
+      
+      // 针对 JPG 进行二次纯净化处理
+      if (currentExifExportMime === 'image/jpeg') {
+        try {
+          var buffer = await blob.arrayBuffer();
+          finalBlob = stripJpegMetadata(buffer);
+        } catch(e) {
+          console.warn('JPG 深度清洗失败，使用普通版本', e);
+        }
+      }
+
+      var url = URL.createObjectURL(finalBlob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'clean_' + Date.now() + '.' + currentExifExportExt;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      btnCleanExif.disabled = false;
+      btnCleanExif.textContent = originalText;
+    }, currentExifExportMime, 0.92);
+  });
+
+  // 剔除 JPG 二进制中的 APP 头信息（去色彩配置、去JFIF等）
+  function stripJpegMetadata(arrayBuffer) {
+    var data = new Uint8Array(arrayBuffer);
+    if (data[0] !== 0xFF || data[1] !== 0xD8) return new Blob([data], { type: 'image/jpeg' }); // 不是标准 JPG
+
+    var chunks = [data.subarray(0, 2)]; // 保留 FFD8 头
+    var offset = 2;
+
+    while (offset < data.length) {
+      // 遇到不是 0xFF 标记的说明到实际图像数据了（SOS块）或者到了文件尾
+      if (data[offset] !== 0xFF) {
+        chunks.push(data.subarray(offset));
+        break;
+      }
+
+      var marker = data[offset + 1];
+      // FFD9 (EOI) 文件尾，保留并退出
+      if (marker === 0xD9) {
+        chunks.push(data.subarray(offset, offset + 2));
+        break;
+      }
+
+      // 获取该块的长度
+      var length = (data[offset + 2] << 8) + data[offset + 3];
+      
+      // 如果是 APP0-APP15 (0xE0 - 0xEF)，直接跳过（这就是浏览器加进去的配置和 EXIF）
+      // 如果是 COM (0xFE，注释)，也跳过
+      var isAppMarker = (marker >= 0xE0 && marker <= 0xEF) || marker === 0xFE;
+      
+      if (!isAppMarker) {
+        chunks.push(data.subarray(offset, offset + 2 + length));
+      }
+      
+      offset += 2 + length;
+    }
+
+    return new Blob(chunks, { type: 'image/jpeg' });
+  }
+
 
   // ================== 3. ASCII 逻辑 ==================
   var asciiDrop = document.getElementById('ascii-drop-zone');

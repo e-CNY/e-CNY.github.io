@@ -7,13 +7,21 @@
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="../../css/image-converter.css">
 <style>
-  /* 额外样式：EXIF 和 ASCII */
   .exif-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: .85rem; }
-  .exif-table th, .exif-table td { padding: 8px 12px; border: 1px solid #ddcfb3; text-align: left; }
+  .exif-table th, .exif-table td { padding: 8px 12px; border: 1px solid #ddcfb3; text-align: left; word-break: break-all; }
   .exif-table th { background: #fdf8ec; color: #8a5a2b; width: 30%; }
   .ascii-container { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
   .ascii-preview { flex: 1; min-width: 300px; background: #fff; border: 1px solid #ddcfb3; border-radius: 8px; padding: 16px; overflow: auto; max-height: 500px; }
   .ascii-preview pre { margin: 0; font-family: monospace; font-size: 6px; line-height: 1; letter-spacing: 1px; color: #3d3226; white-space: pre; }
+  
+  .btn-clean-exif {
+    display: inline-block; padding: 10px 20px; background: #7ba05b; color: #fff;
+    border: none; border-radius: 8px; font-size: .95rem; font-weight: bold;
+    cursor: pointer; margin-bottom: 20px; transition: background .15s;
+    box-shadow: 0 2px 6px rgba(123, 160, 91, 0.3);
+  }
+  .btn-clean-exif:hover { background: #6b8c4e; }
+  .btn-clean-exif:disabled { background: #c4b48f; cursor: not-allowed; box-shadow: none; }
 </style>
 </head>
 <body>
@@ -86,11 +94,18 @@
   <!-- 面板 2：EXIF 查看 -->
   <div id="panel-exif" class="ic-panel" style="display:none; text-align:center;">
     <div class="ic-drop-zone" id="exif-drop-zone" style="margin-bottom:20px;">
-      <span>📁 点击选择一张图片查看 EXIF</span>
+      <span>📁 点击选择图片 (支持 JPG / PNG / WebP / HEIC 等)</span>
+      <span class="ic-hint">注：GIF / BMP 格式由于标准限制，通常不包含 EXIF 信息</span>
     </div>
-    <input id="exif-input" type="file" accept="image/jpeg,image/tiff" hidden>
+    <input id="exif-input" type="file" accept="image/*" hidden>
+    
     <div style="text-align:left; max-width:800px; margin:0 auto;">
       <div id="exif-preview" style="text-align:center; margin-bottom:20px;"></div>
+      
+      <div style="text-align:center;">
+        <button id="btn-clean-exif" class="btn-clean-exif" disabled>🧹 一键清除所有元数据并下载 (JPG)</button>
+      </div>
+
       <table class="exif-table" id="exif-table" style="display:none;">
         <tbody></tbody>
       </table>
@@ -137,7 +152,8 @@
 <script src="../../js/libs/heic2any.min.js"></script>
 <script src="../../js/libs/UTIF.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/upng-js/2.1.0/UPNG.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.min.js"></script>
+<!-- 替换为更强大的 exifr -->
+<script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
 <script src="../../js/image-toolbox.js" defer></script>
 </body>
 </html>
