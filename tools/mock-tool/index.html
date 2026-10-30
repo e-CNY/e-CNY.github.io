@@ -3,58 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mock 与随机工具 · 工具站</title>
+<title>随机数据工具箱 · 工具站</title>
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="../../css/mock-tool.css">
 </head>
 <body>
-<main class="mk-layout">
-  <header class="mk-header">
-    <h1>🎲 Mock 与随机工具</h1>
-    <p>快速生成测试数据、抽奖、掷骰子。</p>
-    <a href="../../index.html">← 返回工具站</a>
-  </header>
+<header class="tool-page-header">
+  <h1>🎲 随机数据工具箱</h1>
+  <p>快速生成测试数据、抽奖、掷多面骰子。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
 
+<main class="mk-layout" style="padding-top: 0;">
   <div class="mk-tabs">
     <button class="mk-tab active" data-target="panel-mock">🆔 随机数据</button>
-    <button class="mk-tab" data-target="panel-lottery">🎰 抽奖骰子</button>
+    <button class="mk-tab" data-target="panel-lottery">🎰 抽奖与骰子</button>
   </div>
 
   <div class="mk-content">
-    <!-- 随机数据 -->
+    <!-- 面板 1：随机数据 -->
     <div id="panel-mock" class="mk-panel active">
       <div class="mk-row">
         <div class="mk-col">
-          <label>姓名数量</label>
-          <input type="number" id="mock-count" value="10" min="1" max="100">
-          <label>包含字段</label>
+          <label>生成数量</label>
+          <input type="number" id="mock-count" value="5" min="1" max="100">
+          
+          <label>包含字段 (可多选)</label>
           <div class="mk-checks">
             <label><input type="checkbox" id="mc-name" checked> 姓名</label>
+            <label><input type="checkbox" id="mc-gender" checked> 性别</label>
+            <label><input type="checkbox" id="mc-age" checked> 年龄</label>
             <label><input type="checkbox" id="mc-phone" checked> 手机号</label>
             <label><input type="checkbox" id="mc-email" checked> 邮箱</label>
-            <label><input type="checkbox" id="mc-address"> 地址</label>
+            <label><input type="checkbox" id="mc-idcard"> 身份证号</label>
+            <label><input type="checkbox" id="mc-company"> 公司名称</label>
+            <label><input type="checkbox" id="mc-job"> 职位</label>
+            <label><input type="checkbox" id="mc-address"> 家庭住址</label>
+            <label><input type="checkbox" id="mc-ip"> IP地址</label>
           </div>
           <button id="btn-gen-mock" class="mk-btn primary">生成数据</button>
         </div>
         <div class="mk-col">
-          <label>输出 (JSON)</label>
+          <label>输出 (JSON 格式)</label>
           <textarea id="mock-output" spellcheck="false" readonly></textarea>
         </div>
       </div>
     </div>
 
-    <!-- 抽奖/骰子 -->
+    <!-- 面板 2：抽奖与骰子 -->
     <div id="panel-lottery" class="mk-panel">
       <div class="mk-row">
         <div class="mk-col">
           <label>抽奖选项 (每行一个)</label>
-          <textarea id="lottery-input" rows="5">张三\n李四\n王五\n赵六</textarea>
-          <button id="btn-lottery" class="mk-btn primary">🎲 随机抽取</button>
+          <textarea id="lottery-input" rows="5" placeholder="张三&#10;李四&#10;王五&#10;赵六"></textarea>
+          <button id="btn-lottery" class="mk-btn primary">🎲 随机抽取一名</button>
         </div>
         <div class="mk-col">
-          <label>抽奖结果</label>
-          <div class="mk-result-box" id="lottery-result">等待抽奖...</div>
-          <button id="btn-dice" class="mk-btn" style="margin-top:10px;">掷一个 6 面骰子</button>
+          <label>结果展示区</label>
+          <div class="mk-result-box" id="lottery-result">等待操作...</div>
+          
+          <label style="margin-top: 20px;">多面骰子 (点击投掷)</label>
+          <div class="dice-grid">
+            <button class="mk-btn dice-btn" data-max="4">D4</button>
+            <button class="mk-btn dice-btn" data-max="6">D6</button>
+            <button class="mk-btn dice-btn" data-max="8">D8</button>
+            <button class="mk-btn dice-btn" data-max="10">D10</button>
+            <button class="mk-btn dice-btn" data-max="12">D12</button>
+            <button class="mk-btn dice-btn" data-max="20">D20</button>
+          </div>
         </div>
       </div>
     </div>

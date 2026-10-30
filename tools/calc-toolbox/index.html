@@ -8,15 +8,16 @@
 <link rel="stylesheet" href="../../css/calc-toolbox.css">
 </head>
 <body>
-<main class="ct-layout">
-  <header class="ct-header">
-    <h1>🧮 计算器工具箱</h1>
-    <p>科学计算、统计、金融、分页等计算工具合集。</p>
-    <a href="../../index.html">← 返回工具站</a>
-  </header>
+<header class="tool-page-header">
+  <h1>🧮 计算器工具箱</h1>
+  <p>涵盖科学、统计、金融理财、日常生活的十余种计算工具合集。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
 
+<main class="ct-layout" style="padding-top: 0;">
   <div class="ct-grid">
-    <!-- 科学计算器 -->
+    
+    <!-- 1. 科学计算器 -->
     <div class="ct-card">
       <h2>📐 科学计算器</h2>
       <input type="text" id="calc-expr" class="ct-input" placeholder="例如: 2 + 3 * 4 / (1 - 5)" style="font-family: monospace;">
@@ -24,7 +25,7 @@
       <div class="ct-result" id="calc-res">= 0</div>
     </div>
 
-    <!-- 统计计算 -->
+    <!-- 2. 统计计算 -->
     <div class="ct-card">
       <h2>📊 统计计算</h2>
       <textarea id="stat-input" class="ct-textarea" rows="3" placeholder="输入数字，用逗号或空格隔开...">10, 20, 30, 40, 50</textarea>
@@ -32,17 +33,17 @@
       <div class="ct-result-box" id="stat-res"></div>
     </div>
 
-    <!-- 金融房贷 -->
+    <!-- 3. 房贷计算 (等额本息) -->
     <div class="ct-card">
-      <h2>🏠 房贷计算</h2>
+      <h2>🏠 房贷计算 (等额本息)</h2>
       <div class="ct-row"><label>贷款总额 (万)</label><input type="number" id="loan-amount" value="100"></div>
       <div class="ct-row"><label>年利率 (%)</label><input type="number" id="loan-rate" value="4.9" step="0.1"></div>
       <div class="ct-row"><label>贷款年限 (年)</label><input type="number" id="loan-years" value="30"></div>
-      <button id="btn-loan" class="ct-btn primary">等额本息计算</button>
+      <button id="btn-loan" class="ct-btn primary">开始计算</button>
       <div class="ct-result-box" id="loan-res"></div>
     </div>
 
-    <!-- 分页计算 -->
+    <!-- 4. 分页偏移计算 -->
     <div class="ct-card">
       <h2>📄 分页偏移计算</h2>
       <div class="ct-row"><label>当前页码</label><input type="number" id="pg-current" value="1" min="1"></div>
@@ -50,6 +51,65 @@
       <button id="btn-pg" class="ct-btn primary">计算 OFFSET</button>
       <div class="ct-result-box" id="pg-res"></div>
     </div>
+
+    <!-- 5. 存款/复利计算 -->
+    <div class="ct-card">
+      <h2>💰 存款/复利计算</h2>
+      <div class="ct-row"><label>初始本金 (元)</label><input type="number" id="ci-p" value="10000"></div>
+      <div class="ct-row"><label>年化利率 (%)</label><input type="number" id="ci-r" value="3.5" step="0.1"></div>
+      <div class="ct-row"><label>存款年限 (年)</label><input type="number" id="ci-t" value="5"></div>
+      <button id="btn-ci" class="ct-btn primary">计算收益</button>
+      <div class="ct-result-box" id="ci-res"></div>
+    </div>
+
+    <!-- 6. 股票补仓计算 -->
+    <div class="ct-card">
+      <h2>📈 股票补仓计算</h2>
+      <div class="ct-row"><label>原持仓数量</label><input type="number" id="st-qty1" value="1000"></div>
+      <div class="ct-row"><label>原持仓成本</label><input type="number" id="st-cost1" value="10" step="0.01"></div>
+      <div class="ct-row"><label>补仓数量</label><input type="number" id="st-qty2" value="1000"></div>
+      <div class="ct-row"><label>补仓价格</label><input type="number" id="st-cost2" value="8" step="0.01"></div>
+      <button id="btn-stock" class="ct-btn primary">计算摊薄成本</button>
+      <div class="ct-result-box" id="st-res"></div>
+    </div>
+
+    <!-- 7. 基金定投计算 -->
+    <div class="ct-card">
+      <h2>📊 基金定投计算</h2>
+      <div class="ct-row"><label>每月定投 (元)</label><input type="number" id="dca-m" value="1000"></div>
+      <div class="ct-row"><label>预计年化收益 (%)</label><input type="number" id="dca-r" value="8" step="0.1"></div>
+      <div class="ct-row"><label>定投年限 (年)</label><input type="number" id="dca-y" value="10"></div>
+      <button id="btn-dca" class="ct-btn primary">计算期末资产</button>
+      <div class="ct-result-box" id="dca-res"></div>
+    </div>
+
+    <!-- 8. 投资回报率 (ROI) -->
+    <div class="ct-card">
+      <h2>💹 投资回报率 (ROI)</h2>
+      <div class="ct-row"><label>初始投入 (元)</label><input type="number" id="roi-cost" value="50000"></div>
+      <div class="ct-row"><label>最终收回 (元)</label><input type="number" id="roi-value" value="65000"></div>
+      <button id="btn-roi" class="ct-btn primary">计算 ROI</button>
+      <div class="ct-result-box" id="roi-res"></div>
+    </div>
+
+    <!-- 9. 个人所得税计算 -->
+    <div class="ct-card">
+      <h2>🧾 个税估算 (按月)</h2>
+      <div class="ct-row"><label>税前月薪 (元)</label><input type="number" id="tax-salary" value="15000"></div>
+      <div class="ct-row"><label>社保公积金扣除</label><input type="number" id="tax-deduct" value="2000"></div>
+      <button id="btn-tax" class="ct-btn primary">计算到手工资</button>
+      <div class="ct-result-box" id="tax-res"></div>
+    </div>
+
+    <!-- 10. 打折/满减计算 -->
+    <div class="ct-card">
+      <h2>🏷️ 打折/满减计算</h2>
+      <div class="ct-row"><label>原价 (元)</label><input type="number" id="ds-price" value="200"></div>
+      <div class="ct-row"><label>折扣 (如打8.5折填8.5)</label><input type="number" id="ds-rate" value="8.5" step="0.1"></div>
+      <button id="btn-discount" class="ct-btn primary">计算折后价</button>
+      <div class="ct-result-box" id="ds-res"></div>
+    </div>
+
   </div>
 </main>
 <script src="../../js/calc-toolbox.js" defer></script>

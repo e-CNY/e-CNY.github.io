@@ -8,13 +8,13 @@
 <link rel="stylesheet" href="../../css/text-toolbox.css">
 </head>
 <body>
-<main class="tt-layout">
-  <header class="tt-header">
-    <h1>📝 文本处理工具箱</h1>
-    <p>支持批量去重、排序、大小写转换、加前后缀等常用文本处理。</p>
-    <a href="../../index.html">← 返回工具站</a>
-  </header>
+<header class="tool-page-header">
+  <h1>📝 文本处理工具箱</h1>
+  <p>支持批量去重、排序、大小写转换、加前后缀等常用文本处理。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
 
+<main class="tt-layout" style="padding-top: 0;">
   <div class="tt-container">
     <div class="tt-toolbar">
       <button type="button" class="tt-btn" onclick="txtDedupe()">去重</button>
@@ -27,16 +27,9 @@
       <button type="button" class="tt-btn" onclick="txtWrap()">包裹引号</button>
       <button type="button" class="tt-btn" onclick="txtClear()">清空</button>
     </div>
-
     <div class="tt-editor-group">
-      <div class="tt-col">
-        <label>输入文本</label>
-        <textarea id="txt-in" spellcheck="false" placeholder="粘贴文本..."></textarea>
-      </div>
-      <div class="tt-col">
-        <label>输出结果</label>
-        <textarea id="txt-out" spellcheck="false" readonly placeholder="结果..."></textarea>
-      </div>
+      <div class="tt-col"><label>输入文本</label><textarea id="txt-in" spellcheck="false" placeholder="粘贴文本..."></textarea></div>
+      <div class="tt-col"><label>输出结果</label><textarea id="txt-out" spellcheck="false" readonly placeholder="结果..."></textarea></div>
     </div>
   </div>
 </main>

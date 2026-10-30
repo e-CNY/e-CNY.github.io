@@ -8,62 +8,168 @@
 <link rel="stylesheet" href="../../css/crypto-tool.css">
 </head>
 <body>
-<main class="ct-layout">
-  <header class="ct-header">
-    <h1>🔐 哈希与加解密</h1>
-    <p>MD5 / SHA 系列哈希计算、JWT 解析、Base64 加解密。</p>
-    <a href="../../index.html">← 返回工具站</a>
-  </header>
+<header class="tool-page-header">
+  <h1>🔐 哈希与加解密</h1>
+  <p>涵盖 Hash / AES / DES / RSA / JWT 等常用密码学工具，全本地计算。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
 
+<main class="ct-layout" style="padding-top: 0;">
   <div class="ct-tabs">
-    <button class="ct-tab active" data-target="panel-hash">#️⃣ 哈希计算</button>
+    <button class="ct-tab active" data-target="panel-hash">🔤 哈希计算</button>
+    <button class="ct-tab" data-target="panel-symmetric">🔐 对称加密</button>
+    <button class="ct-tab" data-target="panel-rsa">🗝️ RSA 非对称</button>
     <button class="ct-tab" data-target="panel-jwt">🎫 JWT 解析</button>
     <button class="ct-tab" data-target="panel-base64">🔤 Base64</button>
   </div>
 
   <div class="ct-content">
-    <!-- 哈希面板 -->
+    
+    <!-- 1. 哈希计算 -->
     <div id="panel-hash" class="ct-panel active">
-      <label class="ct-label">输入要哈希的文本</label>
-      <textarea id="hash-input" class="ct-textarea" rows="4">Hello World</textarea>
-      <button id="btn-hash" class="ct-btn primary">计算哈希</button>
+      <div class="ct-row">
+        <label>输入文本</label>
+        <textarea id="hash-input" class="ct-textarea" rows="4">Hello World</textarea>
+      </div>
+      <div class="ct-row">
+        <label>哈希算法</label>
+        <select id="hash-algo">
+          <option value="MD5">MD5</option>
+          <option value="SHA1">SHA-1</option>
+          <option value="SHA256" selected>SHA-256</option>
+          <option value="SHA512">SHA-512</option>
+          <option value="RIPEMD160">RIPEMD-160</option>
+        </select>
+        <button id="btn-hash" class="ct-btn primary">计算哈希</button>
+      </div>
+      <label>计算结果 (Hex)</label>
+      <!-- 修改为 textarea，自动换行并加高 -->
+      <textarea id="hash-output" class="ct-textarea" rows="3" readonly style="font-family: monospace; word-break: break-all; background: #fdf8ec;"></textarea>
+    </div>
+
+    <!-- 2. 对称加密 (AES/DES) -->
+    <div id="panel-symmetric" class="ct-panel">
+      <div class="ct-row">
+        <label>算法模式</label>
+        <select id="sym-algo">
+          <option value="AES">AES (最安全)</option>
+          <option value="DES">DES</option>
+          <option value="TripleDES">TripleDES (3DES)</option>
+        </select>
+        <select id="sym-mode">
+          <option value="CBC">CBC (需偏移量)</option>
+          <option value="ECB">ECB (无需偏移量)</option>
+        </select>
+      </div>
+      <div class="ct-row">
+        <label>密钥 (Key)</label>
+        <input type="text" id="sym-key" class="ct-input" placeholder="自定义密钥" value="1234567890123456">
+      </div>
+      <div class="ct-row" id="row-iv">
+        <label>偏移量 (IV)</label>
+        <input type="text" id="sym-iv" class="ct-input" placeholder="16位向量" value="abcdefghijklmnop">
+      </div>
+      <div class="ct-row">
+        <label>输入内容</label>
+        <textarea id="sym-input" class="ct-textarea" rows="4" placeholder="要加密的文本或要解密的Base64..."></textarea>
+      </div>
+      <div class="ct-row">
+        <button id="btn-sym-encrypt" class="ct-btn primary">加密 Encrypt</button>
+        <button id="btn-sym-decrypt" class="ct-btn">解密 Decrypt</button>
+      </div>
+      <label>输出结果</label>
+      <textarea id="sym-output" class="ct-textarea" rows="4" readonly></textarea>
+    </div>
+
+    <!-- 3. RSA 非对称 -->
+    <div id="panel-rsa" class="ct-panel">
+      <div class="ct-row">
+        <label>密钥位数</label>
+        <select id="rsa-bits">
+          <option value="1024">1024 位 (较快)</option>
+          <option value="2048" selected>2048 位 (推荐)</option>
+        </select>
+        <button id="btn-rsa-gen" class="ct-btn primary">生成密钥对</button>
+        <span id="rsa-loading" style="display:none; color:#a8452a; font-size:.85rem;">生成中，请稍候...</span>
+      </div>
       
-      <div class="ct-result-group" id="hash-res-group" style="display:none;">
-        <div class="ct-res-item"><span>MD5:</span><input type="text" readonly id="res-md5"></div>
-        <div class="ct-res-item"><span>SHA-1:</span><input type="text" readonly id="res-sha1"></div>
-        <div class="ct-res-item"><span>SHA-256:</span><input type="text" readonly id="res-sha256"></div>
+      <div class="ct-grid-2">
+        <div>
+          <label>公钥 (Public Key)</label>
+          <textarea id="rsa-pub" class="ct-textarea" rows="4" placeholder="-----BEGIN PUBLIC KEY-----"></textarea>
+        </div>
+        <div>
+          <label>私钥 (Private Key)</label>
+          <textarea id="rsa-priv" class="ct-textarea" rows="4" placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
+        </div>
+      </div>
+
+      <div class="ct-tabs-inner">
+        <button class="ct-inner-tab active" data-target="rsa-enc">加解密</button>
+        <button class="ct-inner-tab" data-target="rsa-sign">签名/验签</button>
+      </div>
+
+      <!-- RSA 加解密面板 -->
+      <div id="rsa-enc" class="ct-inner-panel active">
+        <label>输入明文或密文 (Base64)</label>
+        <textarea id="rsa-text" class="ct-textarea" rows="3"></textarea>
+        <div class="ct-row">
+          <button id="btn-rsa-encrypt" class="ct-btn primary">公钥加密</button>
+          <button id="btn-rsa-decrypt" class="ct-btn">私钥解密</button>
+        </div>
+        <label>输出结果</label>
+        <textarea id="rsa-out" class="ct-textarea" rows="3" readonly></textarea>
+      </div>
+
+      <!-- RSA 签名验签面板 -->
+      <div id="rsa-sign" class="ct-inner-panel">
+        <label>输入需签名的文本</label>
+        <textarea id="rsa-sign-text" class="ct-textarea" rows="2"></textarea>
+        <div class="ct-row">
+          <button id="btn-rsa-sign" class="ct-btn primary">私钥签名 (SHA256)</button>
+          <button id="btn-rsa-verify" class="ct-btn">公钥验签</button>
+        </div>
+        <label>签名结果 / 粘贴待验证签名</label>
+        <textarea id="rsa-sign-out" class="ct-textarea" rows="3"></textarea>
       </div>
     </div>
 
-    <!-- JWT 面板 -->
+    <!-- 4. JWT 解析与生成 -->
     <div id="panel-jwt" class="ct-panel">
-      <label class="ct-label">粘贴 JWT Token</label>
-      <textarea id="jwt-input" class="ct-textarea" rows="4" placeholder="eyJhbGciOi..."></textarea>
-      <button id="btn-jwt" class="ct-btn primary">解析 JWT</button>
-      
-      <div class="ct-result-box" id="jwt-res" style="display:none;">
-        <h3>Header (头部)</h3>
-        <pre id="jwt-header"></pre>
-        <h3>Payload (载荷)</h3>
-        <pre id="jwt-payload"></pre>
-        <p style="color:#a8452a; font-size:.8rem;">注意：此处仅做 Base64 解码，未验证签名。</p>
+      <label>JWT Token</label>
+      <textarea id="jwt-input" class="ct-textarea" rows="3" placeholder="eyJhbGciOi..."></textarea>
+      <div class="ct-row">
+        <input type="text" id="jwt-secret" class="ct-input" placeholder="密钥 Secret (仅用于生成 HS256 签名)">
+        <button id="btn-jwt-parse" class="ct-btn primary">解析</button>
+      </div>
+      <div class="ct-grid-2">
+        <div>
+          <label>Header (头部)</label>
+          <pre id="jwt-header" class="ct-code-block"></pre>
+        </div>
+        <div>
+          <label>Payload (载荷)</label>
+          <pre id="jwt-payload" class="ct-code-block"></pre>
+        </div>
       </div>
     </div>
 
-    <!-- Base64 面板 -->
+    <!-- 5. Base64 -->
     <div id="panel-base64" class="ct-panel">
-      <label class="ct-label">输入文本 (UTF-8)</label>
+      <label>输入文本 (UTF-8) 或 Base64</label>
       <textarea id="b64-input" class="ct-textarea" rows="3"></textarea>
-      <div style="display:flex; gap:10px; margin-bottom:12px;">
-        <button id="btn-b64-encode" class="ct-btn primary" style="flex:1;">编码 (Encode)</button>
-        <button id="btn-b64-decode" class="ct-btn" style="flex:1;">解码 (Decode)</button>
+      <div class="ct-row">
+        <button id="btn-b64-encode" class="ct-btn primary">编码 (Encode)</button>
+        <button id="btn-b64-decode" class="ct-btn">解码 (Decode)</button>
       </div>
-      <label class="ct-label">结果</label>
+      <label>结果</label>
       <textarea id="b64-output" class="ct-textarea" rows="3" readonly></textarea>
     </div>
+
   </div>
 </main>
 <script src="../../js/libs/crypto-js.min.js"></script>
+<script src="../../js/libs/forge.min.js"></script>
 <script src="../../js/crypto-tool.js" defer></script>
 </body>
 </html>

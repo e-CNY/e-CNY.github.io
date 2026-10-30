@@ -8,7 +8,7 @@
     { name: 'PDF 工具', emoji: '📄', desc: '合并、拆分、水印、页码等全能处理', href: 'tools/pdf/index.html', category: '文档' },
     { name: '结构化数据工具', emoji: '📦', desc: 'JSON/YAML/XML/TOML 转换、校验、查询、对比', href: 'tools/json-toolbox/index.html', category: '文档' },
     { name: '文本处理工具箱', emoji: '📝', desc: '去重/排序/大小写/前后缀/行号等批量处理', href: 'tools/text-toolbox/index.html', category: '文本' },
-    { name: 'Mock 与随机工具', emoji: '🎲', desc: '随机数据/生成器/抽奖轮盘/多面骰子', href: 'tools/mock-tool/index.html', category: '开发' },
+    { name: '随机数据工具箱', emoji: '🎲', desc: '随机数据/生成器/抽奖轮盘/多面骰子', href: 'tools/mock-tool/index.html', category: '开发' },
     { name: '计算器工具箱', emoji: '🧮', desc: '科学计算/统计/房贷/分页/矩阵', href: 'tools/calc-toolbox/index.html', category: '计算' },
     { name: '哈希与加解密', emoji: '🔐', desc: 'MD5/SHA/AES/HMAC/JWT解析', href: 'tools/crypto-tool/index.html', category: '安全' }
   ];

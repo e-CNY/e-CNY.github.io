@@ -1,30 +1,36 @@
-.ct-layout { max-width: 800px; margin: 0 auto; padding: 28px 16px 56px; }
-.ct-header { text-align: center; margin-bottom: 24px; }
-.ct-header h1 { font-size: 1.6rem; margin: 0 0 8px; color: #3d3226; }
-.ct-header p { margin: 0; color: #6b5d47; font-size: 0.9rem; }
-.ct-header a { color: #8a5a2b; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
+.ct-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
 
-.ct-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
-.ct-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; }
-.ct-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; }
+.ct-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.ct-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; transition: all .15s; }
+.ct-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
 
 .ct-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
 .ct-panel { display: none; }
-.ct-panel.active { display: block; }
+.ct-panel.active { display: block; animation: fadeIn .2s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-.ct-label { display: block; font-size: .85rem; color: #6b5d47; margin-bottom: 6px; font-weight: bold; }
+.ct-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.ct-row label { font-size: .85rem; color: #6b5d47; font-weight: bold; }
+
 .ct-textarea { width: 100%; padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-family: monospace; font-size: .9rem; resize: vertical; box-sizing: border-box; margin-bottom: 12px; }
-.ct-textarea:focus { outline: none; border-color: #8a5a2b; }
+.ct-input { flex: 1; padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-family: monospace; font-size: .9rem; box-sizing: border-box; margin-bottom: 12px; }
+.ct-textarea:focus, .ct-input:focus { outline: none; border-color: #8a5a2b; box-shadow: 0 0 0 2px rgba(138,90,43,.2); }
 
-.ct-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; }
+select { padding: 8px 12px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-size: .9rem; }
+
+.ct-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; transition: all .15s; }
 .ct-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
 .ct-btn:hover { opacity: 0.9; }
+.ct-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-.ct-result-group { margin-top: 16px; }
-.ct-res-item { display: flex; align-items: center; margin-bottom: 8px; }
-.ct-res-item span { width: 70px; font-size: .85rem; color: #6b5d47; font-weight: bold; }
-.ct-res-item input { flex: 1; padding: 8px; border: 1px dashed #d5c7a8; border-radius: 6px; background: #fff; font-family: monospace; font-size: .85rem; }
+/* RSA 布局 */
+.ct-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media (max-width: 600px) { .ct-grid-2 { grid-template-columns: 1fr; } }
 
-.ct-result-box { background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; padding: 16px; margin-top: 16px; }
-.ct-result-box h3 { margin: 0 0 8px; font-size: .9rem; color: #8a5a2b; }
-.ct-result-box pre { margin: 0 0 16px; padding: 10px; background: #f5ecd5; border-radius: 6px; font-family: monospace; font-size: .85rem; overflow-x: auto; }
+.ct-tabs-inner { display: flex; gap: 8px; border-bottom: 1px solid #d5c7a8; margin-bottom: 16px; padding-bottom: 8px; }
+.ct-inner-tab { background: none; border: none; padding: 6px 12px; font-size: .9rem; color: #6b5d47; cursor: pointer; border-radius: 6px; }
+.ct-inner-tab.active { background: #e5d9bd; color: #3d3226; font-weight: bold; }
+.ct-inner-panel { display: none; }
+.ct-inner-panel.active { display: block; }
+
+.ct-code-block { background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; padding: 12px; font-family: monospace; font-size: .85rem; height: 150px; overflow: auto; margin: 0; }

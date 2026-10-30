@@ -6,17 +6,21 @@
 <title>结构化数据工具 · 工具站</title>
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="../../css/json-toolbox.css">
+<style>
+  /* 适配统一头部的全屏布局 */
+  body { display: flex; flex-direction: column; height: 100vh; margin: 0; overflow: hidden; }
+  .jt-layout { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+</style>
 </head>
 <body>
-<main class="jt-layout">
-  <header class="jt-header">
-    <h1>📦 结构化数据工具箱</h1>
-    <p>支持 JSON / YAML / XML / TOML / BSON 等数据格式的转换、校验、查询与可视化。</p>
-    <a href="../../index.html">← 返回工具站</a>
-  </header>
+<header class="tool-page-header">
+  <h1>📦 结构化数据工具箱</h1>
+  <p>支持 JSON / YAML / XML / TOML / BSON 等数据格式的转换、校验、查询与可视化。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
 
+<main class="jt-layout">
   <div class="jt-main">
-    <!-- 左侧导航 -->
     <nav class="jt-sidebar">
       <div class="jt-nav-group">
         <h3>转换与格式化</h3>
@@ -45,9 +49,8 @@
       </div>
     </nav>
 
-    <!-- 右侧工作区 -->
     <section class="jt-workspace">
-      
+      <!-- 此处内容保持不变，为节省篇幅，请直接粘贴你原来的 <section class="jt-workspace"> 内部的 13 个面板代码 -->
       <!-- 1. JSON 格式化 -->
       <div id="panel-json" class="jt-panel active">
         <div class="jt-toolbar">
@@ -59,175 +62,90 @@
           <button class="jt-btn" onclick="jsonToToml()">转 TOML</button>
         </div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>输入 JSON <span id="json-error-msg" class="jt-error-msg"></span></label>
-            <textarea id="json-input" spellcheck="false" placeholder="粘贴 JSON 数据..."></textarea>
-          </div>
-          <div class="jt-editor-col">
-            <label>输出结果</label>
-            <textarea id="json-output" spellcheck="false" readonly></textarea>
-          </div>
+          <div class="jt-editor-col"><label>输入 JSON <span id="json-error-msg" class="jt-error-msg"></span></label><textarea id="json-input" spellcheck="false" placeholder="粘贴 JSON 数据..."></textarea></div>
+          <div class="jt-editor-col"><label>输出结果</label><textarea id="json-output" spellcheck="false" readonly></textarea></div>
         </div>
       </div>
 
       <!-- 2. YAML <-> JSON -->
       <div id="panel-yaml" class="jt-panel">
-        <div class="jt-toolbar">
-          <button class="jt-btn" onclick="yamlToJson()">YAML 转 JSON</button>
-          <button class="jt-btn" onclick="jsonToYaml()">JSON 转 YAML</button>
-        </div>
+        <div class="jt-toolbar"><button class="jt-btn" onclick="yamlToJson()">YAML 转 JSON</button><button class="jt-btn" onclick="jsonToYaml()">JSON 转 YAML</button></div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>输入数据</label>
-            <textarea id="yaml-input" spellcheck="false" placeholder="粘贴 YAML 或 JSON..."></textarea>
-          </div>
-          <div class="jt-editor-col">
-            <label>输出结果</label>
-            <textarea id="yaml-output" spellcheck="false" readonly></textarea>
-          </div>
+          <div class="jt-editor-col"><label>输入数据</label><textarea id="yaml-input" spellcheck="false" placeholder="粘贴 YAML 或 JSON..."></textarea></div>
+          <div class="jt-editor-col"><label>输出结果</label><textarea id="yaml-output" spellcheck="false" readonly></textarea></div>
         </div>
       </div>
 
       <!-- 3. XML <-> JSON -->
       <div id="panel-xml" class="jt-panel">
-        <div class="jt-toolbar">
-          <button class="jt-btn" onclick="xmlToJson()">XML 转 JSON</button>
-          <button class="jt-btn" onclick="jsonToXml()">JSON 转 XML</button>
-        </div>
+        <div class="jt-toolbar"><button class="jt-btn" onclick="xmlToJson()">XML 转 JSON</button><button class="jt-btn" onclick="jsonToXml()">JSON 转 XML</button></div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>输入数据</label>
-            <textarea id="xml-input" spellcheck="false" placeholder="粘贴 XML 或 JSON..."></textarea>
-          </div>
-          <div class="jt-editor-col">
-            <label>输出结果</label>
-            <textarea id="xml-output" spellcheck="false" readonly></textarea>
-          </div>
+          <div class="jt-editor-col"><label>输入数据</label><textarea id="xml-input" spellcheck="false" placeholder="粘贴 XML 或 JSON..."></textarea></div>
+          <div class="jt-editor-col"><label>输出结果</label><textarea id="xml-output" spellcheck="false" readonly></textarea></div>
         </div>
       </div>
 
       <!-- 4. TOML <-> JSON -->
       <div id="panel-toml" class="jt-panel">
-        <div class="jt-toolbar">
-          <button class="jt-btn" onclick="tomlToJson()">TOML 转 JSON</button>
-          <button class="jt-btn" onclick="jsonToToml()">JSON 转 TOML</button>
-        </div>
+        <div class="jt-toolbar"><button class="jt-btn" onclick="tomlToJson()">TOML 转 JSON</button><button class="jt-btn" onclick="jsonToToml()">JSON 转 TOML</button></div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>输入数据</label>
-            <textarea id="toml-input" spellcheck="false" placeholder="粘贴 TOML 或 JSON..."></textarea>
-          </div>
-          <div class="jt-editor-col">
-            <label>输出结果</label>
-            <textarea id="toml-output" spellcheck="false" readonly></textarea>
-          </div>
+          <div class="jt-editor-col"><label>输入数据</label><textarea id="toml-input" spellcheck="false" placeholder="粘贴 TOML 或 JSON..."></textarea></div>
+          <div class="jt-editor-col"><label>输出结果</label><textarea id="toml-output" spellcheck="false" readonly></textarea></div>
         </div>
       </div>
 
       <!-- 5. BSON / Base64 -->
       <div id="panel-bson" class="jt-panel">
-        <div class="jt-toolbar">
-          <button class="jt-btn" onclick="jsonToBase64()">JSON 转 Base64</button>
-          <button class="jt-btn" onclick="base64ToJson()">Base64 转 JSON</button>
-        </div>
+        <div class="jt-toolbar"><button class="jt-btn" onclick="jsonToBase64()">JSON 转 Base64</button><button class="jt-btn" onclick="base64ToJson()">Base64 转 JSON</button></div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>输入数据</label>
-            <textarea id="bson-input" spellcheck="false" placeholder="输入 JSON 或 Base64..."></textarea>
-          </div>
-          <div class="jt-editor-col">
-            <label>输出结果</label>
-            <textarea id="bson-output" spellcheck="false" readonly></textarea>
-          </div>
+          <div class="jt-editor-col"><label>输入数据</label><textarea id="bson-input" spellcheck="false" placeholder="输入 JSON 或 Base64..."></textarea></div>
+          <div class="jt-editor-col"><label>输出结果</label><textarea id="bson-output" spellcheck="false" readonly></textarea></div>
         </div>
       </div>
 
       <!-- 6. JSONPath -->
       <div id="panel-jsonpath" class="jt-panel">
-        <div class="jt-toolbar">
-          <input type="text" id="jsonpath-query" class="jt-input" placeholder="输入 JSONPath，例如 $.store.book[*].author">
-          <button class="jt-btn" onclick="runJsonPath()">查询</button>
-        </div>
+        <div class="jt-toolbar"><input type="text" id="jsonpath-query" class="jt-input" placeholder="输入 JSONPath，例如 $.store.book[*].author"><button class="jt-btn" onclick="runJsonPath()">查询</button></div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>输入 JSON</label>
-            <textarea id="jsonpath-input" spellcheck="false" placeholder="输入 JSON..."></textarea>
-          </div>
-          <div class="jt-editor-col">
-            <label>查询结果</label>
-            <textarea id="jsonpath-output" spellcheck="false" readonly></textarea>
-          </div>
+          <div class="jt-editor-col"><label>输入 JSON</label><textarea id="jsonpath-input" spellcheck="false" placeholder="输入 JSON..."></textarea></div>
+          <div class="jt-editor-col"><label>查询结果</label><textarea id="jsonpath-output" spellcheck="false" readonly></textarea></div>
         </div>
       </div>
 
       <!-- 7. JMESPath -->
       <div id="panel-jmespath" class="jt-panel">
-        <div class="jt-toolbar">
-          <input type="text" id="jmespath-query" class="jt-input" placeholder="输入 JMESPath，例如 locations[?state == 'WA'].name | sort(@)">
-          <button class="jt-btn" onclick="runJmesPath()">查询</button>
-        </div>
+        <div class="jt-toolbar"><input type="text" id="jmespath-query" class="jt-input" placeholder="输入 JMESPath，例如 locations[?state == 'WA'].name | sort(@)"><button class="jt-btn" onclick="runJmesPath()">查询</button></div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>输入 JSON</label>
-            <textarea id="jmespath-input" spellcheck="false" placeholder="输入 JSON..."></textarea>
-          </div>
-          <div class="jt-editor-col">
-            <label>查询结果</label>
-            <textarea id="jmespath-output" spellcheck="false" readonly></textarea>
-          </div>
+          <div class="jt-editor-col"><label>输入 JSON</label><textarea id="jmespath-input" spellcheck="false" placeholder="输入 JSON..."></textarea></div>
+          <div class="jt-editor-col"><label>查询结果</label><textarea id="jmespath-output" spellcheck="false" readonly></textarea></div>
         </div>
       </div>
 
       <!-- 8. JSON Pointer -->
       <div id="panel-pointer" class="jt-panel">
-        <div class="jt-toolbar">
-          <input type="text" id="pointer-query" class="jt-input" placeholder="输入 JSON Pointer，例如 /foo/0/bar">
-          <button class="jt-btn" onclick="runJsonPointer()">定位</button>
-        </div>
+        <div class="jt-toolbar"><input type="text" id="pointer-query" class="jt-input" placeholder="输入 JSON Pointer，例如 /foo/0/bar"><button class="jt-btn" onclick="runJsonPointer()">定位</button></div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>输入 JSON</label>
-            <textarea id="pointer-input" spellcheck="false" placeholder="输入 JSON..."></textarea>
-          </div>
-          <div class="jt-editor-col">
-            <label>定位结果</label>
-            <textarea id="pointer-output" spellcheck="false" readonly></textarea>
-          </div>
+          <div class="jt-editor-col"><label>输入 JSON</label><textarea id="pointer-input" spellcheck="false" placeholder="输入 JSON..."></textarea></div>
+          <div class="jt-editor-col"><label>定位结果</label><textarea id="pointer-output" spellcheck="false" readonly></textarea></div>
         </div>
       </div>
 
       <!-- 9. JSON Schema -->
       <div id="panel-schema" class="jt-panel">
-        <div class="jt-toolbar">
-          <button class="jt-btn" onclick="validateSchema()">校验 JSON Schema</button>
-        </div>
+        <div class="jt-toolbar"><button class="jt-btn" onclick="validateSchema()">校验 JSON Schema</button></div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>输入 JSON (待校验)</label>
-            <textarea id="schema-json" spellcheck="false" placeholder="输入待校验的 JSON..."></textarea>
-          </div>
-          <div class="jt-editor-col">
-            <label>输入 Schema</label>
-            <textarea id="schema-input" spellcheck="false" placeholder="输入 JSON Schema..."></textarea>
-          </div>
+          <div class="jt-editor-col"><label>输入 JSON (待校验)</label><textarea id="schema-json" spellcheck="false" placeholder="输入待校验的 JSON..."></textarea></div>
+          <div class="jt-editor-col"><label>输入 Schema</label><textarea id="schema-input" spellcheck="false" placeholder="输入 JSON Schema..."></textarea></div>
         </div>
         <div class="jt-output-box" id="schema-output" style="margin-top: 10px;"></div>
       </div>
 
       <!-- 10. JSON Diff -->
       <div id="panel-diff" class="jt-panel">
-        <div class="jt-toolbar">
-          <button class="jt-btn" onclick="runJsonDiff()">对比 JSON 差异</button>
-        </div>
+        <div class="jt-toolbar"><button class="jt-btn" onclick="runJsonDiff()">对比 JSON 差异</button></div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>原始 JSON</label>
-            <textarea id="diff-input-a" spellcheck="false" placeholder="粘贴旧的 JSON..."></textarea>
-          </div>
-          <div class="jt-editor-col">
-            <label>新的 JSON</label>
-            <textarea id="diff-input-b" spellcheck="false" placeholder="粘贴新的 JSON..."></textarea>
-          </div>
+          <div class="jt-editor-col"><label>原始 JSON</label><textarea id="diff-input-a" spellcheck="false" placeholder="粘贴旧的 JSON..."></textarea></div>
+          <div class="jt-editor-col"><label>新的 JSON</label><textarea id="diff-input-b" spellcheck="false" placeholder="粘贴新的 JSON..."></textarea></div>
         </div>
         <div class="jt-output-box" id="diff-output" style="margin-top: 10px; max-height: 300px;"></div>
       </div>
@@ -235,72 +153,44 @@
       <!-- 11. 文本 Diff -->
       <div id="panel-text-diff" class="jt-panel">
         <div class="jt-toolbar">
-          <label style="font-size:.85rem; color:#6b5d47; display:flex; align-items:center; gap:4px;">
-            <input type="checkbox" id="text-diff-ignore-case"> 忽略大小写
-          </label>
-          <label style="font-size:.85rem; color:#6b5d47; display:flex; align-items:center; gap:4px; margin-left:8px;">
-            <input type="checkbox" id="text-diff-ignore-space"> 忽略空格
-          </label>
+          <label style="font-size:.85rem; color:#6b5d47; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="text-diff-ignore-case"> 忽略大小写</label>
+          <label style="font-size:.85rem; color:#6b5d47; display:flex; align-items:center; gap:4px; margin-left:8px;"><input type="checkbox" id="text-diff-ignore-space"> 忽略空格</label>
           <button class="jt-btn" onclick="runTextDiff()" style="margin-left:auto;">对比文本差异</button>
           <button class="jt-btn" onclick="clearTextDiff()">清空</button>
         </div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>原始文本 (Old)</label>
-            <textarea id="text-diff-old" spellcheck="false" placeholder="粘贴旧的文本..."></textarea>
-          </div>
-          <div class="jt-editor-col">
-            <label>新的文本 (New)</label>
-            <textarea id="text-diff-new" spellcheck="false" placeholder="粘贴新的文本..."></textarea>
-          </div>
+          <div class="jt-editor-col"><label>原始文本 (Old)</label><textarea id="text-diff-old" spellcheck="false" placeholder="粘贴旧的文本..."></textarea></div>
+          <div class="jt-editor-col"><label>新的文本 (New)</label><textarea id="text-diff-new" spellcheck="false" placeholder="粘贴新的文本..."></textarea></div>
         </div>
         <div class="jt-output-box" id="text-diff-output" style="margin-top: 10px; max-height: 400px; padding: 0; overflow-y: auto;"></div>
       </div>
 
       <!-- 12. JSON 树形 -->
       <div id="panel-tree" class="jt-panel">
-        <div class="jt-toolbar">
-          <button class="jt-btn" onclick="renderTree()">生成树形视图</button>
-        </div>
+        <div class="jt-toolbar"><button class="jt-btn" onclick="renderTree()">生成树形视图</button></div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>输入 JSON</label>
-            <textarea id="tree-input" spellcheck="false" placeholder="粘贴 JSON..."></textarea>
-          </div>
-          <div class="jt-editor-col" style="background:#fff; border:1px solid #d5c7a8; border-radius:8px; padding:12px; overflow:auto;">
-            <div id="tree-output" class="json-tree-view"></div>
-          </div>
+          <div class="jt-editor-col"><label>输入 JSON</label><textarea id="tree-input" spellcheck="false" placeholder="粘贴 JSON..."></textarea></div>
+          <div class="jt-editor-col" style="background:#fff; border:1px solid #d5c7a8; border-radius:8px; padding:12px; overflow:auto;"><div id="tree-output" class="json-tree-view"></div></div>
         </div>
       </div>
 
       <!-- 13. JSON 表单 -->
       <div id="panel-form" class="jt-panel">
-        <div class="jt-toolbar">
-          <button class="jt-btn" onclick="generateForm()">JSON 生成表单</button>
-          <button class="jt-btn" onclick="formToJson()">表单生成 JSON</button>
-        </div>
+        <div class="jt-toolbar"><button class="jt-btn" onclick="generateForm()">JSON 生成表单</button><button class="jt-btn" onclick="formToJson()">表单生成 JSON</button></div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col">
-            <label>JSON 模板</label>
-            <textarea id="form-json" spellcheck="false" placeholder="输入 JSON..."></textarea>
-          </div>
-          <div class="jt-editor-col" style="background:#fff; border:1px solid #d5c7a8; border-radius:8px; padding:16px; overflow:auto;">
-            <div id="form-container" class="json-form-container"></div>
-          </div>
+          <div class="jt-editor-col"><label>JSON 模板</label><textarea id="form-json" spellcheck="false" placeholder="输入 JSON..."></textarea></div>
+          <div class="jt-editor-col" style="background:#fff; border:1px solid #d5c7a8; border-radius:8px; padding:16px; overflow:auto;"><div id="form-container" class="json-form-container"></div></div>
         </div>
       </div>
-
     </section>
   </div>
 </main>
 
-<!-- 第三方库引入 -->
 <script src="../../js/libs/js-yaml.min.js"></script>
 <script src="../../js/libs/jsonpath.min.js"></script>
 <script src="../../js/libs/jmespath.min.js"></script>
 <script src="../../js/libs/ajv.min.js"></script>
 <script src="../../js/libs/diff.min.js"></script>
-<!-- 核心逻辑 -->
 <script src="../../js/json-toolbox.js" defer></script>
 </body>
 </html>

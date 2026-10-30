@@ -8,13 +8,13 @@
 <link rel="stylesheet" href="../../css/sitting-reminder.css">
 </head>
 <body>
-<main class="tt-layout">
-  <header class="tt-header">
-    <h1>⏱️ 时间与计时工具</h1>
-    <p>久坐循环 / 秒表 / 倒计时 / 番茄钟，全本地运行。</p>
-    <a href="../../index.html">← 返回工具站</a>
-  </header>
+<header class="tool-page-header">
+  <h1>⏱️ 时间与计时工具</h1>
+  <p>久坐循环 / 秒表 / 倒计时 / 番茄钟，全本地运行。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
 
+<main class="tt-layout">
   <div class="tt-tabs">
     <button class="tt-tab active" data-target="panel-sit">🪑 久坐循环</button>
     <button class="tt-tab" data-target="panel-stopwatch">⏱️ 秒表</button>
@@ -95,7 +95,6 @@
     </div>
   </div>
 
-  <!-- 全局公共设置 -->
   <section class="sr-alarm-settings" aria-label="闹铃设置">
     <h2>🔔 闹铃设置</h2>
     <div class="sr-volume-row">
@@ -111,10 +110,7 @@
       <span id="sr-audio-name" class="sr-audio-name"></span>
       <button id="sr-audio-clear" type="button" class="sr-audio-clear" hidden>清除</button>
     </div>
-    <p class="sr-audio-hint">
-      支持 mp3 / wav / ogg / m4a 等格式，文件 ≤ 5MB、时长 ≤ 30 秒。
-      文件只在浏览器本地播放，刷新页面后需重新选择。
-    </p>
+    <p class="sr-audio-hint">支持 mp3 / wav / ogg / m4a 等浏览器可播放格式，文件 ≤ 5MB、时长 ≤ 30 秒。文件只在浏览器本地播放，不会上传到任何服务器；刷新页面后需重新选择。</p>
   </section>
 </main>
 <script src="../../js/sitting-reminder.js" defer></script>

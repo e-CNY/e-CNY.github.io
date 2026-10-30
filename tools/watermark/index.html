@@ -8,65 +8,43 @@
 <link rel="stylesheet" href="../../css/watermark.css">
 </head>
 <body>
-<main class="wm-tool">
-  <header class="wm-header">
-    <h1>🖼️ 图片加水印</h1>
-    <p>支持自定义字体、颜色、位置和平铺，全程在浏览器本地处理。</p>
-    <a href="../../index.html">← 返回工具站</a>
-  </header>
+<header class="tool-page-header">
+  <h1>🖼️ 图片加水印</h1>
+  <p>支持自定义字体、颜色、位置和平铺，全程在浏览器本地处理。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
 
+<main class="wm-tool" style="padding-top: 0;">
   <div class="wm-layout">
-    <!-- 左侧：设置面板 -->
     <section class="wm-panel">
-      
-      <!-- 1. 图片上传 -->
       <div class="wm-section">
         <h2>1. 上传图片</h2>
         <div id="wm-drop-zone" class="wm-drop-zone">
           <span>📁 点击选择或拖拽图片到这里</span>
-          <span class="wm-hint">支持 JPG / PNG / WebP / GIF / SVG 等主流格式，最大 20MB</span>
+          <span class="wm-hint">支持 JPG / PNG / WebP，最大 20MB</span>
           <input id="wm-image-input" type="file" accept="image/*,.heic,.heif" hidden>
         </div>
       </div>
-
-      <!-- 2. 水印设置 -->
       <div class="wm-section">
         <h2>2. 水印设置</h2>
-        
         <label class="wm-label">水印文字</label>
         <input id="wm-text" class="wm-input" type="text" placeholder="输入水印文字" value="© 我的版权">
-
         <div class="wm-row">
           <div class="wm-col">
             <label class="wm-label">字体文件 (可选)</label>
-            <label class="wm-upload-btn">
-              📄 上传 TTF/OTF/WOFF
-              <input id="wm-font-input" type="file" accept=".ttf,.otf,.woff,.woff2" hidden>
-            </label>
+            <label class="wm-upload-btn">📄 上传 TTF/OTF/WOFF<input id="wm-font-input" type="file" accept=".ttf,.otf,.woff,.woff2" hidden></label>
             <span id="wm-font-name" class="wm-file-name"></span>
           </div>
-          
           <div class="wm-col">
             <label class="wm-label">颜色</label>
-            <div class="wm-color-wrap" title="点击选择颜色">
-              <input id="wm-color" type="color" value="#8a5a2b">
-            </div>
+            <div class="wm-color-wrap" title="点击选择颜色"><input id="wm-color" type="color" value="#8a5a2b"></div>
           </div>
         </div>
-
         <div class="wm-row">
-          <div class="wm-col">
-            <label class="wm-label">字号大小</label>
-            <input id="wm-size" type="range" min="10" max="200" value="40">
-          </div>
-          <div class="wm-col">
-            <label class="wm-label">透明度</label>
-            <input id="wm-opacity" type="range" min="10" max="100" value="80">
-          </div>
+          <div class="wm-col"><label class="wm-label">字号大小</label><input id="wm-size" type="range" min="10" max="200" value="40"></div>
+          <div class="wm-col"><label class="wm-label">透明度</label><input id="wm-opacity" type="range" min="10" max="100" value="80"></div>
         </div>
       </div>
-
-      <!-- 3. 位置选择 -->
       <div class="wm-section">
         <h2>3. 水印位置</h2>
         <div class="wm-positions">
@@ -82,10 +60,7 @@
           <button data-pos="tile" class="wm-btn-tile">🔲 全屏平铺</button>
         </div>
       </div>
-
     </section>
-
-    <!-- 右侧：预览与下载 -->
     <section class="wm-preview">
       <div class="wm-canvas-container" id="wm-canvas-container">
         <p id="wm-placeholder" class="wm-placeholder">上传图片后在此预览</p>
