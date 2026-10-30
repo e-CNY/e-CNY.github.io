@@ -71,3 +71,11 @@
 .jt-output-box { background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; padding: 12px; font-family: monospace; font-size: .85rem; overflow: auto; }
 .diff-add { background-color: #dcfce7; color: #166534; padding: 0 4px; border-radius: 2px; }
 .diff-remove { background-color: #fee2e2; color: #991b1b; padding: 0 4px; border-radius: 2px; text-decoration: line-through; }
+
+/* --- 新增：文本对比样式 --- */
+.diff-line { display: flex; font-family: monospace; font-size: .85rem; line-height: 1.5; }
+.diff-line-add { background-color: #dcfce7; color: #166534; }
+.diff-line-remove { background-color: #fee2e2; color: #991b1b; }
+.diff-line-neutral { color: #475569; }
+.diff-line-prefix { width: 30px; flex-shrink: 0; text-align: center; user-select: none; color: #94a3b8; border-right: 1px solid #e2e8f0; }
+.diff-line-content { flex: 1; padding: 0 10px; white-space: pre-wrap; word-break: break-all; }

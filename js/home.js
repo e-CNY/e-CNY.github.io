@@ -49,6 +49,13 @@
       desc: 'JSON/YAML/XML/TOML 转换、校验、查询、对比',
       href: 'tools/json-toolbox/index.html',
       category: '文档'
+    },
+    {
+      name: '文本差异对比',
+      emoji: '🔍',
+      desc: '文本 Diff 高亮与 JSON 结构化差异对比',
+      href: 'tools/text-diff/index.html',
+      category: '文档'
     }
   ];
 

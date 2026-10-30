@@ -1,4 +1,6 @@
 (function () {
+  var diffLib = window.Diff || window.jsdiff;
+
   // ================= Tab 切换 =================
   var navBtns = document.querySelectorAll('.jt-nav-btn');
   var panels = document.querySelectorAll('.jt-panel');
@@ -252,7 +254,6 @@
     
     var resultStr = lines.join('\n');
     
-    // 修复：递归处理子对象，输出 [table] 格式
     for (var t of tables) {
       var tableName = prefix ? prefix + '.' + t.key : t.key;
       if (resultStr.length > 0 && !resultStr.endsWith('\n')) {
@@ -291,7 +292,6 @@
   };
 
   window.jsonToToml = function () {
-    // 修复：判断当前所在的面板，将结果输出到当前面板
     var activeTab = document.querySelector('.jt-panel.active').id;
     var isJsonPanel = activeTab === 'panel-json';
     
@@ -422,8 +422,8 @@
     }
   };
 
-  // ================= 10. JSON Diff =================
-  window.runDiff = function () {
+  // ================= 10. JSON 结构 Diff =================
+  window.runJsonDiff = function () {
     var aStr = getEl('diff-input-a').value.trim();
     var bStr = getEl('diff-input-b').value.trim();
     var outEl = getEl('diff-output');
@@ -461,7 +461,52 @@
     }
   };
 
-  // ================= 11. JSON 树形视图 =================
+  // ================= 11. 文本 Diff =================
+  window.runTextDiff = function () {
+    var oldText = getEl('text-diff-old').value;
+    var newText = getEl('text-diff-new').value;
+    var outEl = getEl('text-diff-output');
+    
+    if (!oldText && !newText) return;
+
+    if (!diffLib) {
+      outEl.innerHTML = '<span style="color:#a8452a; padding: 12px; display: block;">❌ Diff 库未加载，请检查 js/libs/diff.min.js</span>';
+      return;
+    }
+
+    var options = {
+      ignoreCase: getEl('text-diff-ignore-case').checked,
+      ignoreWhitespace: getEl('text-diff-ignore-space').checked
+    };
+
+    var diffLines = diffLib.diffLines(oldText, newText, options);
+    var html = '';
+    
+    diffLines.forEach(function (part) {
+      var lines = part.value.split('\n');
+      if (lines[lines.length - 1] === '') lines.pop();
+      
+      var typeClass = part.added ? 'diff-line-add' : (part.removed ? 'diff-line-remove' : 'diff-line-neutral');
+      var prefix = part.added ? '+' : (part.removed ? '-' : ' ');
+      
+      lines.forEach(function (line) {
+        html += '<div class="diff-line ' + typeClass + '">' +
+          '<div class="diff-line-prefix">' + prefix + '</div>' +
+          '<div class="diff-line-content">' + escapeHtml(line) + '</div>' +
+          '</div>';
+      });
+    });
+
+    outEl.innerHTML = html || '<p style="color:#7ba05b; padding: 12px; margin: 0;">✅ 两边文本完全一致。</p>';
+  };
+
+  window.clearTextDiff = function () {
+    getEl('text-diff-old').value = '';
+    getEl('text-diff-new').value = '';
+    getEl('text-diff-output').innerHTML = '';
+  };
+
+  // ================= 12. JSON 树形视图 =================
   window.renderTree = function () {
     var input = getEl('tree-input').value.trim();
     var outEl = getEl('tree-output');
@@ -493,7 +538,7 @@
     return html + '</ul></details>';
   }
 
-  // ================= 12. JSON 生成表单 =================
+  // ================= 13. JSON 生成表单 =================
   window.generateForm = function () {
     var input = getEl('form-json').value.trim();
     var outEl = getEl('form-container');
@@ -570,5 +615,10 @@
 
     outEl.value = JSON.stringify(result, null, 2);
   };
+
+  function escapeHtml(str) {
+    if (str === undefined || str === null) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
 
 })();

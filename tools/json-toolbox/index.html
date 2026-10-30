@@ -36,6 +36,7 @@
       <div class="jt-nav-group">
         <h3>对比与视图</h3>
         <button class="jt-nav-btn" data-target="panel-diff">JSON 差异对比</button>
+        <button class="jt-nav-btn" data-target="panel-text-diff">文本差异对比</button>
         <button class="jt-nav-btn" data-target="panel-tree">JSON 树形可视化</button>
       </div>
       <div class="jt-nav-group">
@@ -162,7 +163,7 @@
       <!-- 7. JMESPath -->
       <div id="panel-jmespath" class="jt-panel">
         <div class="jt-toolbar">
-          <input type="text" id="jmespath-query" class="jt-input" placeholder="输入 JMESPath，例如 locations[?state == 'WA'].name | sort(@) | {WashingtonCities: join(', ', @)}">
+          <input type="text" id="jmespath-query" class="jt-input" placeholder="输入 JMESPath，例如 locations[?state == 'WA'].name | sort(@)">
           <button class="jt-btn" onclick="runJmesPath()">查询</button>
         </div>
         <div class="jt-editor-group">
@@ -216,7 +217,7 @@
       <!-- 10. JSON Diff -->
       <div id="panel-diff" class="jt-panel">
         <div class="jt-toolbar">
-          <button class="jt-btn" onclick="runDiff()">对比差异</button>
+          <button class="jt-btn" onclick="runJsonDiff()">对比 JSON 差异</button>
         </div>
         <div class="jt-editor-group">
           <div class="jt-editor-col">
@@ -231,7 +232,32 @@
         <div class="jt-output-box" id="diff-output" style="margin-top: 10px; max-height: 300px;"></div>
       </div>
 
-      <!-- 11. JSON 树形 -->
+      <!-- 11. 文本 Diff (新增) -->
+      <div id="panel-text-diff" class="jt-panel">
+        <div class="jt-toolbar">
+          <label style="font-size:.85rem; color:#6b5d47; display:flex; align-items:center; gap:4px;">
+            <input type="checkbox" id="text-diff-ignore-case"> 忽略大小写
+          </label>
+          <label style="font-size:.85rem; color:#6b5d47; display:flex; align-items:center; gap:4px; margin-left:8px;">
+            <input type="checkbox" id="text-diff-ignore-space"> 忽略空格
+          </label>
+          <button class="jt-btn" onclick="runTextDiff()" style="margin-left:auto;">对比文本差异</button>
+          <button class="jt-btn" onclick="clearTextDiff()">清空</button>
+        </div>
+        <div class="jt-editor-group">
+          <div class="jt-editor-col">
+            <label>原始文本 (Old)</label>
+            <textarea id="text-diff-old" spellcheck="false" placeholder="粘贴旧的文本..."></textarea>
+          </div>
+          <div class="jt-editor-col">
+            <label>新的文本 (New)</label>
+            <textarea id="text-diff-new" spellcheck="false" placeholder="粘贴新的文本..."></textarea>
+          </div>
+        </div>
+        <div class="jt-output-box" id="text-diff-output" style="margin-top: 10px; max-height: 400px; padding: 0; overflow-y: auto;"></div>
+      </div>
+
+      <!-- 12. JSON 树形 -->
       <div id="panel-tree" class="jt-panel">
         <div class="jt-toolbar">
           <button class="jt-btn" onclick="renderTree()">生成树形视图</button>
@@ -247,7 +273,7 @@
         </div>
       </div>
 
-      <!-- 12. JSON 表单 -->
+      <!-- 13. JSON 表单 -->
       <div id="panel-form" class="jt-panel">
         <div class="jt-toolbar">
           <button class="jt-btn" onclick="generateForm()">JSON 生成表单</button>
@@ -268,13 +294,13 @@
   </div>
 </main>
 
-<!-- 1. 第三方库本地化引入 -->
+<!-- 第三方库引入 -->
 <script src="../../js/libs/js-yaml.min.js"></script>
 <script src="../../js/libs/jsonpath.min.js"></script>
 <script src="../../js/libs/jmespath.min.js"></script>
 <script src="../../js/libs/ajv.min.js"></script>
-<script src="../../js/libs/toml.min.js"></script>
-<!-- 2. 业务逻辑 -->
+<script src="../../js/libs/diff.min.js"></script>
+<!-- 核心逻辑 -->
 <script src="../../js/json-toolbox.js" defer></script>
 </body>
 </html>
