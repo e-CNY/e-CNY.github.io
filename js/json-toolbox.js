@@ -1,6 +1,4 @@
 (function () {
-  var diffLib = window.Diff || window.jsdiff;
-
   // ================= Tab 切换 =================
   var navBtns = document.querySelectorAll('.jt-nav-btn');
   var panels = document.querySelectorAll('.jt-panel');
@@ -16,6 +14,10 @@
 
   // ================= 0. 全局工具函数 =================
   function getEl(id) { return document.getElementById(id); }
+  function escapeHtml(str) {
+    if (str === undefined || str === null) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
 
   // ================= 1. JSON 格式化与校验 =================
   window.jsonFormat = function (space) {
@@ -461,7 +463,29 @@
     }
   };
 
-  // ================= 11. 文本 Diff =================
+  // ================= 11. 文本 Diff (支持行号) =================
+  function initLineNumbers(textareaId, linesId) {
+    var ta = document.getElementById(textareaId);
+    var linesEl = document.getElementById(linesId);
+    if(!ta || !linesEl) return; // 关键防错
+    
+    function update() {
+      var linesCount = ta.value.split('\n').length;
+      var arr = [];
+      for(var i = 1; i <= linesCount; i++) arr.push(i);
+      linesEl.innerHTML = arr.join('<br>');
+      linesEl.scrollTop = ta.scrollTop;
+    }
+    ta.addEventListener('input', update);
+    ta.addEventListener('scroll', function() { linesEl.scrollTop = ta.scrollTop; });
+    update();
+  }
+  // 延迟一点点初始化，确保 DOM 已渲染
+  setTimeout(function(){
+    initLineNumbers('text-diff-old', 'lines-old');
+    initLineNumbers('text-diff-new', 'lines-new');
+  }, 100);
+
   window.runTextDiff = function () {
     var oldText = getEl('text-diff-old').value;
     var newText = getEl('text-diff-new').value;
@@ -469,28 +493,51 @@
     
     if (!oldText && !newText) return;
 
-    if (!diffLib) {
-      outEl.innerHTML = '<span style="color:#a8452a; padding: 12px; display: block;">❌ Diff 库未加载，请检查 js/libs/diff.min.js</span>';
+    if (!window.Diff && !window.jsdiff) {
+      outEl.innerHTML = '<span style="color:#a8452a; padding: 12px; display: block;">❌ Diff 库未加载，请检查网络或 js/libs/diff.min.js</span>';
       return;
     }
+    var diffLib = window.Diff || window.jsdiff;
 
-    var options = {
-      ignoreCase: getEl('text-diff-ignore-case').checked,
-      ignoreWhitespace: getEl('text-diff-ignore-space').checked
-    };
+    var ignoreCase = getEl('text-diff-ignore-case').checked;
+    var ignoreSpace = getEl('text-diff-ignore-space').checked;
 
-    var diffLines = diffLib.diffLines(oldText, newText, options);
+    // 末尾强制加 \n 解决 jsdiff 最后一行忽略失效的问题
+    var o = oldText.endsWith('\n') ? oldText : oldText + '\n';
+    var n = newText.endsWith('\n') ? newText : newText + '\n';
+
+    var diffLines = diffLib.diffLines(o, n, {
+      ignoreCase: ignoreCase,
+      ignoreWhitespace: ignoreSpace
+    });
+
     var html = '';
-    
+    var oldLineNum = 1;
+    var newLineNum = 1;
+
     diffLines.forEach(function (part) {
       var lines = part.value.split('\n');
       if (lines[lines.length - 1] === '') lines.pop();
-      
+
       var typeClass = part.added ? 'diff-line-add' : (part.removed ? 'diff-line-remove' : 'diff-line-neutral');
       var prefix = part.added ? '+' : (part.removed ? '-' : ' ');
       
       lines.forEach(function (line) {
+        var oldNumStr = '';
+        var newNumStr = '';
+        
+        if (part.added) {
+            newNumStr = newLineNum++;
+        } else if (part.removed) {
+            oldNumStr = oldLineNum++;
+        } else {
+            oldNumStr = oldLineNum++;
+            newNumStr = newLineNum++;
+        }
+
         html += '<div class="diff-line ' + typeClass + '">' +
+          '<div class="diff-line-num">' + oldNumStr + '</div>' +
+          '<div class="diff-line-num">' + newNumStr + '</div>' +
           '<div class="diff-line-prefix">' + prefix + '</div>' +
           '<div class="diff-line-content">' + escapeHtml(line) + '</div>' +
           '</div>';
@@ -504,6 +551,8 @@
     getEl('text-diff-old').value = '';
     getEl('text-diff-new').value = '';
     getEl('text-diff-output').innerHTML = '';
+    getEl('lines-old').innerHTML = '1';
+    getEl('lines-new').innerHTML = '1';
   };
 
   // ================= 12. JSON 树形视图 =================
@@ -615,10 +664,5 @@
 
     outEl.value = JSON.stringify(result, null, 2);
   };
-
-  function escapeHtml(str) {
-    if (str === undefined || str === null) return '';
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
 
 })();

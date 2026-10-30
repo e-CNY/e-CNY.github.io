@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="../../css/json-toolbox.css">
 <style>
-  /* 适配统一头部的全屏布局 */
   body { display: flex; flex-direction: column; height: 100vh; margin: 0; overflow: hidden; }
   .jt-layout { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 </style>
@@ -50,7 +49,6 @@
     </nav>
 
     <section class="jt-workspace">
-      <!-- 此处内容保持不变，为节省篇幅，请直接粘贴你原来的 <section class="jt-workspace"> 内部的 13 个面板代码 -->
       <!-- 1. JSON 格式化 -->
       <div id="panel-json" class="jt-panel active">
         <div class="jt-toolbar">
@@ -159,8 +157,20 @@
           <button class="jt-btn" onclick="clearTextDiff()">清空</button>
         </div>
         <div class="jt-editor-group">
-          <div class="jt-editor-col"><label>原始文本 (Old)</label><textarea id="text-diff-old" spellcheck="false" placeholder="粘贴旧的文本..."></textarea></div>
-          <div class="jt-editor-col"><label>新的文本 (New)</label><textarea id="text-diff-new" spellcheck="false" placeholder="粘贴新的文本..."></textarea></div>
+          <div class="jt-editor-col">
+            <label>原始文本 (Old)</label>
+            <div class="editor-wrapper">
+              <div class="line-numbers" id="lines-old">1</div>
+              <textarea id="text-diff-old" spellcheck="false" placeholder="粘贴旧的文本..."></textarea>
+            </div>
+          </div>
+          <div class="jt-editor-col">
+            <label>新的文本 (New)</label>
+            <div class="editor-wrapper">
+              <div class="line-numbers" id="lines-new">1</div>
+              <textarea id="text-diff-new" spellcheck="false" placeholder="粘贴新的文本..."></textarea>
+            </div>
+          </div>
         </div>
         <div class="jt-output-box" id="text-diff-output" style="margin-top: 10px; max-height: 400px; padding: 0; overflow-y: auto;"></div>
       </div>
