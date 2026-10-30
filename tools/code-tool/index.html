@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>码工具 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/qrcode.css">
+</head>
+<body>
+<main class="qr-tool">
+  <header class="qr-header">
+    <h1>📱 码工具</h1>
+    <p>本地生成与识别二维码，支持生成条形码。</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="qr-tabs">
+    <button class="active" data-tab="gen">✨ 生成二维码</button>
+    <button data-tab="scan">🔍 识别二维码</button>
+    <button data-tab="barcode">📊 生成条形码</button>
+  </div>
+
+  <!-- 二维码生成 -->
+  <section id="tab-gen" class="qr-panel active">
+    <div class="qr-layout">
+      <div class="qr-settings">
+        <label class="qr-label">输入文字 / 网址</label>
+        <textarea id="qr-text" class="qr-textarea" rows="4">https://github.com</textarea>
+        <div class="qr-row">
+          <div class="qr-col">
+            <label class="qr-label">点阵样式</label>
+            <select id="qr-style" class="qr-select">
+              <option value="square">经典方块</option>
+              <option value="dot">圆点</option>
+              <option value="rounded">圆角</option>
+            </select>
+          </div>
+          <div class="qr-col">
+            <label class="qr-label">容错率</label>
+            <select id="qr-ecc" class="qr-select">
+              <option value="L">L (7%)</option><option value="M">M (15%)</option>
+              <option value="Q" selected>Q (25%)</option><option value="H">H (30%)</option>
+            </select>
+          </div>
+        </div>
+        <div class="qr-row">
+          <div class="qr-col">
+            <label class="qr-label">前景色</label>
+            <div class="qr-color-wrap"><input id="qr-color-fg" type="color" value="#3d3226"></div>
+          </div>
+          <div class="qr-col">
+            <label class="qr-label">背景色</label>
+            <div class="qr-color-wrap"><input id="qr-color-bg" type="color" value="#ffffff"></div>
+          </div>
+        </div>
+      </div>
+      <div class="qr-preview-area">
+        <div class="qr-canvas-container"><canvas id="qr-canvas" width="400" height="400"></canvas></div>
+        <button id="qr-download" class="qr-btn-primary">⬇️ 下载二维码图片</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 二维码识别 -->
+  <section id="tab-scan" class="qr-panel">
+    <div id="scan-drop-zone" class="qr-drop-zone">
+      <span id="scan-status-text">📁 点击选择或拖拽二维码图片到这里</span>
+      <span class="qr-hint">支持 JPG / PNG / WebP 等格式</span>
+      <input id="scan-input" type="file" accept="image/*" hidden>
+    </div>
+    <div id="scan-result-area" class="qr-result-area" hidden>
+      <label class="qr-label">识别结果</label>
+      <div class="qr-result-box">
+        <textarea id="scan-result-text" class="qr-textarea" rows="3" readonly></textarea>
+        <div class="qr-result-actions">
+          <a id="scan-result-link" href="#" target="_blank" class="qr-btn-link" hidden>🔗 打开链接</a>
+          <button id="scan-copy" class="qr-btn-copy">📋 复制结果</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 条形码生成 -->
+  <section id="tab-barcode" class="qr-panel">
+    <div class="qr-layout">
+      <div class="qr-settings">
+        <label class="qr-label">输入内容</label>
+        <textarea id="bar-text" class="qr-textarea" rows="2" placeholder="例如: 123456789012">123456789012</textarea>
+        <div class="qr-row">
+          <div class="qr-col">
+            <label class="qr-label">条形码格式</label>
+            <select id="bar-format" class="qr-select">
+              <option value="CODE128">Code 128</option>
+              <option value="EAN13">EAN-13 (需12或13位数字)</option>
+              <option value="EAN8">EAN-8</option>
+              <option value="UPC">UPC</option>
+              <option value="CODE39">Code 39</option>
+              <option value="ITF14">ITF-14</option>
+            </select>
+          </div>
+          <div class="qr-col">
+            <label class="qr-label">线条颜色</label>
+            <div class="qr-color-wrap"><input id="bar-color" type="color" value="#3d3226"></div>
+          </div>
+        </div>
+      </div>
+      <div class="qr-preview-area">
+        <div class="qr-canvas-container" style="background:#fff; padding:20px; display:flex; align-items:center; justify-content:center;">
+          <svg id="barcode-svg"></svg>
+        </div>
+        <button id="barcode-download" class="qr-btn-primary">⬇️ 下载条形码</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="../../js/libs/qrcode.js"></script>
+<script src="../../js/libs/zxing-wasm-reader.js"></script>
+<!-- 引入 JsBarcode -->
+<script src="../../js/libs/JsBarcode.all.min.js"></script>
+<script src="../../js/code-tool.js" defer></script>
+</body>
+</html>

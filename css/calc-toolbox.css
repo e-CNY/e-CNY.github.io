@@ -1,0 +1,24 @@
+.ct-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+.ct-header { text-align: center; margin-bottom: 24px; }
+.ct-header h1 { font-size: 1.6rem; margin: 0 0 8px; color: #3d3226; }
+.ct-header p { margin: 0; color: #6b5d47; font-size: 0.9rem; }
+.ct-header a { color: #8a5a2b; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
+
+.ct-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 768px) { .ct-grid { grid-template-columns: 1fr; } }
+
+.ct-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; }
+.ct-card h2 { font-size: 1.1rem; margin: 0 0 16px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 8px; }
+
+.ct-input, .ct-textarea { width: 100%; padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; margin-bottom: 12px; font-size: .95rem; background: #fff; box-sizing: border-box; }
+.ct-textarea { resize: vertical; }
+
+.ct-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.ct-row label { flex-shrink: 0; width: 100px; font-size: .85rem; color: #6b5d47; }
+.ct-row input { flex: 1; padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fff; }
+
+.ct-btn { padding: 10px; border-radius: 8px; border: none; background: #7ba05b; color: #fff; font-size: .95rem; cursor: pointer; transition: background .15s; margin-bottom: 12px; }
+.ct-btn:hover { background: #6b8c4e; }
+
+.ct-result { text-align: right; font-size: 1.8rem; font-weight: bold; color: #3d3226; padding: 10px; background: #fff; border-radius: 8px; border: 1px solid #e5d9bd; }
+.ct-result-box { background: #fff; border: 1px solid #e5d9bd; border-radius: 8px; padding: 12px; font-size: .9rem; color: #3d3226; flex: 1; line-height: 1.6; }

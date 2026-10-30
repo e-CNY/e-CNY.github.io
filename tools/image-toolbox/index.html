@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图片全家桶 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/image-converter.css">
+<style>
+  /* 额外样式：EXIF 和 ASCII */
+  .exif-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: .85rem; }
+  .exif-table th, .exif-table td { padding: 8px 12px; border: 1px solid #ddcfb3; text-align: left; }
+  .exif-table th { background: #fdf8ec; color: #8a5a2b; width: 30%; }
+  .ascii-container { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+  .ascii-preview { flex: 1; min-width: 300px; background: #fff; border: 1px solid #ddcfb3; border-radius: 8px; padding: 16px; overflow: auto; max-height: 500px; }
+  .ascii-preview pre { margin: 0; font-family: monospace; font-size: 6px; line-height: 1; letter-spacing: 1px; color: #3d3226; white-space: pre; }
+</style>
+</head>
+<body>
+<main class="ic-tool">
+  <header class="ic-header">
+    <h1>🖼️ 图片全家桶</h1>
+    <p>格式转换、压缩、EXIF 查看、ASCII 转换，全本地处理。</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="qr-tabs" style="margin-bottom:24px; display:flex; justify-content:center; gap:12px;">
+    <button class="ic-tab active" data-target="panel-convert" style="padding:8px 16px; border-radius:20px; border:1px solid #d5c7a8; background:#8a5a2b; color:#fff; cursor:pointer;">格式转换与压缩</button>
+    <button class="ic-tab" data-target="panel-exif" style="padding:8px 16px; border-radius:20px; border:1px solid #d5c7a8; background:#fdf8ec; color:#6b5d47; cursor:pointer;">EXIF 信息查看</button>
+    <button class="ic-tab" data-target="panel-ascii" style="padding:8px 16px; border-radius:20px; border:1px solid #d5c7a8; background:#fdf8ec; color:#6b5d47; cursor:pointer;">图片转 ASCII</button>
+  </div>
+
+  <!-- 面板 1：格式转换与压缩 -->
+  <div id="panel-convert" class="ic-panel active" style="display:grid; grid-template-columns:320px 1fr; gap:24px;">
+    <aside class="ic-sidebar">
+      <div class="ic-section">
+        <div class="ic-section-header"><h2>1. 上传图片</h2><button id="ic-btn-clear" class="ic-btn-text" style="display:none;">清空</button></div>
+        <div id="ic-drop-zone" class="ic-drop-zone">
+          <span>📁 点击或拖拽图片</span>
+          <span class="ic-hint">支持批量，最大 50MB</span>
+        </div>
+        <input id="ic-input" type="file" accept="image/*,.heic,.heif,.tiff,.tif" multiple hidden>
+        <ul id="ic-file-list" class="ic-file-list"></ul>
+      </div>
+      <div class="ic-section">
+        <h2>2. 转换设置</h2>
+        <div class="ic-param-row">
+          <label>输出格式</label>
+          <select id="ic-format">
+            <option value="image/jpeg">JPG / JPEG</option>
+            <option value="image/png" selected>PNG</option>
+            <option value="image/webp">WebP</option>
+            <option value="image/avif">AVIF</option>
+          </select>
+        </div>
+        <div class="ic-param-row" id="quality-row">
+          <label>压缩质量</label>
+          <input type="range" id="ic-quality" min="10" max="100" value="80">
+          <span id="ic-quality-val">80%</span>
+        </div>
+        <div class="ic-param-row">
+          <label>尺寸调整</label>
+          <select id="ic-resize-mode">
+            <option value="none">保持原尺寸</option>
+            <option value="percent">按百分比缩放</option>
+            <option value="pixels">指定最大宽高</option>
+          </select>
+        </div>
+        <div class="ic-param-row" id="resize-percent-row" style="display:none;">
+          <label>缩放比例</label>
+          <input type="range" id="ic-scale" min="10" max="100" value="50"><span id="ic-scale-val">50%</span>
+        </div>
+        <div class="ic-param-row" id="resize-pixels-row" style="display:none;">
+          <label>最大宽高</label>
+          <input type="number" id="ic-max-width" placeholder="宽" value="1920">
+          <input type="number" id="ic-max-height" placeholder="高" value="1080">
+        </div>
+      </div>
+      <div class="ic-section"><button id="ic-btn-process" class="ic-btn-primary" disabled>▶️ 开始转换</button></div>
+    </aside>
+    <section class="ic-main">
+      <div id="ic-result-area" class="ic-result-area"><p class="ic-placeholder">上传图片后开始转换</p></div>
+    </section>
+  </div>
+
+  <!-- 面板 2：EXIF 查看 -->
+  <div id="panel-exif" class="ic-panel" style="display:none; text-align:center;">
+    <div class="ic-drop-zone" id="exif-drop-zone" style="margin-bottom:20px;">
+      <span>📁 点击选择一张图片查看 EXIF</span>
+    </div>
+    <input id="exif-input" type="file" accept="image/jpeg,image/tiff" hidden>
+    <div style="text-align:left; max-width:800px; margin:0 auto;">
+      <div id="exif-preview" style="text-align:center; margin-bottom:20px;"></div>
+      <table class="exif-table" id="exif-table" style="display:none;">
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 面板 3：图片转 ASCII -->
+  <div id="panel-ascii" class="ic-panel" style="display:none;">
+    <div class="ic-layout">
+      <div class="ic-sidebar" style="width:280px;">
+        <div class="ic-section">
+          <h2>1. 上传图片</h2>
+          <div id="ascii-drop-zone" class="ic-drop-zone"><span>📁 点击选择图片</span></div>
+          <input id="ascii-input" type="file" accept="image/*" hidden>
+        </div>
+        <div class="ic-section">
+          <h2>2. 参数设置</h2>
+          <div class="ic-param-row">
+            <label>输出宽度 (字符数)</label>
+            <input type="range" id="ascii-width" min="40" max="200" value="100">
+            <span id="ascii-width-val">100</span>
+          </div>
+          <div class="ic-param-row">
+            <label>字符集</label>
+            <select id="ascii-charset">
+              <option value="01">01 (黑白)</option>
+              <option value="standard" selected>标准 ASCII</option>
+              <option value="detailed">高精度 ASCII</option>
+            </select>
+          </div>
+          <button id="ascii-btn-process" class="ic-btn-primary">▶️ 生成字符画</button>
+        </div>
+      </div>
+      <section class="ic-main" style="flex:1;">
+        <div class="ascii-container">
+          <div class="ascii-preview" id="ascii-output"><p class="ic-placeholder">等待生成...</p></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- 依赖库 -->
+<script src="../../js/libs/heic2any.min.js"></script>
+<script src="../../js/libs/UTIF.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/upng-js/2.1.0/UPNG.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.min.js"></script>
+<script src="../../js/image-toolbox.js" defer></script>
+</body>
+</html>

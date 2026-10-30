@@ -3,105 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>久坐提醒 · 工具站</title>
+<title>时间与计时工具 · 工具站</title>
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="../../css/sitting-reminder.css">
 </head>
 <body>
-<main class="sr-tool">
-  <header class="sr-header">
-    <h1>🪑 久坐提醒</h1>
-    <p>坐下 → 活动 → 站立 循环提醒，设为 0 的阶段自动跳过。</p>
+<main class="tt-layout">
+  <header class="tt-header">
+    <h1>⏱️ 时间与计时工具</h1>
+    <p>久坐提醒 / 秒表 / 倒计时 / 番茄钟，全本地运行。</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
 
-  <section class="sr-rings" aria-label="三个阶段计时">
-    <article class="sr-card" style="--phase-color:#6a8db8" data-phase="sit">
-      <div class="sr-ring-wrap">
-        <svg class="sr-ring" viewBox="0 0 100 100" aria-hidden="true">
-          <circle class="sr-ring-track" cx="50" cy="50" r="45"></circle>
-          <circle class="sr-ring-progress" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="sr-ring-text">
-          <span class="sr-emoji">🪑</span>
-          <span class="sr-time">--:--</span>
-        </div>
-      </div>
-      <label class="sr-label">
-        <span>坐下</span>
-        <input type="number" min="0" max="999" step="1" value="40" data-phase="sit" aria-label="坐下时间（分钟）">
-        <span class="sr-unit">分</span>
-      </label>
-    </article>
-
-    <article class="sr-card" style="--phase-color:#7ba05b" data-phase="move">
-      <div class="sr-ring-wrap">
-        <svg class="sr-ring" viewBox="0 0 100 100" aria-hidden="true">
-          <circle class="sr-ring-track" cx="50" cy="50" r="45"></circle>
-          <circle class="sr-ring-progress" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="sr-ring-text">
-          <span class="sr-emoji">🚶</span>
-          <span class="sr-time">--:--</span>
-        </div>
-      </div>
-      <label class="sr-label">
-        <span>活动</span>
-        <input type="number" min="0" max="999" step="1" value="3" data-phase="move" aria-label="活动时间（分钟）">
-        <span class="sr-unit">分</span>
-      </label>
-    </article>
-
-    <article class="sr-card" style="--phase-color:#c99a4b" data-phase="stand">
-      <div class="sr-ring-wrap">
-        <svg class="sr-ring" viewBox="0 0 100 100" aria-hidden="true">
-          <circle class="sr-ring-track" cx="50" cy="50" r="45"></circle>
-          <circle class="sr-ring-progress" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="sr-ring-text">
-          <span class="sr-emoji">🧍</span>
-          <span class="sr-time">--:--</span>
-        </div>
-      </div>
-      <label class="sr-label">
-        <span>站立</span>
-        <input type="number" min="0" max="999" step="1" value="20" data-phase="stand" aria-label="站立时间（分钟）">
-        <span class="sr-unit">分</span>
-      </label>
-    </article>
-  </section>
-
-  <div class="sr-controls">
-    <button id="btn-start" class="primary">开始</button>
-    <button id="btn-pause" disabled>暂停</button>
-    <button id="btn-stop" disabled>停止</button>
+  <div class="tt-tabs">
+    <button class="tt-tab active" data-target="panel-sit">🪑 久坐提醒</button>
+    <button class="tt-tab" data-target="panel-stopwatch">⏱️ 秒表</button>
+    <button class="tt-tab" data-target="panel-countdown">⏳ 倒计时</button>
+    <button class="tt-tab" data-target="panel-pomodoro">🍅 番茄钟</button>
   </div>
 
-  <p id="sr-status" class="sr-status" role="status" aria-live="polite"></p>
-
-  <section class="sr-alarm-settings" aria-label="闹铃设置">
-    <h2>🔔 闹铃设置</h2>
-
-    <div class="sr-volume-row">
-      <label for="sr-volume">音量</label>
-      <input id="sr-volume" type="range" min="0" max="100" step="1" value="70">
-      <span id="sr-volume-val">70%</span>
+  <div class="tt-content">
+    <!-- 面板 1：久坐循环 -->
+    <div id="panel-sit" class="tt-panel active">
+      <div class="sr-tool" style="width:100%;">
+        <p style="text-align:center;color:#6b5d47;font-size:.9rem;margin-bottom:20px;">坐下 → 活动 → 站立 循环提醒，设为 0 的阶段自动跳过。</p>
+        <section class="sr-rings">
+          <article class="sr-card" style="--phase-color:#6a8db8" data-phase="sit">
+            <div class="sr-ring-wrap">
+              <svg class="sr-ring" viewBox="0 0 100 100"><circle class="sr-ring-track" cx="50" cy="50" r="45"/><circle class="sr-ring-progress" cx="50" cy="50" r="45"/></svg>
+              <div class="sr-ring-text"><span class="sr-emoji">🪑</span><span class="sr-time">--:--</span></div>
+            </div>
+            <label class="sr-label"><span>坐下</span><input type="number" min="0" max="999" value="40" data-phase="sit"><span>分</span></label>
+          </article>
+          <article class="sr-card" style="--phase-color:#7ba05b" data-phase="move">
+            <div class="sr-ring-wrap">
+              <svg class="sr-ring" viewBox="0 0 100 100"><circle class="sr-ring-track" cx="50" cy="50" r="45"/><circle class="sr-ring-progress" cx="50" cy="50" r="45"/></svg>
+              <div class="sr-ring-text"><span class="sr-emoji">🚶</span><span class="sr-time">--:--</span></div>
+            </div>
+            <label class="sr-label"><span>活动</span><input type="number" min="0" max="999" value="3" data-phase="move"><span>分</span></label>
+          </article>
+          <article class="sr-card" style="--phase-color:#c99a4b" data-phase="stand">
+            <div class="sr-ring-wrap">
+              <svg class="sr-ring" viewBox="0 0 100 100"><circle class="sr-ring-track" cx="50" cy="50" r="45"/><circle class="sr-ring-progress" cx="50" cy="50" r="45"/></svg>
+              <div class="sr-ring-text"><span class="sr-emoji">🧍</span><span class="sr-time">--:--</span></div>
+            </div>
+            <label class="sr-label"><span>站立</span><input type="number" min="0" max="999" value="20" data-phase="stand"><span>分</span></label>
+          </article>
+        </section>
+        <div class="sr-controls">
+          <button id="btn-start" class="primary">开始</button>
+          <button id="btn-pause" disabled>暂停</button>
+          <button id="btn-stop" disabled>停止</button>
+        </div>
+        <p id="sr-status" class="sr-status"></p>
+      </div>
     </div>
 
-    <div class="sr-audio-row">
-      <label class="sr-upload-btn">
-        📁 上传自定义铃声
-        <input id="sr-audio-file" type="file" accept="audio/*" hidden>
-      </label>
-      <span id="sr-audio-name" class="sr-audio-name"></span>
-      <button id="sr-audio-clear" type="button" class="sr-audio-clear" hidden>清除</button>
+    <!-- 面板 2：秒表 -->
+    <div id="panel-stopwatch" class="tt-panel">
+      <div class="timer-display" id="sw-display">00:00.00</div>
+      <div class="timer-controls">
+        <button id="sw-start" class="btn-primary">开始</button>
+        <button id="sw-lap" disabled>计次</button>
+        <button id="sw-reset" disabled>重置</button>
+      </div>
+      <ul id="sw-laps" class="laps-list"></ul>
     </div>
 
-    <p class="sr-audio-hint">
-      支持 mp3 / wav / ogg / m4a 等浏览器可播放格式，文件 ≤ 5MB、时长 ≤ 30 秒。
-      文件只在浏览器本地播放，不会上传到任何服务器；刷新页面后需重新选择。
-    </p>
-  </section>
+    <!-- 面板 3：倒计时 -->
+    <div id="panel-countdown" class="tt-panel">
+      <div class="timer-display" id="cd-display">00:00</div>
+      <div class="timer-inputs">
+        <input type="number" id="cd-min" placeholder="分" min="0" style="width:60px"> : 
+        <input type="number" id="cd-sec" placeholder="秒" min="0" max="59" style="width:60px">
+      </div>
+      <div class="timer-controls">
+        <button id="cd-start" class="btn-primary">开始</button>
+        <button id="cd-pause" disabled>暂停</button>
+        <button id="cd-reset">重置</button>
+      </div>
+    </div>
+
+    <!-- 面板 4：番茄钟 -->
+    <div id="panel-pomodoro" class="tt-panel">
+      <div class="timer-display" id="pm-display">25:00</div>
+      <p class="timer-status" id="pm-status">专注时间</p>
+      <div class="timer-controls">
+        <button id="pm-start" class="btn-primary">开始专注</button>
+        <button id="pm-reset">重置</button>
+      </div>
+    </div>
+  </div>
 </main>
 <script src="../../js/sitting-reminder.js" defer></script>
 </body>

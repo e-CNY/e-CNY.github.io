@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>哈希与加解密 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/crypto-tool.css">
+</head>
+<body>
+<main class="ct-layout">
+  <header class="ct-header">
+    <h1>🔐 哈希与加解密</h1>
+    <p>MD5 / SHA 系列哈希计算、JWT 解析、Base64 加解密。</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="ct-tabs">
+    <button class="ct-tab active" data-target="panel-hash">#️⃣ 哈希计算</button>
+    <button class="ct-tab" data-target="panel-jwt">🎫 JWT 解析</button>
+    <button class="ct-tab" data-target="panel-base64">🔤 Base64</button>
+  </div>
+
+  <div class="ct-content">
+    <!-- 哈希面板 -->
+    <div id="panel-hash" class="ct-panel active">
+      <label class="ct-label">输入要哈希的文本</label>
+      <textarea id="hash-input" class="ct-textarea" rows="4">Hello World</textarea>
+      <button id="btn-hash" class="ct-btn primary">计算哈希</button>
+      
+      <div class="ct-result-group" id="hash-res-group" style="display:none;">
+        <div class="ct-res-item"><span>MD5:</span><input type="text" readonly id="res-md5"></div>
+        <div class="ct-res-item"><span>SHA-1:</span><input type="text" readonly id="res-sha1"></div>
+        <div class="ct-res-item"><span>SHA-256:</span><input type="text" readonly id="res-sha256"></div>
+      </div>
+    </div>
+
+    <!-- JWT 面板 -->
+    <div id="panel-jwt" class="ct-panel">
+      <label class="ct-label">粘贴 JWT Token</label>
+      <textarea id="jwt-input" class="ct-textarea" rows="4" placeholder="eyJhbGciOi..."></textarea>
+      <button id="btn-jwt" class="ct-btn primary">解析 JWT</button>
+      
+      <div class="ct-result-box" id="jwt-res" style="display:none;">
+        <h3>Header (头部)</h3>
+        <pre id="jwt-header"></pre>
+        <h3>Payload (载荷)</h3>
+        <pre id="jwt-payload"></pre>
+        <p style="color:#a8452a; font-size:.8rem;">注意：此处仅做 Base64 解码，未验证签名。</p>
+      </div>
+    </div>
+
+    <!-- Base64 面板 -->
+    <div id="panel-base64" class="ct-panel">
+      <label class="ct-label">输入文本 (UTF-8)</label>
+      <textarea id="b64-input" class="ct-textarea" rows="3"></textarea>
+      <div style="display:flex; gap:10px; margin-bottom:12px;">
+        <button id="btn-b64-encode" class="ct-btn primary" style="flex:1;">编码 (Encode)</button>
+        <button id="btn-b64-decode" class="ct-btn" style="flex:1;">解码 (Decode)</button>
+      </div>
+      <label class="ct-label">结果</label>
+      <textarea id="b64-output" class="ct-textarea" rows="3" readonly></textarea>
+    </div>
+  </div>
+</main>
+<script src="../../js/libs/crypto-js.min.js"></script>
+<script src="../../js/crypto-tool.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文本处理工具箱 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/text-toolbox.css">
+</head>
+<body>
+<main class="tt-layout">
+  <header class="tt-header">
+    <h1>📝 文本处理工具箱</h1>
+    <p>支持批量去重、排序、大小写转换、加前后缀等常用文本处理。</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="tt-container">
+    <div class="tt-toolbar">
+      <button class="tt-btn" onclick="txtDedupe()">去重</button>
+      <button class="tt-btn" onclick="txtSort('asc')">正序</button>
+      <button class="tt-btn" onclick="txtSort('desc')">倒序</button>
+      <button class="tt-btn" onclick="txtCase('upper')">转大写</button>
+      <button class="tt-btn" onclick="txtCase('lower')">转小写</button>
+      <button class="tt-btn" onclick="txtTrim()">去首尾空格</button>
+      <button class="tt-btn" onclick="txtLineNumber()">加行号</button>
+      <button class="tt-btn" onclick="txtWrap()">包裹引号</button>
+      <button class="tt-btn" onclick="txtClear()">清空</button>
+    </div>
+
+    <div class="tt-editor-group">
+      <div class="tt-col">
+        <label>输入文本</label>
+        <textarea id="txt-in" spellcheck="false" placeholder="粘贴文本..."></textarea>
+      </div>
+      <div class="tt-col">
+        <label>输出结果</label>
+        <textarea id="txt-out" spellcheck="false" readonly placeholder="结果..."></textarea>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../../js/text-toolbox.js" defer></script>
+</body>
+</html>

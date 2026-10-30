@@ -1,0 +1,19 @@
+.tt-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+.tt-header { text-align: center; margin-bottom: 24px; }
+.tt-header h1 { font-size: 1.6rem; margin: 0 0 8px; color: #3d3226; }
+.tt-header p { margin: 0; color: #6b5d47; font-size: 0.9rem; }
+.tt-header a { color: #8a5a2b; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
+.tt-header a:hover { text-decoration: underline; }
+
+.tt-container { display: flex; flex-direction: column; gap: 16px; }
+.tt-toolbar { display: flex; flex-wrap: wrap; gap: 8px; background: #f9f3e3; padding: 12px; border-radius: 12px; border: 1px solid #ddcfb3; }
+.tt-btn { padding: 8px 14px; border-radius: 6px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; font-size: .85rem; cursor: pointer; transition: all .15s; }
+.tt-btn:hover { background: #f5ecd5; border-color: #b08a5a; }
+
+.tt-editor-group { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; height: 500px; }
+@media (max-width: 768px) { .tt-editor-group { grid-template-columns: 1fr; height: auto; } }
+.tt-col { display: flex; flex-direction: column; }
+.tt-col label { font-size: .85rem; color: #6b5d47; margin-bottom: 6px; font-weight: bold; }
+.tt-col textarea { flex: 1; padding: 12px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; color: #3d3226; font-family: monospace; font-size: .85rem; resize: none; line-height: 1.5; }
+.tt-col textarea:focus { outline: none; border-color: #8a5a2b; box-shadow: 0 0 0 2px rgba(138,90,43,.2); }
+@media (max-width: 768px) { .tt-col textarea { height: 250px; } }

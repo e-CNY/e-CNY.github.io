@@ -1,0 +1,29 @@
+.mk-layout { max-width: 800px; margin: 0 auto; padding: 28px 16px 56px; }
+.mk-header { text-align: center; margin-bottom: 24px; }
+.mk-header h1 { font-size: 1.6rem; margin: 0 0 8px; color: #3d3226; }
+.mk-header p { margin: 0; color: #6b5d47; font-size: 0.9rem; }
+.mk-header a { color: #8a5a2b; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
+
+.mk-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+.mk-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; }
+.mk-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; }
+
+.mk-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+.mk-panel { display: none; }
+.mk-panel.active { display: block; }
+
+.mk-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 600px) { .mk-row { grid-template-columns: 1fr; } }
+.mk-col { display: flex; flex-direction: column; }
+.mk-col label { font-size: .85rem; color: #6b5d47; margin: 12px 0 6px; font-weight: bold; }
+.mk-col input[type="number"], .mk-col textarea { padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-family: monospace; }
+.mk-col textarea { height: 200px; resize: none; }
+
+.mk-checks { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; font-size: .9rem; color: #3d3226; }
+.mk-checks label { display: flex; align-items: center; gap: 6px; font-weight: normal; margin: 0; cursor: pointer; }
+
+.mk-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; margin-top: 12px; font-size: .9rem; }
+.mk-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+.mk-btn:hover { opacity: 0.9; }
+
+.mk-result-box { background: #fff; border: 1px dashed #d5c7a8; border-radius: 8px; padding: 20px; text-align: center; font-size: 1.5rem; font-weight: bold; color: #a8452a; min-height: 80px; display: flex; align-items: center; justify-content: center; }

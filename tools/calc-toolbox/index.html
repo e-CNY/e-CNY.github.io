@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>计算器工具箱 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/calc-toolbox.css">
+</head>
+<body>
+<main class="ct-layout">
+  <header class="ct-header">
+    <h1>🧮 计算器工具箱</h1>
+    <p>科学计算、统计、金融、分页等计算工具合集。</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="ct-grid">
+    <!-- 科学计算器 -->
+    <div class="ct-card">
+      <h2>📐 科学计算器</h2>
+      <input type="text" id="calc-expr" class="ct-input" placeholder="例如: 2 + 3 * 4 / (1 - 5)" style="font-family: monospace;">
+      <button id="btn-calc" class="ct-btn primary">计算结果</button>
+      <div class="ct-result" id="calc-res">= 0</div>
+    </div>
+
+    <!-- 统计计算 -->
+    <div class="ct-card">
+      <h2>📊 统计计算</h2>
+      <textarea id="stat-input" class="ct-textarea" rows="3" placeholder="输入数字，用逗号或空格隔开...">10, 20, 30, 40, 50</textarea>
+      <button id="btn-stat" class="ct-btn primary">计算统计</button>
+      <div class="ct-result-box" id="stat-res"></div>
+    </div>
+
+    <!-- 金融房贷 -->
+    <div class="ct-card">
+      <h2>🏠 房贷计算</h2>
+      <div class="ct-row"><label>贷款总额 (万)</label><input type="number" id="loan-amount" value="100"></div>
+      <div class="ct-row"><label>年利率 (%)</label><input type="number" id="loan-rate" value="4.9" step="0.1"></div>
+      <div class="ct-row"><label>贷款年限 (年)</label><input type="number" id="loan-years" value="30"></div>
+      <button id="btn-loan" class="ct-btn primary">等额本息计算</button>
+      <div class="ct-result-box" id="loan-res"></div>
+    </div>
+
+    <!-- 分页计算 -->
+    <div class="ct-card">
+      <h2>📄 分页偏移计算</h2>
+      <div class="ct-row"><label>当前页码</label><input type="number" id="pg-current" value="1" min="1"></div>
+      <div class="ct-row"><label>每页条数</label><input type="number" id="pg-size" value="10" min="1"></div>
+      <button id="btn-pg" class="ct-btn primary">计算 OFFSET</button>
+      <div class="ct-result-box" id="pg-res"></div>
+    </div>
+  </div>
+</main>
+<script src="../../js/calc-toolbox.js" defer></script>
+</body>
+</html>
