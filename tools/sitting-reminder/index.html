@@ -11,12 +11,12 @@
 <main class="tt-layout">
   <header class="tt-header">
     <h1>⏱️ 时间与计时工具</h1>
-    <p>久坐提醒 / 秒表 / 倒计时 / 番茄钟，全本地运行。</p>
+    <p>久坐循环 / 秒表 / 倒计时 / 番茄钟，全本地运行。</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
 
   <div class="tt-tabs">
-    <button class="tt-tab active" data-target="panel-sit">🪑 久坐提醒</button>
+    <button class="tt-tab active" data-target="panel-sit">🪑 久坐循环</button>
     <button class="tt-tab" data-target="panel-stopwatch">⏱️ 秒表</button>
     <button class="tt-tab" data-target="panel-countdown">⏳ 倒计时</button>
     <button class="tt-tab" data-target="panel-pomodoro">🍅 番茄钟</button>
@@ -94,6 +94,28 @@
       </div>
     </div>
   </div>
+
+  <!-- 全局公共设置 -->
+  <section class="sr-alarm-settings" aria-label="闹铃设置">
+    <h2>🔔 闹铃设置</h2>
+    <div class="sr-volume-row">
+      <label for="sr-volume">音量</label>
+      <input id="sr-volume" type="range" min="0" max="100" step="1" value="88">
+      <span id="sr-volume-val">88%</span>
+    </div>
+    <div class="sr-audio-row">
+      <label class="sr-upload-btn">
+        📁 上传自定义铃声
+        <input id="sr-audio-file" type="file" accept="audio/*" hidden>
+      </label>
+      <span id="sr-audio-name" class="sr-audio-name"></span>
+      <button id="sr-audio-clear" type="button" class="sr-audio-clear" hidden>清除</button>
+    </div>
+    <p class="sr-audio-hint">
+      支持 mp3 / wav / ogg / m4a 等格式，文件 ≤ 5MB、时长 ≤ 30 秒。
+      文件只在浏览器本地播放，刷新页面后需重新选择。
+    </p>
+  </section>
 </main>
 <script src="../../js/sitting-reminder.js" defer></script>
 </body>

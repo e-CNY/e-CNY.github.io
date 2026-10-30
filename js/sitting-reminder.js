@@ -1,4 +1,96 @@
 (function () {
+  // ================= 全局音频配置 =================
+  var volume = 0.88;
+  var customAudioUrl = null;
+  var customAudioEl = null;
+  var audioCtx = null;
+
+  var volumeInput = document.getElementById('sr-volume');
+  var volumeVal = document.getElementById('sr-volume-val');
+  var fileInput = document.getElementById('sr-audio-file');
+  var audioNameEl = document.getElementById('sr-audio-name');
+  var clearBtn = document.getElementById('sr-audio-clear');
+
+  function getAudioCtx() {
+    if (!audioCtx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) audioCtx = new AC();
+    }
+    return audioCtx;
+  }
+
+  function playDefaultChime() {
+    var ctx = getAudioCtx();
+    if (!ctx) return;
+    if (ctx.state === 'suspended') ctx.resume();
+    var peak = Math.max(0.0001, volume * 0.4);
+    var now = ctx.currentTime;
+    [0, 0.3].forEach(function (offset) {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      osc.connect(gain); gain.connect(ctx.destination);
+      var t = now + offset;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(peak, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
+      osc.start(t); osc.stop(t + 0.22);
+    });
+  }
+
+  // 全局播放函数
+  function playChime() {
+    if (customAudioEl) {
+      try {
+        customAudioEl.currentTime = 0;
+        customAudioEl.volume = volume;
+        var p = customAudioEl.play();
+        if (p && p.catch) p.catch(function () { playDefaultChime(); });
+        return;
+      } catch (e) {}
+    }
+    playDefaultChime();
+  }
+
+  // 音频 UI 事件
+  volumeInput.addEventListener('input', function () {
+    volume = parseInt(volumeInput.value, 10) / 100;
+    volumeVal.textContent = volumeInput.value + '%';
+    if (customAudioEl) customAudioEl.volume = volume;
+  });
+
+  function clearCustomAudio(showMsg) {
+    if (customAudioUrl) { URL.revokeObjectURL(customAudioUrl); customAudioUrl = null; }
+    customAudioEl = null; fileInput.value = ''; audioNameEl.textContent = ''; clearBtn.hidden = true;
+  }
+
+  fileInput.addEventListener('change', function () {
+    var file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { alert('文件超过 5MB，请选择更小的音频。'); fileInput.value = ''; return; }
+
+    if (customAudioUrl) URL.revokeObjectURL(customAudioUrl);
+    customAudioUrl = URL.createObjectURL(file);
+    customAudioEl = new Audio(customAudioUrl);
+    customAudioEl.volume = volume;
+
+    customAudioEl.addEventListener('loadedmetadata', function () {
+      if (customAudioEl.duration > 30) {
+        alert('音频超过 30 秒，请选择更短的铃声。'); clearCustomAudio(); return;
+      }
+      audioNameEl.textContent = file.name;
+      clearBtn.hidden = false;
+    }, { once: true });
+
+    customAudioEl.addEventListener('error', function () {
+      alert('无法播放该音频，请换一个格式。'); clearCustomAudio();
+    }, { once: true });
+  });
+
+  clearBtn.addEventListener('click', function () { clearCustomAudio(); });
+
+
   // ================= Tab 切换 =================
   var tabs = document.querySelectorAll('.tt-tab');
   var panels = document.querySelectorAll('.tt-panel');
@@ -11,7 +103,8 @@
     });
   });
 
-  // ================= 1. 久坐循环 (原逻辑) =================
+
+  // ================= 1. 久坐循环 =================
   var PHASES = [
     { key: 'sit',   label: '坐下', emoji: '🪑' },
     { key: 'move',  label: '活动', emoji: '🚶' },
@@ -28,9 +121,6 @@
   var srRemaining = 0;
   var srEndTime = 0;
   var srTimer = null;
-  var srAudioCtx = null;
-  var srFlashTimer = null;
-  var srLastHiddenTitle = '';
 
   var cards = document.querySelectorAll('.sr-card');
   var inputs = document.querySelectorAll('.sr-label input');
@@ -54,27 +144,6 @@
     el.style.strokeDasharray = String(C);
     el.style.strokeDashoffset = '0';
   });
-
-  function srGetAudioCtx() {
-    if (!srAudioCtx) { var AC = window.AudioContext || window.webkitAudioContext; if (AC) srAudioCtx = new AC(); }
-    return srAudioCtx;
-  }
-
-  function srPlayChime() {
-    var ctx = srGetAudioCtx(); if (!ctx) return;
-    if (ctx.state === 'suspended') ctx.resume();
-    var now = ctx.currentTime;
-    [0, 0.3].forEach(function (offset) {
-      var osc = ctx.createOscillator(); var gain = ctx.createGain();
-      osc.type = 'sine'; osc.frequency.value = 880;
-      osc.connect(gain); gain.connect(ctx.destination);
-      var t = now + offset;
-      gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(0.28, t + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
-      osc.start(t); osc.stop(t + 0.22);
-    });
-  }
 
   function srFmt(ms) {
     var total = Math.ceil(ms / 1000);
@@ -139,7 +208,7 @@
   }
 
   function srOnDone() {
-    srPlayChime();
+    playChime(); // 调用全局播放
     var next = srNextNonZero(srIndex);
     if (next === -1) { srStop(); srStatus.textContent = '所有阶段都已结束'; return; }
     srIndex = next;
@@ -148,18 +217,16 @@
     srRender(); srTick();
   }
 
-  window.srStart = function() {
+  btnStart.addEventListener('click', function() {
     srReadInputs();
     if (srFirstNonZero() === -1) { srStatus.textContent = '未设置任何时间。'; return; }
-    var ctx = srGetAudioCtx(); if (ctx && ctx.state === 'suspended') ctx.resume();
+    var ctx = getAudioCtx(); if (ctx && ctx.state === 'suspended') ctx.resume();
     if (srState === 'idle') { srIndex = srFirstNonZero(); srRemaining = durations[PHASES[srIndex].key] * 60000; }
     srEndTime = Date.now() + srRemaining; srState = 'running';
     if (srTimer) clearInterval(srTimer);
     srTimer = setInterval(srTick, 100);
     srRender(); srTick();
-  };
-
-  btnStart.addEventListener('click', srStart);
+  });
 
   btnPause.addEventListener('click', function () {
     if (srState !== 'running') return;
@@ -274,7 +341,8 @@
         if (cdTime === 0) {
           clearInterval(cdTimer); cdRunning = false;
           cdStart.disabled = false; cdPause.disabled = true;
-          srPlayChime(); alert('倒计时结束！');
+          playChime(); // 倒计时结束响铃
+          setTimeout(function(){ alert('倒计时结束！'); }, 100);
         }
       }, 100);
     }
@@ -325,7 +393,8 @@
         if (pmTime === 0) {
           clearInterval(pmTimer); pmRunning = false;
           pmStart.textContent = '开始';
-          srPlayChime(); alert('时间到！');
+          playChime(); // 番茄钟结束响铃
+          setTimeout(function(){ alert(pmMode === 'work' ? '专注结束，休息一下！' : '休息结束，继续工作！'); }, 100);
           pmMode = pmMode === 'work' ? 'break' : 'work';
           pmTime = (pmMode === 'work' ? 25 : 5) * 60 * 1000;
           pmStatus.textContent = pmMode === 'work' ? '专注时间' : '休息时间';
