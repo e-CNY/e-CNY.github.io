@@ -1,8 +1,8 @@
 .jt-layout { display: flex; flex-direction: column; height: 100vh; margin: 0; background: #efe6d0; overflow: hidden; }
-.jt-header { padding: 16px; background: #f9f3e3; border-bottom: 1px solid #ddcfb3; text-align: center; flex-shrink: 0; position: relative; }
-.jt-header h1 { font-size: 1.4rem; margin: 0 0 4px; color: #3d3226; }
+.jt-header { padding: 16px; background: #f9f3e3; border-bottom: 1px solid #ddcfb3; text-align: center; flex-shrink: 0; }
+.jt-header h1 { font-size: 1.4rem; margin: 0 0 8px; color: #3d3226; }
 .jt-header p { margin: 0; font-size: 0.85rem; color: #6b5d47; }
-.jt-header a { position: absolute; left: 20px; top: 24px; color: #8a5a2b; text-decoration: none; font-size: .9rem; }
+.jt-header a { color: #8a5a2b; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
 .jt-header a:hover { text-decoration: underline; }
 
 .jt-main { display: flex; flex: 1; overflow: hidden; }
@@ -72,7 +72,7 @@
 .diff-add { background-color: #dcfce7; color: #166534; padding: 0 4px; border-radius: 2px; }
 .diff-remove { background-color: #fee2e2; color: #991b1b; padding: 0 4px; border-radius: 2px; text-decoration: line-through; }
 
-/* --- 新增：文本对比样式 --- */
+/* --- 文本对比样式 --- */
 .diff-line { display: flex; font-family: monospace; font-size: .85rem; line-height: 1.5; }
 .diff-line-add { background-color: #dcfce7; color: #166534; }
 .diff-line-remove { background-color: #fee2e2; color: #991b1b; }

@@ -61,15 +61,17 @@
     a.download = 'qrcode_' + Date.now() + '.png'; a.click();
   });
 
-  // ================= 2. 二维码识别 (ZXing) =================
+  // ================= 2. 二维码/条形码识别 =================
   var dropZone = document.getElementById('scan-drop-zone');
   var scanInput = document.getElementById('scan-input');
   var scanStatus = document.getElementById('scan-status-text');
   var resultArea = document.getElementById('scan-result-area');
+  var resultLabel = document.getElementById('scan-result-label');
   var resultText = document.getElementById('scan-result-text');
   var resultLink = document.getElementById('scan-result-link');
   var copyBtn = document.getElementById('scan-copy');
-  var isEngineLoaded = false;
+
+  var codeReader = new ZXing.BrowserMultiFormatReader();
 
   dropZone.addEventListener('click', function () { scanInput.click(); });
   scanInput.addEventListener('change', function () {
@@ -78,36 +80,52 @@
   });
 
   function handleScan(file) {
-    if (!window.ZXingWASM) return alert('引擎未加载');
-    if (!isEngineLoaded) {
-      var isFile = location.protocol === 'file:';
-      window.ZXingWASM.prepareZXingModule({
-        overrides: { locateFile: function(path) {
-          if (path.endsWith('.wasm')) return isFile ? 'https://cdn.jsdelivr.net/npm/zxing-wasm@2.1.0/dist/reader/zxing_reader.wasm' : '../../js/libs/zxing_reader.wasm';
-          return path;
-        }}
-      });
-      isEngineLoaded = true;
+    if (!window.ZXing) {
+      return alert('ZXing 库未加载，请检查 js/libs/zxing.min.js 是否存在。');
     }
+
     scanStatus.textContent = '⏳ 正在识别...';
-    ZXingWASM.readBarcodesFromImageFile(file, { tryHarder: true, formats: ['QRCode'] }).then(function(res) {
-      scanStatus.textContent = '📁 点击选择或拖拽二维码图片到这里';
-      if (res && res.length > 0) {
-        resultArea.hidden = false; resultText.value = res[0].text;
-        if (res[0].text.match(/^https?:\/\//i)) { resultLink.href = res[0].text; resultLink.hidden = false; }
-        else resultLink.hidden = true;
-      } else {
-        alert('未能识别出二维码'); resultArea.hidden = true;
-      }
-    });
+    
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        // 直接传入 img 对象，decodeFromImage 支持异步 Promise
+        codeReader.decodeFromImage(img).then(function(res) {
+          scanStatus.textContent = '📁 点击选择或拖拽二维码 / 条形码图片到这里';
+          
+          if (res) {
+            var codeData = res.getText();
+            var codeFormat = res.getBarcodeFormat().toString();
+            
+            resultArea.hidden = false;
+            resultLabel.textContent = '识别结果 (' + codeFormat + ')';
+            resultText.value = codeData;
+            
+            if (codeData.match(/^https?:\/\//i)) {
+              resultLink.href = codeData; resultLink.hidden = false;
+            } else {
+              resultLink.hidden = true;
+            }
+          }
+        }).catch(function(err) {
+          scanStatus.textContent = '📁 点击选择或拖拽二维码 / 条形码图片到这里';
+          alert('未能识别出任何二维码或条形码，请确保图片清晰完整。');
+          resultArea.hidden = true;
+        });
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
+
   copyBtn.addEventListener('click', function () {
     resultText.select(); document.execCommand('copy');
     var txt = copyBtn.textContent; copyBtn.textContent = '✅ 已复制';
     setTimeout(function() { copyBtn.textContent = txt; }, 2000);
   });
 
-  // ================= 3. 条形码生成 (JsBarcode) =================
+  // ================= 3. 条形码生成 =================
   var barText = document.getElementById('bar-text');
   var barFormat = document.getElementById('bar-format');
   var barColor = document.getElementById('bar-color');
@@ -125,7 +143,7 @@
       });
       barcodeDownload.disabled = false;
     } catch (e) {
-      barcodeSvg.innerHTML = ''; // 输入不符合格式要求时清空
+      barcodeSvg.innerHTML = ''; 
       barcodeDownload.disabled = true;
     }
   }

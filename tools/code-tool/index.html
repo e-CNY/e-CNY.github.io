@@ -11,13 +11,13 @@
 <main class="qr-tool">
   <header class="qr-header">
     <h1>📱 码工具</h1>
-    <p>本地生成与识别二维码，支持生成条形码。</p>
+    <p>本地生成与识别二维码/条形码，全程在浏览器本地处理。</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
 
   <div class="qr-tabs">
     <button class="active" data-tab="gen">✨ 生成二维码</button>
-    <button data-tab="scan">🔍 识别二维码</button>
+    <button data-tab="scan">🔍 识别二维码/条形码</button>
     <button data-tab="barcode">📊 生成条形码</button>
   </div>
 
@@ -62,15 +62,15 @@
     </div>
   </section>
 
-  <!-- 二维码识别 -->
+  <!-- 识别二维码/条形码 -->
   <section id="tab-scan" class="qr-panel">
     <div id="scan-drop-zone" class="qr-drop-zone">
-      <span id="scan-status-text">📁 点击选择或拖拽二维码图片到这里</span>
+      <span id="scan-status-text">📁 点击选择或拖拽二维码 / 条形码图片到这里</span>
       <span class="qr-hint">支持 JPG / PNG / WebP 等格式</span>
       <input id="scan-input" type="file" accept="image/*" hidden>
     </div>
     <div id="scan-result-area" class="qr-result-area" hidden>
-      <label class="qr-label">识别结果</label>
+      <label class="qr-label" id="scan-result-label">识别结果</label>
       <div class="qr-result-box">
         <textarea id="scan-result-text" class="qr-textarea" rows="3" readonly></textarea>
         <div class="qr-result-actions">
@@ -115,9 +115,9 @@
   </section>
 </main>
 
+<!-- 引入纯 JS 的 ZXing 库 -->
 <script src="../../js/libs/qrcode.js"></script>
-<script src="../../js/libs/zxing-wasm-reader.js"></script>
-<!-- 引入 JsBarcode -->
+<script src="../../js/libs/zxing.min.js"></script>
 <script src="../../js/libs/JsBarcode.all.min.js"></script>
 <script src="../../js/code-tool.js" defer></script>
 </body>
