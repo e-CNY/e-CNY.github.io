@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>本地加密记事本 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/notepad-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>🔒 本地加密记事本</h1>
+  <p>AES 加密，数据仅保存在您本机的浏览器中，密码不会上传。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="np-layout" style="padding-top: 0;">
+  
+  <!-- 解锁界面 -->
+  <div id="np-lock" class="np-card">
+    <h2>请输入解锁密码</h2>
+    <input type="password" id="np-password" class="np-input" placeholder="输入密码...">
+    <button id="btn-unlock" class="np-btn primary" style="width:100%;">🔓 解锁 / 创建</button>
+    <p class="np-hint">注意：密码仅用于本地 AES 加解密，忘记密码将无法恢复数据。</p>
+  </div>
+
+  <!-- 记事本界面 -->
+  <div id="np-editor" class="np-card" style="display: none;">
+    <div class="np-toolbar">
+      <span style="font-size: 0.85rem; color: #7ba05b;" id="np-status">🔒 已加密</span>
+      <button id="btn-lock" class="np-btn">🚪 锁定</button>
+      <button id="btn-save" class="np-btn primary">💾 保存并加密</button>
+    </div>
+    <textarea id="np-content" class="np-textarea" placeholder="在此输入您的秘密文本..."></textarea>
+  </div>
+
+</main>
+<script src="../../js/libs/crypto-js.min.js"></script>
+<script src="../../js/notepad-tool.js" defer></script>
+</body>
+</html>

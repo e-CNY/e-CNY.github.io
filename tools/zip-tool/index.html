@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>压缩与解压工具 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/zip-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>📦 压缩与解压工具</h1>
+  <p>ZIP 打包/解包、Gzip 纯文本压缩/解压，全本地处理。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="zt-layout" style="padding-top: 0;">
+  <div class="zt-tabs">
+    <button class="zt-tab active" data-target="panel-zip">ZIP 压缩与解压</button>
+    <button class="zt-tab" data-target="panel-gzip">Gzip 文本压缩</button>
+  </div>
+
+  <div class="zt-content">
+    <!-- ZIP 面板 -->
+    <div id="panel-zip" class="zt-panel active">
+      <div class="zt-grid">
+        <!-- 打包 -->
+        <div class="zt-card">
+          <h2>📁 文件打包成 ZIP</h2>
+          <div id="zip-drop-zone" class="zt-drop-zone">
+            <span>📁 点击或拖拽多个文件</span>
+            <span class="zt-hint">将按原文件名打包</span>
+            <input id="zip-input" type="file" multiple hidden>
+          </div>
+          <ul id="zip-file-list" class="zt-file-list"></ul>
+          <button id="btn-zip-pack" class="zt-btn primary" disabled>打包并下载 ZIP</button>
+        </div>
+        
+        <!-- 解包 -->
+        <div class="zt-card">
+          <h2>📂 解压 ZIP 文件</h2>
+          <div class="zt-drop-zone" id="unzip-drop-zone">
+            <span>📁 点击或拖拽 .zip 文件</span>
+            <span class="zt-hint">解压后自动下载所有文件</span>
+            <input id="unzip-input" type="file" accept=".zip" hidden>
+          </div>
+          <div class="zt-log" id="unzip-log">等待上传...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gzip 面板 -->
+    <div id="panel-gzip" class="zt-panel">
+      <div class="zt-row">
+        <div class="zt-col">
+          <label>输入文本 (String)</label>
+          <textarea id="gz-input" class="zt-textarea" rows="6"></textarea>
+        </div>
+        <div class="zt-col">
+          <label>输出结果 (Base64)</label>
+          <textarea id="gz-output" class="zt-textarea" rows="6"></textarea>
+        </div>
+      </div>
+      <div class="zt-row center">
+        <button id="btn-gz-compress" class="zt-btn primary">压缩 (Compress)</button>
+        <button id="btn-gz-decompress" class="zt-btn">解压 (Decompress)</button>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../../js/libs/jszip.min.js"></script>
+<script src="../../js/libs/pako.min.js"></script>
+<script src="../../js/zip-tool.js" defer></script>
+</body>
+</html>

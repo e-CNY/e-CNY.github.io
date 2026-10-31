@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>模板渲染测试 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/template-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>📝 模板渲染测试</h1>
+  <p>支持基础 Mustache 语法（变量替换、条件判断、数组循环）。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="tm-layout" style="padding-top: 0;">
+  <div class="tm-container">
+    <div class="tm-col">
+      <label>模板 (HTML / Mustache)</label>
+      <textarea id="tm-template" class="tm-textarea" spellcheck="false"></textarea>
+    </div>
+    <div class="tm-col">
+      <label>数据上下文 (JSON)</label>
+      <textarea id="tm-data" class="tm-textarea" spellcheck="false"></textarea>
+    </div>
+    <div class="tm-col">
+      <label>实时预览</label>
+      <div id="tm-output" class="tm-preview"></div>
+    </div>
+  </div>
+</main>
+<script src="../../js/template-tool.js" defer></script>
+</body>
+</html>

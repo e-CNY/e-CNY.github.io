@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>时间日期工具箱 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/time-date-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>🕒 时间日期工具箱</h1>
+  <p>时间戳、格式化、时区转换、农历节气计算。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="td-layout" style="padding-top: 0;">
+  <div class="td-tabs">
+    <button class="td-tab active" data-target="panel-ts">时间戳转换</button>
+    <button class="td-tab" data-target="panel-calc">日期加减与时差</button>
+    <button class="td-tab" data-target="panel-timezone">多时区换算</button>
+    <button class="td-tab" data-target="panel-lunar">农历与生肖</button>
+  </div>
+
+  <div class="td-content">
+    <!-- 1. 时间戳转换 -->
+    <div id="panel-ts" class="td-panel active">
+      <div class="td-card">
+        <div class="td-row">
+          <label>当前时间戳 (秒/毫秒)</label>
+          <div style="display:flex; gap:10px; flex:1;">
+            <input type="text" id="ts-now" class="td-input" readonly>
+            <button id="btn-ts-now" class="td-btn primary">获取当前</button>
+          </div>
+        </div>
+        <div class="td-row">
+          <label>时间戳 → 日期</label>
+          <input type="text" id="ts-input" class="td-input" placeholder="输入10或13位数字">
+          <button id="btn-ts-to-date" class="td-btn">转换</button>
+        </div>
+        <div class="td-result" id="ts-out-date"></div>
+
+        <div class="td-row" style="margin-top: 20px;">
+          <label>日期 → 时间戳</label>
+          <input type="datetime-local" id="date-input" step="1" class="td-input">
+          <button id="btn-date-to-ts" class="td-btn">转换</button>
+        </div>
+        <div class="td-result" id="ts-out-ts"></div>
+      </div>
+    </div>
+
+    <!-- 2. 日期加减与时差 -->
+    <div id="panel-calc" class="td-panel">
+      <div class="td-card">
+        <div class="td-row">
+          <label>日期</label>
+          <input type="date" id="calc-date" class="td-input">
+        </div>
+        <div class="td-row">
+          <label>加减天数</label>
+          <input type="number" id="calc-days" class="td-input" value="1">
+          <button id="btn-calc-date" class="td-btn primary">计算</button>
+        </div>
+        <div class="td-result" id="calc-out"></div>
+      </div>
+    </div>
+
+    <!-- 3. 多时区 -->
+    <div id="panel-timezone" class="td-panel">
+      <div class="td-card">
+        <div class="td-row">
+          <label>选择当前基准时间</label>
+          <input type="datetime-local" id="tz-base" step="1" class="td-input">
+        </div>
+        <div class="td-grid" id="tz-grid">
+          <!-- JS 生成 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 农历与生肖 -->
+    <div id="panel-lunar" class="td-panel">
+      <div class="td-card">
+        <div class="td-row">
+          <label>公历日期</label>
+          <input type="date" id="lunar-date" class="td-input">
+          <button id="btn-lunar" class="td-btn primary">查农历</button>
+        </div>
+        <div class="td-result" id="lunar-out" style="font-size: 1rem; line-height: 2;"></div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../../js/libs/solarlunar.min.js"></script>
+<script src="../../js/time-date-tool.js" defer></script>
+</body>
+</html>

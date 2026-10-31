@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Markdown 编辑器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<!-- 引入 KaTeX 样式 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="../../css/markdown-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>📝 Markdown 编辑器</h1>
+  <p>支持实时预览、KaTeX 数学公式、一键提取目录。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="md-layout" style="padding-top: 0;">
+  <div class="md-toolbar">
+    <button id="btn-extract-toc" class="md-btn">📑 提取目录</button>
+    <button id="btn-clear" class="md-btn">🗑️ 清空</button>
+    <span style="margin-left: auto; font-size: 0.85rem; color: #6b5d47;">支持 $\LaTeX$ 公式</span>
+  </div>
+  
+  <div class="md-container">
+    <div class="md-col">
+      <textarea id="md-input" spellcheck="false" placeholder="在此输入 Markdown..."></textarea>
+    </div>
+    <div class="md-col">
+      <div id="md-preview" class="markdown-body"></div>
+    </div>
+  </div>
+</main>
+<script src="../../js/libs/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="../../js/markdown-tool.js" defer></script>
+</body>
+</html>

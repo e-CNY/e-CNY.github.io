@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>页面标尺与辅助网格 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/ruler-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>📏 页面标尺与辅助网格</h1>
+  <p>全屏辅助网格、鼠标坐标显示、吸管取色工具。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="rl-layout" style="padding-top: 0;">
+  <div class="rl-card">
+    <h2>设计辅助工具</h2>
+    <div class="rl-controls">
+      <div class="rl-row">
+        <label>显示网格</label>
+        <input type="checkbox" id="rl-grid-toggle" checked>
+        <label>网格大小</label>
+        <input type="number" id="rl-grid-size" value="20" min="5" max="100">
+        <span>px</span>
+      </div>
+      <div class="rl-row">
+        <label>显示标尺</label>
+        <input type="checkbox" id="rl-ruler-toggle" checked>
+      </div>
+      <button id="btn-eyedropper" class="rl-btn primary">🎨 启用吸管取色</button>
+    </div>
+    
+    <div class="rl-preview" id="rl-preview-area">
+      <p>在此区域内移动鼠标查看坐标，或点击吸管取色。</p>
+      <p>当前鼠标坐标: <b id="rl-pos">X: 0, Y: 0</b></p>
+      <p>当前鼠标处颜色: <b id="rl-color" style="display:inline-block; width:12px; height:12px; background:#ccc; border:1px solid #999; border-radius:50%; vertical-align:middle;"></b> <span id="rl-hex">#CCCCCC</span></p>
+    </div>
+  </div>
+</main>
+<script src="../../js/ruler-tool.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>颜色处理工具箱 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/color-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>🎨 颜色处理工具箱</h1>
+  <p>HEX/RGB/HSL 转换、色彩预览、WCAG 对比度校验、色盲模拟。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="cl-layout" style="padding-top: 0;">
+  <div class="cl-grid">
+    <!-- 左栏：颜色转换 -->
+    <div class="cl-card">
+      <h2>色值转换</h2>
+      <div class="cl-color-preview" id="color-preview" style="background: #7ba05b;">
+        <input type="color" id="color-picker" value="#7ba05b" title="点击取色">
+      </div>
+      
+      <div class="cl-input-group">
+        <label>HEX</label>
+        <input type="text" id="in-hex" value="#7ba05b">
+      </div>
+      <div class="cl-input-group">
+        <label>RGB</label>
+        <input type="text" id="in-rgb" value="rgb(123, 160, 91)">
+      </div>
+      <div class="cl-input-group">
+        <label>HSL</label>
+        <input type="text" id="in-hsl" value="hsl(91, 28%, 49%)">
+      </div>
+    </div>
+
+    <!-- 右栏：对比度与色盲模拟 -->
+    <div class="cl-card">
+      <h2>WCAG 对比度校验</h2>
+      <div class="cl-wcag-row">
+        <div class="cl-wcag-box" style="background: #ffffff;">
+          <span style="color: #7ba05b;" id="wcag-text-preview">Text Sample</span>
+        </div>
+      </div>
+      <div class="cl-result-box">
+        <p>对比度比值: <b id="wcag-ratio">0.00</b> : 1</p>
+        <p>AA (正常文本): <span id="wcag-aa">-</span></p>
+        <p>AAA (正常文本): <span id="wcag-aaa">-</span></p>
+      </div>
+
+      <h2 style="margin-top: 24px;">色盲模拟</h2>
+      <div class="cl-blind-grid">
+        <div class="cl-blind-item">
+          <div class="cl-blind-preview" id="sim-protanopia" style="background: #7ba05b;"></div>
+          <span>红色盲</span>
+        </div>
+        <div class="cl-blind-item">
+          <div class="cl-blind-preview" id="sim-deuteranopia" style="background: #7ba05b;"></div>
+          <span>绿色盲</span>
+        </div>
+        <div class="cl-blind-item">
+          <div class="cl-blind-preview" id="sim-tritanopia" style="background: #7ba05b;"></div>
+          <span>蓝色盲</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../../js/color-tool.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sitemap & Robots 工具 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/robots-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>🤖 Sitemap & Robots</h1>
+  <p>robots.txt 规则解析校验、Sitemap XML 链接提取。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="rb-layout" style="padding-top: 0;">
+  <div class="rb-tabs">
+    <button class="rb-tab active" data-target="panel-robots">robots.txt 解析</button>
+    <button class="rb-tab" data-target="panel-sitemap">Sitemap XML 提取</button>
+  </div>
+
+  <div class="rb-content">
+    <!-- Robots -->
+    <div id="panel-robots" class="rb-panel active">
+      <div class="rb-row">
+        <textarea id="robots-input" class="rb-textarea" rows="8" placeholder="粘贴 robots.txt 内容..."></textarea>
+      </div>
+      <button id="btn-robots" class="rb-btn primary">解析规则</button>
+      <div id="robots-result" class="rb-result-box"></div>
+    </div>
+
+    <!-- Sitemap -->
+    <div id="panel-sitemap" class="rb-panel">
+      <div class="rb-row">
+        <textarea id="sitemap-input" class="rb-textarea" rows="8" placeholder="粘贴 sitemap.xml 源码..."></textarea>
+      </div>
+      <button id="btn-sitemap" class="rb-btn primary">提取所有网址</button>
+      <div id="sitemap-result" class="rb-result-box" style="white-space: pre-wrap; font-family: monospace;"></div>
+    </div>
+  </div>
+</main>
+<script src="../../js/robots-tool.js" defer></script>
+</body>
+</html>

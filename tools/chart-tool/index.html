@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图表生成预览 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/chart-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>📊 图表生成预览</h1>
+  <p>输入 JSON 数据，实时渲染折线图、柱状图、饼图。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="ch-layout" style="padding-top: 0;">
+  <div class="ch-container">
+    <div class="ch-sidebar">
+      <div class="ch-row">
+        <label>图表类型</label>
+        <select id="ch-type" class="ch-select">
+          <option value="line">折线图 (Line)</option>
+          <option value="bar">柱状图 (Bar)</option>
+          <option value="pie">饼图 (Pie)</option>
+          <option value="doughnut">环形图 (Doughnut)</option>
+        </select>
+      </div>
+      <div class="ch-row" style="flex: 1; flex-direction: column;">
+        <label>数据 (JSON)</label>
+        <textarea id="ch-data" class="ch-textarea" spellcheck="false"></textarea>
+      </div>
+      <button id="btn-render" class="ch-btn primary">▶️ 渲染图表</button>
+    </div>
+    <div class="ch-main">
+      <div class="ch-canvas-wrap">
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../../js/libs/chart.umd.min.js"></script>
+<script src="../../js/chart-tool.js" defer></script>
+</body>
+</html>

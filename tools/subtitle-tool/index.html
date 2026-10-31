@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>字幕编辑器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/subtitle-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>💬 字幕编辑器</h1>
+  <p>SRT / VTT 解析、时间轴平移、文本替换与格式互转。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="sb-layout" style="padding-top: 0;">
+  <div class="sb-container">
+    <!-- 操作区 -->
+    <div class="sb-sidebar">
+      <div class="sb-section">
+        <h3>时间轴整体平移</h3>
+        <div class="sb-row">
+          <input type="number" id="sb-shift" value="1" step="0.5">
+          <span>秒</span>
+          <button id="btn-shift-add" class="sb-btn primary">整体延后 (+)</button>
+          <button id="btn-shift-sub" class="sb-btn">整体提前 (-)</button>
+        </div>
+      </div>
+
+      <div class="sb-section">
+        <h3>格式转换</h3>
+        <div class="sb-row">
+          <button id="btn-to-srt" class="sb-btn">转为 SRT</button>
+          <button id="btn-to-vtt" class="sb-btn">转为 VTT</button>
+        </div>
+      </div>
+
+      <div class="sb-section">
+        <h3>文本查找替换</h3>
+        <div class="sb-row" style="flex-direction: column; align-items: stretch;">
+          <input type="text" id="sb-find" placeholder="查找内容">
+          <input type="text" id="sb-replace" placeholder="替换为">
+          <button id="btn-replace" class="sb-btn">替换全部</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 编辑器 -->
+    <div class="sb-main">
+      <textarea id="sb-input" class="sb-textarea" spellcheck="false" placeholder="在此粘贴 SRT 或 VTT 字幕..."></textarea>
+      <textarea id="sb-output" class="sb-textarea" spellcheck="false" readonly placeholder="处理结果..."></textarea>
+    </div>
+  </div>
+</main>
+<script src="../../js/subtitle-tool.js" defer></script>
+</body>
+</html>

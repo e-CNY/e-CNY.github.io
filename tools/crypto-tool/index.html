@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>哈希与加解密 · 工具站</title>
+<title>加解密与编解码 · 工具站</title>
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="../../css/crypto-tool.css">
 </head>
 <body>
 <header class="tool-page-header">
-  <h1>🔐 哈希与加解密</h1>
-  <p>涵盖 Hash / AES / DES / RSA / JWT 等常用密码学工具，全本地计算。</p>
+  <h1>🔐 加解密与编解码</h1>
+  <p>涵盖 Hash / AES / RSA / JWT / 编码转换 / 古典密码，全本地计算。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
@@ -19,8 +19,9 @@
     <button class="ct-tab active" data-target="panel-hash">🔤 哈希计算</button>
     <button class="ct-tab" data-target="panel-symmetric">🔐 对称加密</button>
     <button class="ct-tab" data-target="panel-rsa">🗝️ RSA 非对称</button>
-    <button class="ct-tab" data-target="panel-jwt">🎫 JWT 解析</button>
-    <button class="ct-tab" data-target="panel-base64">🔤 Base64</button>
+    <button class="ct-tab" data-target="panel-jwt">🎫 JWT</button>
+    <button class="ct-tab" data-target="panel-encode">🔠 编码转换</button>
+    <button class="ct-tab" data-target="panel-classic">🏛️ 古典密码</button>
   </div>
 
   <div class="ct-content">
@@ -43,7 +44,6 @@
         <button id="btn-hash" class="ct-btn primary">计算哈希</button>
       </div>
       <label>计算结果 (Hex)</label>
-      <!-- 修改为 textarea，自动换行并加高 -->
       <textarea id="hash-output" class="ct-textarea" rows="3" readonly style="font-family: monospace; word-break: break-all; background: #fdf8ec;"></textarea>
     </div>
 
@@ -86,13 +86,12 @@
       <div class="ct-row">
         <label>密钥位数</label>
         <select id="rsa-bits">
-          <option value="1024">1024 位 (较快)</option>
-          <option value="2048" selected>2048 位 (推荐)</option>
+          <option value="1024">1024 位</option>
+          <option value="2048" selected>2048 位</option>
         </select>
         <button id="btn-rsa-gen" class="ct-btn primary">生成密钥对</button>
         <span id="rsa-loading" style="display:none; color:#a8452a; font-size:.85rem;">生成中，请稍候...</span>
       </div>
-      
       <div class="ct-grid-2">
         <div>
           <label>公钥 (Public Key)</label>
@@ -103,13 +102,10 @@
           <textarea id="rsa-priv" class="ct-textarea" rows="4" placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
         </div>
       </div>
-
       <div class="ct-tabs-inner">
         <button class="ct-inner-tab active" data-target="rsa-enc">加解密</button>
         <button class="ct-inner-tab" data-target="rsa-sign">签名/验签</button>
       </div>
-
-      <!-- RSA 加解密面板 -->
       <div id="rsa-enc" class="ct-inner-panel active">
         <label>输入明文或密文 (Base64)</label>
         <textarea id="rsa-text" class="ct-textarea" rows="3"></textarea>
@@ -120,8 +116,6 @@
         <label>输出结果</label>
         <textarea id="rsa-out" class="ct-textarea" rows="3" readonly></textarea>
       </div>
-
-      <!-- RSA 签名验签面板 -->
       <div id="rsa-sign" class="ct-inner-panel">
         <label>输入需签名的文本</label>
         <textarea id="rsa-sign-text" class="ct-textarea" rows="2"></textarea>
@@ -134,12 +128,12 @@
       </div>
     </div>
 
-    <!-- 4. JWT 解析与生成 -->
+    <!-- 4. JWT 解析 -->
     <div id="panel-jwt" class="ct-panel">
       <label>JWT Token</label>
       <textarea id="jwt-input" class="ct-textarea" rows="3" placeholder="eyJhbGciOi..."></textarea>
       <div class="ct-row">
-        <input type="text" id="jwt-secret" class="ct-input" placeholder="密钥 Secret (仅用于生成 HS256 签名)">
+        <input type="text" id="jwt-secret" class="ct-input" placeholder="密钥 Secret (验证 HS256 签名)">
         <button id="btn-jwt-parse" class="ct-btn primary">解析</button>
       </div>
       <div class="ct-grid-2">
@@ -154,16 +148,55 @@
       </div>
     </div>
 
-    <!-- 5. Base64 -->
-    <div id="panel-base64" class="ct-panel">
-      <label>输入文本 (UTF-8) 或 Base64</label>
-      <textarea id="b64-input" class="ct-textarea" rows="3"></textarea>
+    <!-- 5. 编码转换 -->
+    <div id="panel-encode" class="ct-panel">
       <div class="ct-row">
-        <button id="btn-b64-encode" class="ct-btn primary">编码 (Encode)</button>
-        <button id="btn-b64-decode" class="ct-btn">解码 (Decode)</button>
+        <label>转换类型</label>
+        <select id="encode-type">
+          <option value="base64">Base64</option>
+          <option value="base32">Base32</option>
+          <option value="base58">Base58</option>
+          <option value="url">URL 编码 (encodeURIComponent)</option>
+          <option value="html">HTML 转义</option>
+          <option value="unicode">Unicode 转义 (\uXXXX)</option>
+        </select>
+      </div>
+      <div class="ct-row">
+        <label>输入文本</label>
+        <textarea id="encode-input" class="ct-textarea" rows="4"></textarea>
+      </div>
+      <div class="ct-row">
+        <button id="btn-encode" class="ct-btn primary">编码 Encode</button>
+        <button id="btn-decode" class="ct-btn">解码 Decode</button>
       </div>
       <label>结果</label>
-      <textarea id="b64-output" class="ct-textarea" rows="3" readonly></textarea>
+      <textarea id="encode-output" class="ct-textarea" rows="4" readonly></textarea>
+    </div>
+
+    <!-- 6. 古典密码 -->
+    <div id="panel-classic" class="ct-panel">
+      <div class="ct-row">
+        <label>密码类型</label>
+        <select id="classic-type">
+          <option value="morse">摩尔斯电码 (Morse)</option>
+          <option value="caesar">凯撒密码 (Caesar)</option>
+          <option value="rot13">ROT13 密码</option>
+        </select>
+        <span id="caesar-shift-wrap" style="display:none;">
+          <label>偏移量</label>
+          <input type="number" id="caesar-shift" value="3" style="width:60px; padding:6px; border:1px solid #ccc; border-radius:6px;">
+        </span>
+      </div>
+      <div class="ct-row">
+        <label>输入文本</label>
+        <textarea id="classic-input" class="ct-textarea" rows="4"></textarea>
+      </div>
+      <div class="ct-row">
+        <button id="btn-classic-encode" class="ct-btn primary">加密 / 转换</button>
+        <button id="btn-classic-decode" class="ct-btn">解密 / 还原</button>
+      </div>
+      <label>结果</label>
+      <textarea id="classic-output" class="ct-textarea" rows="4" readonly></textarea>
     </div>
 
   </div>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>表格处理工具 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/table-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>📊 表格处理工具</h1>
+  <p>CSV 与 Excel 预览、互相转换、生成 JSON，全本地处理。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="tt-layout" style="padding-top: 0;">
+  <div class="tt-container">
+    <div class="tt-sidebar">
+      <div class="tt-section">
+        <h3>1. 上传表格</h3>
+        <div id="tt-drop-zone" class="tt-drop-zone">
+          <span>📁 点击或拖拽文件</span>
+          <span class="tt-hint">支持 .csv / .xlsx / .xls</span>
+        </div>
+        <input id="tt-input" type="file" accept=".csv,.xlsx,.xls" hidden>
+      </div>
+
+      <div class="tt-section">
+        <h3>2. 导出格式</h3>
+        <button id="btn-export-csv" class="tt-btn" disabled>导出为 CSV</button>
+        <button id="btn-export-json" class="tt-btn" disabled>导出为 JSON</button>
+        <button id="btn-export-xlsx" class="tt-btn" disabled>导出为 Excel</button>
+      </div>
+    </div>
+
+    <div class="tt-main">
+      <div class="tt-toolbar">
+        <span id="tt-status">等待上传文件...</span>
+      </div>
+      <div class="tt-preview-wrap">
+        <table id="tt-preview-table" class="tt-table"></table>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../../js/libs/xlsx.full.min.js"></script>
+<script src="../../js/table-tool.js" defer></script>
+</body>
+</html>

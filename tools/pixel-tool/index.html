@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>像素画 & 点阵生成器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/pixel-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>🖌️ 像素画 & 点阵生成器</h1>
+  <p>拖拽上色，网格吸附，一键导出高清像素画。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="px-layout" style="padding-top: 0;">
+  <div class="px-container">
+    <aside class="px-sidebar">
+      <div class="px-section">
+        <label>网格大小</label>
+        <select id="px-grid-size" class="px-select">
+          <option value="16">16 x 16</option>
+          <option value="32" selected>32 x 32</option>
+          <option value="64">64 x 64</option>
+        </select>
+      </div>
+      
+      <div class="px-section">
+        <label>画笔颜色</label>
+        <div class="px-color-wrap">
+          <input type="color" id="px-color" value="#7ba05b">
+          <button id="btn-eraser" class="px-btn active" title="透明橡皮擦">🧽 橡皮</button>
+        </div>
+      </div>
+
+      <div class="px-section">
+        <label>操作</label>
+        <button id="btn-clear" class="px-btn">🗑️ 清空画板</button>
+        <button id="btn-export" class="px-btn primary">⬇️ 导出 PNG</button>
+      </div>
+    </aside>
+
+    <div class="px-main">
+      <div class="px-canvas-wrap">
+        <canvas id="px-canvas"></canvas>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../../js/pixel-tool.js" defer></script>
+</body>
+</html>

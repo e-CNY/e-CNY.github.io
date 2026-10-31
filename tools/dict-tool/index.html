@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>端口与编码字典 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/dict-tool.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>📚 端口与编码字典</h1>
+  <p>常用网络端口、ISO 国家码、国际电话区号极速查询。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="dc-layout" style="padding-top: 0;">
+  <div class="dc-tabs">
+    <button class="dc-tab active" data-target="panel-port">网络端口 (Ports)</button>
+    <button class="dc-tab" data-target="panel-country">国家代码 (ISO)</button>
+    <button class="dc-tab" data-target="panel-area">国际区号 (Area)</button>
+  </div>
+
+  <div class="dc-content">
+    <div class="dc-search-row">
+      <input type="text" id="dc-search" class="dc-search" placeholder="输入关键词进行过滤，如 80, HTTP, 中国...">
+    </div>
+    
+    <div class="dc-table-wrap">
+      <table class="dc-table">
+        <thead id="dc-thead"></thead>
+        <tbody id="dc-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<script src="../../js/dict-tool.js" defer></script>
+</body>
+</html>
