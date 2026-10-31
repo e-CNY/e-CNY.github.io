@@ -1,0 +1,16 @@
+.sb-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+.sb-container { display: flex; gap: 24px; height: calc(100vh - 150px); }
+@media (max-width: 768px) { .sb-container { flex-direction: column; height: auto; } }
+
+.sb-sidebar { width: 260px; flex-shrink: 0; background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 20px; }
+.sb-section h3 { font-size: .9rem; margin: 0 0 10px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 4px; }
+.sb-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sb-row input { padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fff; font-size: .85rem; flex: 1; width: 100%; box-sizing: border-box; }
+
+.sb-btn { padding: 8px 12px; border-radius: 6px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .8rem; flex: 1; }
+.sb-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+
+.sb-main { flex: 1; display: flex; gap: 16px; }
+.sb-textarea { flex: 1; padding: 16px; border: 1px solid #d5c7a8; border-radius: 12px; background: #fff; font-family: monospace; font-size: .9rem; resize: none; line-height: 1.5; white-space: pre; }
+.sb-textarea:focus { outline: none; border-color: #8a5a2b; }
+@media (max-width: 600px) { .sb-main { flex-direction: column; height: 600px; } }

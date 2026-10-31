@@ -1,0 +1,24 @@
+.rx-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.rx-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.rx-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; transition: all .15s; }
+.rx-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
+
+.rx-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+.rx-panel { display: none; }
+.rx-panel.active { display: block; animation: fadeIn .2s; }
+
+.rx-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.rx-input { flex: 1; padding: 10px 14px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-size: .95rem; }
+.rx-input:focus, .rx-textarea:focus { outline: none; border-color: #8a5a2b; box-shadow: 0 0 0 2px rgba(138,90,43,.2); }
+.rx-slash { color: #8a5a2b; font-weight: bold; font-family: monospace; font-size: 1.2rem; }
+
+.rx-textarea { width: 100%; padding: 12px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-family: monospace; font-size: .9rem; resize: vertical; margin-bottom: 12px; box-sizing: border-box; line-height: 1.5; }
+
+.rx-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; }
+.rx-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+.rx-btn:hover { opacity: 0.9; }
+
+.rx-result-box { margin-top: 16px; background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; padding: 16px; }
+.rx-result-box p { margin: 0 0 12px; font-size: .9rem; font-weight: bold; color: #6b5d47; }
+.rx-highlight-box { max-height: 300px; overflow: auto; font-family: monospace; font-size: .9rem; line-height: 1.6; white-space: pre-wrap; word-break: break-all; }
+.rx-highlight-box mark { background: #fef08a; color: #854d0e; font-weight: bold; border-radius: 2px; padding: 0 2px; }

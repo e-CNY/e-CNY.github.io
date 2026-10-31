@@ -1,0 +1,30 @@
+.cl-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.cl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 768px) { .cl-grid { grid-template-columns: 1fr; } }
+
+.cl-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 20px; }
+.cl-card h2 { font-size: 1.1rem; margin: 0 0 16px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 8px; }
+
+.cl-color-preview { width: 100%; height: 120px; border-radius: 10px; margin-bottom: 20px; position: relative; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1); }
+.cl-color-preview input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+.cl-input-group { display: flex; align-items: center; margin-bottom: 12px; }
+.cl-input-group label { width: 60px; font-weight: bold; color: #6b5d47; font-size: .85rem; }
+.cl-input-group input { flex: 1; padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; font-family: monospace; font-size: .95rem; background: #fff; }
+.cl-input-group input:focus { outline: none; border-color: #8a5a2b; }
+
+.cl-wcag-row { margin-bottom: 16px; }
+.cl-wcag-box { padding: 20px; border-radius: 8px; border: 1px solid #d5c7a8; text-align: center; font-size: 1.5rem; font-weight: bold; }
+.cl-result-box p { margin: 6px 0; font-size: .9rem; color: #3d3226; }
+.cl-result-box b { font-size: 1.2rem; color: #8a5a2b; }
+.pass { color: #7ba05b; font-weight: bold; }
+.fail { color: #a8452a; font-weight: bold; }
+
+.cl-blind-grid { display: flex; gap: 12px; }
+.cl-blind-item { flex: 1; text-align: center; font-size: .8rem; color: #6b5d47; }
+.cl-blind-preview { height: 60px; border-radius: 6px; margin-bottom: 6px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1); }
+
+/* 色盲滤镜 */
+.blind-protanopia { filter: url('#protanopia'); }
+.blind-deuteranopia { filter: url('#deuteranopia'); }
+.blind-tritanopia { filter: url('#tritanopia'); }

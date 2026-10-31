@@ -1,0 +1,21 @@
+.rb-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.rb-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+.rb-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; transition: all .15s; }
+.rb-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
+
+.rb-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+.rb-panel { display: none; }
+.rb-panel.active { display: block; animation: fadeIn .2s; }
+
+.rb-row { margin-bottom: 12px; }
+.rb-textarea { width: 100%; padding: 12px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-family: monospace; font-size: .9rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+.rb-textarea:focus { outline: none; border-color: #8a5a2b; }
+
+.rb-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; }
+.rb-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+.rb-btn:hover { opacity: 0.9; }
+
+.rb-result-box { margin-top: 16px; background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; padding: 16px; max-height: 300px; overflow-y: auto; font-size: .85rem; line-height: 1.6; color: #3d3226; }
+.rb-result-box h4 { margin: 0 0 8px; color: #8a5a2b; }
+.rb-allow { color: #7ba05b; }
+.rb-disallow { color: #a8452a; }

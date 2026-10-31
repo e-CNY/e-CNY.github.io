@@ -1,0 +1,26 @@
+.td-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.td-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.td-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; transition: all .15s; }
+.td-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
+
+.td-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+.td-panel { display: none; animation: fadeIn .2s; }
+.td-panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.td-card { display: flex; flex-direction: column; gap: 16px; }
+.td-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.td-row label { width: 120px; font-size: .85rem; color: #6b5d47; font-weight: bold; }
+.td-input { flex: 1; padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-size: .9rem; min-width: 200px; }
+.td-input:focus { outline: none; border-color: #8a5a2b; }
+
+.td-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; }
+.td-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+.td-btn:hover { opacity: 0.9; }
+
+.td-result { background: #fff; border: 1px dashed #d5c7a8; border-radius: 8px; padding: 12px; font-family: monospace; font-size: .95rem; color: #3d3226; text-align: center; min-height: 45px; display: flex; align-items: center; justify-content: center; }
+
+.td-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top: 12px; }
+.tz-card { background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; padding: 12px; text-align: center; }
+.tz-card h4 { margin: 0 0 4px; color: #8a5a2b; font-size: .9rem; }
+.tz-card .time { font-family: monospace; font-size: 1.1rem; font-weight: bold; color: #3d3226; }

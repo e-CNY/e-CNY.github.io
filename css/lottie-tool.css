@@ -1,0 +1,17 @@
+.lt-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.lt-container { display: flex; gap: 24px; height: calc(100vh - 150px); }
+@media (max-width: 768px) { .lt-container { flex-direction: column; height: auto; } }
+
+.lt-sidebar { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
+.lt-drop-zone { border: 2px dashed #c4b48f; border-radius: 12px; padding: 30px 12px; text-align: center; cursor: pointer; background: #fdf8ec; transition: all .2s; display: flex; flex-direction: column; gap: 6px; }
+.lt-drop-zone:hover, .lt-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
+.lt-hint { font-size: .75rem; color: #8a7a5f; }
+
+.lt-info { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 12px; padding: 16px; }
+.lt-info h3 { font-size: .95rem; margin: 0 0 12px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 6px; }
+.lt-info p { margin: 6px 0; font-size: .85rem; color: #6b5d47; }
+.lt-info b { color: #3d3226; }
+
+.lt-main { flex: 1; background: #fff; border: 1px solid #d5c7a8; border-radius: 14px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.lt-preview { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.lt-placeholder { color: #8a7a5f; font-size: .9rem; }

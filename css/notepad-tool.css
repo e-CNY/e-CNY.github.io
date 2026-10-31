@@ -1,0 +1,17 @@
+.np-layout { max-width: 800px; margin: 0 auto; padding: 28px 16px 56px; }
+.np-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; max-width: 600px; margin: 0 auto; }
+.np-card h2 { font-size: 1.2rem; margin: 0 0 16px; color: #4b3f2f; text-align: center; }
+
+.np-input { width: 100%; padding: 12px; border: 1px solid #d5c7a8; border-radius: 8px; font-size: 1rem; margin-bottom: 12px; box-sizing: border-box; }
+.np-input:focus { outline: none; border-color: #8a5a2b; }
+.np-hint { font-size: 0.8rem; color: #a8452a; margin-top: 12px; text-align: center; line-height: 1.5; }
+
+.np-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; transition: all .15s; }
+.np-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+.np-btn:hover { opacity: 0.9; }
+
+.np-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; background: #fdf8ec; padding: 8px 12px; border-radius: 8px; border: 1px solid #d5c7a8; }
+.np-toolbar button { margin-left: 8px; }
+
+.np-textarea { width: 100%; height: 400px; padding: 16px; border: 1px solid #d5c7a8; border-radius: 8px; font-family: monospace; font-size: .95rem; resize: vertical; background: #fff; box-sizing: border-box; line-height: 1.5; }
+.np-textarea:focus { outline: none; border-color: #8a5a2b; }

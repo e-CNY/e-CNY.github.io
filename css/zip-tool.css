@@ -1,0 +1,33 @@
+.zt-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+.zt-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+.zt-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; transition: all .15s; }
+.zt-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
+
+.zt-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+.zt-panel { display: none; }
+.zt-panel.active { display: block; animation: fadeIn .2s; }
+
+.zt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 768px) { .zt-grid { grid-template-columns: 1fr; } }
+.zt-card { background: #fff; border: 1px solid #d5c7a8; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; }
+.zt-card h2 { font-size: 1.1rem; margin: 0 0 16px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 8px; }
+
+.zt-drop-zone { border: 2px dashed #c4b48f; border-radius: 10px; padding: 30px 12px; text-align: center; cursor: pointer; background: #fdf8ec; transition: all .2s; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.zt-drop-zone:hover, .zt-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
+.zt-hint { font-size: .75rem; color: #8a7a5f; }
+
+.zt-file-list { list-style: none; padding: 0; margin: 0 0 16px 0; max-height: 150px; overflow-y: auto; font-size: .85rem; }
+.zt-file-list li { padding: 6px 10px; border-bottom: 1px dashed #e5d9bd; display: flex; justify-content: space-between; }
+
+.zt-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; }
+.zt-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+.zt-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.zt-log { flex: 1; background: #f5ecd5; border-radius: 8px; padding: 12px; font-family: monospace; font-size: .85rem; color: #3d3226; max-height: 150px; overflow-y: auto; white-space: pre-wrap; }
+
+.zt-row { display: flex; gap: 16px; margin-bottom: 16px; }
+.zt-row.center { justify-content: center; }
+.zt-col { flex: 1; display: flex; flex-direction: column; }
+.zt-col label { font-size: .85rem; margin-bottom: 6px; color: #6b5d47; font-weight: bold; }
+.zt-textarea { padding: 12px; border: 1px solid #d5c7a8; border-radius: 8px; font-family: monospace; font-size: .9rem; resize: vertical; background: #fff; }
+.zt-textarea:focus { outline: none; border-color: #8a5a2b; }

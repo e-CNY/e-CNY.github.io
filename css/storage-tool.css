@@ -1,0 +1,23 @@
+.st-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.st-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+.st-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; transition: all .15s; }
+.st-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
+
+.st-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+.st-toolbar { display: flex; gap: 12px; margin-bottom: 16px; }
+.st-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .85rem; }
+.st-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+.st-btn.danger { background: #fef2f2; color: #a8452a; border-color: #fecaca; }
+.st-btn.danger:hover { background: #fee2e2; }
+
+.st-table-wrap { background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; overflow: hidden; }
+.st-table { width: 100%; border-collapse: collapse; font-size: .85rem; table-layout: fixed; }
+.st-table th, .st-table td { padding: 12px; border-bottom: 1px solid #e5d9bd; text-align: left; word-break: break-all; }
+.st-table th { background: #fdf8ec; color: #8a5a2b; font-weight: bold; }
+.st-table td { font-family: monospace; color: #3d3226; vertical-align: top; }
+
+.st-btn-sm { padding: 4px 8px; border-radius: 4px; border: 1px solid #d5c7a8; background: #fff; cursor: pointer; font-size: .75rem; }
+.st-btn-sm.edit { color: #2563eb; border-color: #bfdbfe; }
+.st-btn-sm.del { color: #a8452a; border-color: #fecaca; background: #fef2f2; }
+
+.st-empty { padding: 40px; text-align: center; color: #8a7a5f; font-size: .9rem; }

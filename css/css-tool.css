@@ -1,0 +1,21 @@
+.cs-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.cs-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.cs-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; transition: all .15s; }
+.cs-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
+
+.cs-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+.cs-panel { display: none; }
+.cs-panel.active { display: block; animation: fadeIn .2s; }
+
+.cs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 600px) { .cs-grid { grid-template-columns: 1fr; } }
+
+.cs-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.cs-row label { width: 80px; font-size: .85rem; color: #6b5d47; font-weight: bold; flex-shrink: 0; }
+.cs-row input[type="range"] { flex: 1; accent-color: #8a5a2b; }
+.cs-row span { width: 50px; text-align: right; font-size: .85rem; color: #475569; font-family: monospace; }
+.cs-row input[type="color"] { width: 40px; height: 30px; padding: 0; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; }
+
+.cs-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; background: #e5d9bd; border-radius: 12px; padding: 24px; }
+.cs-box { width: 160px; height: 160px; background: #fff; border-radius: 8px; transition: all .2s; }
+.cs-code { width: 100%; height: 60px; padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-family: monospace; font-size: .85rem; resize: none; outline: none; }

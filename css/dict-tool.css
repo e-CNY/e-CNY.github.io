@@ -1,0 +1,17 @@
+.dc-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.dc-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+.dc-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; transition: all .15s; }
+.dc-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
+
+.dc-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; height: calc(100vh - 220px); display: flex; flex-direction: column; }
+
+.dc-search-row { margin-bottom: 16px; }
+.dc-search { width: 100%; padding: 14px 20px; border: 2px solid #d5c7a8; border-radius: 8px; font-size: 1rem; background: #fff; box-sizing: border-box; transition: all .2s; }
+.dc-search:focus { outline: none; border-color: #8a5a2b; box-shadow: 0 0 0 3px rgba(138,90,43,.2); }
+
+.dc-table-wrap { flex: 1; overflow-y: auto; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; }
+.dc-table { width: 100%; border-collapse: collapse; font-size: .9rem; text-align: left; }
+.dc-table th, .dc-table td { padding: 12px 16px; border-bottom: 1px solid #e5d9bd; }
+.dc-table th { background: #fdf8ec; position: sticky; top: 0; color: #8a5a2b; font-weight: bold; z-index: 10; }
+.dc-table tr:hover { background: #f9f3e3; }
+.dc-table td { color: #3d3226; }

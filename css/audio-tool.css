@@ -1,0 +1,23 @@
+.au-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.au-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+
+.au-drop-zone { border: 2px dashed #c4b48f; border-radius: 10px; padding: 40px 20px; text-align: center; cursor: pointer; background: #fdf8ec; transition: all .2s; display: flex; flex-direction: column; gap: 6px; }
+.au-drop-zone:hover, .au-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
+.au-hint { font-size: .75rem; color: #8a7a5f; }
+
+.au-wave-wrap { background: #fff; border: 1px solid #d5c7a8; border-radius: 10px; height: 150px; margin-bottom: 20px; position: relative; overflow: hidden; }
+#au-canvas { width: 100%; height: 100%; display: block; }
+
+.au-controls { display: flex; flex-direction: column; gap: 16px; }
+.au-row { display: flex; align-items: center; gap: 12px; }
+.au-row label { font-size: .85rem; color: #6b5d47; font-weight: bold; }
+.au-row input[type="range"] { flex: 1; accent-color: #8a5a2b; }
+.au-row input[type="number"] { width: 80px; padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fff; }
+
+.au-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; transition: all .15s; }
+.au-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+.au-btn:hover:not(:disabled) { opacity: 0.9; }
+.au-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.au-crop-box { background: #fdf8ec; border: 1px solid #d5c7a8; border-radius: 10px; padding: 16px; margin-top: 12px; }
+.au-crop-box h3 { font-size: .95rem; margin: 0 0 12px; color: #4b3f2f; }

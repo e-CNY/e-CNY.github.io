@@ -1,0 +1,24 @@
+.vt-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.vt-drop-zone { border: 2px dashed #c4b48f; border-radius: 12px; padding: 48px 20px; text-align: center; cursor: pointer; background: #fdf8ec; transition: all .2s; display: flex; flex-direction: column; gap: 8px; }
+.vt-drop-zone:hover, .vt-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
+.vt-hint { font-size: .8rem; color: #8a7a5f; }
+
+.vt-workspace { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.vt-video-wrap { background: #000; border-radius: 8px; overflow: hidden; display: flex; justify-content: center; }
+#vt-video { max-width: 100%; max-height: 400px; width: 100%; object-fit: contain; }
+
+.vt-info { display: flex; gap: 24px; font-size: .9rem; color: #6b5d47; }
+.vt-info b { color: #3d3226; font-family: monospace; }
+
+.vt-controls { display: flex; flex-direction: column; gap: 10px; background: #fff; border: 1px solid #d5c7a8; padding: 16px; border-radius: 8px; }
+.vt-controls label { font-size: .85rem; font-weight: bold; color: #4b3f2f; }
+#vt-timeline { width: 100%; accent-color: #7ba05b; }
+.vt-row { display: flex; justify-content: center; margin-top: 8px; }
+
+.vt-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; font-weight: bold; transition: all .15s; }
+.vt-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.vt-btn:hover { opacity: 0.9; }
+
+.vt-preview-area { text-align: center; background: #e5d9bd; border-radius: 8px; padding: 10px; display: none; }
+.vt-preview-area.active { display: block; }
+#vt-canvas { max-width: 100%; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,.1); }
