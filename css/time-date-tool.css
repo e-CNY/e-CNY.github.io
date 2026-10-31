@@ -10,7 +10,7 @@
 
 .td-card { display: flex; flex-direction: column; gap: 16px; }
 .td-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.td-row label { width: 120px; font-size: .85rem; color: #6b5d47; font-weight: bold; }
+.td-row label { width: 120px; font-size: .85rem; color: #6b5d47; font-weight: bold; flex-shrink: 0; }
 .td-input { flex: 1; padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-size: .9rem; min-width: 200px; }
 .td-input:focus { outline: none; border-color: #8a5a2b; }
 
@@ -24,3 +24,34 @@
 .tz-card { background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; padding: 12px; text-align: center; }
 .tz-card h4 { margin: 0 0 4px; color: #8a5a2b; font-size: .9rem; }
 .tz-card .time { font-family: monospace; font-size: 1.1rem; font-weight: bold; color: #3d3226; }
+
+/* 农历黄历排版 */
+.lunar-info-grid { 
+  display: grid; 
+  grid-template-columns: repeat(5, 1fr); 
+  gap: 10px; 
+  margin-top: 16px; 
+}
+.lunar-item { 
+  background: #fff; border: 1px solid #d5c7a8; 
+  border-radius: 10px; padding: 16px 8px; text-align: center; 
+  display: flex; flex-direction: column; gap: 6px; justify-content: center;
+}
+.lunar-item .label { font-size: .8rem; color: #8a7a5f; font-weight: bold; white-space: nowrap; }
+.lunar-item .value { 
+  font-size: 1.05rem; color: #a8452a; font-weight: bold; 
+  font-family: monospace; line-height: 1.4; word-break: break-all; 
+}
+/* 新增：数字农历辅助显示 */
+.lunar-item .sub-value { 
+  font-size: .8rem; color: #6b5d47; font-family: monospace; 
+}
+
+@media (max-width: 600px) {
+  .lunar-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .lunar-item:last-child {
+    grid-column: 1 / -1;
+  }
+}

@@ -49,11 +49,11 @@
       </div>
     </div>
 
-    <!-- 2. 日期加减与时差 -->
+    <!-- 2. 日期加减 -->
     <div id="panel-calc" class="td-panel">
       <div class="td-card">
         <div class="td-row">
-          <label>日期</label>
+          <label>选择日期</label>
           <input type="date" id="calc-date" class="td-input">
         </div>
         <div class="td-row">
@@ -72,13 +72,11 @@
           <label>选择当前基准时间</label>
           <input type="datetime-local" id="tz-base" step="1" class="td-input">
         </div>
-        <div class="td-grid" id="tz-grid">
-          <!-- JS 生成 -->
-        </div>
+        <div class="td-grid" id="tz-grid"></div>
       </div>
     </div>
 
-    <!-- 4. 农历与生肖 -->
+    <!-- 4. 农历与生肖 (黄历增强版) -->
     <div id="panel-lunar" class="td-panel">
       <div class="td-card">
         <div class="td-row">
@@ -86,7 +84,7 @@
           <input type="date" id="lunar-date" class="td-input">
           <button id="btn-lunar" class="td-btn primary">查农历</button>
         </div>
-        <div class="td-result" id="lunar-out" style="font-size: 1rem; line-height: 2;"></div>
+        <div class="lunar-info-grid" id="lunar-out"></div>
       </div>
     </div>
   </div>
