@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>玄学八字排盘 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/bazi.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>🔮 玄学八字排盘</h1>
+  <p>输入公历出生时间，纯前端推演干支、十神与五行。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="bz-layout" style="padding-top: 0;">
+  <div class="bz-card">
+    <div class="bz-input-group">
+      <input type="date" id="bz-date" class="bz-input">
+      <input type="time" id="bz-time" class="bz-input">
+      <button id="btn-bazi" class="bz-btn primary">开始排盘</button>
+    </div>
+    <div id="bazi-result" class="bz-result-area"></div>
+  </div>
+</main>
+<script src="../../js/libs/lunar.min.js"></script>
+<script src="../../js/bazi.js" defer></script>
+</body>
+</html>

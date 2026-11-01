@@ -1,0 +1,15 @@
+.bz-layout { max-width: 800px; margin: 0 auto; padding: 28px 16px 56px; }
+.bz-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+.bz-input-group { display: flex; gap: 12px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+.bz-input { padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; font-size: 1rem; background: #fff; }
+.bz-btn { padding: 10px 24px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: 1rem; font-weight: bold; }
+.bz-btn.primary { background: #8a5a2b; color: #fff; border-color: #8a5a2b; }
+
+.bz-result-area { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 20px; }
+@media (max-width: 600px) { .bz-result-area { grid-template-columns: repeat(2, 1fr); } }
+
+.bz-pillar { background: #fff; border: 1px solid #d5c7a8; border-radius: 10px; padding: 16px; text-align: center; display: flex; flex-direction: column; gap: 8px; }
+.bz-pillar .name { font-size: .85rem; color: #8a7a5f; font-weight: bold; }
+.bz-pillar .gan { font-size: 1.8rem; color: #a8452a; font-weight: bold; }
+.bz-pillar .zhi { font-size: 1.8rem; color: #8a5a2b; font-weight: bold; }
+.bz-pillar .shishen { font-size: .75rem; color: #2563eb; margin-top: 8px; }

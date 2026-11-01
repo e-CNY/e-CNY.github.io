@@ -1,0 +1,7 @@
+.mp-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+.mp-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+.mp-toolbar { display: flex; gap: 12px; margin-bottom: 20px; }
+.mp-input { flex: 1; padding: 12px; border: 1px solid #d5c7a8; border-radius: 8px; font-family: monospace; font-size: 1rem; }
+.mp-btn { padding: 10px 24px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: 1rem; font-weight: bold; }
+.mp-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.mp-plot-area { width: 100%; height: 500px; background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; }

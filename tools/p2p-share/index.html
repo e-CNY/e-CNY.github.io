@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P2P 局域网快传 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/p2p-share.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>🌐 P2P 局域网快传</h1>
+  <p>基于 WebRTC 的点对点传输，无服务器中转，绝对隐私。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="p2p-layout" style="padding-top: 0;">
+  <div class="p2p-container">
+    <div class="p2p-sidebar">
+      <div class="p2p-card">
+        <h3>1. 建立连接</h3>
+        <p class="p2p-hint">在两台设备上打开此页面。设备 A 点击“创建”，设备 B 输入设备 A 的 ID 点击“连接”。</p>
+        <div class="p2p-row">
+          <button id="btn-create" class="p2p-btn primary">🟢 创建接收端 (Host)</button>
+        </div>
+        <div class="p2p-row">
+          <input type="text" id="p2p-target-id" class="p2p-input" placeholder="输入对方 ID">
+          <button id="btn-connect" class="p2p-btn">🔵 连接 (Client)</button>
+        </div>
+        
+        <div class="p2p-status-box">
+          <p>我的 ID: <b id="my-id">未创建</b></p>
+          <p>连接状态: <b id="conn-status" style="color:#a8452a;">未连接</b></p>
+        </div>
+      </div>
+
+      <div class="p2p-card" id="transfer-area" style="display: none;">
+        <h3>2. 传输文件</h3>
+        <div id="p2p-drop" class="p2p-drop">
+          <span>📁 点击或拖拽文件发送</span>
+          <input type="file" id="p2p-file" multiple hidden>
+        </div>
+        <div id="p2p-progress" class="p2p-progress" style="display:none;">
+          <div class="p2p-progress-bar" id="p2p-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p2p-main">
+      <div class="p2p-chat" id="chat-box">
+        <div class="p2p-msg system">建立连接后，此处显示聊天和文件接收记录。</div>
+      </div>
+      <div class="p2p-chat-input">
+        <input type="text" id="chat-input" placeholder="输入文字信息..." disabled>
+        <button id="btn-chat" class="p2p-btn primary" disabled>发送</button>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../../js/libs/peerjs.min.js"></script>
+<script src="../../js/p2p-share.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+.vb-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; height: calc(100vh - 150px); display: flex; flex-direction: column; }
+.vb-toolbar { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.vb-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; font-weight: bold; }
+.vb-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.vb-btn.danger { color: #a8452a; border-color: #fecaca; background: #fef2f2; }
+.vb-canvas-wrap { flex: 1; background: #fff; border: 1px solid #d5c7a8; border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }

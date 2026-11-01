@@ -1,0 +1,16 @@
+.cs-layout { max-width: 1200px; margin: 0 auto; padding: 28px 16px 56px; height: calc(100vh - 120px); display: flex; flex-direction: column; }
+.cs-toolbar { display: flex; gap: 12px; margin-bottom: 12px; }
+.cs-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; font-weight: bold; }
+.cs-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+
+.cs-container { display: flex; flex: 1; gap: 2px; background: #d5c7a8; border: 1px solid #d5c7a8; border-radius: 12px; overflow: hidden; min-height: 0; }
+@media (max-width: 768px) { .cs-container { flex-direction: column; } }
+
+.cs-col { flex: 1; display: flex; flex-direction: column; background: #fff; min-width: 0; }
+.cs-tab-header { background: #f9f3e3; padding: 8px 12px; font-size: .8rem; color: #6b5d47; border-bottom: 1px solid #d5c7a8; font-family: monospace; }
+.cs-tab-header span.active { color: #8a5a2b; font-weight: bold; }
+
+.cs-editor { flex: 1; padding: 12px; border: none; font-family: monospace; font-size: .9rem; line-height: 1.5; resize: none; outline: none; color: #3d3226; background: #fdf8ec; white-space: pre; overflow-x: auto; }
+.cs-editor:focus { background: #fff; }
+
+.cs-preview { flex: 1; border: none; background: #fff; width: 100%; height: 100%; }

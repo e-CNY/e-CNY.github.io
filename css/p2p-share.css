@@ -1,0 +1,34 @@
+.p2p-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+.p2p-container { display: flex; gap: 20px; height: calc(100vh - 180px); }
+@media (max-width: 768px) { .p2p-container { flex-direction: column; height: auto; } }
+
+.p2p-sidebar { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+.p2p-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 16px; }
+.p2p-card h3 { font-size: 1rem; margin: 0 0 12px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 6px; }
+.p2p-hint { font-size: .8rem; color: #8a7a5f; line-height: 1.5; margin-bottom: 12px; }
+
+.p2p-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.p2p-input { flex: 1; padding: 8px 12px; border: 1px solid #d5c7a8; border-radius: 8px; font-size: .85rem; min-width: 0; }
+.p2p-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .85rem; white-space: nowrap; }
+.p2p-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+.p2p-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.p2p-status-box { background: #fff; border: 1px dashed #d5c7a8; border-radius: 8px; padding: 12px; font-size: .85rem; }
+.p2p-status-box p { margin: 4px 0; }
+
+.p2p-drop { border: 2px dashed #c4b48f; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; background: #fdf8ec; transition: all .2s; font-size: .85rem; color: #6b5d47; }
+.p2p-drop:hover, .p2p-drop.dragover { border-color: #8a5a2b; background: #f5ecd5; }
+
+.p2p-progress { height: 6px; background: #e5d9bd; border-radius: 3px; margin-top: 12px; overflow: hidden; }
+.p2p-progress-bar { height: 100%; background: #2563eb; width: 0%; transition: width 0.2s; }
+
+.p2p-main { flex: 1; background: #fff; border: 1px solid #d5c7a8; border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; }
+.p2p-chat { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.p2p-msg { max-width: 80%; padding: 10px 14px; border-radius: 8px; font-size: .9rem; word-break: break-all; }
+.p2p-msg.system { align-self: center; background: #f5ecd5; color: #8a5a2b; font-size: .8rem; text-align: center; }
+.p2p-msg.self { align-self: flex-end; background: #7ba05b; color: #fff; }
+.p2p-msg.other { align-self: flex-start; background: #f0f0f0; color: #3d3226; }
+.p2p-msg a { color: inherit; text-decoration: underline; }
+
+.p2p-chat-input { display: flex; padding: 12px; border-top: 1px solid #d5c7a8; background: #f9f3e3; gap: 8px; }
+.p2p-chat-input input { flex: 1; padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; font-size: .9rem; }

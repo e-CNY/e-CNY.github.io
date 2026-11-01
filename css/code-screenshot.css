@@ -1,0 +1,44 @@
+.cs-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+.cs-container { display: flex; gap: 24px; height: calc(100vh - 180px); }
+@media (max-width: 768px) { .cs-container { flex-direction: column; height: auto; } }
+
+.cs-sidebar { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+.cs-section { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 12px; padding: 16px; }
+.cs-section label { display: block; font-size: .85rem; font-weight: bold; color: #4b3f2f; margin-bottom: 10px; }
+.cs-select { width: 100%; padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; font-size: .9rem; background: #fff; }
+
+.cs-colors { display: flex; gap: 8px; }
+.cs-color-btn { width: 32px; height: 32px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform .15s; }
+.cs-color-btn:hover { transform: scale(1.1); }
+.cs-color-btn.active { border-color: #3d3226; box-shadow: 0 0 0 2px #f9f3e3 inset; }
+
+.cs-options { display: flex; flex-direction: column; gap: 8px; font-size: .85rem; color: #3d3226; }
+.cs-options label { display: flex; align-items: center; gap: 6px; font-weight: normal; margin: 0; cursor: pointer; }
+
+.cs-btn { padding: 12px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .95rem; font-weight: bold; transition: all .15s; width: 100%; }
+.cs-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.cs-btn:hover { opacity: 0.9; }
+
+.cs-main { flex: 1; background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+.cs-editor-wrap { flex: 1; display: flex; }
+#cs-input { flex: 1; padding: 16px; border: 1px solid #d5c7a8; border-radius: 8px; font-family: monospace; font-size: .9rem; resize: none; background: #fff; line-height: 1.5; outline: none; }
+
+/* 截图预览区 */
+.cs-preview-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; position: absolute; inset: 0; background: #e5d9bd; padding: 20px; }
+
+/* 核心截图对象 */
+.capture-target { 
+  background: #282c34; border-radius: 12px; overflow: hidden; 
+  min-width: 500px; max-width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+.mac-header { background: #21252b; padding: 12px 16px; display: flex; align-items: center; gap: 8px; }
+.mac-header .dot { width: 12px; height: 12px; border-radius: 50%; }
+.mac-header .red { background: #ff5f56; }
+.mac-header .yellow { background: #ffbd2e; }
+.mac-header .green { background: #27c93f; }
+.mac-header .lang-label { margin-left: auto; color: #5c6370; font-size: .8rem; font-family: monospace; text-transform: uppercase; }
+
+.capture-target pre { margin: 0; padding: 24px; overflow: visible; }
+.capture-target code { font-family: 'Fira Code', 'Consolas', monospace; font-size: 15px; line-height: 1.6; }
+
+.download-btn { margin-top: 24px; max-width: 250px; background: #2563eb; color: #fff; border-color: #2563eb; }
