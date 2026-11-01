@@ -66,6 +66,7 @@
     { name: '端口与编码字典', emoji: '📚', desc: '常用端口 / 国家码 / 区号', href: 'tools/dict-tool/index.html', category: '安全' }
   ];
 
+  // 动态计算当前页面的基础路径，彻底解决 GitHub Pages 相对路径丢失问题
   var basePath = window.location.pathname;
   if (basePath.endsWith('.html')) {
     basePath = basePath.substring(0, basePath.lastIndexOf('/') + 1);
@@ -80,6 +81,7 @@
   var emptyEl = document.getElementById('empty');
   var activeCat = 'all';
 
+  // 渲染分类标签
   var cats = ['all'];
   tools.forEach(function (t) {
     if (cats.indexOf(t.category) === -1) cats.push(t.category);
@@ -92,12 +94,16 @@
     tabsEl.appendChild(b);
   });
 
+  // 渲染卡片
   tools.forEach(function (t) {
     var a = document.createElement('a');
     a.className = 'card';
     a.href = basePath + t.href;
     a.dataset.cat = t.category;
-    a.dataset.name = String(t.name).toLowerCase();
+    
+    // 【修改点】将工具名称和说明拼接在一起，作为搜索依据
+    a.dataset.search = (String(t.name) + ' ' + String(t.desc)).toLowerCase();
+    
     a.innerHTML =
       '<span class="emoji"></span>' +
       '<span class="name"></span>' +
@@ -118,8 +124,9 @@
 
     cards.forEach(function (card) {
       var matchCat = activeCat === 'all' || card.dataset.cat === activeCat;
-      var matchName = !q || card.dataset.name.indexOf(q) !== -1;
-      var show = matchCat && matchName;
+      // 【修改点】使用我们拼接好的 dataset.search 进行匹配
+      var matchText = !q || card.dataset.search.indexOf(q) !== -1;
+      var show = matchCat && matchText;
 
       if (show) {
         card.hidden = false;
@@ -132,7 +139,7 @@
     });
 
     if (visible === 0) {
-      emptyEl.textContent = q ? '没有找到名称包含「' + raw + '」的工具' : '当前分类下没有工具';
+      emptyEl.textContent = q ? '没有找到包含「' + raw + '」的工具' : '当前分类下没有工具';
       emptyEl.hidden = false;
     } else {
       emptyEl.hidden = true;
