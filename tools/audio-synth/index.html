@@ -10,31 +10,79 @@
 <body>
 <header class="tool-page-header">
   <h1>🎹 高级音频合成器</h1>
-  <p>基于 Web Audio API 的纯前端合成器，支持多波形与多音轨。</p>
+  <p>3 个八度全键盘，内置 11 种乐器音色，支持 WAV 录制与独立节拍器。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="as-layout" style="padding-top: 0;">
   <div class="as-controls">
     <div class="as-row">
-      <label>波形选择</label>
-      <select id="as-waveform" class="as-select">
-        <option value="sine">正弦波 (Sine)</option>
-        <option value="square">方波 (Square)</option>
-        <option value="triangle">三角波 (Triangle)</option>
-        <option value="sawtooth">锯齿波 (Sawtooth)</option>
+      <label>选择乐器</label>
+      <select id="as-instrument" class="as-select">
+        <option value="piano">🎹 原声钢琴 (Acoustic Piano)</option>
+        <option value="epiano">🎹 电钢琴 (Electric Piano)</option>
+        <option value="guitar">🎸 木吉他 (Acoustic Guitar)</option>
+        <option value="strings">🎻 弦乐 / 铺底 (Strings)</option>
+        <option value="lead">🎛️ 电子主音 (Synth Lead)</option>
+        <option value="pad">🌌 电子氛围 (Synth Pad)</option>
+        <option value="bass">🎸 贝斯 (Bass)</option>
+        <option value="organ">⛪ 管风琴 (Organ)</option>
+        <option value="musicbox">🎵 八音盒 (Music Box)</option>
+        <option value="ukulele">🪕 乌克丽丽 (Ukulele)</option>
+        <option value="marimba">🎵 马林巴 (Marimba)</option>
+        <option value="custom">🔊 自定义波形</option>
+      </select>
+      <select id="as-waveform" class="as-select" style="display: none;">
+        <option value="sine">正弦波</option>
+        <option value="square">方波</option>
+        <option value="triangle">三角波</option>
+        <option value="sawtooth">锯齿波</option>
       </select>
     </div>
+    
+    <div class="as-row">
+      <label>效果器</label>
+      <label><input type="checkbox" id="as-reverb"> 混响 (Reverb)</label>
+      <label><input type="checkbox" id="as-delay"> 延迟 (Delay)</label>
+      <label style="margin-left: 20px;"><input type="checkbox" id="as-show-notes"> 在琴键上显示音名</label>
+    </div>
+
     <div class="as-row">
       <label>包络 (起音/衰减)</label>
       <input type="range" id="as-attack" min="0.01" max="1" step="0.01" value="0.05">
       <input type="range" id="as-decay" min="0.1" max="2" step="0.1" value="0.5">
+      <button id="btn-record" class="as-btn primary" style="margin-left:auto;">🔴 开始录音 (WAV)</button>
+    </div>
+
+    <!-- 新增：节拍器控制面板 -->
+    <div class="as-row metronome-panel">
+      <label>🥁 节拍器</label>
+      <button id="btn-metronome" class="as-btn">▶️ 启动</button>
+      
+      <div class="metro-group">
+        <span>BPM</span>
+        <input type="number" id="metro-bpm" min="40" max="240" value="120" class="as-input-small">
+      </div>
+
+      <div class="metro-group">
+        <span>音色</span>
+        <select id="metro-sound" class="as-select" style="padding: 4px 8px; font-size: .8rem;">
+          <option value="beep">电子滴答</option>
+          <option value="wood">木头敲击</option>
+          <option value="click">机械节拍</option>
+        </select>
+      </div>
+
+      <div class="metro-group" style="flex:1;">
+        <span>音量</span>
+        <input type="range" id="metro-vol" min="0" max="1" step="0.05" value="0.5" style="max-width:100px;">
+      </div>
+      <span style="font-size:.75rem; color:#a8452a;">(声音不会录入WAV)</span>
     </div>
   </div>
 
-  <div class="as-keyboard" id="as-keyboard">
-    <!-- JS 生成琴键 -->
-  </div>
+  <!-- 键盘区域 -->
+  <div class="as-keyboard" id="as-keyboard"></div>
 </main>
 <script src="../../js/libs/Tone.js"></script>
 <script src="../../js/audio-synth.js" defer></script>

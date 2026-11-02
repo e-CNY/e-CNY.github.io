@@ -1,15 +1,15 @@
 .cs-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
-.cs-container { display: flex; gap: 24px; height: calc(100vh - 180px); }
+.cs-container { display: flex; gap: 24px; height: calc(100vh - 150px); }
 @media (max-width: 768px) { .cs-container { flex-direction: column; height: auto; } }
 
-.cs-sidebar { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+.cs-sidebar { width: 260px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
 .cs-section { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 12px; padding: 16px; }
 .cs-section label { display: block; font-size: .85rem; font-weight: bold; color: #4b3f2f; margin-bottom: 10px; }
-.cs-select { width: 100%; padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; font-size: .9rem; background: #fff; }
+.cs-select { width: 100%; padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; font-size: .9rem; background: #fff; outline: none; }
 
-.cs-colors { display: flex; gap: 8px; }
-.cs-color-btn { width: 32px; height: 32px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform .15s; }
-.cs-color-btn:hover { transform: scale(1.1); }
+.cs-colors { display: flex; flex-wrap: wrap; gap: 10px; }
+.cs-color-btn { width: 36px; height: 36px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform .15s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.cs-color-btn:hover { transform: scale(1.15); }
 .cs-color-btn.active { border-color: #3d3226; box-shadow: 0 0 0 2px #f9f3e3 inset; }
 
 .cs-options { display: flex; flex-direction: column; gap: 8px; font-size: .85rem; color: #3d3226; }
@@ -31,13 +31,34 @@
   background: #282c34; border-radius: 12px; overflow: hidden; 
   min-width: 500px; max-width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
 }
-.mac-header { background: #21252b; padding: 12px 16px; display: flex; align-items: center; gap: 8px; }
-.mac-header .dot { width: 12px; height: 12px; border-radius: 50%; }
-.mac-header .red { background: #ff5f56; }
-.mac-header .yellow { background: #ffbd2e; }
-.mac-header .green { background: #27c93f; }
-.mac-header .lang-label { margin-left: auto; color: #5c6370; font-size: .8rem; font-family: monospace; text-transform: uppercase; }
 
+/* ================= 头部完美布局 ================= */
+.window-header { background: #21252b; padding: 12px 16px; display: flex; align-items: center; height: 44px; }
+
+/* Mac 按钮 */
+.header-mac { display: flex; gap: 8px; }
+.header-mac .dot { width: 12px; height: 12px; border-radius: 50%; }
+.header-mac .red { background: #ff5f56; }
+.header-mac .yellow { background: #ffbd2e; }
+.header-mac .green { background: #27c93f; }
+
+/* 右侧容器（包含语言和 Win 按钮） */
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+
+/* 语言标签 */
+.lang-label { color: #7a8394; font-size: .8rem; font-family: monospace; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Windows 按钮 */
+.header-win { display: flex; gap: 14px; align-items: center; border-left: 1px solid #3d414d; padding-left: 14px; }
+.header-win .win-btn { display: inline-block; position: relative; cursor: default; }
+.header-win .minimize { width: 10px; height: 1px; background: #a0aec0; }
+.header-win .maximize { width: 10px; height: 10px; border: 1px solid #a0aec0; }
+.header-win .close { width: 12px; height: 12px; }
+.header-win .close::before, .header-win .close::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: #a0aec0; }
+.header-win .close::before { transform: rotate(45deg); }
+.header-win .close::after { transform: rotate(-45deg); }
+
+/* 代码区 */
 .capture-target pre { margin: 0; padding: 24px; overflow: visible; }
 .capture-target code { font-family: 'Fira Code', 'Consolas', monospace; font-size: 15px; line-height: 1.6; }
 

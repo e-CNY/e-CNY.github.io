@@ -10,11 +10,26 @@
 <body>
 <header class="tool-page-header">
   <h1>🗺️ 关系网络图</h1>
-  <p>人物知识图谱与复杂节点交互可视化。</p>
+  <p>知识图谱、力导向布局与交互节点可视化。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="ng-layout" style="padding-top: 0;">
+  <div class="ng-toolbar">
+    <select id="ng-layout" class="ng-select">
+      <option value="force">力导向布局 (Force)</option>
+      <option value="circular">环形布局 (Circular)</option>
+    </select>
+    <select id="ng-symbol" class="ng-select">
+      <option value="circle">圆形节点</option>
+      <option value="rect">矩形节点</option>
+      <option value="roundRect">圆角矩形</option>
+      <option value="triangle">三角形</option>
+      <option value="diamond">菱形</option>
+    </select>
+    <input type="text" id="ng-search" class="ng-input" placeholder="搜索节点名称（如 JavaScript）...">
+    <button id="btn-search" class="ng-btn primary">🔍 搜索定位</button>
+  </div>
   <div class="ng-card">
     <div id="ng-chart" class="ng-chart"></div>
   </div>

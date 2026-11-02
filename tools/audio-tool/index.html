@@ -9,8 +9,8 @@
 </head>
 <body>
 <header class="tool-page-header">
-  <h1>🎵 音频工具</h1>
-  <p>波形预览、音量调节、裁剪并导出为 WAV 格式。</p>
+  <h1>🎵 高级音频工具</h1>
+  <p>波形预览、音频倒放、选区裁剪、无损 WAV 导出。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
@@ -18,12 +18,12 @@
   <div class="au-card">
     <div id="au-drop-zone" class="au-drop-zone">
       <span>📁 点击或拖拽音频文件</span>
-      <span class="au-hint">支持 mp3 / wav / ogg / m4a</span>
+      <span class="au-hint">支持 mp3 / wav / ogg / m4a / flac 等</span>
       <input id="au-input" type="file" accept="audio/*" hidden>
     </div>
 
     <div id="au-workspace" style="display: none;">
-      <div class="au-wave-wrap">
+      <div class="au-wave-wrap" id="wave-wrap">
         <canvas id="au-canvas"></canvas>
       </div>
       
@@ -32,22 +32,28 @@
           <label>音量</label>
           <input type="range" id="au-volume" min="0" max="1" step="0.01" value="1">
           <span id="au-vol-val">100%</span>
+          <span style="margin-left: auto;" id="au-time">00:00 / 00:00</span>
         </div>
-        <div class="au-row">
+        
+        <div class="au-row" style="justify-content: center; gap: 16px; margin-top: 10px;">
           <button id="au-play" class="au-btn primary">▶️ 播放</button>
           <button id="au-pause" class="au-btn" disabled>⏸️ 暂停</button>
-          <span id="au-time" style="font-family: monospace; margin-left: auto;">00:00 / 00:00</span>
+          <button id="au-reverse" class="au-btn" title="音频倒放">⏪ 倒放</button>
         </div>
         
         <div class="au-crop-box">
-          <h3>✂️ 裁剪导出 (WAV)</h3>
+          <h3>✂️ 裁剪与导出</h3>
           <div class="au-row">
             <label>起点 (秒)</label>
             <input type="number" id="au-start" min="0" step="0.1" value="0">
             <label>终点 (秒)</label>
             <input type="number" id="au-end" min="0" step="0.1" value="0">
+            <select id="au-channel" class="au-select">
+              <option value="keep">保留原声道</option>
+              <option value="mono">混合为单声道</option>
+            </select>
           </div>
-          <button id="au-export" class="au-btn primary" style="width: 100%; margin-top: 12px;">导出选中片段为 WAV</button>
+          <button id="au-export" class="au-btn primary" style="width: 100%; margin-top: 12px;">导出选中片段为无损 WAV</button>
         </div>
       </div>
     </div>

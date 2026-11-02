@@ -12,7 +12,7 @@
 <body>
 <header class="tool-page-header">
   <h1>📸 代码截图美化器</h1>
-  <p>一键将代码转化为极客风精美截图，支持高亮与多种背景。</p>
+  <p>一键将代码转化为极客风精美截图。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
@@ -29,25 +29,52 @@
           <option value="css">CSS</option>
           <option value="python">Python</option>
           <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="c">C</option>
+          <option value="csharp">C#</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="php">PHP</option>
+          <option value="ruby">Ruby</option>
+          <option value="swift">Swift</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="sql">SQL</option>
+          <option value="bash">Bash / Shell</option>
           <option value="json">JSON</option>
+          <option value="yaml">YAML</option>
+          <option value="markdown">Markdown</option>
         </select>
+      </div>
+
+      <div class="cs-section">
+        <label>窗口样式</label>
+        <select id="cs-window-style" class="cs-select">
+          <option value="mac">macOS (左侧红黄绿)</option>
+          <option value="win">Windows (右侧控制)</option>
+        </select>
+        <div class="cs-options" style="margin-top: 10px;">
+          <label><input type="checkbox" id="cs-show-shadow" checked> 添加阴影</label>
+        </div>
       </div>
 
       <div class="cs-section">
         <label>背景渐变风格</label>
         <div class="cs-colors">
-          <button class="cs-color-btn active" style="background: linear-gradient(to right, #7ba05b, #4a90e2);" data-bg="linear-gradient(135deg, #7ba05b, #4a90e2)"></button>
-          <button class="cs-color-btn" style="background: linear-gradient(to right, #f1c40f, #e67e22);" data-bg="linear-gradient(135deg, #f1c40f, #e67e22)"></button>
-          <button class="cs-color-btn" style="background: linear-gradient(to right, #a8452a, #8e44ad);" data-bg="linear-gradient(135deg, #a8452a, #8e44ad)"></button>
-          <button class="cs-color-btn" style="background: linear-gradient(to right, #2d3748, #1a202c);" data-bg="linear-gradient(135deg, #2d3748, #1a202c)"></button>
-        </div>
-      </div>
-
-      <div class="cs-section">
-        <label>窗口样式</label>
-        <div class="cs-options">
-          <label><input type="checkbox" id="cs-show-dots" checked> 显示 Mac 按钮</label>
-          <label><input type="checkbox" id="cs-show-shadow" checked> 添加阴影</label>
+          <!-- 经典色 -->
+          <button class="cs-color-btn active" style="background: linear-gradient(135deg, #7ba05b, #4a90e2);" data-bg="linear-gradient(135deg, #7ba05b, #4a90e2)"></button>
+          <button class="cs-color-btn" style="background: linear-gradient(135deg, #f1c40f, #e67e22);" data-bg="linear-gradient(135deg, #f1c40f, #e67e22)"></button>
+          <button class="cs-color-btn" style="background: linear-gradient(135deg, #a8452a, #8e44ad);" data-bg="linear-gradient(135deg, #a8452a, #8e44ad)"></button>
+          <button class="cs-color-btn" style="background: linear-gradient(135deg, #2d3748, #1a202c);" data-bg="linear-gradient(135deg, #2d3748, #1a202c)"></button>
+          <!-- 极客暗色系 -->
+          <button class="cs-color-btn" style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);" data-bg="linear-gradient(135deg, #0f2027, #203a43, #2c5364)"></button>
+          <button class="cs-color-btn" style="background: linear-gradient(135deg, #232526, #414345);" data-bg="linear-gradient(135deg, #232526, #414345)"></button>
+          <!-- 骚气渐变 -->
+          <button class="cs-color-btn" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);" data-bg="linear-gradient(135deg, #ff9a9e, #fecfef)"></button>
+          <button class="cs-color-btn" style="background: linear-gradient(135deg, #667eea, #764ba2);" data-bg="linear-gradient(135deg, #667eea, #764ba2)"></button>
+          <button class="cs-color-btn" style="background: linear-gradient(135deg, #4facfe, #00f2fe);" data-bg="linear-gradient(135deg, #4facfe, #00f2fe)"></button>
+          <button class="cs-color-btn" style="background: linear-gradient(135deg, #fa709a, #fee140);" data-bg="linear-gradient(135deg, #fa709a, #fee140)"></button>
+          <button class="cs-color-btn" style="background: linear-gradient(135deg, #30cfd0, #330867);" data-bg="linear-gradient(135deg, #30cfd0, #330867)"></button>
+          <button class="cs-color-btn" style="background: linear-gradient(135deg, #c79081, #dfa579);" data-bg="linear-gradient(135deg, #c79081, #dfa579)"></button>
         </div>
       </div>
 
@@ -60,13 +87,29 @@
         <textarea id="cs-input" spellcheck="false" placeholder="在此粘贴代码..."></textarea>
       </div>
       
-      <!-- 截图预览区 (生成时显示) -->
+      <!-- 截图预览区 -->
       <div id="cs-preview-area" class="cs-preview-area" style="display:none;">
         <div id="capture-target" class="capture-target">
-          <div class="mac-header" id="mac-header">
-            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-            <span class="lang-label" id="lang-label">javascript</span>
+          
+          <!-- 窗口头部 (Flex 完美布局) -->
+          <div class="window-header" id="window-header">
+            <!-- Mac 左侧按钮 -->
+            <div class="header-mac" id="header-mac">
+              <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            </div>
+            
+            <!-- 右侧容器：包含语言标签和 Win 按钮 -->
+            <div class="header-right">
+              <span class="lang-label" id="lang-label">javascript</span>
+              <!-- Win 按钮 -->
+              <div class="header-win" id="header-win" style="display:none;">
+                <span class="win-btn minimize"></span>
+                <span class="win-btn maximize"></span>
+                <span class="win-btn close"></span>
+              </div>
+            </div>
           </div>
+
           <pre><code id="code-preview" class="hljs"></code></pre>
         </div>
         <button id="btn-download" class="cs-btn download-btn">⬇️ 下载高清图片</button>

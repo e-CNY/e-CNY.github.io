@@ -2,13 +2,16 @@
   var dropZone = document.getElementById('lt-drop-zone');
   var fileInput = document.getElementById('lt-input');
   var infoBox = document.getElementById('lt-info');
-  var wEl = document.getElementById('lt-w');
-  var hEl = document.getElementById('lt-h');
-  var frEl = document.getElementById('lt-fr');
-  var durEl = document.getElementById('lt-duration');
   var preview = document.getElementById('lt-preview');
-
   var anim = null;
+  
+  var progressSlider = document.getElementById('lt-progress');
+  var currentFrameText = document.getElementById('lt-current-frame');
+  var totalFrameText = document.getElementById('lt-total-frame');
+  var controlsArea = document.getElementById('lt-controls');
+  var btnPlay = document.getElementById('btn-play');
+
+  var animTotalFrames = 0;
 
   dropZone.addEventListener('click', function () { fileInput.click(); });
   fileInput.addEventListener('change', function () {
@@ -17,27 +20,22 @@
   });
 
   function handleFile(file) {
-    if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
-      return alert('请上传有效的 Lottie JSON 文件');
-    }
-
     var reader = new FileReader();
     reader.onload = function (e) {
       try {
         var jsonData = JSON.parse(e.target.result);
-        
-        if (!jsonData.w || !jsonData.h) {
-          throw new Error('解析成功，但可能不是标准的 Lottie 文件');
-        }
+        if (!jsonData.w || !jsonData.h) throw new Error('非标准 Lottie 文件');
 
         infoBox.style.display = 'block';
-        wEl.textContent = jsonData.w;
-        hEl.textContent = jsonData.h;
-        frEl.textContent = jsonData.fr;
-        var duration = jsonData.op / jsonData.fr; // 总帧数 / 帧率
-        durEl.textContent = duration.toFixed(2);
+        document.getElementById('lt-w').textContent = jsonData.w;
+        document.getElementById('lt-h').textContent = jsonData.h;
+        document.getElementById('lt-fr').textContent = jsonData.fr;
+        
+        animTotalFrames = jsonData.op;
+        var duration = (jsonData.op / jsonData.fr).toFixed(2);
+        document.getElementById('lt-duration').textContent = duration;
 
-        preview.innerHTML = ''; // 清空占位
+        preview.innerHTML = '';
         var animContainer = document.createElement('div');
         animContainer.style.width = '100%';
         animContainer.style.height = '100%';
@@ -54,21 +52,94 @@
           animationData: jsonData
         });
 
+        controlsArea.style.display = 'flex';
+        progressSlider.max = animTotalFrames;
+        totalFrameText.textContent = animTotalFrames;
+        btnPlay.textContent = '暂停';
+
+        // 动画帧更新时同步进度条
+        anim.addEventListener('enterFrame', function () {
+          if (!progressSlider.dataset.dragging) {
+            progressSlider.value = anim.currentFrame;
+            currentFrameText.textContent = Math.round(anim.currentFrame);
+          }
+        });
+
       } catch (err) {
-        alert('JSON 解析失败: ' + err.message);
+        alert('JSON 解析失败，请确保是有效的 Lottie 文件。\n' + err.message);
       }
     };
     reader.readAsText(file);
   }
 
-  // 支持拖拽
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (ev) {
-    dropZone.addEventListener(ev, function (e) { e.preventDefault(); e.stopPropagation(); });
+  // 播放控制
+  btnPlay.addEventListener('click', function () {
+    if (!anim) return;
+    if (anim.isPaused) {
+      anim.play();
+      btnPlay.textContent = '暂停';
+    } else {
+      anim.pause();
+      btnPlay.textContent = '播放';
+    }
   });
-  dropZone.addEventListener('dragover', function () { dropZone.classList.add('dragover'); });
-  dropZone.addEventListener('dragleave', function () { dropZone.classList.remove('dragover'); });
-  dropZone.addEventListener('drop', function (e) {
-    dropZone.classList.remove('dragover');
-    if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+
+  document.getElementById('btn-replay').addEventListener('click', function () {
+    if (!anim) return;
+    anim.goToAndPlay(0, true);
+    btnPlay.textContent = '暂停';
+  });
+
+  // 速度控制
+  document.getElementById('lt-speed').addEventListener('change', function () {
+    if (anim) anim.setSpeed(parseFloat(this.value));
+  });
+
+  // 背景切换
+  document.getElementById('lt-bg').addEventListener('change', function () {
+    preview.style.backgroundColor = this.value;
+    if (this.value === 'transparent') {
+      preview.classList.add('transparent-bg');
+    } else {
+      preview.classList.remove('transparent-bg');
+    }
+  });
+
+  // 进度条拖动
+  progressSlider.addEventListener('mousedown', function () { this.dataset.dragging = 'true'; });
+  progressSlider.addEventListener('touchstart', function () { this.dataset.dragging = 'true'; });
+  
+  progressSlider.addEventListener('input', function () {
+    if (anim) {
+      anim.goToAndStop(parseFloat(this.value), true);
+      currentFrameText.textContent = Math.round(this.value);
+      btnPlay.textContent = '播放';
+    }
+  });
+
+  progressSlider.addEventListener('mouseup', function () { delete this.dataset.dragging; });
+  progressSlider.addEventListener('touchend', function () { delete this.dataset.dragging; });
+
+  // 导出当前帧为 PNG
+  document.getElementById('btn-export-frame').addEventListener('click', function () {
+    if (!anim) return alert('请先上传动画');
+    var svg = preview.querySelector('svg');
+    if (!svg) return alert('当前帧无可导出的画面');
+
+    var svgData = new XMLSerializer().serializeToString(svg);
+    var canvas = document.createElement('canvas');
+    canvas.width = svg.clientWidth || 500;
+    canvas.height = svg.clientHeight || 500;
+    var ctx = canvas.getContext('2d');
+    
+    var img = document.createElement('img');
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      var a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = 'lottie_frame_' + Date.now() + '.png';
+      a.click();
+    };
+    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
   });
 })();

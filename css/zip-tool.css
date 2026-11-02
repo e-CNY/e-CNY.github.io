@@ -16,14 +16,16 @@
 .zt-drop-zone:hover, .zt-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
 .zt-hint { font-size: .75rem; color: #8a7a5f; }
 
+.zt-select { flex: 1; padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fff; font-size: .85rem; outline: none; }
+
 .zt-file-list { list-style: none; padding: 0; margin: 0 0 16px 0; max-height: 150px; overflow-y: auto; font-size: .85rem; }
 .zt-file-list li { padding: 6px 10px; border-bottom: 1px dashed #e5d9bd; display: flex; justify-content: space-between; }
 
-.zt-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; }
+.zt-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; transition: all .15s; }
 .zt-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
 .zt-btn:disabled { opacity: .5; cursor: not-allowed; }
 
-.zt-log { flex: 1; background: #f5ecd5; border-radius: 8px; padding: 12px; font-family: monospace; font-size: .85rem; color: #3d3226; max-height: 150px; overflow-y: auto; white-space: pre-wrap; }
+.zt-log { flex: 1; background: #f5ecd5; border-radius: 8px; padding: 12px; font-family: monospace; font-size: .85rem; color: #3d3226; max-height: 250px; overflow-y: auto; white-space: pre-wrap; }
 
 .zt-row { display: flex; gap: 16px; margin-bottom: 16px; }
 .zt-row.center { justify-content: center; }

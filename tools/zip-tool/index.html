@@ -10,30 +10,40 @@
 <body>
 <header class="tool-page-header">
   <h1>📦 压缩与解压工具</h1>
-  <p>ZIP 打包/解包、Gzip 纯文本压缩/解压，全本地处理。</p>
+  <p>支持 ZIP / TAR / TAR.GZ 打包，支持 ZIP 解包及文本 Gzip。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="zt-layout" style="padding-top: 0;">
   <div class="zt-tabs">
-    <button class="zt-tab active" data-target="panel-zip">ZIP 压缩与解压</button>
+    <button class="zt-tab active" data-target="panel-zip">文件打包与解压</button>
     <button class="zt-tab" data-target="panel-gzip">Gzip 文本压缩</button>
   </div>
 
   <div class="zt-content">
-    <!-- ZIP 面板 -->
+    <!-- ZIP / TAR 面板 -->
     <div id="panel-zip" class="zt-panel active">
       <div class="zt-grid">
         <!-- 打包 -->
         <div class="zt-card">
-          <h2>📁 文件打包成 ZIP</h2>
+          <h2>📁 文件打包</h2>
           <div id="zip-drop-zone" class="zt-drop-zone">
             <span>📁 点击或拖拽多个文件</span>
             <span class="zt-hint">将按原文件名打包</span>
             <input id="zip-input" type="file" multiple hidden>
           </div>
           <ul id="zip-file-list" class="zt-file-list"></ul>
-          <button id="btn-zip-pack" class="zt-btn primary" disabled>打包并下载 ZIP</button>
+          
+          <div class="zt-row" style="margin-bottom: 12px; align-items: center;">
+            <label style="font-size: .85rem; color: #6b5d47; margin-right: 10px;">打包格式:</label>
+            <select id="zip-format" class="zt-select">
+              <option value="zip">ZIP 压缩包 (.zip)</option>
+              <option value="targz">Gzip 压缩的 TAR (.tar.gz)</option>
+              <option value="tar">普通 TAR 归档 (.tar)</option>
+            </select>
+          </div>
+
+          <button id="btn-zip-pack" class="zt-btn primary" disabled>打包并下载</button>
         </div>
         
         <!-- 解包 -->

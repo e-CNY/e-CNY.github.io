@@ -3,25 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>玄学八字排盘 · 工具站</title>
+<title>东方玄学 & 占卜实验室 · 工具站</title>
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="../../css/bazi.css">
 </head>
 <body>
 <header class="tool-page-header">
-  <h1>🔮 玄学八字排盘</h1>
-  <p>输入公历出生时间，纯前端推演干支、十神与五行。</p>
+  <h1>☯️ 东方玄学 & 占卜实验室</h1>
+  <p>八字、梅花、塔罗、八宅、星座，纯前端本地推演。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="bz-layout" style="padding-top: 0;">
-  <div class="bz-card">
-    <div class="bz-input-group">
-      <input type="date" id="bz-date" class="bz-input">
-      <input type="time" id="bz-time" class="bz-input">
-      <button id="btn-bazi" class="bz-btn primary">开始排盘</button>
+  <div class="bz-tabs">
+    <button class="bz-tab active" data-target="panel-bazi">☯️ 八字排盘</button>
+    <button class="bz-tab" data-target="panel-meihua">🌸 梅花易数</button>
+    <button class="bz-tab" data-target="panel-tarot">🃏 塔罗抽牌</button>
+    <button class="bz-tab" data-target="panel-fengshui">🏠 八宅风水</button>
+    <button class="bz-tab" data-target="panel-zodiac">♈ 星座本命</button>
+  </div>
+
+  <div class="bz-content">
+    
+    <!-- 1. 八字排盘 -->
+    <div id="panel-bazi" class="bz-panel active">
+      <div class="bz-input-group">
+        <input type="date" id="bz-date" class="bz-input">
+        <input type="time" id="bz-time" class="bz-input">
+        <button id="btn-bazi" class="bz-btn primary">开始排盘</button>
+      </div>
+      <div id="bazi-result" class="bz-result-area"></div>
     </div>
-    <div id="bazi-result" class="bz-result-area"></div>
+
+    <!-- 2. 梅花易数 -->
+    <div id="panel-meihua" class="bz-panel">
+      <div class="bz-input-group">
+        <!-- 新增时间选择 -->
+        <input type="datetime-local" id="mh-date" class="bz-input">
+        <button id="btn-meihua" class="bz-btn primary">🔮 起卦</button>
+      </div>
+      <div id="meihua-result" class="bz-result-area" style="grid-template-columns: 1fr;">
+        <div class="bz-pillar" id="meihua-content">点击上方按钮开始起卦...</div>
+      </div>
+    </div>
+
+    <!-- 3. 塔罗抽牌 -->
+    <div id="panel-tarot" class="bz-panel">
+      <div class="bz-input-group">
+        <button id="btn-tarot" class="bz-btn primary" style="width: 100%;">🎴 抽取三张塔罗牌 (过去/现在/未来)</button>
+      </div>
+      <div id="tarot-result" class="bz-result-area" style="grid-template-columns: repeat(3, 1fr);">
+        <!-- 渲染卡片 -->
+      </div>
+    </div>
+
+    <!-- 4. 八宅风水 -->
+    <div id="panel-fengshui" class="bz-panel">
+      <div class="bz-input-group">
+        <input type="number" id="fs-year" class="bz-input" placeholder="输入任意出生年份 (如 1890)">
+        <select id="fs-gender" class="bz-input">
+          <option value="1">男</option>
+          <option value="0">女</option>
+        </select>
+        <button id="btn-fengshui" class="bz-btn primary">计算命卦</button>
+      </div>
+      <div id="fengshui-result" class="bz-result-area" style="grid-template-columns: 1fr;">
+        <div class="bz-pillar" id="fengshui-content">请输入出生年份...</div>
+      </div>
+    </div>
+
+    <!-- 5. 星座本命 -->
+    <div id="panel-zodiac" class="bz-panel">
+      <div class="bz-input-group">
+        <input type="date" id="zodiac-date" class="bz-input">
+        <button id="btn-zodiac" class="bz-btn primary">查询星座</button>
+      </div>
+      <div id="zodiac-result" class="bz-result-area" style="grid-template-columns: 1fr;">
+        <div class="bz-pillar" id="zodiac-content">请选择日期...</div>
+      </div>
+    </div>
+
   </div>
 </main>
 <script src="../../js/libs/lunar.min.js"></script>

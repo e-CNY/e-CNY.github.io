@@ -1,7 +1,7 @@
 (function () {
   var languageSelect = document.getElementById('cs-language');
+  var windowStyleSelect = document.getElementById('cs-window-style');
   var colorBtns = document.querySelectorAll('.cs-color-btn');
-  var showDots = document.getElementById('cs-show-dots');
   var showShadow = document.getElementById('cs-show-shadow');
   var input = document.getElementById('cs-input');
   var previewArea = document.getElementById('cs-preview-area');
@@ -10,9 +10,11 @@
   var langLabel = document.getElementById('lang-label');
   var btnGenerate = document.getElementById('btn-generate');
   var btnDownload = document.getElementById('btn-download');
-  var macHeader = document.getElementById('mac-header');
-  var csEditorWrap = document.querySelector('.cs-editor-wrap');
+  
+  var headerMac = document.getElementById('header-mac');
+  var headerWin = document.getElementById('header-win');
 
+  var csEditorWrap = document.querySelector('.cs-editor-wrap');
   var currentBg = 'linear-gradient(135deg, #7ba05b, #4a90e2)';
 
   // 默认示例代码
@@ -27,12 +29,20 @@
     });
   });
 
+  // 切换窗口头部样式
+  function updateHeaderStyle() {
+    var style = windowStyleSelect.value;
+    // 通过 flex 布局，Mac 和 Win 按钮会自动各居其位
+    headerMac.style.display = style === 'mac' ? 'flex' : 'none';
+    headerWin.style.display = style === 'win' ? 'flex' : 'none';
+  }
+  windowStyleSelect.addEventListener('change', updateHeaderStyle);
+
   // 生成预览
   btnGenerate.addEventListener('click', function() {
     var code = input.value.trim();
     if (!code) return alert('请输入代码');
 
-    // 应用高亮
     var lang = languageSelect.value;
     codePreview.className = 'hljs language-' + lang;
     codePreview.textContent = code;
@@ -42,7 +52,7 @@
 
     // 应用配置
     captureTarget.style.background = '#282c34';
-    macHeader.style.display = showDots.checked ? 'flex' : 'none';
+    updateHeaderStyle();
     captureTarget.style.boxShadow = showShadow.checked ? '0 20px 40px rgba(0,0,0,0.2)' : 'none';
 
     // 切换视图
@@ -51,7 +61,7 @@
     previewArea.style.background = currentBg;
   });
 
-  // 点击预览区返回编辑
+  // 点击预览区空白返回
   previewArea.addEventListener('click', function(e) {
     if (e.target === previewArea) {
       previewArea.style.display = 'none';
@@ -63,10 +73,9 @@
   btnDownload.addEventListener('click', function() {
     btnDownload.textContent = '⏳ 渲染中...';
     
-    // 提高像素比，保证下载的是高清图
     html2canvas(previewArea, {
       scale: 2, 
-      backgroundColor: null // 保留背景渐变
+      backgroundColor: null 
     }).then(function(canvas) {
       var a = document.createElement('a');
       a.href = canvas.toDataURL('image/png');

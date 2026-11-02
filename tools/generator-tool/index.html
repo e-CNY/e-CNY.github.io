@@ -10,58 +10,103 @@
 <body>
 <header class="tool-page-header">
   <h1>🆔 生成器工具箱</h1>
-  <p>UUID / 随机 ID / 随机 MAC/IP / 密码强度检测。</p>
+  <p>UUID / 雪花 ID / 随机数据 / 密码短语 / 强度检测。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="gn-layout" style="padding-top: 0;">
   <div class="gn-grid">
     
-    <!-- 1. ID 生成 -->
+    <!-- 1. 高级 ID -->
     <div class="gn-card">
-      <h2>🆔 随机 ID 生成</h2>
+      <h2>🆔 高级 ID 生成</h2>
       <div class="gn-row">
-        <button id="btn-gen-uuid" class="gn-btn primary">生成 UUID v4</button>
+        <button id="btn-gen-uuid" class="gn-btn">UUID v4</button>
         <input type="text" id="out-uuid" class="gn-input" readonly>
       </div>
       <div class="gn-row">
-        <button id="btn-gen-nano" class="gn-btn primary">生成 NanoID</button>
+        <button id="btn-gen-ulid" class="gn-btn">ULID (时间有序)</button>
+        <input type="text" id="out-ulid" class="gn-input" readonly>
+      </div>
+      <div class="gn-row">
+        <button id="btn-gen-snowflake" class="gn-btn">雪花 ID (Snowflake)</button>
+        <input type="text" id="out-snowflake" class="gn-input" readonly>
+      </div>
+      <div class="gn-row">
+        <button id="btn-gen-nano" class="gn-btn">NanoID</button>
         <input type="text" id="out-nano" class="gn-input" readonly>
-      </div>
-      <div class="gn-row">
-        <button id="btn-gen-mac" class="gn-btn">生成 MAC 地址</button>
-        <input type="text" id="out-mac" class="gn-input" readonly>
-      </div>
-      <div class="gn-row">
-        <button id="btn-gen-ip" class="gn-btn">生成 IPv4 地址</button>
-        <input type="text" id="out-ip" class="gn-input" readonly>
       </div>
     </div>
 
-    <!-- 2. 密码生成 -->
+    <!-- 2. 测试数据 (Mock) -->
     <div class="gn-card">
-      <h2>🔑 随机密码生成</h2>
+      <h2>🧪 随机测试数据</h2>
       <div class="gn-row">
-        <label>密码长度</label>
-        <input type="range" id="pwd-len" min="6" max="64" value="16">
-        <span id="pwd-len-val">16</span>
+        <button id="btn-gen-name" class="gn-btn">中文姓名</button>
+        <input type="text" id="out-name" class="gn-input" readonly>
       </div>
       <div class="gn-row">
-        <label>包含字符</label>
-        <div class="gn-checkboxes">
-          <label><input type="checkbox" id="pwd-upper" checked> 大写字母</label>
-          <label><input type="checkbox" id="pwd-lower" checked> 小写字母</label>
-          <label><input type="checkbox" id="pwd-num" checked> 数字</label>
-          <label><input type="checkbox" id="pwd-sym" checked> 符号 (!@#$)</label>
+        <button id="btn-gen-phone" class="gn-btn">手机号</button>
+        <input type="text" id="out-phone" class="gn-input" readonly>
+      </div>
+      <div class="gn-row">
+        <button id="btn-gen-email" class="gn-btn">邮箱</button>
+        <input type="text" id="out-email" class="gn-input" readonly>
+      </div>
+      <div class="gn-row">
+        <button id="btn-gen-mac" class="gn-btn">MAC 地址</button>
+        <input type="text" id="out-mac" class="gn-input" readonly>
+      </div>
+    </div>
+
+    <!-- 3. 密码与短语 -->
+    <div class="gn-card" style="grid-column: 1 / -1;">
+      <h2>🔑 安全密码与短语</h2>
+      
+      <div class="gn-grid-2">
+        <!-- 随机密码 -->
+        <div>
+          <label class="gn-label">随机密码生成</label>
+          <div class="gn-row">
+            <input type="range" id="pwd-len" min="6" max="64" value="16">
+            <span id="pwd-len-val">16</span>
+          </div>
+          <div class="gn-row">
+            <div class="gn-checkboxes">
+              <label><input type="checkbox" id="pwd-upper" checked> 大写字母</label>
+              <label><input type="checkbox" id="pwd-lower" checked> 小写字母</label>
+              <label><input type="checkbox" id="pwd-num" checked> 数字</label>
+              <label><input type="checkbox" id="pwd-sym" checked> 符号</label>
+            </div>
+          </div>
+          <button id="btn-gen-pwd" class="gn-btn primary" style="width:100%;">生成密码</button>
+          <input type="text" id="out-pwd" class="gn-input" readonly style="font-size:1.2rem; text-align:center; margin-top:12px;">
+          <div class="gn-strength-wrap">
+            <div class="gn-strength-bar" id="pwd-bar"></div>
+          </div>
+          <div id="pwd-strength-text" style="font-size:.85rem; color:#6b5d47; text-align:center;">等待生成...</div>
+        </div>
+
+        <!-- 密码短语 -->
+        <div>
+          <label class="gn-label">好记的密码短语 (Diceware)</label>
+          <div class="gn-row">
+            <select id="passphrase-words" class="gn-select">
+              <option value="3">3 个单词 (标准)</option>
+              <option value="4" selected>4 个单词 (高安全)</option>
+              <option value="5">5 个单词 (极高安全)</option>
+            </select>
+            <select id="passphrase-sep" class="gn-select">
+              <option value="-">连字符 (-)</option>
+              <option value=".">点号 (.)</option>
+              <option value="_">下划线 (_)</option>
+              <option value=" ">空格 ( )</option>
+            </select>
+          </div>
+          <button id="btn-gen-phrase" class="gn-btn primary" style="width:100%; margin-top: 12px;">生成短语</button>
+          <input type="text" id="out-phrase" class="gn-input" readonly style="font-size:1.2rem; text-align:center; margin-top:12px;">
         </div>
       </div>
-      <button id="btn-gen-pwd" class="gn-btn primary" style="width:100%;">生成密码</button>
-      <input type="text" id="out-pwd" class="gn-input" readonly style="font-size:1.2rem; text-align:center; margin-top:12px;">
-      
-      <div class="gn-strength-wrap">
-        <div class="gn-strength-bar" id="pwd-bar"></div>
-      </div>
-      <div id="pwd-strength-text" style="font-size:.85rem; color:#6b5d47; text-align:center;">等待生成...</div>
     </div>
 
   </div>

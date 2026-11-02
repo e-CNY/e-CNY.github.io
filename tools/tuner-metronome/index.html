@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>乐器调音器 & 节拍器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/tuner-metronome.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>🎸 乐器调音器 & 节拍器</h1>
+  <p>高精度麦克风调音，内置参考音，专业级多拍号节拍器。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="tm-layout" style="padding-top: 0;">
+  <div class="tm-tabs">
+    <button class="tm-tab active" data-target="panel-tuner">🎸 乐器调音器</button>
+    <button class="tm-tab" data-target="panel-metronome">🥁 节拍器</button>
+  </div>
+
+  <!-- ================= 调音器 ================= -->
+  <div id="panel-tuner" class="tm-panel active">
+    <div class="tn-card">
+      <div class="tn-header">
+        <select id="tn-instrument" class="tn-select">
+          <option value="guitar">木吉他 / 电吉他 (6弦)</option>
+          <option value="ukulele">乌克丽丽 (4弦)</option>
+          <option value="bass">贝斯 (4弦)</option>
+          <option value="violin">小提琴 (4弦)</option>
+          <option value="cello">大提琴 (4弦)</option>
+          <option value="mandolin">曼陀林 (8弦/4组)</option>
+          <option value="banjo">5弦班卓琴</option>
+        </select>
+        <button id="btn-start-tuner" class="tn-btn primary">🎤 开启麦克风</button>
+      </div>
+
+      <!-- 新增：参考音发声区 -->
+      <div class="tn-reference">
+        <label>🔊 参考音发声 (无麦克风可用)</label>
+        <div class="tn-ref-buttons" id="tn-ref-buttons">
+          <!-- JS 生成 -->
+        </div>
+      </div>
+
+      <div class="tn-display">
+        <div class="tn-string" id="tn-target-string">请先开启麦克风或点击参考音</div>
+        
+        <div class="tn-dial">
+          <div class="tn-center"></div>
+          <div class="tn-ticks">
+            <span>-50</span><span>-25</span><span>0</span><span>+25</span><span>+50</span>
+          </div>
+          <div class="tn-needle" id="tn-needle"></div>
+        </div>
+        
+        <div class="tn-info">
+          <div>当前频率: <b id="tn-freq">0.00 Hz</b></div>
+          <div>目标音高: <b id="tn-target-note">-</b></div>
+        </div>
+        <div class="tn-status" id="tn-status">等待输入声音...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 节拍器 ================= -->
+  <div id="panel-metronome" class="tm-panel">
+    <div class="mt-card">
+      <div class="mt-top">
+        <div class="mt-bpm-box">
+          <label>BPM</label>
+          <input type="number" id="mt-bpm" value="120" min="40" max="240" class="mt-bpm-input">
+        </div>
+        <input type="range" id="mt-bpm-slider" min="40" max="240" value="120" class="mt-slider">
+      </div>
+
+      <div class="mt-controls">
+        <div class="mt-row">
+          <label>拍号</label>
+          <select id="mt-time-sig" class="mt-select">
+            <option value="1">1 / 4 拍</option>
+            <option value="2">2 / 4 拍</option>
+            <option value="3">3 / 4 拍</option>
+            <option value="4" selected>4 / 4 拍</option>
+            <option value="5">5 / 4 拍</option>
+            <option value="7">7 / 8 拍</option>
+            <option value="3_8">3 / 8 拍 (圆舞曲)</option>
+            <option value="6_8">6 / 8 拍</option>
+          </select>
+        </div>
+        <div class="mt-row">
+          <label>音色</label>
+          <select id="mt-sound" class="mt-select">
+            <option value="beep">电子哔声 (Beep)</option>
+            <option value="wood">木头敲击 (Wood)</option>
+            <option value="kick">底鼓 (Kick)</option>
+            <option value="snare">军鼓 (Snare)</option>
+          </select>
+        </div>
+        <div class="mt-row">
+          <label>音量</label>
+          <input type="range" id="mt-vol" min="0" max="1" step="0.05" value="0.5" style="width:100px;">
+        </div>
+      </div>
+
+      <!-- 视觉节拍指示器 -->
+      <div class="mt-visualizer" id="mt-visualizer"></div>
+
+      <button id="btn-toggle-metronome" class="mt-btn primary">▶️ 启动节拍器</button>
+    </div>
+  </div>
+</main>
+<script src="../../js/libs/Tone.js"></script>
+<script src="../../js/tuner-metronome.js" defer></script>
+</body>
+</html>

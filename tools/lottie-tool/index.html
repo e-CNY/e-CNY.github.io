@@ -10,7 +10,7 @@
 <body>
 <header class="tool-page-header">
   <h1>🎞️ Lottie 动画预览</h1>
-  <p>上传 Lottie JSON 文件，实时预览动画并查看基础信息。</p>
+  <p>支持播放控制、速度调节、透明背景与帧导出。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
@@ -18,8 +18,7 @@
   <div class="lt-container">
     <aside class="lt-sidebar">
       <div id="lt-drop-zone" class="lt-drop-zone">
-        <span>📁 上传 .json 文件</span>
-        <span class="lt-hint">Lottie / Bodymovin 导出的 JSON</span>
+        <span>📁 上传 Lottie JSON</span>
         <input id="lt-input" type="file" accept=".json" hidden>
       </div>
 
@@ -28,12 +27,44 @@
         <p>尺寸: <b id="lt-w">0</b> x <b id="lt-h">0</b></p>
         <p>帧率: <b id="lt-fr">0</b> fps</p>
         <p>时长: <b id="lt-duration">0</b> s</p>
+        
+        <div style="margin-top: 16px;">
+          <label>播放速度</label>
+          <select id="lt-speed" class="lt-select">
+            <option value="0.5">0.5x</option>
+            <option value="1" selected>1.0x</option>
+            <option value="1.5">1.5x</option>
+            <option value="2">2.0x</option>
+          </select>
+        </div>
+
+        <div style="margin-top: 12px;">
+          <label>背景风格</label>
+          <select id="lt-bg" class="lt-select">
+            <option value="transparent">透明棋盘格</option>
+            <option value="#ffffff">纯白背景</option>
+            <option value="#000000">纯黑背景</option>
+            <option value="#f9f3e3">羊皮纸色</option>
+          </select>
+        </div>
+
+        <div style="margin-top: 16px; display: flex; gap: 8px;">
+          <button id="btn-play" class="lt-btn primary" style="flex:1;">暂停</button>
+          <button id="btn-replay" class="lt-btn" style="flex:1;">重播</button>
+        </div>
+        <button id="btn-export-frame" class="lt-btn" style="width: 100%; margin-top: 8px;">📸 导出当前帧</button>
       </div>
     </aside>
 
     <div class="lt-main">
-      <div id="lt-preview" class="lt-preview">
+      <div id="lt-preview" class="lt-preview transparent-bg">
         <span class="lt-placeholder">等待上传动画...</span>
+      </div>
+      
+      <div class="lt-controls" id="lt-controls" style="display: none;">
+        <span id="lt-current-frame">0</span>
+        <input type="range" id="lt-progress" min="0" max="100" value="0" step="1">
+        <span id="lt-total-frame">0</span>
       </div>
     </div>
   </div>

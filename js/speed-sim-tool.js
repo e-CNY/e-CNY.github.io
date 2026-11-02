@@ -36,11 +36,14 @@
       div.className = 'ss-res-item';
       div.innerHTML = `
         <input type="text" class="name" value="${r.name}" placeholder="名称">
-        <input type="number" class="size" value="${r.size}" placeholder="KB">
+        <input type="number" class="size" value="${r.size}" placeholder="KB" min="1">
         <button class="del">✕</button>
       `;
       div.querySelector('.name').addEventListener('input', function(e) { resources[i].name = e.target.value; });
-      div.querySelector('.size').addEventListener('input', function(e) { resources[i].size = parseFloat(e.target.value) || 0; });
+      div.querySelector('.size').addEventListener('input', function(e) { 
+        var val = parseFloat(e.target.value);
+        resources[i].size = isNaN(val) ? 1 : Math.max(1, val); 
+      });
       div.querySelector('.del').addEventListener('click', function() {
         resources.splice(i, 1);
         renderList();
@@ -55,23 +58,27 @@
   });
 
   btnSimulate.addEventListener('click', async function() {
-    var bw = parseFloat(bwInput.value) || 1; // Mbps
-    var rtt = parseFloat(rttInput.value) || 100; // ms
-    var bytesPerMs = (bw * 1024 * 1024) / 8 / 1000; // KB/ms 的换算：Mbps -> MB/s -> KB/ms
+    // 容错：确保带宽和延迟不会是 0 或 NaN
+    var bw = parseFloat(bwInput.value) || 1; 
+    if (bw <= 0) bw = 1;
+    var rtt = parseFloat(rttInput.value) || 100; 
+    if (rtt < 0) rtt = 0;
+
+    // 计算每毫秒能传输多少 KB (1 Mbps = 128 KB/s = 0.128 KB/ms)
+    var kbPerMs = (bw * 128) / 1000; 
 
     btnSimulate.disabled = true;
     btnSimulate.textContent = '模拟中...';
     waterfall.innerHTML = '';
 
-    // 计算每个资源的耗时
     var maxTime = 0;
     var domElements = [];
 
     resources.forEach(function(r, i) {
-      // 模拟并发，通过 RTT 错开启动时间
       var startTime = rtt + (i * (rtt / 2)); 
-      // 传输时间 = 大小 / 带宽
-      var transferTime = r.size / bytesPerMs;
+      // 确保大小至少为 1KB，防止除以 0 或无穷大
+      var safeSize = r.size > 0 ? r.size : 1;
+      var transferTime = safeSize / kbPerMs; 
       var endTime = startTime + transferTime;
 
       if (endTime > maxTime) maxTime = endTime;
@@ -79,9 +86,9 @@
       var barWrap = document.createElement('div');
       barWrap.className = 'ss-bar-wrap';
       barWrap.innerHTML = `
-        <div class="ss-bar-name" title="${r.name}">${r.name}</div>
+        <div class="ss-bar-name" title="${r.name}">${r.name || '未命名'}</div>
         <div class="ss-bar-track">
-          <div class="ss-bar-fill" id="bar-${i}"><span class="ss-bar-label">${r.size} KB</span></div>
+          <div class="ss-bar-fill" id="bar-${i}"><span class="ss-bar-label">${safeSize} KB</span></div>
         </div>
       `;
       waterfall.appendChild(barWrap);
@@ -97,9 +104,10 @@
     // 渲染时间刻度尺
     var ruler = document.getElementById('ss-time-ruler');
     ruler.innerHTML = '';
-    for (var t = 0; t <= Math.ceil(maxTime/1000)*1000; t += 1000) {
+    var step = Math.ceil(maxTime / 5); // 分5段
+    for (var t = 0; t <= maxTime + step; t += step) {
       var span = document.createElement('span');
-      span.textContent = (t/1000) + 's';
+      span.textContent = (t/1000).toFixed(1) + 's';
       ruler.appendChild(span);
     }
 
@@ -107,15 +115,16 @@
     await new Promise(r => setTimeout(r, 100));
 
     domElements.forEach(function(item) {
-      var leftPercent = (item.start / item.total) * 100;
-      var widthPercent = ((item.end - item.start) / item.total) * 100;
+      // 防止 maxTime 异常导致的百分比变成 NaN
+      var leftPercent = item.total > 0 ? (item.start / item.total) * 100 : 0;
+      var widthPercent = item.total > 0 ? ((item.end - item.start) / item.total) * 100 : 100;
       
       item.el.style.left = leftPercent + '%';
       item.el.style.width = widthPercent + '%';
       item.el.style.opacity = '1';
     });
 
-    summary.innerHTML = `✅ 模拟完成，总耗时（最后资源加载完毕）: <b>${(maxTime/1000).toFixed(2)}s</b>`;
+    summary.innerHTML = `✅ 模拟完成，总耗时: <b>${(maxTime/1000).toFixed(2)}s</b>`;
     
     setTimeout(function() {
       btnSimulate.disabled = false;
@@ -125,5 +134,6 @@
 
   // 初始化
   renderList();
-  btnSimulate.click();
+  // 延迟触发，防止 DOM 未渲染完毕
+  setTimeout(function() { btnSimulate.click(); }, 300);
 })();

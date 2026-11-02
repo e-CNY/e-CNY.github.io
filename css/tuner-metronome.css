@@ -1,0 +1,54 @@
+.tm-layout { max-width: 800px; margin: 0 auto; padding: 28px 16px 56px; }
+.tm-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+.tm-tab { padding: 10px 24px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all .15s; }
+.tm-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; }
+
+.tm-panel { display: none; animation: fadeIn .2s; }
+.tm-panel.active { display: block; }
+
+/* ================= 调音器 ================= */
+.tn-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 16px; padding: 24px; }
+.tn-header { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.tn-select { flex: 1; padding: 12px; border: 1px solid #d5c7a8; border-radius: 8px; font-size: 1rem; background: #fff; outline: none; }
+.tn-btn { padding: 12px 24px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: 1rem; font-weight: bold; }
+.tn-btn.primary { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+/* 参考音按钮组 */
+.tn-reference { margin-bottom: 24px; background: #fdf8ec; padding: 16px; border-radius: 10px; border: 1px dashed #d5c7a8; }
+.tn-reference label { display: block; font-size: .9rem; font-weight: bold; color: #6b5d47; margin-bottom: 12px; }
+.tn-ref-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+.tn-ref-btn { flex: 1; min-width: 60px; padding: 10px 0; border-radius: 8px; border: 1px solid #d5c7a8; background: #fff; color: #3d3226; font-weight: bold; cursor: pointer; transition: all .15s; font-family: monospace; font-size: 1rem; }
+.tn-ref-btn:hover { background: #e5d9bd; }
+.tn-ref-btn:active { background: #7ba05b; color: #fff; transform: scale(0.95); }
+
+.tn-display { text-align: center; padding: 10px 0; }
+.tn-string { font-size: 2rem; font-weight: bold; color: #8a5a2b; margin-bottom: 20px; height: 48px; }
+
+.tn-dial { position: relative; width: 300px; height: 150px; margin: 0 auto; overflow: hidden; border-bottom: 2px solid #d5c7a8; }
+.tn-center { position: absolute; bottom: 0; left: 50%; width: 4px; height: 20px; background: #3d3226; transform: translateX(-50%); }
+.tn-ticks { position: absolute; bottom: 10px; width: 100%; display: flex; justify-content: space-between; padding: 0 10px; box-sizing: border-box; font-size: .8rem; color: #8a7a5f; font-weight: bold; }
+.tn-needle { position: absolute; bottom: 0; left: 50%; width: 4px; height: 130px; background: #a8452a; transform-origin: bottom center; transform: translateX(-50%) rotate(0deg); transition: transform 0.1s ease-out, background 0.2s; border-radius: 4px 4px 0 0; }
+
+.tn-info { display: flex; justify-content: center; gap: 40px; margin-top: 20px; font-size: 1.1rem; color: #6b5d47; }
+.tn-info b { color: #3d3226; font-family: monospace; font-size: 1.3rem; }
+.tn-status { margin-top: 16px; font-size: 1.2rem; font-weight: bold; color: #8a7a5f; height: 30px; }
+
+/* ================= 节拍器 ================= */
+.mt-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 16px; padding: 30px; text-align: center; }
+.mt-top { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 24px; }
+.mt-bpm-box { display: flex; flex-direction: column; align-items: center; }
+.mt-bpm-box label { font-size: 1rem; color: #6b5d47; font-weight: bold; }
+.mt-bpm-input { font-size: 4rem; width: 180px; text-align: center; border: none; background: transparent; font-family: monospace; color: #3d3226; font-weight: bold; outline: none; }
+.mt-slider { width: 80%; max-width: 400px; accent-color: #8a5a2b; }
+
+.mt-controls { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+.mt-row { display: flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: bold; color: #6b5d47; }
+.mt-select { padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fff; outline: none; }
+
+.mt-visualizer { display: flex; justify-content: center; gap: 12px; margin-bottom: 30px; height: 40px; flex-wrap: wrap; }
+.mt-dot { width: 40px; height: 40px; border-radius: 50%; background: #e5d9bd; transition: background 0.1s, transform 0.1s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+.mt-dot.active { background: #7ba05b; transform: scale(1.2); box-shadow: 0 4px 12px rgba(123,160,91,0.5); }
+.mt-dot.active.accent { background: #a8452a; box-shadow: 0 4px 12px rgba(168,69,42,0.5); }
+
+.mt-btn { padding: 16px 40px; border-radius: 30px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: 1.2rem; font-weight: bold; transition: all 0.15s; }
+.mt-btn.primary { background: #2563eb; color: #fff; border-color: #2563eb; }

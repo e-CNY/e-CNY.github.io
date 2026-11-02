@@ -3,53 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>字体预览与信息 · 工具站</title>
+<title>字体预览与编辑器 · 工具站</title>
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="../../css/font-tool.css">
 </head>
 <body>
 <header class="tool-page-header">
-  <h1>🔤 字体预览与信息</h1>
-  <p>上传本地 TTF / OTF 文件，实时预览排版并读取元信息。</p>
+  <h1>🔤 字体预览与编辑器</h1>
+  <p>上传 TTF/OTF 字体，深度解析元信息，可视化调节排版。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="ft-layout" style="padding-top: 0;">
   <div class="ft-container">
+    <!-- 左侧控制台 -->
     <aside class="ft-sidebar">
-      <div id="ft-drop-zone" class="ft-drop-zone">
-        <span>📁 点击或拖拽字体文件</span>
-        <span class="ft-hint">支持 .ttf / .otf / .woff</span>
-        <input id="ft-input" type="file" accept=".ttf,.otf,.woff,.woff2" hidden>
-      </div>
-      
-      <div class="ft-info" id="ft-info" style="display: none;">
-        <h3>字体信息</h3>
-        <p>文件名: <b id="ft-name">-</b></p>
-        <p>大小: <b id="ft-size">-</b></p>
+      <div class="ft-section">
+        <h3>1. 上传字体</h3>
+        <div id="ft-drop-zone" class="ft-drop-zone">
+          <span>📁 点击或拖拽</span>
+          <span class="ft-hint">支持 .ttf / .otf / .woff</span>
+          <input id="ft-input" type="file" accept=".ttf,.otf,.woff,.woff2" hidden>
+        </div>
       </div>
 
-      <div class="ft-controls">
-        <div class="ft-row">
-          <label>预览字号</label>
-          <input type="range" id="ft-font-size" min="12" max="96" value="32">
-          <span id="ft-size-val">32px</span>
+      <div class="ft-section" id="ft-editor" style="display:none;">
+        <h3>2. 排版编辑</h3>
+        <div class="ft-control-row">
+          <label>字号</label>
+          <input type="range" id="ft-size" min="12" max="120" value="32">
+          <span id="val-size">32px</span>
         </div>
+        <div class="ft-control-row">
+          <label>行高</label>
+          <input type="range" id="ft-line-height" min="1" max="3" step="0.1" value="1.5">
+          <span id="val-lh">1.5</span>
+        </div>
+        <div class="ft-control-row">
+          <label>字间距</label>
+          <input type="range" id="ft-letter-spacing" min="-2" max="10" step="0.5" value="0">
+          <span id="val-ls">0px</span>
+        </div>
+        <div class="ft-control-row">
+          <label>文字颜色</label>
+          <input type="color" id="ft-color" value="#3d3226">
+        </div>
+        <div class="ft-control-row">
+          <label>背景颜色</label>
+          <input type="color" id="ft-bg" value="#ffffff">
+        </div>
+        <button id="btn-reset-style" class="ft-btn">重置样式</button>
       </div>
     </aside>
 
+    <!-- 右侧工作区 -->
     <div class="ft-main">
-      <div class="ft-preview-wrap">
-        <div id="ft-preview" class="ft-preview" style="font-size: 32px;">
-          <p>The quick brown fox jumps over the lazy dog.</p>
-          <p>0123456789 !@#$%^&*()</p>
-          <p>中文字体预览效果：落霞与孤鹜齐飞，秋水共长天一色。</p>
-          <p>床前明月光，疑是地上霜。举头望明月，低头思故乡。</p>
+      <div class="ft-info-panel" id="ft-info" style="display:none;">
+        <h3>🔍 底层解析信息</h3>
+        <div class="ft-info-grid">
+          <div><span>家族名:</span><b id="info-family">-</b></div>
+          <div><span>字体版本:</span><b id="info-version">-</b></div>
+          <div><span>版权信息:</span><b id="info-copyright">-</b></div>
+          <div><span>总字符数:</span><b id="info-glyphs">-</b></div>
         </div>
+      </div>
+
+      <div class="ft-preview-wrap">
+        <textarea id="ft-custom-text" class="ft-custom-text" spellcheck="false">The quick brown fox jumps over the lazy dog.
+0123456789 !@#$%^&*()
+中文字体预览效果：落霞与孤鹜齐飞，秋水共长天一色。</textarea>
+        
+        <div id="ft-preview" class="ft-preview">请先上传字体文件...</div>
       </div>
     </div>
   </div>
 </main>
+<script src="../../js/libs/opentype.min.js"></script>
 <script src="../../js/font-tool.js" defer></script>
 </body>
 </html>

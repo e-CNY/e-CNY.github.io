@@ -10,14 +10,16 @@
 <body>
 <header class="tool-page-header">
   <h1>🛠️ 开发辅助工具箱</h1>
-  <p>.gitignore 生成器、Nginx 配置格式化与高亮。</p>
+  <p>代码生成、时间代码、Gitignore 配置、Nginx 格式化。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="dv-layout" style="padding-top: 0;">
   <div class="dv-tabs">
-    <button class="dv-tab active" data-target="panel-git">.gitignore 生成器</button>
-    <button class="dv-tab" data-target="panel-nginx">Nginx 格式化</button>
+    <button class="dv-tab active" data-target="panel-git">.gitignore 生成</button>
+    <button class="dv-tab" data-target="panel-entity">JSON 转实体类</button>
+    <button class="dv-tab" data-target="panel-time">时间代码生成</button>
+    <button class="dv-tab" data-target="panel-nginx">Nginx 高亮</button>
   </div>
 
   <div class="dv-content">
@@ -25,27 +27,81 @@
     <div id="panel-git" class="dv-panel active">
       <div class="dv-grid">
         <div class="dv-sidebar">
-          <label class="dv-check"><input type="checkbox" value="node" checked> Node.js</label>
-          <label class="dv-check"><input type="checkbox" value="python"> Python</label>
-          <label class="dv-check"><input type="checkbox" value="java"> Java / Maven</label>
-          <label class="dv-check"><input type="checkbox" value="mac"> macOS 系统文件</label>
-          <label class="dv-check"><input type="checkbox" value="win"> Windows 系统文件</label>
-          <label class="dv-check"><input type="checkbox" value="ide"> IDE (VSCode / IDEA)</label>
+          <div class="dv-check-group">
+            <label class="dv-check"><input type="checkbox" value="node" checked> Node.js / 前端</label>
+            <label class="dv-check"><input type="checkbox" value="python"> Python</label>
+            <label class="dv-check"><input type="checkbox" value="java"> Java / Maven</label>
+            <label class="dv-check"><input type="checkbox" value="go"> Go</label>
+            <label class="dv-check"><input type="checkbox" value="rust"> Rust</label>
+            <label class="dv-check"><input type="checkbox" value="cpp"> C / C++</label>
+            <label class="dv-check"><input type="checkbox" value="swift"> Swift / Xcode</label>
+            <label class="dv-check"><input type="checkbox" value="os"> macOS / Win 系统文件</label>
+            <label class="dv-check"><input type="checkbox" value="ide"> IDE (VSCode / IDEA)</label>
+          </div>
           <button id="btn-git" class="dv-btn primary" style="margin-top: 16px;">生成配置</button>
         </div>
         <div class="dv-main">
-          <textarea id="git-output" class="dv-textarea" rows="12" readonly placeholder="# 选择左侧选项生成 .gitignore"></textarea>
+          <div class="dv-input-wrapper">
+            <button class="dv-copy-btn" data-target="git-output">📋</button>
+            <textarea id="git-output" class="dv-textarea" rows="15" readonly placeholder="# 选择左侧选项生成 .gitignore"></textarea>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 2. Nginx -->
+    <!-- 2. JSON 转实体类 -->
+    <div id="panel-entity" class="dv-panel">
+      <div class="dv-row">
+        <select id="entity-lang" class="dv-select">
+          <option value="typescript">TypeScript (Interface)</option>
+          <option value="java">Java (Class)</option>
+          <option value="go">Go (Struct)</option>
+          <option value="python">Python (Class)</option>
+        </select>
+        <button id="btn-entity" class="dv-btn primary">生成代码</button>
+      </div>
+      <div class="dv-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="dv-col">
+          <label>输入 JSON</label>
+          <textarea id="entity-input" class="dv-textarea" rows="15" placeholder='{"id": 1, "name": "张三", "isVip": true}'></textarea>
+        </div>
+        <div class="dv-col">
+          <label>生成代码</label>
+          <div class="dv-input-wrapper">
+            <button class="dv-copy-btn" data-target="entity-output">📋</button>
+            <textarea id="entity-output" class="dv-textarea" rows="15" readonly></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 时间代码生成 -->
+    <div id="panel-time" class="dv-panel">
+      <div class="dv-row">
+        <select id="time-lang" class="dv-select">
+          <option value="js">JavaScript / TypeScript</option>
+          <option value="python">Python</option>
+          <option value="java">Java</option>
+          <option value="go">Go</option>
+          <option value="php">PHP</option>
+          <option value="sql">SQL (MySQL)</option>
+        </select>
+      </div>
+      <div class="dv-main">
+        <div class="dv-input-wrapper">
+          <button class="dv-copy-btn" data-target="time-output">📋</button>
+          <textarea id="time-output" class="dv-textarea" rows="12" readonly style="font-family: monospace; font-size: 1rem; line-height: 1.8;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Nginx -->
     <div id="panel-nginx" class="dv-panel">
       <div class="dv-row">
         <button id="btn-nginx" class="dv-btn primary">格式化并高亮</button>
       </div>
       <div class="dv-grid" style="grid-template-columns: 1fr 1fr;">
-        <textarea id="nginx-input" class="dv-textarea" rows="12" placeholder="粘贴 Nginx 配置代码..."></textarea>
+        <textarea id="nginx-input" class="dv-textarea" rows="15" placeholder="粘贴 Nginx 配置代码..."></textarea>
         <pre id="nginx-output" class="dv-code-block"></pre>
       </div>
     </div>

@@ -1,3 +1,14 @@
 .ng-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+
+/* 工具栏 */
+.ng-toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.ng-select { padding: 8px 12px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fdf8ec; font-size: .9rem; outline: none; }
+.ng-input { flex: 1; padding: 8px 12px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-size: .9rem; outline: none; min-width: 150px; }
+.ng-input:focus { border-color: #8a5a2b; }
+.ng-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; cursor: pointer; font-size: .9rem; font-weight: bold; transition: all .15s; }
+.ng-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.ng-btn:hover { opacity: 0.9; }
+
+/* 图表区域 */
 .ng-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 16px; }
 .ng-chart { width: 100%; height: 600px; background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; }

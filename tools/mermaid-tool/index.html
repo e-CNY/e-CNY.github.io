@@ -10,7 +10,7 @@
 <body>
 <header class="tool-page-header">
   <h1>🧠 架构图 & 脑图工具</h1>
-  <p>支持 Mermaid 语法，实时渲染流程图、时序图、思维导图。</p>
+  <p>支持 Mermaid 语法，实时渲染流程图、时序图、甘特图、状态图等 8 种图表。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
@@ -18,20 +18,28 @@
   <div class="mm-container">
     <div class="mm-col">
       <div class="mm-toolbar">
-        <select id="mm-sample">
+        <select id="mm-sample" class="mm-select">
           <option value="flow">流程图 (Flowchart)</option>
           <option value="sequence">时序图 (Sequence)</option>
           <option value="mindmap">脑图 (Mindmap)</option>
+          <option value="gantt">甘特图 (Gantt)</option>
+          <option value="state">状态图 (State)</option>
+          <option value="class">类图 (Class)</option>
+          <option value="er">实体关系图 (ER)</option>
         </select>
-        <button id="btn-render" class="mm-btn primary">🔄 渲染图表</button>
+        <select id="mm-theme" class="mm-select">
+          <option value="default">默认主题</option>
+          <option value="dark">暗黑主题</option>
+          <option value="forest">森林主题</option>
+          <option value="neutral">中性主题</option>
+        </select>
+        <button id="btn-render" class="mm-btn primary">🔄 渲染</button>
       </div>
       <textarea id="mm-code" class="mm-textarea" spellcheck="false"></textarea>
     </div>
     <div class="mm-col">
       <div class="mm-preview-wrap">
-        <div id="mm-preview" class="mermaid">
-          <!-- 图表渲染区 -->
-        </div>
+        <div id="mm-preview" class="mermaid"></div>
       </div>
     </div>
   </div>
