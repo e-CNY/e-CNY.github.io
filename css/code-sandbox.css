@@ -1,14 +1,21 @@
-.cs-layout { max-width: 1200px; margin: 0 auto; padding: 28px 16px 56px; height: calc(100vh - 120px); display: flex; flex-direction: column; }
-.cs-toolbar { display: flex; gap: 12px; margin-bottom: 12px; }
-.cs-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; font-weight: bold; }
-.cs-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.cs-layout { max-width: 1400px; margin: 0 auto; padding: 28px 16px 56px; height: calc(100vh - 120px); display: flex; flex-direction: column; }
+.cs-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+.cs-group { display: flex; gap: 8px; flex-wrap: wrap; }
 
-.cs-container { display: flex; flex: 1; gap: 2px; background: #d5c7a8; border: 1px solid #d5c7a8; border-radius: 12px; overflow: hidden; min-height: 0; }
-@media (max-width: 768px) { .cs-container { flex-direction: column; } }
+.cs-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; font-weight: bold; transition: all .15s; }
+.cs-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.cs-btn.danger { background: #fef2f2; color: #a8452a; border-color: #fecaca; }
+.cs-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.cs-container { display: flex; flex: 1; gap: 4px; background: #d5c7a8; border: 1px solid #d5c7a8; border-radius: 12px; overflow: hidden; min-height: 0; }
+@media (max-width: 900px) { .cs-container { flex-direction: column; } }
 
 .cs-col { flex: 1; display: flex; flex-direction: column; background: #fff; min-width: 0; }
-.cs-tab-header { background: #f9f3e3; padding: 8px 12px; font-size: .8rem; color: #6b5d47; border-bottom: 1px solid #d5c7a8; font-family: monospace; }
+.cs-tab-header { background: #f9f3e3; padding: 8px 12px; font-size: .8rem; color: #6b5d47; border-bottom: 1px solid #d5c7a8; font-family: monospace; display: flex; justify-content: space-between; align-items: center; }
 .cs-tab-header span.active { color: #8a5a2b; font-weight: bold; }
+
+.cs-copy-btn { background: none; border: none; font-size: .8rem; color: #8a7a5f; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: all 0.15s; }
+.cs-copy-btn:hover { background: #e5d9bd; color: #3d3226; }
 
 .cs-editor { flex: 1; padding: 12px; border: none; font-family: monospace; font-size: .9rem; line-height: 1.5; resize: none; outline: none; color: #3d3226; background: #fdf8ec; white-space: pre; overflow-x: auto; }
 .cs-editor:focus { background: #fff; }

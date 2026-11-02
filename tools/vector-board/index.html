@@ -8,21 +8,35 @@
 <link rel="stylesheet" href="../../css/vector-board.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 16px 16px 10px;">
   <h1>🎨 高级矢量白板</h1>
-  <p>拖拽添加形状、双击编辑文字，支持导出高清图片。</p>
+  <p>拖拽添加图形、插入图片，支持节点控制与高清导出。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="vb-layout" style="padding-top: 0;">
+  <!-- 所有按钮统一在一行显示 -->
   <div class="vb-toolbar">
+    <button id="btn-pen" class="vb-btn">🖌️ 涂鸦</button>
     <button id="btn-rect" class="vb-btn">⬜ 矩形</button>
     <button id="btn-circle" class="vb-btn">⭕ 圆形</button>
+    <button id="btn-triangle" class="vb-btn">🔺 三角</button>
+    <button id="btn-line" class="vb-btn">📏 直线</button>
     <button id="btn-text" class="vb-btn">🔤 文字</button>
-    <button id="btn-delete" class="vb-btn danger">🗑️ 删除选中</button>
-    <button id="btn-export" class="vb-btn primary">⬇️ 导出 PNG</button>
+    <label class="vb-btn" style="cursor: pointer;">
+      🖼️ 图片
+      <input type="file" id="image-input" accept="image/*" hidden>
+    </label>
+    <button id="btn-bg" class="vb-btn">🎨 背景</button>
+    
+    <!-- 新增全屏按钮 -->
+    <button id="btn-fullscreen" class="vb-btn">⛶ 全屏</button>
+    
+    <button id="btn-delete" class="vb-btn danger">🗑️ 删除</button>
+    <button id="btn-export" class="vb-btn primary">⬇️ 导出</button>
   </div>
-  <div class="vb-canvas-wrap">
+  
+  <div class="vb-canvas-wrap" id="canvas-wrap">
     <canvas id="c"></canvas>
   </div>
 </main>

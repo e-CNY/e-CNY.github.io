@@ -1,4 +1,4 @@
-.cs-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.cs-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
 .cs-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
 .cs-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; transition: all .15s; }
 .cs-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
@@ -17,5 +17,23 @@
 .cs-row input[type="color"] { width: 40px; height: 30px; padding: 0; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; }
 
 .cs-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; background: #e5d9bd; border-radius: 12px; padding: 24px; }
-.cs-box { width: 160px; height: 160px; background: #fff; border-radius: 8px; transition: all .2s; }
-.cs-code { width: 100%; height: 60px; padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-family: monospace; font-size: .85rem; resize: none; outline: none; }
+.cs-box { width: 120px; height: 120px; background: #7ba05b; border-radius: 8px; transition: all .1s; }
+
+/* 毛玻璃专用背景 */
+.cs-bg-image { background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); }
+.cs-glass-box { 
+  width: 160px; height: 100px; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: bold; font-size: 1.2rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  border-radius: 12px; transition: all .1s; 
+}
+
+/* 代码区与复制按钮 */
+.cs-code-wrap { width: 100%; position: relative; display: flex; }
+.cs-code { flex: 1; height: 50px; padding: 10px; padding-right: 40px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-family: monospace; font-size: .85rem; resize: none; outline: none; word-break: break-all; }
+.cs-copy-btn {
+  position: absolute; right: 6px; top: 6px; width: 30px; height: 30px;
+  border: none; border-radius: 6px; background: #fdf8ec; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  transition: all .15s; color: #6b5d47;
+}
+.cs-copy-btn:hover { background: #e5d9bd; color: #3d3226; }

@@ -8,55 +8,52 @@
   var btnExport = document.getElementById('btn-export');
 
   var gridSize = 32;
-  var cellSize = 16; // 显示大小，导出时会缩放
+  var cellSize = 16;
   var isDrawing = false;
   var isErasing = false;
-  var gridData = []; // 存储每个格子的颜色
+  var gridData = [];
 
   function initGrid() {
     gridSize = parseInt(gridSizeSelect.value, 10);
-    // 动态计算缩放，让画板适应容器
     var wrap = document.querySelector('.px-canvas-wrap');
+    
+    // 为了保证 128x128 的格子能点中，给一个最小尺寸保护
     var maxSize = Math.min(wrap.parentElement.clientWidth - 40, wrap.parentElement.clientHeight - 40);
-    cellSize = Math.floor(maxSize / gridSize);
+    cellSize = Math.max(2, Math.floor(maxSize / gridSize)); 
     
     canvas.width = gridSize * cellSize;
     canvas.height = gridSize * cellSize;
     
-    // 初始化数据
-    gridData = [];
-    for (var i = 0; i < gridSize * gridSize; i++) {
-      gridData.push(null);
-    }
+    gridData = new Array(gridSize * gridSize).fill(null);
     drawGrid();
   }
 
   function drawGrid() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // 画背景格子
+    // 填充颜色块
     for (var r = 0; r < gridSize; r++) {
       for (var c = 0; c < gridSize; c++) {
         var color = gridData[r * gridSize + c];
         if (color) {
           ctx.fillStyle = color;
-          ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+          // +1 是为了填补网格线的缝隙
+          ctx.fillRect(c * cellSize, r * cellSize, cellSize + 0.5, cellSize + 0.5); 
         }
       }
     }
 
-    // 画网格线
-    ctx.strokeStyle = '#e5d9bd';
-    ctx.lineWidth = 1;
-    for (var i = 0; i <= gridSize; i++) {
+    // 画网格线 (如果格子太小，就不画线了，或者用极淡的线)
+    if (cellSize >= 4) {
+      ctx.strokeStyle = cellSize > 8 ? '#e5d9bd' : '#f0f0f0';
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(i * cellSize + 0.5, 0);
-      ctx.lineTo(i * cellSize + 0.5, canvas.height);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(0, i * cellSize + 0.5);
-      ctx.lineTo(canvas.width, i * cellSize + 0.5);
+      for (var i = 0; i <= gridSize; i++) {
+        ctx.moveTo(i * cellSize + 0.5, 0);
+        ctx.lineTo(i * cellSize + 0.5, canvas.height);
+        ctx.moveTo(0, i * cellSize + 0.5);
+        ctx.lineTo(canvas.width, i * cellSize + 0.5);
+      }
       ctx.stroke();
     }
   }
@@ -78,7 +75,6 @@
       var idx = r * gridSize + c;
       var color = isErasing ? null : colorPicker.value;
       
-      // 如果颜色改变，则重绘
       if (gridData[idx] !== color) {
         gridData[idx] = color;
         drawGrid();
@@ -86,6 +82,7 @@
     }
   }
 
+  // 鼠标事件
   canvas.addEventListener('mousedown', function (e) {
     isDrawing = true;
     handleDraw(e);
@@ -93,7 +90,7 @@
   window.addEventListener('mousemove', handleDraw);
   window.addEventListener('mouseup', function () { isDrawing = false; });
 
-  // 触摸支持
+  // 触摸事件
   canvas.addEventListener('touchstart', function (e) {
     e.preventDefault();
     isDrawing = true;
@@ -107,7 +104,6 @@
   }, { passive: false });
   window.addEventListener('touchend', function () { isDrawing = false; });
 
-  // UI 交互
   gridSizeSelect.addEventListener('change', initGrid);
 
   btnEraser.addEventListener('click', function () {
@@ -127,10 +123,9 @@
     }
   });
 
-  // 导出高清无网格图片
   btnExport.addEventListener('click', function () {
     var exportCanvas = document.createElement('canvas');
-    var exportScale = 20; // 导出时每个格子放大到 20x20 像素
+    var exportScale = Math.floor(512 / gridSize); // 保证输出至少 512px 大小
     exportCanvas.width = gridSize * exportScale;
     exportCanvas.height = gridSize * exportScale;
     var eCtx = exportCanvas.getContext('2d');
@@ -151,7 +146,6 @@
     a.click();
   });
 
-  // 初始化
   initGrid();
-  window.addEventListener('resize', initGrid); // 自适应窗口
+  window.addEventListener('resize', initGrid);
 })();

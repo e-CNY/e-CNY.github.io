@@ -10,15 +10,18 @@
 <body>
 <header class="tool-page-header">
   <h1>🎛️ CSS 生成器</h1>
-  <p>可视化调节阴影、圆角、渐变，直接复制代码。</p>
+  <p>可视化调节样式并一键复制代码。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="cs-layout" style="padding-top: 0;">
   <div class="cs-tabs">
-    <button class="cs-tab active" data-target="panel-shadow">Box Shadow</button>
-    <button class="cs-tab" data-target="panel-radius">Border Radius</button>
-    <button class="cs-tab" data-target="panel-gradient">线性渐变</button>
+    <button class="cs-tab active" data-target="panel-shadow">阴影 (Shadow)</button>
+    <button class="cs-tab" data-target="panel-radius">圆角 (Radius)</button>
+    <button class="cs-tab" data-target="panel-gradient">渐变 (Gradient)</button>
+    <button class="cs-tab" data-target="panel-glass">毛玻璃 (Glass)</button>
+    <button class="cs-tab" data-target="panel-filter">滤镜 (Filter)</button>
+    <button class="cs-tab" data-target="panel-transform">变换 (Transform)</button>
   </div>
 
   <div class="cs-content">
@@ -34,7 +37,10 @@
         </div>
         <div class="cs-preview">
           <div class="cs-box" id="preview-shadow"></div>
-          <textarea class="cs-code" id="code-shadow" readonly></textarea>
+          <div class="cs-code-wrap">
+            <textarea class="cs-code" id="code-shadow" readonly></textarea>
+            <button class="cs-copy-btn" data-target="code-shadow">📋</button>
+          </div>
         </div>
       </div>
     </div>
@@ -47,7 +53,10 @@
         </div>
         <div class="cs-preview">
           <div class="cs-box" id="preview-radius"></div>
-          <textarea class="cs-code" id="code-radius" readonly></textarea>
+          <div class="cs-code-wrap">
+            <textarea class="cs-code" id="code-radius" readonly></textarea>
+            <button class="cs-copy-btn" data-target="code-radius">📋</button>
+          </div>
         </div>
       </div>
     </div>
@@ -62,7 +71,66 @@
         </div>
         <div class="cs-preview">
           <div class="cs-box" id="preview-gradient"></div>
-          <textarea class="cs-code" id="code-gradient" readonly></textarea>
+          <div class="cs-code-wrap">
+            <textarea class="cs-code" id="code-gradient" readonly></textarea>
+            <button class="cs-copy-btn" data-target="code-gradient">📋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 毛玻璃 -->
+    <div id="panel-glass" class="cs-panel">
+      <div class="cs-grid">
+        <div class="cs-controls">
+          <div class="cs-row"><label>模糊程度</label><input type="range" id="gl-blur" min="0" max="20" value="10"><span id="val-gl-blur">10px</span></div>
+          <div class="cs-row"><label>背景透明度</label><input type="range" id="gl-opacity" min="0" max="1" step="0.05" value="0.2"><span id="val-gl-opacity">0.2</span></div>
+          <div class="cs-row"><label>边框透明度</label><input type="range" id="gl-border" min="0" max="1" step="0.05" value="0.3"><span id="val-gl-border">0.3</span></div>
+        </div>
+        <div class="cs-preview cs-bg-image">
+          <div class="cs-glass-box" id="preview-glass">Glass</div>
+          <div class="cs-code-wrap">
+            <textarea class="cs-code" id="code-glass" readonly></textarea>
+            <button class="cs-copy-btn" data-target="code-glass">📋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. 滤镜 -->
+    <div id="panel-filter" class="cs-panel">
+      <div class="cs-grid">
+        <div class="cs-controls">
+          <div class="cs-row"><label>模糊</label><input type="range" id="ft-blur" min="0" max="10" value="0"><span id="val-ft-blur">0px</span></div>
+          <div class="cs-row"><label>灰度</label><input type="range" id="ft-gray" min="0" max="100" value="0"><span id="val-ft-gray">0%</span></div>
+          <div class="cs-row"><label>亮度</label><input type="range" id="ft-bright" min="0" max="200" value="100"><span id="val-ft-bright">100%</span></div>
+          <div class="cs-row"><label>对比度</label><input type="range" id="ft-contrast" min="0" max="200" value="100"><span id="val-ft-contrast">100%</span></div>
+        </div>
+        <div class="cs-preview">
+          <div class="cs-box" id="preview-filter" style="background-image: url('https://picsum.photos/200/200'); background-size: cover;"></div>
+          <div class="cs-code-wrap">
+            <textarea class="cs-code" id="code-filter" readonly></textarea>
+            <button class="cs-copy-btn" data-target="code-filter">📋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. 变换 -->
+    <div id="panel-transform" class="cs-panel">
+      <div class="cs-grid">
+        <div class="cs-controls">
+          <div class="cs-row"><label>水平平移</label><input type="range" id="tf-x" min="-100" max="100" value="0"><span id="val-tf-x">0px</span></div>
+          <div class="cs-row"><label>垂直平移</label><input type="range" id="tf-y" min="-100" max="100" value="0"><span id="val-tf-y">0px</span></div>
+          <div class="cs-row"><label>旋转角度</label><input type="range" id="tf-rotate" min="0" max="360" value="0"><span id="val-tf-rotate">0deg</span></div>
+          <div class="cs-row"><label>缩放比例</label><input type="range" id="tf-scale" min="0.1" max="2" step="0.1" value="1"><span id="val-tf-scale">1x</span></div>
+        </div>
+        <div class="cs-preview">
+          <div class="cs-box" id="preview-transform"></div>
+          <div class="cs-code-wrap">
+            <textarea class="cs-code" id="code-transform" readonly></textarea>
+            <button class="cs-copy-btn" data-target="code-transform">📋</button>
+          </div>
         </div>
       </div>
     </div>

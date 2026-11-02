@@ -10,7 +10,7 @@
 <body>
 <header class="tool-page-header">
   <h1>📊 表格处理工具</h1>
-  <p>CSV 与 Excel 预览、互相转换、生成 JSON，全本地处理。</p>
+  <p>支持 Excel / CSV 解析与在线编辑，双击单元格即可修改内容。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
@@ -27,7 +27,14 @@
       </div>
 
       <div class="tt-section">
-        <h3>2. 导出格式</h3>
+        <h3>2. 在线编辑</h3>
+        <button id="btn-add-row" class="tt-btn" disabled>➕ 在末尾添加行</button>
+        <button id="btn-add-col" class="tt-btn" disabled>➕ 在末尾添加列</button>
+        <button id="btn-clear" class="tt-btn danger" disabled>🗑️ 清空表格</button>
+      </div>
+
+      <div class="tt-section">
+        <h3>3. 导出下载</h3>
         <button id="btn-export-csv" class="tt-btn" disabled>导出为 CSV</button>
         <button id="btn-export-json" class="tt-btn" disabled>导出为 JSON</button>
         <button id="btn-export-xlsx" class="tt-btn" disabled>导出为 Excel</button>
@@ -36,9 +43,9 @@
 
     <div class="tt-main">
       <div class="tt-toolbar">
-        <span id="tt-status">等待上传文件...</span>
+        <span id="tt-status">等待上传文件或直接编辑...</span>
       </div>
-      <div class="tt-preview-wrap">
+      <div class="tt-preview-wrap" id="tt-table-wrap">
         <table id="tt-preview-table" class="tt-table"></table>
       </div>
     </div>

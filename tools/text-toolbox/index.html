@@ -10,26 +10,71 @@
 <body>
 <header class="tool-page-header">
   <h1>📝 文本处理工具箱</h1>
-  <p>支持批量去重、排序、大小写转换、加前后缀等常用文本处理。</p>
+  <p>涵盖 20+ 种批量文本处理功能，全本地处理。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="tt-layout" style="padding-top: 0;">
   <div class="tt-container">
+    
+    <!-- 工具栏分组 -->
     <div class="tt-toolbar">
-      <button type="button" class="tt-btn" onclick="txtDedupe()">去重</button>
-      <button type="button" class="tt-btn" onclick="txtSort('asc')">正序</button>
-      <button type="button" class="tt-btn" onclick="txtSort('desc')">倒序</button>
-      <button type="button" class="tt-btn" onclick="txtCase('upper')">转大写</button>
-      <button type="button" class="tt-btn" onclick="txtCase('lower')">转小写</button>
-      <button type="button" class="tt-btn" onclick="txtTrim()">去首尾空格</button>
-      <button type="button" class="tt-btn" onclick="txtLineNumber()">加行号</button>
-      <button type="button" class="tt-btn" onclick="txtWrap()">包裹引号</button>
-      <button type="button" class="tt-btn" onclick="txtClear()">清空</button>
+      <div class="tt-group">
+        <span class="tt-group-title">基础处理</span>
+        <button type="button" class="tt-btn" onclick="txtDedupe()">去重</button>
+        <button type="button" class="tt-btn" onclick="txtSort('asc')">正序</button>
+        <button type="button" class="tt-btn" onclick="txtSort('desc')">倒序</button>
+        <button type="button" class="tt-btn" onclick="txtSort('len')">按长度排序</button>
+        <button type="button" class="tt-btn" onclick="txtShuffle()">随机打乱</button>
+        <button type="button" class="tt-btn" onclick="txtReverse()">反转字符</button>
+      </div>
+      
+      <div class="tt-group">
+        <span class="tt-group-title">空格与大小写</span>
+        <button type="button" class="tt-btn" onclick="txtCase('upper')">转大写</button>
+        <button type="button" class="tt-btn" onclick="txtCase('lower')">转小写</button>
+        <button type="button" class="tt-btn" onclick="txtTrim()">去首尾空格</button>
+        <button type="button" class="tt-btn" onclick="txtRemoveEmpty()">去空行</button>
+        <button type="button" class="tt-btn" onclick="txtRemoveAllSpaces()">去所有空格</button>
+        <button type="button" class="tt-btn" onclick="txtFullHalf('half')">全转半</button>
+        <button type="button" class="tt-btn" onclick="txtFullHalf('full')">半转全</button>
+      </div>
+
+      <div class="tt-group">
+        <span class="tt-group-title">行操作与提取</span>
+        <button type="button" class="tt-btn" onclick="txtLineNumber()">加行号</button>
+        <button type="button" class="tt-btn" onclick="txtWrap()">包裹引号</button>
+        <button type="button" class="tt-btn" onclick="txtAddPrefix()">加前缀</button>
+        <button type="button" class="tt-btn" onclick="txtRemoveHtml()">去HTML标签</button>
+        <button type="button" class="tt-btn" onclick="txtExtractEmails()">提取邮箱</button>
+        <button type="button" class="tt-btn" onclick="txtExtractUrls()">提取网址</button>
+      </div>
+
+      <div class="tt-group">
+        <span class="tt-group-title">编码与导出</span>
+        <button type="button" class="tt-btn" onclick="txtBase64('encode')">B64加密</button>
+        <button type="button" class="tt-btn" onclick="txtBase64('decode')">B64解密</button>
+        <button type="button" class="tt-btn primary" onclick="txtDownload()">⬇️ 保存为 TXT</button>
+        <button type="button" class="tt-btn danger" onclick="txtClear()">🗑️ 清空</button>
+      </div>
     </div>
+
+    <!-- 编辑器区域 -->
     <div class="tt-editor-group">
-      <div class="tt-col"><label>输入文本</label><textarea id="txt-in" spellcheck="false" placeholder="粘贴文本..."></textarea></div>
-      <div class="tt-col"><label>输出结果</label><textarea id="txt-out" spellcheck="false" readonly placeholder="结果..."></textarea></div>
+      <div class="tt-col">
+        <div class="tt-col-header">
+          <label>输入文本</label>
+          <span id="stat-in" class="tt-stat">0 字 / 0 行</span>
+        </div>
+        <textarea id="txt-in" spellcheck="false" placeholder="在此输入或粘贴文本..."></textarea>
+      </div>
+      <div class="tt-col">
+        <div class="tt-col-header">
+          <label>输出结果</label>
+          <span id="stat-out" class="tt-stat">0 字 / 0 行</span>
+        </div>
+        <textarea id="txt-out" spellcheck="false" readonly placeholder="处理结果..."></textarea>
+      </div>
     </div>
   </div>
 </main>

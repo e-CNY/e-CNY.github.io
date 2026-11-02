@@ -10,38 +10,46 @@
 <body>
 <header class="tool-page-header">
   <h1>💻 在线代码沙盒</h1>
-  <p>HTML / CSS / JS 实时预览，纯前端运行。</p>
+  <p>HTML / CSS / JS 实时预览，支持自动保存与多格式导出。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="cs-layout" style="padding-top: 0;">
   <div class="cs-toolbar">
-    <button id="btn-run" class="cs-btn primary">▶️ 运行代码</button>
-    <button id="btn-clear" class="cs-btn">🗑️ 清空预览</button>
+    <div class="cs-group">
+      <button id="btn-run" class="cs-btn primary">▶️ 运行代码</button>
+      <button id="btn-clear" class="cs-btn danger">🗑️ 清空全部</button>
+      <button id="btn-download-merge" class="cs-btn">📦 导出单文件 HTML</button>
+      <button id="btn-download-three" class="cs-btn">📁 导出 3 个文件</button>
+    </div>
   </div>
   
   <div class="cs-container">
     <div class="cs-col">
       <div class="cs-tab-header">
         <span class="active">HTML</span>
+        <button class="cs-copy-btn" data-target="ed-html">📋 复制</button>
       </div>
       <textarea id="ed-html" class="cs-editor" spellcheck="false" placeholder="<h1>Hello World</h1>"></textarea>
     </div>
     <div class="cs-col">
       <div class="cs-tab-header">
         <span class="active">CSS</span>
+        <button class="cs-copy-btn" data-target="ed-css">📋 复制</button>
       </div>
       <textarea id="ed-css" class="cs-editor" spellcheck="false" placeholder="body { color: red; }"></textarea>
     </div>
     <div class="cs-col">
       <div class="cs-tab-header">
         <span class="active">JS</span>
+        <button class="cs-copy-btn" data-target="ed-js">📋 复制</button>
       </div>
       <textarea id="ed-js" class="cs-editor" spellcheck="false" placeholder="console.log('Hello');"></textarea>
     </div>
     <div class="cs-col">
       <div class="cs-tab-header">
         <span class="active" style="color:#7ba05b;">预览</span>
+        <button id="btn-refresh-preview" class="cs-copy-btn" style="color:#2563eb;">🔄 刷新</button>
       </div>
       <iframe id="preview-frame" class="cs-preview"></iframe>
     </div>

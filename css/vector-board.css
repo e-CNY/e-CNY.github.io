@@ -1,6 +1,66 @@
-.vb-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; height: calc(100vh - 150px); display: flex; flex-direction: column; }
-.vb-toolbar { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-.vb-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; font-weight: bold; }
+/* 铺满屏幕 */
+.vb-layout { 
+  width: 100%; 
+  height: calc(100vh - 130px); /* 减去顶部头部高度 */
+  padding: 0 16px 16px; 
+  display: flex; 
+  flex-direction: column; 
+}
+
+/* 工具栏 */
+.vb-toolbar { 
+  display: flex; 
+  gap: 8px; 
+  margin-bottom: 12px; 
+  background: #f9f3e3; 
+  padding: 10px; 
+  border-radius: 10px; 
+  border: 1px solid #ddcfb3; 
+  flex-wrap: nowrap; 
+  overflow-x: auto; 
+  align-items: center;
+  flex-shrink: 0;
+}
+.vb-toolbar::-webkit-scrollbar { display: none; }
+.vb-toolbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.vb-btn { 
+  padding: 8px 12px; 
+  border-radius: 6px; 
+  border: 1px solid #d5c7a8; 
+  background: #fdf8ec; 
+  color: #3d3226; 
+  cursor: pointer; 
+  font-size: .85rem; 
+  font-weight: bold; 
+  transition: all .15s; 
+  white-space: nowrap; 
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vb-btn:hover { background: #f5ecd5; }
+.vb-btn.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; }
 .vb-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
 .vb-btn.danger { color: #a8452a; border-color: #fecaca; background: #fef2f2; }
-.vb-canvas-wrap { flex: 1; background: #fff; border: 1px solid #d5c7a8; border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.vb-btn.danger:hover { background: #fee2e2; }
+
+/* 画布容器铺满剩余空间 */
+.vb-canvas-wrap { 
+  flex: 1; 
+  background: #e5d9bd; /* 给外部加个底色，衬托白板 */
+  border: 1px solid #d5c7a8; 
+  border-radius: 12px; 
+  overflow: hidden; 
+  position: relative; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 画布本体的阴影 */
+.canvas-container {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
