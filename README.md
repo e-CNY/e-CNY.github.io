@@ -10,7 +10,7 @@
 
 
 ### 使用方法
-访问[工具站](https://e-cny.github.io/)或克隆本仓库后双击index.html
+访问[工具站](https://e-cny.github.io/)、[哔哩哔哩小玩具](https://www.bilibili.com/toy/3/index.html)或克隆本仓库后双击index.html
 
 [视频演示](https://www.bilibili.com/video/BV178ns6HE2y)
 
@@ -21,6 +21,6 @@
 A website containing various tools, all tools run locally in the browser without uploading to the server.GUI and code of this project are assisted by DeepSeek (DeepSeek V4.1 Flash), manually debugged, integrated, optimized and open-sourced by the developer.
 
 ### Usage
-Visit [Tools website](https://e-cny.github.io/) or clone this repository and double-click index.html
+Visit [Tools website](https://e-cny.github.io/),[bilibili Toy](https://www.bilibili.com/toy/3/index.html) or clone this repository and double-click index.html
 
 [Video Demonstration](https://www.bilibili.com/video/BV178ns6HE2y)
