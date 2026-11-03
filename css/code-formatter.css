@@ -1,0 +1,20 @@
+.cf-layout { max-width: 1200px; margin: 0 auto; padding: 28px 16px 56px; height: calc(100vh - 120px); display: flex; flex-direction: column; }
+.cf-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; background: #f9f3e3; padding: 12px 16px; border-radius: 12px; border: 1px solid #ddcfb3; }
+.cf-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.cf-select { padding: 8px 12px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-size: .9rem; font-weight: bold; color: #3d3226; outline: none; }
+.cf-select:focus { border-color: #8a5a2b; }
+.cf-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; font-size: .9rem; font-weight: bold; cursor: pointer; transition: all .15s; }
+.cf-btn:hover { background: #f5ecd5; border-color: #b08a5a; }
+.cf-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.cf-btn.primary:hover { background: #6b8c4e; }
+.cf-btn.danger { background: #fef2f2; color: #a8452a; border-color: #fecaca; }
+.cf-btn.danger:hover { background: #fee2e2; }
+.cf-container { display: flex; flex: 1; gap: 16px; min-height: 0; }
+@media (max-width: 768px) { .cf-container { flex-direction: column; height: auto; } }
+.cf-col { flex: 1; display: flex; flex-direction: column; background: #fff; border: 1px solid #d5c7a8; border-radius: 12px; overflow: hidden; }
+.cf-col-header { background: #fdf8ec; padding: 10px 16px; font-size: .85rem; font-weight: bold; color: #6b5d47; border-bottom: 1px solid #d5c7a8; display: flex; justify-content: space-between; }
+#cf-status { font-weight: normal; font-family: monospace; }
+#cf-status.error { color: #a8452a; }
+#cf-status.success { color: #7ba05b; }
+.cf-textarea { flex: 1; padding: 16px; border: none; resize: none; font-family: 'Consolas', 'Courier New', monospace; font-size: .95rem; line-height: 1.6; outline: none; color: #3d3226; white-space: pre; overflow: auto; }
+.cf-textarea:focus { background: #fafbfc; }

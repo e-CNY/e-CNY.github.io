@@ -1,5 +1,5 @@
-(function () {
-  // ====== 国内高频工具矩阵 (全站 Emoji 唯一) ======
+ (function () {
+  // ====== 国内高频工具矩阵 ======
   var tools = [
     // === 1. 图像处理 ===
     { name: '图片全家桶', emoji: '🖼️', desc: '格式转换 / 压缩 / EXIF / ASCII', href: 'tools/image-toolbox/index.html', category: '图像处理' },
@@ -30,6 +30,7 @@
     { name: '随机数据工具箱', emoji: '🎲', desc: 'Mock 数据 / 抽奖 / 多面骰子', href: 'tools/mock-tool/index.html', category: '生活时间' },
 
     // === 4. 开发调试 ===
+    { name: '多语言代码格式化', emoji: '🪄', desc: 'JS/TS/HTML/CSS/JSON/SQL/Vue 美化与压缩', href: 'tools/code-formatter/index.html', category: '开发调试' },
     { name: '加解密与编解码', emoji: '🔐', desc: 'Hash/AES/RSA/JWT/Base全家桶', href: 'tools/crypto-tool/index.html', category: '开发调试' },
     { name: '正则与选择器', emoji: '🔍', desc: '正则高亮 / CSS/XPath / 提取链接', href: 'tools/regex-tool/index.html', category: '开发调试' },
     { name: '开发辅助工具箱', emoji: '🛠️', desc: '.gitignore 生成 / 代码实体类生成', href: 'tools/dev-tool/index.html', category: '开发调试' },
@@ -70,7 +71,6 @@
     { name: 'Coming Soon', emoji: '🚧', desc: '敬请期待，更多实用工具正在开发中...', href: '#', category: '更多' }
   ];
 
-  // 动态计算当前页面的基础路径，彻底解决 GitHub Pages 相对路径丢失问题
   var basePath = window.location.pathname;
   if (basePath.endsWith('.html')) {
     basePath = basePath.substring(0, basePath.lastIndexOf('/') + 1);
@@ -85,7 +85,6 @@
   var emptyEl = document.getElementById('empty');
   var activeCat = 'all';
 
-  // 渲染分类标签
   var cats = ['all'];
   tools.forEach(function (t) {
     if (cats.indexOf(t.category) === -1) cats.push(t.category);
@@ -99,12 +98,9 @@
     tabsEl.appendChild(b);
   });
 
-  // 渲染卡片
   tools.forEach(function (t) {
     var a = document.createElement('a');
     a.className = 'card';
-    
-    // 处理 Coming Soon 的点击事件
     if (t.href === '#') {
       a.href = 'javascript:void(0)';
       a.addEventListener('click', function(e) {
@@ -114,11 +110,8 @@
     } else {
       a.href = basePath + t.href;
     }
-
     a.dataset.cat = t.category;
-    // 智能搜索：匹配名称和描述
     a.dataset.search = (String(t.name) + ' ' + String(t.desc)).toLowerCase();
-    
     a.innerHTML =
       '<span class="emoji"></span>' +
       '<span class="name"></span>' +
@@ -160,7 +153,6 @@
     }
   }
 
-  // 搜索事件监听
   var composing = false;
   search.addEventListener('compositionstart', function () { composing = true; });
   search.addEventListener('compositionend', function () {
@@ -182,7 +174,6 @@
     }
   });
 
-  // 分类点击
   tabButtons.forEach(function (tab) {
     tab.addEventListener('click', function () {
       tabButtons.forEach(function (t) { t.classList.remove('active'); });
