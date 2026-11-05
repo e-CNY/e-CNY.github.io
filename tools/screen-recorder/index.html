@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>屏幕录制 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/screen-recorder.css">
+</head>
+<body>
+<div class="tool-page-header">
+  <h1>🎥 在线屏幕录制</h1>
+  <p>无需安装，原生支持优先导出 MP4 或 WebM 格式，支持录制麦克风与系统声音</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+
+<main class="recorder-wrap">
+  <div class="control-panel">
+    <div class="options">
+      <label class="checkbox-label">
+        <input type="checkbox" id="opt-mic" checked>
+        🎙️ 录制麦克风声音
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="opt-system-audio">
+        🔊 录制系统声音 (需浏览器支持)
+      </label>
+    </div>
+    
+    <div class="action-buttons">
+      <button id="btn-start" class="primary-btn">🔴 开始录制</button>
+      <button id="btn-pause" class="secondary-btn" disabled>⏸️ 暂停</button>
+      <button id="btn-stop" class="secondary-btn" disabled>⏹️ 停止</button>
+    </div>
+    <div class="timer" id="timer">00:00:00</div>
+  </div>
+
+  <div class="preview-container" id="preview-container">
+    <div class="empty-hint" id="empty-hint">
+      点击“开始录制”并选择要录制的屏幕区域。<br>
+      录制结束后，可在此预览并下载视频。
+    </div>
+    <video id="preview-video" controls autoplay muted hidden></video>
+  </div>
+
+  <div class="download-bar" id="download-bar" hidden>
+    <button id="btn-download" class="primary-btn">💾 下载视频</button>
+    <span class="file-size" id="file-size"></span>
+  </div>
+</main>
+
+<script src="../../js/screen-recorder.js"></script>
+</body>
+</html>

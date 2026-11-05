@@ -1,0 +1,233 @@
+.b64-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+}
+
+.b64-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.b64-tab {
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: 1px solid #ddcfb3;
+  background: #f9f3e3;
+  color: #6b5d47;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.b64-tab:hover {
+  border-color: #b08a5a;
+}
+.b64-tab.active {
+  background: #8a5a2b;
+  border-color: #8a5a2b;
+  color: #fdf8ec;
+}
+
+.b64-panel {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+}
+.b64-panel.active {
+  display: flex;
+}
+
+/* 上传区 */
+.upload-area {
+  border: 2px dashed #ddcfb3;
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  background: #f9f3e3;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.upload-area:hover, .upload-area.dragover {
+  border-color: #8a5a2b;
+  background: #fdf8ec;
+}
+.upload-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+.upload-area p {
+  margin: 0 0 6px;
+  color: #3d3226;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.upload-hint {
+  font-size: 0.85rem !important;
+  color: #8a7a5f !important;
+}
+
+/* 结果区 */
+.result-area {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.preview-col {
+  display: flex;
+  flex-direction: column;
+}
+.preview-box {
+  border: 1px solid #ddcfb3;
+  border-radius: 8px;
+  background: #fff url('data:image/svg+xml;utf8,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="10" height="10" fill="%23eee"/><rect x="10" y="10" width="10" height="10" fill="%23eee"/></svg>') repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  overflow: hidden;
+}
+.preview-box img {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  display: block;
+}
+.file-info {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: #6b5d47;
+  line-height: 1.6;
+}
+
+.output-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.section-title {
+  font-weight: 600;
+  color: #3d3226;
+  font-size: 0.9rem;
+}
+textarea {
+  width: 100%;
+  height: 80px;
+  padding: 10px;
+  border: 1px solid #ddcfb3;
+  border-radius: 8px;
+  background: #fff;
+  color: #3d3226;
+  font-family: monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+}
+textarea:focus {
+  border-color: #b08a5a;
+}
+
+.btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.primary-btn {
+  background: #8a5a2b;
+  color: #fdf8ec;
+}
+.primary-btn:hover { background: #6b4420; }
+.secondary-btn {
+  background: #fff;
+  color: #6b5d47;
+  border: 1px solid #ddcfb3;
+}
+.secondary-btn:hover { background: #efe6d0; }
+.small-btn {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  background: #efe6d0;
+  color: #6b5d47;
+  border: 1px solid #ddcfb3;
+}
+.small-btn:hover { background: #ddcfb3; }
+
+.code-snippets {
+  background: #fff;
+  border: 1px solid #ddcfb3;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.code-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f4efe3;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #3d3226;
+}
+.code-item code {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 10px;
+}
+
+/* Base64 转图片 - 输入区 */
+.input-area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  padding: 20px;
+}
+.input-area textarea {
+  height: 150px;
+}
+.action-row {
+  display: flex;
+  gap: 12px;
+}
+
+.info-col p {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  color: #3d3226;
+}
+.note {
+  font-size: 0.85rem !important;
+  color: #8a7a5f !important;
+  margin-top: 20px !important;
+  padding: 10px;
+  background: #fdf8ec;
+  border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+  .result-area { grid-template-columns: 1fr; }
+  .action-row { flex-direction: column; }
+}

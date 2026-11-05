@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文字云生成器 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/wordcloud.css">
+</head>
+<body>
+<div class="tool-page-header">
+  <h1>☁️ 文字云生成器</h1>
+  <p>智能词频统计 / 自定义形状 / 多格式高清导出</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+
+<main class="wordcloud-wrap">
+  <div class="layout-grid">
+    <!-- 左侧控制面板 -->
+    <div class="control-panel">
+      <div class="panel-section">
+        <label class="section-title">📝 输入文本内容</label>
+        <textarea id="input-text" placeholder="在此粘贴长文本（建议不超过 1 万字）..."></textarea>
+        <div class="input-info">
+          <span class="hint">提示：词频越集中，生成的形状越饱满</span>
+          <span id="char-count" class="count">0 / 10000</span>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <label class="section-title">🔤 字体设置</label>
+        <div class="row">
+          <label>当前字体：</label>
+          <span id="font-status" class="font-status">默认字体</span>
+        </div>
+        <div class="file-upload-wrapper">
+          <input type="file" id="font-upload" accept=".ttf,.otf,.woff,.woff2" hidden>
+          <button id="btn-upload-font" class="secondary-btn" style="width: 100%; font-size: 0.85rem;">📁 上传本地字体 (.ttf/.otf/.woff)</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <label class="section-title">🎨 形状与背景</label>
+        <div class="row">
+          <label>形状：</label>
+          <select id="shape-type">
+            <option value="circle">圆形</option>
+            <option value="cardioid">心形</option>
+            <option value="star">五角星</option>
+            <option value="diamond">菱形</option>
+            <option value="square">正方形</option>
+          </select>
+        </div>
+        <div class="row">
+          <label>背景色：</label>
+          <div class="bg-controls">
+            <input type="color" id="bg-color" value="#ffffff">
+            <label class="checkbox-label" title="仅在导出 PNG/WebP 时生效">
+              <input type="checkbox" id="transparent-bg"> 透明背景
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <label class="section-title">🎯 排版与配色</label>
+        <div class="row">
+          <label>配色方案：</label>
+          <select id="color-theme">
+            <option value="random-dark">随机深色</option>
+            <option value="random-light">随机浅色</option>
+            <option value="ocean">海洋蓝</option>
+            <option value="sunset">日落红</option>
+            <option value="forest">森林绿</option>
+          </select>
+        </div>
+        <div class="row">
+          <label>最大字号：</label>
+          <input type="range" id="max-font-size" min="20" max="120" value="80">
+          <span id="max-font-size-val">80px</span>
+        </div>
+        <div class="row">
+          <label>画布密度：</label>
+          <input type="range" id="grid-size" min="8" max="30" value="16">
+          <span id="grid-size-val">16</span>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <label class="section-title">💾 导出设置</label>
+        <div class="row">
+          <label>图片格式：</label>
+          <select id="export-format">
+            <option value="png">PNG (支持透明)</option>
+            <option value="jpeg">JPG (不支持透明)</option>
+            <option value="webp">WebP (支持透明)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button id="btn-generate" class="primary-btn">✨ 生成文字云</button>
+        <button id="btn-download" class="secondary-btn">💾 下载高清图片</button>
+      </div>
+    </div>
+
+    <!-- 右侧画布预览 -->
+    <div class="preview-panel">
+      <div id="canvas-container" class="transparent-grid">
+        <canvas id="wordcloud-canvas" width="1000" height="750"></canvas>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../../js/libs/wordcloud2.min.js"></script>
+<script src="../../js/wordcloud.js"></script>
+</body>
+</html>

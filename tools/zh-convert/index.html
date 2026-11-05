@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>简繁体转换 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/zh-convert.css">
+</head>
+<body>
+<div class="tool-page-header">
+  <h1>🔄 简繁体转换</h1>
+  <p>简体中文与繁体中文互相转换，支持词组精准匹配</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+<main class="zh-convert-wrap">
+  <div class="control-bar">
+    <select id="convert-type">
+      <option value="cn2t">简体 ➔ 繁体</option>
+      <option value="t2cn">繁体 ➔ 简体</option>
+    </select>
+    <button id="btn-convert" class="primary-btn">立即转换</button>
+    <button id="btn-swap" class="secondary-btn">⇄ 交换</button>
+    <button id="btn-clear" class="secondary-btn">清空</button>
+    
+    <div class="file-actions">
+      <input type="file" id="file-upload" accept=".txt" hidden>
+      <button id="btn-upload" class="secondary-btn">📁 导入TXT</button>
+      <button id="btn-download" class="secondary-btn">💾 导出TXT</button>
+    </div>
+  </div>
+  <div class="text-container">
+    <div class="textarea-box">
+      <textarea id="input-text" placeholder="在此输入或粘贴需要转换的文本..."></textarea>
+      <div class="status-bar">字符数: <span id="input-count">0</span></div>
+    </div>
+    <div class="textarea-box">
+      <textarea id="output-text" placeholder="转换结果..." readonly></textarea>
+      <div class="status-bar">
+        <span>字符数: <span id="output-count">0</span></span>
+        <button id="btn-copy" class="text-btn">📋 复制结果</button>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../../js/libs/opencc-js.min.js"></script>
+<script src="../../js/zh-convert.js"></script>
+</body>
+</html>

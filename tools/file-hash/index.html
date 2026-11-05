@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文件哈希校验 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/file-hash.css">
+</head>
+<body>
+<div class="tool-page-header">
+  <h1>🛡️ 文件哈希校验</h1>
+  <p>极速计算文件的 MD5 / SHA-1 / SHA-256，支持 GB 级大文件分片计算，不消耗流量。</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+
+<main class="hash-wrap">
+  <!-- 文件上传区 -->
+  <div class="hash-upload-box" id="drop-zone">
+    <div class="upload-icon">📁</div>
+    <p class="upload-title">点击选择文件，或将文件拖拽至此</p>
+    <p class="upload-hint">支持任意格式文件，完全本地解析，不上传服务器</p>
+    <input type="file" id="file-input" hidden>
+  </div>
+
+  <!-- 计算选项 -->
+  <div class="hash-options">
+    <label class="checkbox-label">
+      <input type="checkbox" id="opt-md5" checked> MD5
+    </label>
+    <label class="checkbox-label">
+      <input type="checkbox" id="opt-sha1" checked> SHA-1
+    </label>
+    <label class="checkbox-label">
+      <input type="checkbox" id="opt-sha256" checked> SHA-256
+    </label>
+  </div>
+
+  <!-- 进度条 -->
+  <div class="progress-container" id="progress-container" hidden>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <div class="progress-text" id="progress-text">0%</div>
+  </div>
+
+  <!-- 文件信息与结果 -->
+  <div class="hash-result-box" id="result-box" hidden>
+    <div class="file-info">
+      <p><strong>📄 文件名：</strong> <span id="info-name">-</span></p>
+      <p><strong>📦 文件大小：</strong> <span id="info-size">-</span></p>
+    </div>
+
+    <div class="hash-list">
+      <div class="hash-item" id="result-md5" hidden>
+        <div class="hash-title">MD5</div>
+        <div class="hash-value-wrap">
+          <input type="text" class="hash-value" id="val-md5" readonly>
+          <button class="btn small-btn" onclick="copyHash('val-md5')">复制</button>
+        </div>
+      </div>
+      <div class="hash-item" id="result-sha1" hidden>
+        <div class="hash-title">SHA-1</div>
+        <div class="hash-value-wrap">
+          <input type="text" class="hash-value" id="val-sha1" readonly>
+          <button class="btn small-btn" onclick="copyHash('val-sha1')">复制</button>
+        </div>
+      </div>
+      <div class="hash-item" id="result-sha256" hidden>
+        <div class="hash-title">SHA-256</div>
+        <div class="hash-value-wrap">
+          <input type="text" class="hash-value" id="val-sha256" readonly>
+          <button class="btn small-btn" onclick="copyHash('val-sha256')">复制</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 文本哈希计算 -->
+  <div class="text-hash-section">
+    <div class="section-header">
+      <h3>📝 文本哈希计算</h3>
+      <p class="hint">如果没有文件，可以直接在此输入文本进行哈希校验</p>
+    </div>
+    <textarea id="text-input" placeholder="在此输入需要计算哈希的文本..."></textarea>
+    <button class="btn primary-btn" id="btn-text-hash" style="margin-top: 12px;">计算文本哈希</button>
+  </div>
+</main>
+
+<script src="../../js/libs/spark-md5.min.js"></script>
+<script src="../../js/libs/sha256.min.js"></script>
+<script src="../../js/file-hash.js"></script>
+</body>
+</html>

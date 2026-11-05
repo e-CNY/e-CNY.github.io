@@ -1,0 +1,200 @@
+.hash-wrap {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 上传区 */
+.hash-upload-box {
+  border: 2px dashed #ddcfb3;
+  border-radius: 12px;
+  padding: 30px 20px;
+  text-align: center;
+  background: #f9f3e3;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.hash-upload-box:hover, .hash-upload-box.dragover {
+  border-color: #8a5a2b;
+  background: #fdf8ec;
+}
+.upload-icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+.upload-title {
+  margin: 0 0 6px;
+  color: #3d3226;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.upload-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #8a7a5f;
+}
+
+/* 选项 */
+.hash-options {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  background: #f9f3e3;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddcfb3;
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  color: #3d3226;
+  font-weight: 600;
+  cursor: pointer;
+}
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #8a5a2b;
+  cursor: pointer;
+}
+
+/* 进度条 */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.progress-bar-wrap {
+  flex: 1;
+  height: 10px;
+  background: #ddcfb3;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #8a5a2b;
+  transition: width 0.1s linear;
+}
+.progress-text {
+  font-size: 0.85rem;
+  color: #6b5d47;
+  font-family: monospace;
+  width: 40px;
+  text-align: right;
+}
+
+/* 结果区 */
+.hash-result-box {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  padding: 20px;
+}
+.file-info {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed #ddcfb3;
+}
+.file-info p {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  color: #3d3226;
+}
+.hash-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.hash-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hash-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #6b5d47;
+}
+.hash-value-wrap {
+  display: flex;
+  gap: 8px;
+}
+.hash-value {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddcfb3;
+  border-radius: 6px;
+  background: #fff;
+  color: #3d3226;
+  font-family: monospace;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+/* 文本计算 */
+.text-hash-section {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 10px;
+}
+.section-header {
+  margin-bottom: 12px;
+}
+.section-header h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  color: #3d3226;
+}
+.hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #8a7a5f;
+}
+#text-input {
+  width: 100%;
+  height: 100px;
+  padding: 12px;
+  border: 1px solid #ddcfb3;
+  border-radius: 8px;
+  background: #fff;
+  color: #3d3226;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+}
+#text-input:focus {
+  border-color: #b08a5a;
+}
+
+.btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.primary-btn {
+  background: #8a5a2b;
+  color: #fdf8ec;
+}
+.primary-btn:hover { background: #6b4420; }
+.small-btn {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  background: #fff;
+  color: #6b5d47;
+  border: 1px solid #ddcfb3;
+}
+.small-btn:hover { background: #efe6d0; }

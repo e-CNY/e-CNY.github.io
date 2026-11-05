@@ -2,6 +2,7 @@
   // ====== 国内高频工具矩阵 ======
   var tools = [
     // === 1. 图像处理 ===
+    { name: '图片 Base64 互转', emoji: '🖇️', desc: '极速将图片转换为 Base64 代码及反向还原', href: 'tools/base64-image/index.html', category: '图像处理' },
     { name: '图片切图与拼接', emoji: '🧩', desc: '九宫格切图 / 长图拼接 / 网格拼图', href: 'tools/image-slicer/index.html', category: '图像处理' },
     { name: '图片全家桶', emoji: '🖼️', desc: '格式转换 / 压缩 / EXIF / ASCII', href: 'tools/image-toolbox/index.html', category: '图像处理' },
     { name: '码工具', emoji: '📱', desc: '二维码/条形码 生成与识别', href: 'tools/code-tool/index.html', category: '图像处理' },
@@ -15,16 +16,19 @@
     { name: '页面标尺与网格', emoji: '📏', desc: '辅助网格 / 吸管取色', href: 'tools/ruler-tool/index.html', category: '图像处理' },
 
     // === 2. 文档与文本 ===
+    { name: '文本差异对比', emoji: '🔀', desc: '精准识别两段文本的增删改差异', href: 'tools/text-diff/index.html', category: '文档文本' },
+    { name: '简繁体转换', emoji: '🔄', desc: '中文简繁体互相转换 / 词组精准转换', href: 'tools/zh-convert/index.html', category: '文档文本' },
+    { name: '拼音转换器', emoji: '🗣️', desc: '汉字转拼音 / 首字母缩写 / 带声调', href: 'tools/pinyin/index.html', category: '文档文本' },
     { name: '书法字帖生成器', emoji: '📝', desc: '上传本地字体，导出打印级 PDF 字帖', href: 'tools/calligraphy/index.html', category: '文档文本' },
     { name: 'PDF 工具', emoji: '📄', desc: '合并 / 拆分 / 水印 / 转图', href: 'tools/pdf/index.html', category: '文档文本' },
     { name: '多语言代码格式化', emoji: '🪄', desc: 'JS/TS/HTML/CSS/JSON/SQL 美化与压缩', href: 'tools/code-formatter/index.html', category: '文档文本' },
-    { name: '文本处理工具箱', emoji: '📝', desc: '去重 / 排序 / 大小写 / 行号', href: 'tools/text-toolbox/index.html', category: '文档文本' },
-    { name: '结构化数据工具', emoji: '📦', desc: 'JSON/YAML/XML/TOML 转换与对比', href: 'tools/json-toolbox/index.html', category: '文档文本' },
+    { name: '文本处理工具箱', emoji: '🔠', desc: '去重 / 排序 / 大小写 / 行号', href: 'tools/text-toolbox/index.html', category: '文档文本' },
+    { name: '结构化数据工具', emoji: '📦', desc: 'JSON/YAML/XML/TOML 转换/查询与 TS 生成', href: 'tools/json-toolbox/index.html', category: '文档文本' },
     { name: '表格处理工具', emoji: '📊', desc: 'CSV 与 Excel 互转、预览', href: 'tools/table-tool/index.html', category: '文档文本' },
     { name: 'Markdown 编辑器', emoji: '📑', desc: '实时预览 / 公式支持 / 提取目录', href: 'tools/markdown-tool/index.html', category: '文档文本' },
     { name: '办公文档自动化', emoji: '📂', desc: 'Word 转 HTML 与提取图片', href: 'tools/doc-automation/index.html', category: '文档文本' },
     { name: '字幕编辑器', emoji: '💬', desc: 'SRT/VTT 解析与时间轴平移', href: 'tools/subtitle-tool/index.html', category: '文档文本' },
-    { name: '模板渲染测试', emoji: '🧩', desc: 'Mustache 语法实时渲染', href: 'tools/template-tool/index.html', category: '文档文本' },
+    { name: '模板渲染测试', emoji: '🧾', desc: 'Mustache 语法实时渲染', href: 'tools/template-tool/index.html', category: '文档文本' },
 
     // === 3. 生活与时间 ===
     { name: '时间与计时工具', emoji: '⏱️', desc: '久坐 / 秒表 / 倒计时 / 番茄钟', href: 'tools/sitting-reminder/index.html', category: '生活时间' },
@@ -48,6 +52,9 @@
     { name: 'RSS & OPML 工具', emoji: '📡', desc: 'RSS 转 JSON / 订阅源提取', href: 'tools/rss-tool/index.html', category: '开发调试' },
 
     // === 5. 多媒体与可视化 ===
+    { name: '视频转多格式动图', emoji: '🎬', desc: '视频转 GIF/WebP/序列帧，支持裁剪调速', href: 'tools/video-to-gif/index.html', category: '多媒体设计' },
+    { name: '文字云生成器', emoji: '☁️', desc: '智能词频统计 / 自定义形状 / 导出高清图', href: 'tools/wordcloud/index.html', category: '多媒体设计' },
+    { name: '在线屏幕录制', emoji: '🎥', desc: '录制屏幕/窗口/声音，优先原生MP4导出', href: 'tools/screen-recorder/index.html', category: '多媒体设计' },
     { name: '在线录音机与转文字', emoji: '🎙️', desc: '实时录音、波形展示、语音转文字', href: 'tools/audio-recorder/index.html', category: '多媒体设计' },
     { name: '架构图 & 脑图', emoji: '🧠', desc: 'Mermaid 流程图 / 时序图', href: 'tools/mermaid-tool/index.html', category: '多媒体设计' },
     { name: '图表生成预览', emoji: '📉', desc: 'Chart.js 折线 / 柱状 / 饼图', href: 'tools/chart-tool/index.html', category: '多媒体设计' },
@@ -60,6 +67,7 @@
     { name: 'Lottie 动画预览', emoji: '🎞️', desc: '渲染 Lottie JSON 动画', href: 'tools/lottie-tool/index.html', category: '多媒体设计' },
 
     // === 6. 计算与极客 ===
+    { name: '文件哈希校验', emoji: '🛡️', desc: 'MD5/SHA1/SHA256 大文件分片极速计算', href: 'tools/file-hash/index.html', category: '安全极客' },
     { name: '数学函数绘图', emoji: '📈', desc: '输入表达式渲染 2D 曲线', href: 'tools/math-plot/index.html', category: '安全极客' },
     { name: '图标与 Emoji', emoji: '🔣', desc: '一键检索复制符号', href: 'tools/icon-tool/index.html', category: '安全极客' },
     { name: '本地加密记事本', emoji: '🔒', desc: 'AES 加密，密码不泄露', href: 'tools/notepad-tool/index.html', category: '安全极客' },

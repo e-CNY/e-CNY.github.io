@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图片 Base64 互转 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/base64-image.css">
+</head>
+<body>
+<div class="tool-page-header">
+  <h1>🖇️ 图片 Base64 互转</h1>
+  <p>极速将图片转换为 Base64 代码，或将 Base64 代码还原为图片。全程本地处理，不消耗流量。</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+
+<main class="b64-wrap">
+  <div class="b64-tabs">
+    <button id="tab-img2b64" class="b64-tab active">图片 ➔ Base64</button>
+    <button id="tab-b642img" class="b64-tab">Base64 ➔ 图片</button>
+  </div>
+
+  <!-- 图片转 Base64 -->
+  <div id="panel-img2b64" class="b64-panel active">
+    <div class="upload-area" id="drop-zone">
+      <div class="upload-icon">📤</div>
+      <p>点击此处选择图片，或将图片拖拽到这里</p>
+      <p class="upload-hint">支持 PNG, JPG, GIF, WebP, SVG 等格式</p>
+      <input type="file" id="file-input" accept="image/*" hidden>
+    </div>
+
+    <div class="result-area" id="img2b64-result" hidden>
+      <div class="preview-col">
+        <div class="preview-box">
+          <img id="uploaded-img" alt="预览图">
+        </div>
+        <div class="file-info" id="file-info"></div>
+      </div>
+      <div class="output-col">
+        <div class="panel-section">
+          <label class="section-title">📄 纯 Base64 字符串</label>
+          <textarea id="base64-text" readonly spellcheck="false"></textarea>
+          <button class="btn primary-btn" onclick="copyText('base64-text')">复制纯 Base64</button>
+        </div>
+        <div class="panel-section">
+          <label class="section-title">🌐 Data URL (包含前缀，可直接用于 src)</label>
+          <textarea id="dataurl-text" readonly spellcheck="false"></textarea>
+          <button class="btn primary-btn" onclick="copyText('dataurl-text')">复制 Data URL</button>
+        </div>
+        <div class="panel-section">
+          <label class="section-title">💻 常用代码片段</label>
+          <div class="code-snippets">
+            <div class="code-item">
+              <code>&lt;img src="..."&gt;</code>
+              <button class="btn small-btn" onclick="copySnippet('html')">复制</button>
+            </div>
+            <div class="code-item">
+              <code>background-image: url("...");</code>
+              <button class="btn small-btn" onclick="copySnippet('css')">复制</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Base64 转图片 -->
+  <div id="panel-b642img" class="b64-panel">
+    <div class="input-area">
+      <label class="section-title">📝 粘贴 Base64 字符串或 Data URL</label>
+      <textarea id="b64-input" placeholder="在此粘贴以 data:image/ 开头的 Data URL，或者纯 Base64 代码..." spellcheck="false"></textarea>
+      <div class="action-row">
+        <button class="btn primary-btn" id="btn-decode">生成图片</button>
+        <button class="btn secondary-btn" id="btn-clear-b64">清空</button>
+      </div>
+    </div>
+
+    <div class="result-area" id="b642img-result" hidden>
+      <div class="preview-col">
+        <div class="preview-box">
+          <img id="decoded-img" alt="解码预览">
+        </div>
+        <button class="btn primary-btn" id="btn-download-b64" style="margin-top: 16px;">💾 下载图片</button>
+      </div>
+      <div class="output-col info-col">
+        <p><strong>格式：</strong> <span id="info-format">-</span></p>
+        <p><strong>图片尺寸：</strong> <span id="info-size">-</span></p>
+        <p><strong>文件大小约：</strong> <span id="info-filesize">-</span></p>
+        <p class="note">💡 提示：如果无法预览，请检查 Base64 字符串是否完整或是否包含了非法的换行符。</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../../js/base64-image.js"></script>
+</body>
+</html>

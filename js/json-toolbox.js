@@ -467,7 +467,7 @@
   function initLineNumbers(textareaId, linesId) {
     var ta = document.getElementById(textareaId);
     var linesEl = document.getElementById(linesId);
-    if(!ta || !linesEl) return; // 关键防错
+    if(!ta || !linesEl) return;
     
     function update() {
       var linesCount = ta.value.split('\n').length;
@@ -480,7 +480,7 @@
     ta.addEventListener('scroll', function() { linesEl.scrollTop = ta.scrollTop; });
     update();
   }
-  // 延迟一点点初始化，确保 DOM 已渲染
+  
   setTimeout(function(){
     initLineNumbers('text-diff-old', 'lines-old');
     initLineNumbers('text-diff-new', 'lines-new');
@@ -502,7 +502,6 @@
     var ignoreCase = getEl('text-diff-ignore-case').checked;
     var ignoreSpace = getEl('text-diff-ignore-space').checked;
 
-    // 末尾强制加 \n 解决 jsdiff 最后一行忽略失效的问题
     var o = oldText.endsWith('\n') ? oldText : oldText + '\n';
     var n = newText.endsWith('\n') ? newText : newText + '\n';
 
@@ -663,6 +662,155 @@
     });
 
     outEl.value = JSON.stringify(result, null, 2);
+  };
+
+  // ================= 14. JSON 转 TS 接口 =================
+  window.generateTS = function () {
+    var jsonInputEl = getEl('ts-json-input');
+    var tsOutputEl = getEl('ts-code-output');
+    var rootNameEl = getEl('ts-root-name');
+    var styleSelectEl = getEl('ts-style');
+    var optSemicolonEl = getEl('ts-semicolon');
+    var optOptionalEl = getEl('ts-optional');
+
+    var raw = jsonInputEl.value.trim();
+    if (!raw) {
+      tsOutputEl.value = '';
+      return;
+    }
+
+    try {
+      var parsed = JSON.parse(raw);
+      
+      var interfaces = [];
+      var rootName = rootNameEl.value.trim() || 'RootObject';
+      var useType = styleSelectEl.value === 'type';
+      var useSemicolon = optSemicolonEl.checked;
+      var useOptional = optOptionalEl.checked;
+
+      function capitalizeFirstLetter(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+
+      function cleanName(str) {
+        var cleaned = str.replace(/[-_\s]+(.)?/g, function(match, chr) {
+          return chr ? chr.toUpperCase() : '';
+        });
+        return capitalizeFirstLetter(cleaned);
+      }
+
+      function parseValue(val, name) {
+        if (val === null) return 'any';
+        if (Array.isArray(val)) {
+          if (val.length === 0) return 'any[]';
+          var types = new Set();
+          val.forEach(function(item) {
+            types.add(parseValue(item, name));
+          });
+          var typeStr = Array.from(types).join(' | ');
+          if (types.size > 1) {
+            return '(' + typeStr + ')[]';
+          }
+          return typeStr + '[]';
+        }
+        var type = typeof val;
+        if (type === 'object') {
+          return generateInterface(val, name);
+        }
+        return type;
+      }
+
+      function generateInterface(obj, name) {
+        var interfaceName = cleanName(name) || 'RootObject';
+        var existing = interfaces.find(function(i) { return i.name === interfaceName; });
+        if (existing) return interfaceName;
+
+        var lines = [];
+        lines.push((useType ? 'type ' : 'interface ') + interfaceName + ' {');
+        var keys = Object.keys(obj);
+        
+        keys.forEach(function(key) {
+          var val = obj[key];
+          var propName = key;
+          if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(propName)) {
+            propName = '"' + propName + '"';
+          }
+          
+          var isOptional = useOptional && (val === undefined || val === null);
+          var typeStr = parseValue(val, interfaceName + '_' + key);
+          
+          lines.push('  ' + propName + (isOptional ? '?' : '') + ': ' + typeStr + (useSemicolon ? ';' : ''));
+        });
+        
+        lines.push('}');
+        
+        interfaces.push({
+          name: interfaceName,
+          code: lines.join('\n')
+        });
+        return interfaceName;
+      }
+
+      var rootType = parseValue(parsed, rootName);
+
+      if (rootType === cleanName(rootName)) {
+        // 普通对象
+      } else if (rootType !== cleanName(rootName) && rootType !== cleanName(rootName) + '[]' && !rootType.startsWith('(')) {
+        // 略
+      } else {
+         // 根节点是基础类型或数组
+         tsOutputEl.value = 'type ' + cleanName(rootName) + ' = ' + rootType + (useSemicolon ? ';' : '');
+         return;
+      }
+
+      var result = [];
+      for (var i = interfaces.length - 1; i >= 0; i--) {
+        result.push(interfaces[i].code);
+      }
+      
+      tsOutputEl.value = result.join('\n\n');
+
+    } catch (e) {
+      tsOutputEl.value = '// 解析失败，请检查 JSON 格式是否正确。\n// ' + e.message;
+    }
+  };
+
+  window.copyTSCode = function () {
+    var tsOutputEl = getEl('ts-code-output');
+    if (!tsOutputEl.value) return;
+    navigator.clipboard.writeText(tsOutputEl.value).then(function() {
+      alert('✅ TS 代码已复制到剪贴板');
+    });
+  };
+
+  window.fillTSSample = function () {
+    var sample = {
+      "id": 1024,
+      "name": "John Doe",
+      "isActive": true,
+      "roles": ["admin", "editor"],
+      "profile": {
+        "age": 30,
+        "address": {
+          "city": "New York",
+          "zip": "10001"
+        }
+      },
+      "projects": [
+        {
+          "projectId": 1,
+          "projectName": "Alpha",
+          "stars": 120
+        },
+        {
+          "projectId": 2,
+          "projectName": "Beta",
+          "stars": 350
+        }
+      ]
+    };
+    getEl('ts-json-input').value = JSON.stringify(sample, null, 2);
+    window.generateTS();
   };
 
 })();

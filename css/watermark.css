@@ -5,18 +5,45 @@
 .wm-header a { color: #8a5a2b; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
 .wm-header a:hover { text-decoration: underline; }
 
-.wm-layout {
+/* App Tab 样式 */
+.app-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.tab-btn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: 1px solid #ddcfb3;
+  background: #f9f3e3;
+  color: #6b5d47;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tab-btn:hover { border-color: #b08a5a; }
+.tab-btn.active {
+  background: #8a5a2b;
+  border-color: #8a5a2b;
+  color: #fdf8ec;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* 布局 */
+.wm-layout, .ps-layout {
   display: grid;
   grid-template-columns: 340px 1fr;
   gap: 24px;
   align-items: start;
 }
-
 @media (max-width: 768px) {
-  .wm-layout { grid-template-columns: 1fr; }
+  .wm-layout, .ps-layout { grid-template-columns: 1fr; }
 }
 
-/* 面板 */
+/* 面板通用 */
 .wm-panel {
   background: #f9f3e3;
   border: 1px solid #ddcfb3;
@@ -45,7 +72,7 @@
   border-color: #8a5a2b;
   background: #f5ecd5;
 }
-.wm-hint { font-size: .75rem; color: #8a7a5f; }
+.wm-hint { font-size: .75rem; color: #8a7a5f; margin: 6px 0 0; line-height: 1.4; }
 
 /* 表单元素 */
 .wm-label { display: block; font-size: .82rem; color: #6b5d47; margin: 12px 0 6px; }
@@ -84,6 +111,39 @@ input[type="color"] {
 
 input[type="range"] { width: 100%; accent-color: #8a5a2b; margin-top: 6px; cursor: pointer; }
 
+/* 换底色模块 */
+.wm-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+.wm-switch input { opacity: 0; width: 0; height: 0; }
+.wm-slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc; transition: .4s; border-radius: 22px;
+}
+.wm-slider:before {
+  position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+  background-color: white; transition: .4s; border-radius: 50%;
+}
+.wm-switch input:checked + .wm-slider { background-color: #8a5a2b; }
+.wm-switch input:checked + .wm-slider:before { transform: translateX(18px); }
+
+.wm-btn-small {
+  padding: 6px 10px; border: 1px solid #d5c7a8; border-radius: 6px;
+  background: #fdf8ec; color: #3d3226; font-size: .8rem; cursor: pointer;
+  transition: all 0.15s;
+}
+.wm-btn-small:hover { background: #f5ecd5; border-color: #b08a5a; }
+.wm-btn-small.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; }
+
+.wm-color-presets { display: flex; gap: 8px; margin-top: 4px; }
+.wm-bg-color-btn {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid #d5c7a8; cursor: pointer; transition: transform 0.15s;
+}
+.wm-bg-color-btn:hover { transform: scale(1.1); }
+.wm-bg-color-btn.active {
+  border-color: #8a5a2b;
+  box-shadow: 0 0 0 2px #f9f3e3, 0 0 0 4px #8a5a2b;
+}
+
 /* 九宫格位置 */
 .wm-positions {
   display: grid;
@@ -110,13 +170,14 @@ input[type="range"] { width: 100%; accent-color: #8a5a2b; margin-top: 6px; curso
   display: flex; align-items: center; justify-content: center;
   overflow: hidden; padding: 16px;
 }
-.wm-placeholder { color: #8a7a5f; font-size: .9rem; pointer-events: none; }
-#wm-canvas {
+.wm-placeholder { color: #8a7a5f; font-size: .9rem; pointer-events: none; text-align: center; }
+#wm-canvas, #ps-canvas {
   max-width: 100%; max-height: 65vh; display: none;
   box-shadow: 0 4px 16px rgba(0,0,0,.1); background: #fff;
   object-fit: contain;
 }
 
+/* 下载按钮 */
 .wm-download-btn {
   padding: 12px 24px; border: none; border-radius: 10px;
   background: #7ba05b; color: #fff; font-size: 1rem; font-weight: 600;
@@ -125,3 +186,8 @@ input[type="range"] { width: 100%; accent-color: #8a5a2b; margin-top: 6px; curso
 .wm-download-btn:hover:not(:disabled) { background: #6b8c4e; }
 .wm-download-btn:active:not(:disabled) { transform: scale(.98); }
 .wm-download-btn:disabled { background: #c4b48f; cursor: not-allowed; }
+
+/* 排版打印专属补充 */
+.ps-panel .wm-row { align-items: center; }
+.ps-panel .checkbox-label { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #3d3226; cursor: pointer; }
+.ps-panel .checkbox-label input { accent-color: #8a5a2b; width: 16px; height: 16px; }

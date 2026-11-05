@@ -3,18 +3,21 @@
   var btnPause = document.getElementById('btn-pause');
   var btnStop = document.getElementById('btn-stop');
   var btnDownload = document.getElementById('btn-download');
-  var btnCopy = document.getElementById('btn-copy');
-  var btnClear = document.getElementById('btn-clear');
   var timerEl = document.getElementById('ar-timer');
-  var statusEl = document.getElementById('ar-status');
-  var textarea = document.getElementById('ar-text');
   var canvas = document.getElementById('ar-canvas');
   var ctx = canvas.getContext('2d');
-  var langSelect = document.getElementById('ar-lang');
   var visualModeSelect = document.getElementById('ar-visual-mode');
-  var resultArea = document.getElementById('ar-result-area');
+  
+  var editorPanel = document.getElementById('ar-editor-panel');
   var audioPlayer = document.getElementById('ar-audio-player');
-  var exportFormatSelect = document.getElementById('ar-export-format');
+  var trimStart = document.getElementById('trim-start');
+  var trimEnd = document.getElementById('trim-end');
+  var labelStart = document.getElementById('label-start');
+  var labelEnd = document.getElementById('label-end');
+  var volGain = document.getElementById('vol-gain');
+  var labelGain = document.getElementById('label-gain');
+  var exportFilename = document.getElementById('export-filename');
+  var exportFormat = document.getElementById('export-format');
 
   var mediaStream = null;
   var audioCtx = null;
@@ -29,45 +32,16 @@
   var isRecording = false;
   var isPaused = false;
   
-  var recognition = null;
-  var finalTranscript = '';
-  var currentBlob = null; // 保存原始录音 Blob
+  var currentBlob = null;
+  var originalAudioBuffer = null;
 
-  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    
-    recognition.onresult = function (event) {
-      var interimTranscript = '';
-      for (var i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript;
-        } else {
-          interimTranscript += event.results[i][0].transcript;
-        }
-      }
-      textarea.value = finalTranscript + interimTranscript;
-      textarea.scrollTop = textarea.scrollHeight;
-    };
-
-    recognition.onerror = function (event) {
-      console.warn('语音识别错误:', event.error);
-      if (event.error === 'not-allowed') {
-        statusEl.textContent = '麦克风权限被拒绝';
-      }
-    };
-  }
-
-  function formatTime(ms) {
-    var totalSec = Math.floor(ms / 1000);
-    var m = Math.floor(totalSec / 60);
-    var s = totalSec % 60;
+  function formatTime(secs) {
+    var m = Math.floor(secs / 60);
+    var s = Math.floor(secs % 60);
     return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
   }
 
-  // ================= 波形与频谱绘制 =================
+  // ================= 动态波形/频谱绘制 (录音时) =================
   function drawVisualizer() {
     if (!analyser || !isRecording || isPaused) return;
     
@@ -118,6 +92,36 @@
     draw();
   }
 
+  // ================= 静态波形绘制 (录音结束后) =================
+  function drawStaticWaveform(audioBuffer) {
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.offsetWidth * dpr;
+    canvas.height = canvas.offsetHeight * dpr;
+    ctx.scale(dpr, dpr);
+    
+    ctx.fillStyle = '#fdf8ec'; // 浅色背景
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    var data = audioBuffer.getChannelData(0);
+    var step = Math.ceil(data.length / canvas.width);
+    var amp = canvas.height / 2;
+    
+    ctx.fillStyle = '#8a5a2b'; // 棕色波形
+    
+    for (var i = 0; i < canvas.width; i++) {
+      var min = 1.0;
+      var max = -1.0;
+      for (var j = 0; j < step; j++) {
+        var datum = data[(i * step) + j];
+        if (datum < min) min = datum;
+        if (datum > max) max = datum;
+      }
+      var h = (max - min) * amp;
+      var y = (1 + min) * amp;
+      ctx.fillRect(i, y, 1, Math.max(1, h));
+    }
+  }
+
   // ================= 录音控制 =================
   btnRecord.addEventListener('click', async function () {
     try {
@@ -129,7 +133,6 @@
       var source = audioCtx.createMediaStreamSource(mediaStream);
       source.connect(analyser);
       
-      // 使用 WebM 作为中间格式录制（兼容性最好）
       mediaRecorder = new MediaRecorder(mediaStream, { mimeType: 'audio/webm' });
       audioChunks = [];
       
@@ -137,36 +140,43 @@
         if (e.data.size > 0) audioChunks.push(e.data);
       };
       
-      mediaRecorder.onstop = function () {
+      mediaRecorder.onstop = async function () {
         currentBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        var url = URL.createObjectURL(currentBlob);
-        audioPlayer.src = url;
-        resultArea.style.display = 'flex';
+        audioPlayer.src = URL.createObjectURL(currentBlob);
+        
+        // 解析为 AudioBuffer，用于裁剪和静态波形
+        var arrayBuffer = await currentBlob.arrayBuffer();
+        var tempCtx = new (window.AudioContext || window.webkitAudioContext)();
+        originalAudioBuffer = await tempCtx.decodeAudioData(arrayBuffer);
+        tempCtx.close();
+        
+        // 设置裁剪滑块的最大时间
+        trimStart.max = originalAudioBuffer.duration;
+        trimEnd.max = originalAudioBuffer.duration;
+        trimStart.value = 0;
+        trimEnd.value = originalAudioBuffer.duration;
+        
+        labelStart.textContent = formatTime(0);
+        labelEnd.textContent = formatTime(originalAudioBuffer.duration);
+        
+        drawStaticWaveform(originalAudioBuffer);
+        editorPanel.style.display = 'block';
       };
       
       mediaRecorder.start();
-      
-      if (recognition) {
-        finalTranscript = textarea.value ? textarea.value + '\n' : '';
-        recognition.lang = langSelect.value;
-        recognition.start();
-      }
       
       isRecording = true;
       isPaused = false;
       btnRecord.disabled = true;
       btnPause.disabled = false;
       btnStop.disabled = false;
-      langSelect.disabled = true;
-      resultArea.style.display = 'none';
+      editorPanel.style.display = 'none';
       
       startTime = Date.now() - pausedTime;
-      timerEl.textContent = formatTime(pausedTime);
-      statusEl.textContent = '正在录音...';
-      statusEl.className = 'ar-status recording';
+      timerEl.textContent = formatTime(pausedTime / 1000);
       
       timerInterval = setInterval(function () {
-        timerEl.textContent = formatTime(Date.now() - startTime);
+        timerEl.textContent = formatTime((Date.now() - startTime) / 1000);
       }, 1000);
       
       drawVisualizer();
@@ -180,28 +190,20 @@
     if (!isRecording) return;
     
     if (!isPaused) {
-      // 暂停
       mediaRecorder.pause();
-      if (recognition) recognition.stop();
       clearInterval(timerInterval);
       cancelAnimationFrame(reqId);
       pausedTime = Date.now() - startTime;
       isPaused = true;
       btnPause.innerHTML = '<span class="ar-icon">▶️</span> 继续';
-      statusEl.textContent = '已暂停';
-      statusEl.className = 'ar-status paused';
     } else {
-      // 继续
       mediaRecorder.resume();
-      if (recognition) recognition.start();
       startTime = Date.now() - pausedTime;
       timerInterval = setInterval(function () {
-        timerEl.textContent = formatTime(Date.now() - startTime);
+        timerEl.textContent = formatTime((Date.now() - startTime) / 1000);
       }, 1000);
       isPaused = false;
       btnPause.innerHTML = '<span class="ar-icon">⏸️</span> 暂停';
-      statusEl.textContent = '正在录音...';
-      statusEl.className = 'ar-status recording';
       drawVisualizer();
     }
   });
@@ -217,115 +219,143 @@
     
     if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
     if (mediaStream) mediaStream.getTracks().forEach(function (track) { track.stop(); });
-    if (recognition) recognition.stop();
     if (audioCtx && audioCtx.state !== 'closed') audioCtx.close();
     
     btnRecord.disabled = false;
     btnPause.disabled = true;
     btnPause.innerHTML = '<span class="ar-icon">⏸️</span> 暂停';
     btnStop.disabled = true;
-    langSelect.disabled = false;
-    statusEl.textContent = '录音已结束';
-    statusEl.className = 'ar-status';
+    timerEl.textContent = '00:00';
   });
 
-  // ================= 下载逻辑 =================
+  // ================= 编辑与导出逻辑 =================
+  
+  // 监听滑块更新标签
+  trimStart.addEventListener('input', function() {
+    labelStart.textContent = formatTime(parseFloat(this.value));
+    if (parseFloat(this.value) >= parseFloat(trimEnd.value)) {
+      trimEnd.value = this.value;
+      labelEnd.textContent = formatTime(parseFloat(this.value));
+    }
+  });
+  
+  trimEnd.addEventListener('input', function() {
+    labelEnd.textContent = formatTime(parseFloat(this.value));
+    if (parseFloat(this.value) <= parseFloat(trimStart.value)) {
+      trimStart.value = this.value;
+      labelStart.textContent = formatTime(parseFloat(this.value));
+    }
+  });
+
+  volGain.addEventListener('input', function() {
+    labelGain.textContent = parseFloat(this.value).toFixed(1) + 'x';
+  });
+
   btnDownload.addEventListener('click', async function () {
-    if (!currentBlob) return;
+    if (!originalAudioBuffer) return;
     
-    var format = exportFormatSelect.value;
-    btnDownload.textContent = '⏳ 转换中...';
+    var format = exportFormat.value;
+    var filename = exportFilename.value.trim() || '我的录音';
+    
+    if (format === 'webm') {
+      // 直接下载原始的 webm
+      downloadBlob(currentBlob, filename + '.webm');
+      return;
+    }
+
+    // WAV 裁剪与增益处理
+    btnDownload.textContent = '⏳ 处理中...';
     btnDownload.disabled = true;
-    
+
     try {
-      if (format === 'webm') {
-        // WebM 直接下载原始数据
-        downloadBlob(currentBlob, 'recording.webm');
-      } else if (format === 'ogg') {
-        // 尝试原生录制 OGG（Chrome 不支持，会报错，这里给个提示）
-        // 为了兼容，我们不动态转 OGG（需要复杂编码库），这里仅作尝试
-        try {
-          var oggBlob = new Blob(audioChunks, { type: 'audio/ogg' });
-          downloadBlob(oggBlob, 'recording.ogg');
-        } catch(e) {
-          alert('当前浏览器不支持直接导出 OGG，建议使用 WAV 或 WebM');
+      var startSec = parseFloat(trimStart.value);
+      var endSec = parseFloat(trimEnd.value);
+      var gain = parseFloat(volGain.value);
+      
+      // 1. 计算新的采样长度
+      var startSample = Math.floor(startSec * originalAudioBuffer.sampleRate);
+      var endSample = Math.floor(endSec * originalAudioBuffer.sampleRate);
+      var numSamples = endSample - startSample;
+      
+      var numChannels = originalAudioBuffer.numberOfChannels;
+      
+      // 2. 提取并应用增益
+      var channels = [];
+      for (var c = 0; c < numChannels; c++) {
+        var origData = originalAudioBuffer.getChannelData(c);
+        var newData = new Float32Array(numSamples);
+        for (var i = 0; i < numSamples; i++) {
+          // 乘以增益，并限制在 [-1, 1] 防爆音
+          var sample = origData[startSample + i] * gain;
+          newData[i] = Math.max(-1, Math.min(1, sample));
         }
-      } else {
-        // WAV 转换
-        var arrayBuffer = await currentBlob.arrayBuffer();
-        var tempCtx = new (window.AudioContext || window.webkitAudioContext)();
-        var audioBuffer = await tempCtx.decodeAudioData(arrayBuffer);
-        var wavBlob = audioBufferToWav(audioBuffer);
-        downloadBlob(wavBlob, 'recording.wav');
-        tempCtx.close();
+        channels.push(newData);
       }
+      
+      // 3. 封装为 WAV Blob
+      var wavBlob = buildWav(channels, originalAudioBuffer.sampleRate);
+      downloadBlob(wavBlob, filename + '.wav');
+      
     } catch (e) {
       console.error(e);
-      alert('转换失败，请尝试下载 WebM 格式');
+      alert('音频处理失败：' + e.message);
     } finally {
-      btnDownload.textContent = '⬇️ 下载录音';
+      btnDownload.textContent = '⬇️ 生成并下载';
       btnDownload.disabled = false;
     }
   });
 
-  btnClear.addEventListener('click', function () {
-    textarea.value = '';
-    finalTranscript = '';
-  });
-
-  btnCopy.addEventListener('click', function () {
-    if (!textarea.value) return;
-    navigator.clipboard.writeText(textarea.value).then(function () {
-      var original = btnCopy.textContent;
-      btnCopy.textContent = '✅ 已复制';
-      btnCopy.style.color = '#7ba05b';
-      setTimeout(function () {
-        btnCopy.textContent = original;
-        btnCopy.style.color = '';
-      }, 1500);
-    });
-  });
-
-  // ================= 工具函数：音频转 WAV =================
-  function audioBufferToWav(buffer) {
-    var numOfChan = buffer.numberOfChannels, length = buffer.length * numOfChan * 2 + 44,
-        bufferArr = new ArrayBuffer(length), view = new DataView(bufferArr),
-        channels = [], i, sample, offset = 0, pos = 0;
-
-    view.setUint32(0, 0x46464952, true); 
+  // ================= 工具函数 =================
+  
+  // 构建 WAV 文件
+  function buildWav(channels, sampleRate) {
+    var numChannels = channels.length;
+    var numSamples = channels[0].length;
+    var length = numSamples * numChannels * 2 + 44;
+    var buffer = new ArrayBuffer(length);
+    var view = new DataView(buffer);
+    
+    // WAV 头
+    writeString(view, 0, 'RIFF');
     view.setUint32(4, length - 8, true);
-    view.setUint32(8, 0x45564157, true); 
-    view.setUint32(12, 0x20746d66, true); 
+    writeString(view, 8, 'WAVE');
+    writeString(view, 12, 'fmt ');
     view.setUint32(16, 16, true);
-    view.setUint16(20, 1, true); 
-    view.setUint16(22, numOfChan, true);
-    view.setUint32(24, buffer.sampleRate, true);
-    view.setUint32(28, buffer.sampleRate * 2 * numOfChan, true);
-    view.setUint16(32, numOfChan * 2, true);
+    view.setUint16(20, 1, true); // PCM
+    view.setUint16(22, numChannels, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * numChannels * 2, true);
+    view.setUint16(32, numChannels * 2, true);
     view.setUint16(34, 16, true);
-    view.setUint32(36, 0x61746164, true); 
+    writeString(view, 36, 'data');
     view.setUint32(40, length - 44, true);
-    pos = 44;
-
-    for (i = 0; i < buffer.numberOfChannels; i++) channels.push(buffer.getChannelData(i));
-
-    while (pos < length) {
-      for (i = 0; i < numOfChan; i++) {
-        sample = Math.max(-1, Math.min(1, channels[i][offset]));
-        sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
-        view.setInt16(pos, sample, true);
-        pos += 2;
+    
+    // PCM 数据交织
+    var offset = 44;
+    for (var i = 0; i < numSamples; i++) {
+      for (var c = 0; c < numChannels; c++) {
+        var sample = channels[c][i];
+        sample = Math.max(-1, Math.min(1, sample));
+        sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+        view.setInt16(offset, sample, true);
+        offset += 2;
       }
-      offset++;
     }
-    return new Blob([bufferArr], { type: "audio/wav" });
+    
+    return new Blob([buffer], { type: 'audio/wav' });
+  }
+  
+  function writeString(view, offset, string) {
+    for (var i = 0; i < string.length; i++) {
+      view.setUint8(offset + i, string.charCodeAt(i));
+    }
   }
 
   function downloadBlob(blob, filename) {
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = filename + (filename.indexOf('.') === -1 ? '.wav' : '');
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

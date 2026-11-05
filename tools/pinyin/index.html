@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>拼音转换器 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/pinyin.css">
+</head>
+<body>
+<div class="tool-page-header">
+  <h1>🗣️ 拼音转换器</h1>
+  <p>汉字转拼音、首字母提取，内置高频易错词词典，多音字智能识别</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+<main class="pinyin-wrap">
+  <div class="control-bar">
+    <div class="option-group">
+      <label>声调模式：</label>
+      <select id="tone-type">
+        <option value="symbol">带声调 (wǒ)</option>
+        <option value="num">数字声调 (wo3)</option>
+        <option value="none">无声调 (wo)</option>
+        <option value="first">首字母 (w)</option>
+      </select>
+    </div>
+    <div class="option-group">
+      <label>实时转换：</label>
+      <input type="checkbox" id="realtime" checked>
+    </div>
+    <button id="btn-convert" class="primary-btn">立即转换</button>
+  </div>
+
+  <div class="text-container">
+    <div class="textarea-box">
+      <textarea id="input-text" placeholder="在此输入需要转换的中文文本..."></textarea>
+      <div class="status-bar">字符数: <span id="input-count">0</span></div>
+    </div>
+    <div class="textarea-box">
+      <textarea id="output-text" placeholder="转换结果..." readonly></textarea>
+      <div class="status-bar">
+        <span>字符数: <span id="output-count">0</span></span>
+        <button id="btn-copy" class="text-btn">📋 复制结果</button>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../../js/libs/pinyin-pro.min.js"></script>
+<script src="../../js/pinyin.js"></script>
+</body>
+</html>

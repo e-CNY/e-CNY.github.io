@@ -41,7 +41,7 @@
 .jt-editor-group { display: flex; gap: 16px; flex: 1; min-height: 0; }
 @media (max-width: 768px) { .jt-editor-group { flex-direction: column; } }
 .jt-editor-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-.jt-editor-col > label { font-size: .85rem; color: #6b5d47; margin-bottom: 6px; display: flex; justify-content: space-between; }
+.jt-editor-col > label { font-size: .85rem; color: #6b5d47; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;}
 
 /* 普通 textarea (无行号) */
 .jt-editor-col > textarea {
@@ -100,3 +100,8 @@
 .diff-line-add { background-color: #dcfce7; color: #166534; }
 .diff-line-remove { background-color: #fee2e2; color: #991b1b; }
 .diff-line-neutral { color: #475569; background: #fff; }
+
+/* TS 面板专用工具栏样式 */
+.ts-toolbar-options { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; background: #fdf8ec; padding: 8px 12px; border-radius: 6px; border: 1px solid #d5c7a8; flex: 1; }
+.ts-toolbar-options label { font-size: 0.85rem; color: #3d3226; display: flex; align-items: center; gap: 4px; cursor: pointer; margin: 0; font-weight: normal;}
+.ts-toolbar-options input[type="text"], .ts-toolbar-options select { padding: 4px 8px; border: 1px solid #d5c7a8; border-radius: 4px; font-size: 0.85rem; outline: none; background: #fff;}

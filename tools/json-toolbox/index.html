@@ -11,6 +11,10 @@
 <style>
   body { display: flex; flex-direction: column; height: 100vh; margin: 0; overflow: hidden; }
   .jt-layout { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  /* 针对 TS 面板的工具栏样式微调 */
+  .ts-toolbar-options { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; background: #fdf8ec; padding: 8px 12px; border-radius: 6px; border: 1px solid #d5c7a8; flex: 1; }
+  .ts-toolbar-options label { font-size: 0.85rem; color: #3d3226; display: flex; align-items: center; gap: 4px; cursor: pointer; }
+  .ts-toolbar-options input[type="text"], .ts-toolbar-options select { padding: 4px 8px; border: 1px solid #d5c7a8; border-radius: 4px; font-size: 0.85rem; outline: none; }
 </style>
 </head>
 <body>
@@ -45,8 +49,9 @@
         <button class="jt-nav-btn" data-target="panel-tree">JSON 树形可视化</button>
       </div>
       <div class="jt-nav-group">
-        <h3>表单与生成</h3>
+        <h3>生成与拓展</h3>
         <button class="jt-nav-btn" data-target="panel-form">JSON ↔ 表单</button>
+        <button class="jt-nav-btn" data-target="panel-ts">JSON 转 TS 接口</button>
       </div>
     </nav>
 
@@ -194,6 +199,31 @@
           <div class="jt-editor-col" style="background:#fff; border:1px solid #d5c7a8; border-radius:8px; padding:16px; overflow:auto;"><div id="form-container" class="json-form-container"></div></div>
         </div>
       </div>
+
+      <!-- 14. JSON 转 TS 接口 -->
+      <div id="panel-ts" class="jt-panel">
+        <div class="jt-toolbar">
+          <div class="ts-toolbar-options">
+            <label>根名称：<input type="text" id="ts-root-name" value="RootObject" placeholder="RootObject"></label>
+            <label>类型：<select id="ts-style"><option value="interface">interface</option><option value="type">type</option></select></label>
+            <label><input type="checkbox" id="ts-semicolon" checked> 分号 (;)</label>
+            <label><input type="checkbox" id="ts-optional" checked> 可选 (? )</label>
+          </div>
+          <button class="jt-btn" onclick="generateTS()" style="background: #8a5a2b; color: #fff; border: none;">✨ 转换</button>
+          <button class="jt-btn" onclick="copyTSCode()">📋 复制代码</button>
+        </div>
+        <div class="jt-editor-group">
+          <div class="jt-editor-col">
+            <label>JSON 数据 <button class="jt-btn" onclick="fillTSSample()" style="padding:2px 6px; font-size:.75rem; margin-left:8px;">填入示例</button></label>
+            <textarea id="ts-json-input" spellcheck="false" placeholder="在此粘贴 JSON 数据..."></textarea>
+          </div>
+          <div class="jt-editor-col">
+            <label>TypeScript 接口</label>
+            <textarea id="ts-code-output" spellcheck="false" readonly placeholder="生成的 TS 代码将显示在这里..."></textarea>
+          </div>
+        </div>
+      </div>
+
     </section>
   </div>
 </main>
