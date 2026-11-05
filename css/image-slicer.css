@@ -1,0 +1,30 @@
+.is-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+.is-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.is-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; transition: all .15s; }
+.is-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
+
+.is-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+.is-panel { display: none; }
+.is-panel.active { display: block; animation: fadeIn .2s; }
+
+.is-toolbar { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+.is-select { padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-size: .9rem; outline: none; }
+.is-input { padding: 10px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-size: .9rem; outline: none; }
+.is-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; font-weight: bold; transition: all .15s; }
+.is-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.is-btn:hover { opacity: 0.9; }
+.is-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.is-drop-zone { border: 2px dashed #c4b48f; border-radius: 10px; padding: 30px 12px; text-align: center; cursor: pointer; background: #fdf8ec; transition: all .2s; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.is-drop-zone:hover, .is-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
+
+.is-file-list { list-style: none; padding: 0; margin: 0 0 16px 0; max-height: 150px; overflow-y: auto; background: #fff; border-radius: 8px; border: 1px solid #d5c7a8; }
+.is-file-list li { padding: 8px 12px; border-bottom: 1px solid #e5d9bd; font-size: .85rem; display: flex; justify-content: space-between; }
+.is-file-list li:last-child { border-bottom: none; }
+
+.is-preview-wrap { background: #e5d9bd; border-radius: 8px; padding: 16px; display: flex; justify-content: center; overflow-x: auto; min-height: 100px; }
+#long-canvas { max-width: 100%; height: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #fff; }
+
+/* 九宫格预览 */
+.is-preview-grid { display: grid; gap: 4px; background: #d5c7a8; padding: 4px; border-radius: 4px; }
+.is-preview-grid img { display: block; width: 100%; height: auto; background: #fff; }

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图片切图与拼接 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/image-slicer.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>🧩 图片切图与拼接</h1>
+  <p>支持网格切图、长图拼接、网格拼图，完美保持原图格式与透明度。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="is-layout" style="padding-top: 0;">
+  <div class="is-tabs">
+    <button class="is-tab active" data-target="panel-slice">🔲 网格切图</button>
+    <button class="is-tab" data-target="panel-long">📜 长图拼接</button>
+    <button class="is-tab" data-target="panel-grid">🧱 网格拼图</button>
+  </div>
+
+  <div class="is-content">
+    <!-- 1. 网格切图 -->
+    <div id="panel-slice" class="is-panel active">
+      <div class="is-toolbar">
+        <select id="slice-grid" class="is-select">
+          <option value="1x2">上下切分 (1 x 2)</option>
+          <option value="2x1">左右切分 (2 x 1)</option>
+          <option value="1x3">三格竖排 (1 x 3)</option>
+          <option value="3x1">三格横排 (3 x 1)</option>
+          <option value="2x2">四宫格 (2 x 2)</option>
+          <option value="2x3">六宫格 (2 x 3)</option>
+          <option value="3x3" selected>九宫格 (3 x 3)</option>
+          <option value="4x4">十六宫格 (4 x 4)</option>
+        </select>
+        <button id="btn-slice" class="is-btn primary">✂️ 开始切图并打包下载</button>
+      </div>
+      <div id="slice-drop" class="is-drop-zone">
+        <span>📁 点击或拖拽一张大图到这里</span>
+      </div>
+      <input id="slice-input" type="file" accept="image/*" hidden>
+      <div class="is-preview-wrap">
+        <div id="slice-preview" class="is-preview-grid"></div>
+      </div>
+    </div>
+
+    <!-- 2. 长图拼接 -->
+    <div id="panel-long" class="is-panel">
+      <div class="is-toolbar">
+        <select id="long-direction" class="is-select">
+          <option value="vertical">纵向拼接 (聊天记录/代码截图)</option>
+          <option value="horizontal">横向拼接 (全景图)</option>
+        </select>
+        <button id="btn-long" class="is-btn primary">▶️ 开始拼接并下载</button>
+        <button id="btn-long-clear" class="is-btn">🗑️ 清空列表</button>
+      </div>
+      <div id="long-drop" class="is-drop-zone">
+        <span>📁 点击或拖拽多张图片到这里 (支持多选)</span>
+      </div>
+      <input id="long-input" type="file" accept="image/*" multiple hidden>
+      <ul id="long-list" class="is-file-list"></ul>
+      <div class="is-preview-wrap">
+        <canvas id="long-canvas"></canvas>
+      </div>
+    </div>
+
+    <!-- 3. 网格拼图 -->
+    <div id="panel-grid" class="is-panel">
+      <div class="is-toolbar">
+        <select id="grid-layout" class="is-select">
+          <option value="1x2">1 行 2 列</option>
+          <option value="2x1">2 行 1 列</option>
+          <option value="1x3">1 行 3 列</option>
+          <option value="3x1">3 行 1 列</option>
+          <option value="2x2" selected>2 行 2 列</option>
+          <option value="2x3">2 行 3 列</option>
+          <option value="3x2">3 行 2 列</option>
+          <option value="3x3">3 行 3 列</option>
+        </select>
+        <input type="number" id="grid-gap" class="is-input" placeholder="间距px" value="10" style="width:80px;">
+        <button id="btn-grid" class="is-btn primary">▶️ 开始拼图并下载</button>
+      </div>
+      <div id="grid-drop" class="is-drop-zone">
+        <span>📁 请按顺序上传图片 (支持多选)</span>
+      </div>
+      <input id="grid-input" type="file" accept="image/*" multiple hidden>
+      <ul id="grid-list" class="is-file-list"></ul>
+    </div>
+  </div>
+</main>
+
+<script src="../../js/libs/jszip.min.js"></script>
+<script src="../../js/image-slicer.js" defer></script>
+</body>
+</html>

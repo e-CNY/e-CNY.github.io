@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>书法字帖生成器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/calligraphy.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>📝 书法字帖生成器</h1>
+  <p>上传本地字体，自定义字帖内容与样式，支持 PDF 与图片导出。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="cg-layout" style="padding-top: 0;">
+  <div class="cg-container">
+    <!-- 左侧设置栏 -->
+    <aside class="cg-sidebar">
+      <div class="cg-section">
+        <h3>1. 上传字体 (可选)</h3>
+        <div class="cg-row">
+          <label class="cg-upload-btn">
+            📁 选择字体文件
+            <input id="cg-font-input" type="file" accept=".ttf,.otf,.woff,.woff2" hidden>
+          </label>
+          <span id="cg-font-name" class="cg-file-name">当前使用：系统默认字体</span>
+        </div>
+      </div>
+
+      <div class="cg-section">
+        <h3>2. 字帖内容 <span id="cg-word-count" style="color:#8a5a2b;font-size:.8rem;">0/2000字</span></h3>
+        <textarea id="cg-text" class="cg-textarea" rows="6" maxlength="2000" placeholder="在此输入要练习的文字（最多2000字）..."></textarea>
+      </div>
+
+      <div class="cg-section">
+        <h3>3. 排版设置</h3>
+        <div class="cg-row">
+          <label>格子样式</label>
+          <select id="cg-grid-style" class="cg-select">
+            <option value="tian">田字格</option>
+            <option value="mi">米字格</option>
+            <option value="square">空白方格</option>
+          </select>
+        </div>
+        <div class="cg-row">
+          <label>临摹模式</label>
+          <select id="cg-mode" class="cg-select">
+            <option value="trace">全描红 (每个字都是浅灰)</option>
+            <option value="copy">临摹 (一灰一空，练字专用)</option>
+            <option value="blank">纯空白 (只画格子)</option>
+          </select>
+        </div>
+        <div class="cg-row">
+          <label>行列数</label>
+          <select id="cg-layout" class="cg-select">
+            <option value="10x10">10列 x 10行 (每页100字)</option>
+            <option value="8x10">8列 x 10行 (每页80字)</option>
+            <option value="6x8">6列 x 8行 (每页48字)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="cg-section">
+        <h3>4. 导出设置</h3>
+        <div class="cg-row">
+          <select id="cg-export-format" class="cg-select">
+            <option value="pdf">合并为 PDF (适合直接打印)</option>
+            <option value="png">PNG 图片打包 (ZIP)</option>
+            <option value="jpg">JPG 图片打包 (ZIP)</option>
+          </select>
+        </div>
+        <button id="btn-preview" class="cg-btn">👁️ 生成预览</button>
+        <button id="btn-download" class="cg-btn primary" disabled>⬇️ 开始下载</button>
+      </div>
+    </aside>
+
+    <!-- 右侧预览区 -->
+    <div class="cg-main">
+      <div class="cg-preview-wrap">
+        <canvas id="cg-canvas"></canvas>
+      </div>
+      <div class="cg-preview-info">
+        <span id="cg-page-info">等待生成预览...</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 引入依赖 -->
+<script src="../../js/libs/jspdf.umd.min.js"></script>
+<script src="../../js/libs/jszip.min.js"></script>
+<script src="../../js/calligraphy.js" defer></script>
+</body>
+</html>

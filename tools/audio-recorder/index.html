@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>全能录音笔与转文字 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/audio-recorder.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>🎙️ 全能录音笔与转文字</h1>
+  <p>高保真录音、频谱分析、多语言转写与多格式导出。</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="ar-layout" style="padding-top: 0;">
+  <div class="ar-container">
+    <!-- 录音与波形区 -->
+    <div class="ar-card">
+      <div class="ar-toolbar">
+        <div class="ar-setting-group">
+          <label>识别语言：</label>
+          <select id="ar-lang" class="ar-select">
+            <option value="zh-CN">中文 (普通话)</option>
+            <option value="en-US">English</option>
+            <option value="ja-JP">日本語</option>
+            <option value="ko-KR">한국어</option>
+          </select>
+        </div>
+        <div class="ar-setting-group">
+          <label>视觉特效：</label>
+          <select id="ar-visual-mode" class="ar-select">
+            <option value="wave">波形 (时域)</option>
+            <option value="bars">频谱 (频域)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="ar-visualizer-wrap">
+        <canvas id="ar-canvas"></canvas>
+      </div>
+      
+      <div class="ar-controls">
+        <button id="btn-record" class="ar-btn primary">
+          <span class="ar-icon">🔴</span> 开始录音
+        </button>
+        <button id="btn-pause" class="ar-btn" disabled>
+          <span class="ar-icon">⏸️</span> 暂停
+        </button>
+        <button id="btn-stop" class="ar-btn danger" disabled>
+          <span class="ar-icon">⏹️</span> 停止
+        </button>
+        <div class="ar-timer" id="ar-timer">00:00</div>
+      </div>
+
+      <!-- 录音回放与下载 -->
+      <div class="ar-result-area" id="ar-result-area" style="display: none;">
+        <audio id="ar-audio-player" controls></audio>
+        <div class="ar-download-group">
+          <select id="ar-export-format" class="ar-select">
+            <option value="wav">WAV (无损，体积大)</option>
+            <option value="webm">WebM (压缩，体积小)</option>
+            <option value="ogg">OGG (压缩，浏览器兼容性差异)</option>
+          </select>
+          <button id="btn-download" class="ar-btn primary">⬇️ 下载录音</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 文字转写区 -->
+    <div class="ar-card">
+      <div class="ar-header-row">
+        <h3>📝 实时语音转文字</h3>
+        <span id="ar-status" class="ar-status">等待开始...</span>
+      </div>
+      <textarea id="ar-text" class="ar-textarea" placeholder="录音时，你说的话会实时显示在这里..."></textarea>
+      
+      <div class="ar-actions">
+        <button id="btn-clear" class="ar-btn">🗑️ 清空文字</button>
+        <button id="btn-copy" class="ar-btn">📋 复制文字</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../../js/audio-recorder.js" defer></script>
+</body>
+</html>

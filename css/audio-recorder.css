@@ -1,0 +1,43 @@
+.ar-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+.ar-container { display: flex; flex-direction: column; gap: 20px; }
+
+.ar-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
+
+/* 工具栏设置 */
+.ar-toolbar { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+.ar-setting-group { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: #4b3f2f; font-weight: bold; }
+.ar-select { padding: 6px 10px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fff; outline: none; font-size: .85rem; }
+
+/* 波形与录音控制 */
+.ar-visualizer-wrap { background: #fff; border: 1px solid #d5c7a8; border-radius: 10px; height: 180px; margin-bottom: 20px; overflow: hidden; position: relative; }
+#ar-canvas { width: 100%; height: 100%; display: block; }
+
+.ar-controls { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.ar-btn { padding: 12px 20px; border-radius: 30px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; font-size: .95rem; font-weight: bold; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 6px; }
+.ar-btn:hover { background: #f5ecd5; }
+.ar-btn.primary { background: #e74c3c; color: #fff; border-color: #e74c3c; }
+.ar-btn.primary:hover { background: #c0392b; }
+.ar-btn.danger { background: #2d3748; color: #fff; border-color: #2d3748; }
+.ar-btn.danger:hover { background: #1a202c; }
+.ar-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ar-timer { font-family: monospace; font-size: 1.8rem; font-weight: bold; color: #3d3226; margin-left: 16px; }
+
+/* 播放与下载区 */
+.ar-result-area { margin-top: 24px; padding-top: 20px; border-top: 1px dashed #c4b48f; display: flex; flex-direction: column; gap: 16px; align-items: center; }
+#ar-audio-player { width: 100%; max-width: 400px; outline: none; }
+.ar-download-group { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; }
+
+/* 文字转写 */
+.ar-header-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; border-bottom: 1px solid #e5d9bd; padding-bottom: 8px; }
+.ar-header-row h3 { font-size: 1rem; margin: 0; color: #4b3f2f; }
+.ar-status { font-size: .8rem; color: #8a7a5f; }
+.ar-status.recording { color: #e74c3c; font-weight: bold; animation: pulse 1.5s infinite; }
+.ar-status.paused { color: #e67e22; font-weight: bold; }
+
+.ar-textarea { width: 100%; height: 180px; padding: 16px; border: 1px solid #d5c7a8; border-radius: 8px; font-size: .95rem; line-height: 1.6; resize: vertical; outline: none; background: #fff; box-sizing: border-box; margin-bottom: 16px; }
+.ar-textarea:focus { border-color: #8a5a2b; }
+
+.ar-actions { display: flex; gap: 12px; justify-content: flex-end; }
+
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
