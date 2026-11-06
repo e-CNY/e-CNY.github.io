@@ -1,0 +1,164 @@
+.ht-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+}
+
+/* Tab 切换 */
+.ht-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.ht-tab {
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: 1px solid #ddcfb3;
+  background: #f9f3e3;
+  color: #6b5d47;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ht-tab:hover { border-color: #b08a5a; }
+.ht-tab.active {
+  background: #8a5a2b;
+  border-color: #8a5a2b;
+  color: #fdf8ec;
+}
+
+.ht-panel { display: none; }
+.ht-panel.active { display: block; }
+
+/* 键盘部分 */
+.ht-info-bar {
+  display: flex;
+  justify-content: space-between;
+  background: #fdf8ec;
+  border: 1px solid #ddcfb3;
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  color: #3d3226;
+}
+.key-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #8a5a2b;
+  color: #fff;
+  border-radius: 4px;
+  font-weight: bold;
+  min-width: 60px;
+  text-align: center;
+}
+.key-num { font-weight: bold; color: #8a5a2b; }
+
+.keyboard-container {
+  background: #efe6d0;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #ddcfb3;
+  overflow-x: auto;
+}
+.keyboard { display: flex; flex-direction: column; gap: 6px; min-width: 800px; }
+.key-row { display: flex; gap: 6px; }
+.key {
+  height: 40px; flex: 1; min-width: 36px; background: #fff;
+  border: 1px solid #d5c7a8; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 500; color: #6b5d47;
+  box-shadow: 0 2px 0 #d5c7a8; user-select: none; transition: all 0.1s;
+}
+.key.active {
+  background: #7ba05b; border-color: #6b8c4e; color: #fff;
+  transform: translateY(2px); box-shadow: 0 0 0 transparent;
+}
+
+/* 鼠标部分 */
+.ht-mouse-container {
+  display: flex; align-items: center; justify-content: center; gap: 40px;
+  background: #fdf8ec; border: 1px solid #ddcfb3;
+  border-radius: 12px; padding: 40px 20px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.mouse-visual {
+  width: 100px; height: 160px; background: #efe6d0;
+  border: 2px solid #d5c7a8; border-radius: 50px 50px 40px 40px;
+  position: relative; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+.mouse-btn { position: absolute; top: 0; width: 50%; height: 60%; transition: background 0.1s; }
+.mouse-btn.left { left: 0; border-right: 1px solid #d5c7a8; }
+.mouse-btn.right { right: 0; }
+.mouse-btn.active { background: #7ba05b; }
+.mouse-wheel {
+  position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+  width: 16px; height: 30px; background: #fff; border: 1px solid #d5c7a8; border-radius: 8px;
+}
+.mouse-wheel.active { background: #8a5a2b; }
+
+.ht-mouse-stats { display: flex; flex-direction: column; gap: 16px; }
+.stat-box {
+  display: flex; flex-direction: column; background: #fff;
+  padding: 12px 24px; border-radius: 8px; border: 1px solid #ddcfb3;
+  text-align: center; min-width: 150px;
+}
+.stat-title { font-size: 0.85rem; color: #8a7a5f; }
+.stat-val { font-size: 1.8rem; font-weight: bold; color: #8a5a2b; font-family: monospace; margin-top: 4px; }
+
+.ht-doubleclick-area {
+  background: #f9f3e3; border: 2px dashed #ddcfb3;
+  border-radius: 12px; padding: 30px; text-align: center;
+  cursor: pointer; user-select: none; transition: border-color 0.15s;
+}
+.ht-doubleclick-area:hover { border-color: #b08a5a; }
+.ht-doubleclick-area h3 { margin: 0 0 8px; color: #3d3226; }
+.ht-doubleclick-area p { font-size: 0.9rem; color: #8a7a5f; margin: 0 0 20px; }
+.click-count { font-size: 3rem; font-weight: bold; color: #8a5a2b; font-family: monospace; line-height: 1; }
+.click-status { font-size: 1.1rem; margin-top: 10px; font-weight: bold; color: #7ba05b; }
+.click-history { margin-top: 15px; height: 24px; font-size: 0.85rem; color: #8a7a5f; font-family: monospace; }
+
+/* 屏幕坏点 */
+.screen-test-intro { background: #fdf8ec; padding: 20px; border-radius: 12px; border: 1px solid #ddcfb3; margin-bottom: 20px; }
+.screen-test-intro h3 { margin: 0 0 10px; color: #3d3226; }
+.screen-test-intro p { margin: 0 0 10px; color: #6b5d47; font-size: 0.95rem; line-height: 1.6; }
+.color-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
+.color-block {
+  height: 120px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; font-weight: bold; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+}
+.color-block:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+
+/* 音视频设备 */
+.av-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.av-card { background: #fdf8ec; border: 1px solid #ddcfb3; border-radius: 12px; padding: 20px; }
+.av-card h3 { margin: 0 0 10px; color: #3d3226; font-size: 1.1rem; }
+.av-card p { margin: 0 0 20px; color: #8a7a5f; font-size: 0.9rem; }
+
+.volume-bar-wrap { height: 20px; background: #efe6d0; border-radius: 10px; overflow: hidden; border: 1px solid #ddcfb3; }
+.volume-bar { height: 100%; width: 0%; background: #7ba05b; transition: width 0.1s linear; }
+.volume-text { text-align: right; font-family: monospace; color: #6b5d47; margin-top: 8px; font-weight: bold; }
+
+.audio-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+.audio-controls button { flex: 1; padding: 10px 5px; font-size: 0.85rem; }
+
+.camera-preview-wrap { background: #000; border-radius: 8px; overflow: hidden; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; }
+#camera-video { width: 100%; height: 100%; object-fit: contain; display: none; }
+
+.ht-controls { margin-top: 20px; text-align: center; }
+.primary-btn, .secondary-btn {
+  padding: 10px 24px; border-radius: 8px; border: none;
+  background: #8a5a2b; color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.15s;
+}
+.primary-btn:hover { background: #6b4420; }
+.secondary-btn { background: #fff; color: #6b5d47; border: 1px solid #ddcfb3; }
+.secondary-btn:hover { background: #efe6d0; }
+
+@media (max-width: 768px) {
+  .keyboard-container { padding: 10px; }
+  .key { font-size: 0.65rem; height: 36px; min-width: 28px; }
+  .av-grid { grid-template-columns: 1fr; }
+}

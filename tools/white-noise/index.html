@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>白噪音与专注音效 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/white-noise.css">
+</head>
+<body class="wn-body">
+<div class="tool-page-header">
+  <h1>🎧 全能专注环境音发生器</h1>
+  <p>14 种纯代码合成白噪音与自然音效，自由混音，完全离线可用</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+
+<main class="wn-wrap">
+  <div class="wn-controls">
+    <button id="wn-play" class="wn-play-btn">▶️ 开始混音播放</button>
+    <div class="wn-timer-group">
+      <label>定时关闭：</label>
+      <select id="wn-timer">
+        <option value="0">不限时</option>
+        <option value="15">15 分钟</option>
+        <option value="30">30 分钟</option>
+        <option value="60">60 分钟</option>
+        <option value="120">120 分钟</option>
+      </select>
+      <div class="wn-countdown" id="wn-countdown"></div>
+    </div>
+  </div>
+
+  <div class="wn-grid">
+    <!-- 自然音效 -->
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">🌧️</span><span class="wn-name">雨声</span><span class="wn-vol-text" id="vol-text-rain">0%</span></div>
+      <input type="range" id="vol-rain" min="0" max="100" value="50">
+    </div>
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">⛈️</span><span class="wn-name">雷声 (随机)</span><span class="wn-vol-text" id="vol-text-thunder">0%</span></div>
+      <input type="range" id="vol-thunder" min="0" max="100" value="0">
+    </div>
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">🌊</span><span class="wn-name">海浪</span><span class="wn-vol-text" id="vol-text-waves">0%</span></div>
+      <input type="range" id="vol-waves" min="0" max="100" value="30">
+    </div>
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">🔥</span><span class="wn-name">篝火</span><span class="wn-vol-text" id="vol-text-fire">0%</span></div>
+      <input type="range" id="vol-fire" min="0" max="100" value="0">
+    </div>
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">🐦</span><span class="wn-name">森林鸟鸣</span><span class="wn-vol-text" id="vol-text-birds">0%</span></div>
+      <input type="range" id="vol-birds" min="0" max="100" value="0">
+    </div>
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">🦗</span><span class="wn-name">夏夜虫鸣</span><span class="wn-vol-text" id="vol-text-crickets">0%</span></div>
+      <input type="range" id="vol-crickets" min="0" max="100" value="0">
+    </div>
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">🍃</span><span class="wn-name">微风/树林</span><span class="wn-vol-text" id="vol-text-wind">0%</span></div>
+      <input type="range" id="vol-wind" min="0" max="100" value="0">
+    </div>
+
+    <!-- 环境/人造音效 -->
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">☕</span><span class="wn-name">咖啡厅喧闹</span><span class="wn-vol-text" id="vol-text-coffee">0%</span></div>
+      <input type="range" id="vol-coffee" min="0" max="100" value="0">
+    </div>
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">🚂</span><span class="wn-name">火车车厢</span><span class="wn-vol-text" id="vol-text-train">0%</span></div>
+      <input type="range" id="vol-train" min="0" max="100" value="0">
+    </div>
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">✈️</span><span class="wn-name">飞机机舱</span><span class="wn-vol-text" id="vol-text-airplane">0%</span></div>
+      <input type="range" id="vol-airplane" min="0" max="100" value="0">
+    </div>
+
+    <!-- 纯噪音 -->
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">📻</span><span class="wn-name">白噪音</span><span class="wn-vol-text" id="vol-text-white">0%</span></div>
+      <input type="range" id="vol-white" min="0" max="100" value="0">
+    </div>
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">🎛️</span><span class="wn-name">粉红噪音</span><span class="wn-vol-text" id="vol-text-pink">0%</span></div>
+      <input type="range" id="vol-pink" min="0" max="100" value="0">
+    </div>
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">🔊</span><span class="wn-name">褐色噪音</span><span class="wn-vol-text" id="vol-text-brown">0%</span></div>
+      <input type="range" id="vol-brown" min="0" max="100" value="0">
+    </div>
+    <div class="wn-card">
+      <div class="wn-card-header"><span class="wn-emoji">⚡</span><span class="wn-name">蓝噪音</span><span class="wn-vol-text" id="vol-text-blue">0%</span></div>
+      <input type="range" id="vol-blue" min="0" max="100" value="0">
+    </div>
+  </div>
+</main>
+
+<script src="../../js/white-noise.js"></script>
+</body>
+</html>

@@ -6,6 +6,7 @@
     { name: '图片切图与拼接', emoji: '🧩', desc: '九宫格切图 / 长图拼接 / 网格拼图', href: 'tools/image-slicer/index.html', category: '图像处理' },
     { name: '图片全家桶', emoji: '🖼️', desc: '格式转换 / 压缩 / EXIF / ASCII', href: 'tools/image-toolbox/index.html', category: '图像处理' },
     { name: '码工具', emoji: '📱', desc: '二维码/条形码 生成与识别', href: 'tools/code-tool/index.html', category: '图像处理' },
+    { name: 'Meme 梗图生成器', emoji: '😂', desc: '一键生成经典黑边文字梗图，支持自动换行', href: 'tools/meme-generator/index.html', category: '图像处理' },
     { name: '图片加水印', emoji: '💧', desc: '自定义字体与九宫格水印', href: 'tools/watermark/index.html', category: '图像处理' },
     { name: '代码截图美化器', emoji: '📸', desc: '将代码生成极客风精美截图', href: 'tools/code-screenshot/index.html', category: '图像处理' },
     { name: '在线画板', emoji: '🎨', desc: '14种笔刷 / 形状 / 撤销重做', href: 'tools/draw/index.html', category: '图像处理' },
@@ -31,6 +32,7 @@
     { name: '模板渲染测试', emoji: '🧾', desc: 'Mustache 语法实时渲染', href: 'tools/template-tool/index.html', category: '文档文本' },
 
     // === 3. 生活与时间 ===
+    { name: '打字速度测试', emoji: '🏎️', desc: '中英文打字测速 / 实时统计 WPM / 正确率', href: 'tools/typing-test/index.html', category: '生活时间' },
     { name: '时间与计时工具', emoji: '⏱️', desc: '久坐 / 秒表 / 倒计时 / 番茄钟', href: 'tools/sitting-reminder/index.html', category: '生活时间' },
     { name: '时间日期工具箱', emoji: '🕒', desc: '时间戳 / 时区 / 日期加减 / 农历', href: 'tools/time-date-tool/index.html', category: '生活时间' },
     { name: '计算器工具箱', emoji: '🧮', desc: '科学 / 统计 / 房贷 / 理财', href: 'tools/calc-toolbox/index.html', category: '生活时间' },
@@ -40,6 +42,7 @@
     { name: 'Cron 表达式解析', emoji: '⏰', desc: '实时预测未来执行时间', href: 'tools/cron-tool/index.html', category: '生活时间' },
 
     // === 4. 开发与调试 ===
+    { name: '外设与硬件测试', emoji: '⌨️', desc: '键盘按键/防鬼键测试、鼠标连击双击检测', href: 'tools/hardware-test/index.html', category: '开发调试' },
     { name: '加解密与编解码', emoji: '🔐', desc: 'Hash/AES/RSA/JWT/Base全家桶', href: 'tools/crypto-tool/index.html', category: '开发调试' },
     { name: '正则与选择器', emoji: '🔍', desc: '正则高亮 / CSS/XPath / 提取链接', href: 'tools/regex-tool/index.html', category: '开发调试' },
     { name: '开发辅助工具箱', emoji: '🛠️', desc: '.gitignore 生成 / 代码实体类生成', href: 'tools/dev-tool/index.html', category: '开发调试' },
@@ -52,6 +55,7 @@
     { name: 'RSS & OPML 工具', emoji: '📡', desc: 'RSS 转 JSON / 订阅源提取', href: 'tools/rss-tool/index.html', category: '开发调试' },
 
     // === 5. 多媒体与可视化 ===
+    { name: '白噪音与专注音效', emoji: '🎧', desc: '纯代码合成雨声/海浪/鸟鸣等 8 种环境音', href: 'tools/white-noise/index.html', category: '多媒体设计' },
     { name: '视频转多格式动图', emoji: '🎬', desc: '视频转 GIF/WebP/序列帧，支持裁剪调速', href: 'tools/video-to-gif/index.html', category: '多媒体设计' },
     { name: '文字云生成器', emoji: '☁️', desc: '智能词频统计 / 自定义形状 / 导出高清图', href: 'tools/wordcloud/index.html', category: '多媒体设计' },
     { name: '在线屏幕录制', emoji: '🎥', desc: '录制屏幕/窗口/声音，优先原生MP4导出', href: 'tools/screen-recorder/index.html', category: '多媒体设计' },

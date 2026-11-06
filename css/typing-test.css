@@ -1,0 +1,246 @@
+.tt-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 顶部仪表盘 */
+.tt-dashboard {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tt-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ddcfb3;
+}
+
+.tt-mode-group {
+  display: flex;
+  background: #efe6d0;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.tt-mode-btn {
+  padding: 6px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #6b5d47;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tt-mode-btn.active {
+  background: #fff;
+  color: #8a5a2b;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.tt-options select {
+  padding: 6px 12px;
+  border: 1px solid #ddcfb3;
+  border-radius: 6px;
+  background: #fff;
+  color: #3d3226;
+  outline: none;
+  font-size: 0.9rem;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.tt-restart-btn {
+  padding: 8px 12px;
+  border: 1px solid #ddcfb3;
+  background: #fff;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tt-restart-btn:hover { background: #efe6d0; transform: rotate(180deg); }
+
+/* 统计区 */
+.tt-stats {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.tt-stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #8a5a2b;
+}
+.tt-stat-val {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: monospace;
+  line-height: 1.2;
+}
+.tt-stat-label {
+  font-size: 0.8rem;
+  color: #8a7a5f;
+  margin-top: 4px;
+}
+.tt-stat-box.highlight .tt-stat-val { color: #c62828; }
+
+/* 打字区域 */
+.tt-typing-area {
+  position: relative;
+  background: #fff;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  padding: 30px;
+  min-height: 200px;
+}
+
+.tt-text-display {
+  font-family: "LXGW WenKai", Consolas, Monaco, monospace;
+  font-size: 1.5rem;
+  line-height: 1.8;
+  color: #b0a597;
+  user-select: none;
+  word-break: break-all;
+}
+
+/* 字符状态高亮 */
+.tt-char {
+  position: relative;
+}
+.tt-char.correct { color: #3d3226; }
+.tt-char.incorrect { color: #e74c3c; background: #fadbd8; border-radius: 2px; }
+.tt-char.correct-space { background: #fadbd8; } /* 多打出的空格 */
+.tt-char.current {
+  border-left: 2px solid #8a5a2b;
+  animation: blink 1s step-end infinite;
+  margin-left: -2px;
+}
+
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+/* 隐藏输入框 */
+.tt-hidden-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: text;
+  resize: none;
+  z-index: -1;
+}
+
+/* 遮罩 */
+.tt-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(253, 248, 236, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  z-index: 10;
+}
+
+.tt-start-btn {
+  padding: 12px 32px;
+  background: #8a5a2b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.15s;
+  box-shadow: 0 4px 12px rgba(138, 90, 43, 0.2);
+}
+.tt-start-btn:hover { background: #6b4420; }
+
+/* 结果面板 */
+.tt-result {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tt-result h2 {
+  margin: 0 0 24px;
+  color: #3d3226;
+}
+
+.tt-result-grid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 24px;
+}
+
+.tt-res-item {
+  display: flex;
+  flex-direction: column;
+}
+.tt-res-val {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #8a5a2b;
+  font-family: monospace;
+}
+.tt-res-lbl {
+  font-size: 0.85rem;
+  color: #8a7a5f;
+  margin-top: 8px;
+}
+
+.tt-best-record {
+  font-size: 0.95rem;
+  color: #6b5d47;
+  margin-bottom: 24px;
+}
+
+.tt-primary-btn {
+  padding: 10px 24px;
+  background: #8a5a2b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tt-primary-btn:hover { background: #6b4420; }
+
+@media (max-width: 600px) {
+  .tt-result-grid { flex-direction: column; gap: 20px; }
+  .tt-text-display { font-size: 1.2rem; }
+}

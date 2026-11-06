@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>外设与硬件测试 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/hardware-test.css">
+</head>
+<body>
+<div class="tool-page-header">
+  <h1>🛠️ 外设与硬件测试中心</h1>
+  <p>纯本地硬件诊断：键盘、鼠标、屏幕坏点、麦克风、扬声器、摄像头</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+
+<main class="ht-wrap">
+  <!-- Tab 切换 -->
+  <div class="ht-tabs">
+    <button class="ht-tab active" data-target="panel-keyboard">⌨️ 键盘</button>
+    <button class="ht-tab" data-target="panel-mouse">🖱️ 鼠标</button>
+    <button class="ht-tab" data-target="panel-screen">🖥️ 屏幕坏点</button>
+    <button class="ht-tab" data-target="panel-av">🔊 音视频设备</button>
+  </div>
+
+  <!-- 1. 键盘测试面板 -->
+  <div id="panel-keyboard" class="ht-panel active">
+    <div class="ht-info-bar">
+      <div class="ht-info-item">当前按下按键： <span id="last-key" class="key-badge">无</span></div>
+      <div class="ht-info-item">已测试按键数： <span id="key-count" class="key-num">0</span></div>
+    </div>
+    <div class="keyboard-container">
+      <div class="keyboard">
+        <div class="key-row"><div class="key" data-code="Escape">Esc</div><div class="key" data-code="F1">F1</div><div class="key" data-code="F2">F2</div><div class="key" data-code="F3">F3</div><div class="key" data-code="F4">F4</div><div class="key" data-code="F5">F5</div><div class="key" data-code="F6">F6</div><div class="key" data-code="F7">F7</div><div class="key" data-code="F8">F8</div><div class="key" data-code="F9">F9</div><div class="key" data-code="F10">F10</div><div class="key" data-code="F11">F11</div><div class="key" data-code="F12">F12</div><div class="key" data-code="PrintScreen">PrtSc</div><div class="key" data-code="ScrollLock">ScrLk</div><div class="key" data-code="Pause">Pause</div></div>
+        <div class="key-row"><div class="key" data-code="Backquote">`</div><div class="key" data-code="Digit1">1</div><div class="key" data-code="Digit2">2</div><div class="key" data-code="Digit3">3</div><div class="key" data-code="Digit4">4</div><div class="key" data-code="Digit5">5</div><div class="key" data-code="Digit6">6</div><div class="key" data-code="Digit7">7</div><div class="key" data-code="Digit8">8</div><div class="key" data-code="Digit9">9</div><div class="key" data-code="Digit0">0</div><div class="key" data-code="Minus">-</div><div class="key" data-code="Equal">=</div><div class="key" data-code="Backspace" style="width: 80px;">Backspace</div><div class="key" data-code="Insert">Ins</div><div class="key" data-code="Home">Home</div><div class="key" data-code="PageUp">PgUp</div></div>
+        <div class="key-row"><div class="key" data-code="Tab" style="width: 60px;">Tab</div><div class="key" data-code="KeyQ">Q</div><div class="key" data-code="KeyW">W</div><div class="key" data-code="KeyE">E</div><div class="key" data-code="KeyR">R</div><div class="key" data-code="KeyT">T</div><div class="key" data-code="KeyY">Y</div><div class="key" data-code="KeyU">U</div><div class="key" data-code="KeyI">I</div><div class="key" data-code="KeyO">O</div><div class="key" data-code="KeyP">P</div><div class="key" data-code="BracketLeft">[</div><div class="key" data-code="BracketRight">]</div><div class="key" data-code="Backslash">\</div><div class="key" data-code="Delete">Del</div><div class="key" data-code="End">End</div><div class="key" data-code="PageDown">PgDn</div></div>
+        <div class="key-row"><div class="key" data-code="CapsLock" style="width: 75px;">Caps</div><div class="key" data-code="KeyA">A</div><div class="key" data-code="KeyS">S</div><div class="key" data-code="KeyD">D</div><div class="key" data-code="KeyF">F</div><div class="key" data-code="KeyG">G</div><div class="key" data-code="KeyH">H</div><div class="key" data-code="KeyJ">J</div><div class="key" data-code="KeyK">K</div><div class="key" data-code="KeyL">L</div><div class="key" data-code="Semicolon">;</div><div class="key" data-code="Quote">'</div><div class="key" data-code="Enter" style="width: 95px;">Enter</div><div class="key" data-code="Space" style="width: 260px;">Space</div></div>
+        <div class="key-row"><div class="key" data-code="ShiftLeft" style="width: 100px;">Shift</div><div class="key" data-code="KeyZ">Z</div><div class="key" data-code="KeyX">X</div><div class="key" data-code="KeyC">C</div><div class="key" data-code="KeyV">V</div><div class="key" data-code="KeyB">B</div><div class="key" data-code="KeyN">N</div><div class="key" data-code="KeyM">M</div><div class="key" data-code="Comma">,</div><div class="key" data-code="Period">.</div><div class="key" data-code="Slash">/</div><div class="key" data-code="ShiftRight" style="width: 130px;">Shift</div><div class="key" data-code="ArrowUp" style="width: 30px;">↑</div></div>
+        <div class="key-row"><div class="key" data-code="ControlLeft" style="width: 60px;">Ctrl</div><div class="key" data-code="MetaLeft" style="width: 50px;">Win</div><div class="key" data-code="AltLeft" style="width: 60px;">Alt</div><div class="key" data-code="Space" style="width: 260px;">Space</div><div class="key" data-code="AltRight" style="width: 60px;">Alt</div><div class="key" data-code="MetaRight" style="width: 50px;">Win</div><div class="key" data-code="ContextMenu">Menu</div><div class="key" data-code="ControlRight" style="width: 60px;">Ctrl</div><div class="key" data-code="ArrowLeft" style="width: 30px;">←</div><div class="key" data-code="ArrowDown" style="width: 30px;">↓</div><div class="key" data-code="ArrowRight" style="width: 30px;">→</div></div>
+      </div>
+    </div>
+    <div class="ht-controls"><button id="btn-reset-keyboard" class="primary-btn">🔄 重置键盘测试</button></div>
+  </div>
+
+  <!-- 2. 鼠标测试面板 -->
+  <div id="panel-mouse" class="ht-panel">
+    <div class="ht-mouse-container">
+      <div class="mouse-visual" id="mouse-visual">
+        <div class="mouse-btn left" id="mouse-left"></div>
+        <div class="mouse-btn right" id="mouse-right"></div>
+        <div class="mouse-wheel" id="mouse-wheel"></div>
+      </div>
+      <div class="ht-mouse-stats">
+        <div class="stat-box"><span class="stat-title">左键点击次数</span><span class="stat-val" id="mouse-left-count">0</span></div>
+        <div class="stat-box"><span class="stat-title">右键点击次数</span><span class="stat-val" id="mouse-right-count">0</span></div>
+        <div class="stat-box"><span class="stat-title">滚轮滚动次数</span><span class="stat-val" id="mouse-wheel-count">0</span></div>
+      </div>
+    </div>
+    <div class="ht-doubleclick-area" id="doubleclick-area">
+      <h3>鼠标双击/连击测试</h3>
+      <p>请在此框内快速连续点击。如果未操作却出现连击，说明鼠标微动可能老化。</p>
+      <div class="click-count" id="click-count">0</div>
+      <div class="click-status" id="click-status">等待点击...</div>
+      <div class="click-history" id="click-history"></div>
+    </div>
+    <div class="ht-controls"><button id="btn-reset-mouse" class="primary-btn">🔄 重置鼠标测试</button></div>
+  </div>
+
+  <!-- 3. 屏幕坏点测试面板 -->
+  <div id="panel-screen" class="ht-panel">
+    <div class="screen-test-intro">
+      <h3>🖥️ 屏幕坏点与漏光测试</h3>
+      <p>点击下方颜色块进入全屏测试。请仔细检查屏幕上是否有始终不亮的黑点（暗点）、始终亮的白点（亮点）或颜色不均的斑块。</p>
+      <p><strong>提示：</strong>在全屏模式下，点击鼠标任意位置或按 <code>Esc</code> 键即可退出全屏。</p>
+    </div>
+    <div class="color-grid">
+      <div class="color-block" style="background: #ff0000;" data-color="#ff0000">纯红</div>
+      <div class="color-block" style="background: #00ff00;" data-color="#00ff00">纯绿</div>
+      <div class="color-block" style="background: #0000ff;" data-color="#0000ff">纯蓝</div>
+      <div class="color-block" style="background: #ffffff; color: #000;" data-color="#ffffff">纯白</div>
+      <div class="color-block" style="background: #000000; border: 1px solid #ccc;" data-color="#000000">纯黑 (漏光测试)</div>
+      <div class="color-block" style="background: #808080;" data-color="#808080">50% 灰</div>
+    </div>
+  </div>
+
+  <!-- 4. 音视频设备测试面板 -->
+  <div id="panel-av" class="ht-panel">
+    <div class="av-grid">
+      <!-- 麦克风 -->
+      <div class="av-card">
+        <h3>🎙️ 麦克风测试</h3>
+        <p>点击开始说话，检查下方音量条是否有反应。</p>
+        <button id="btn-mic-test" class="primary-btn" style="width:100%; margin-bottom:15px;">开始收音</button>
+        <div class="volume-bar-wrap">
+          <div class="volume-bar" id="mic-volume-bar"></div>
+        </div>
+        <div class="volume-text" id="mic-volume-text">0%</div>
+      </div>
+
+      <!-- 扬声器 -->
+      <div class="av-card">
+        <h3>🔊 扬声器左右声道测试</h3>
+        <p>点击下方按钮，听声音是从左边还是右边传出，排查偏音问题。</p>
+        <div class="audio-controls">
+          <button class="primary-btn" id="btn-audio-left">◀ 仅左声道</button>
+          <button class="primary-btn" id="btn-audio-both">⬛ 居中双声道</button>
+          <button class="primary-btn" id="btn-audio-right">右声道 ▶</button>
+        </div>
+        <button class="secondary-btn" id="btn-audio-stop" style="width:100%; margin-top:10px;">⏹ 停止播放</button>
+      </div>
+
+      <!-- 摄像头 -->
+      <div class="av-card" style="grid-column: 1 / -1;">
+        <h3>📷 摄像头测试</h3>
+        <p>检查摄像头画面是否清晰、有无坏点、对焦是否正常。</p>
+        <button id="btn-camera-test" class="primary-btn" style="margin-bottom:15px;">开启摄像头</button>
+        <div class="camera-preview-wrap">
+          <video id="camera-video" autoplay playsinline muted></video>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 全屏测试遮罩 -->
+<div id="fullscreen-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999;"></div>
+
+<script src="../../js/hardware-test.js"></script>
+</body>
+</html>

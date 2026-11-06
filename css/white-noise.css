@@ -1,0 +1,58 @@
+.wn-body { background: #1a1c23; }
+.wn-body .tool-page-header h1 { color: #e2e8f0; }
+.wn-body .tool-page-header p { color: #94a3b8; }
+.wn-body .tool-page-header a { color: #60a5fa; }
+
+.wn-wrap { max-width: 900px; margin: 0 auto; padding: 0 16px 48px; }
+
+/* 控制栏 */
+.wn-controls {
+  background: #252836; border: 1px solid #334155; border-radius: 12px;
+  padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px; margin-bottom: 24px;
+}
+.wn-play-btn {
+  padding: 12px 32px; border-radius: 30px; border: none;
+  background: #3b82f6; color: #fff; font-size: 1.1rem; font-weight: bold;
+  cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+.wn-play-btn:hover { background: #2563eb; }
+.wn-play-btn.playing { background: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+.wn-play-btn.playing:hover { background: #dc2626; }
+
+.wn-timer-group { display: flex; align-items: center; gap: 8px; color: #cbd5e1; font-size: 0.95rem; }
+.wn-timer-group select {
+  padding: 6px 12px; border-radius: 6px; border: 1px solid #475569;
+  background: #1e293b; color: #e2e8f0; outline: none; cursor: pointer;
+}
+.wn-countdown { font-family: monospace; font-size: 1.1rem; color: #fbbf24; font-weight: bold; min-width: 60px; text-align: right; }
+
+/* 网格布局 */
+.wn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+
+.wn-card { background: #252836; border: 1px solid #334155; border-radius: 12px; padding: 16px 20px; transition: border-color 0.2s; }
+.wn-card:hover { border-color: #475569; }
+
+.wn-card-header { display: flex; align-items: center; margin-bottom: 12px; }
+.wn-emoji { font-size: 1.4rem; margin-right: 10px; }
+.wn-name { flex: 1; font-size: 1rem; color: #e2e8f0; font-weight: 500; }
+.wn-vol-text { font-family: monospace; font-size: 0.85rem; color: #94a3b8; background: #1e293b; padding: 4px 8px; border-radius: 4px; }
+
+/* 滑块 */
+input[type="range"] {
+  -webkit-appearance: none; width: 100%; height: 6px;
+  background: #334155; border-radius: 3px; outline: none; cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 16px; height: 16px;
+  border-radius: 50%; background: #3b82f6; cursor: pointer; transition: transform 0.15s, background 0.15s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); background: #60a5fa; }
+input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #3b82f6; cursor: pointer; border: none; }
+
+@media (max-width: 600px) {
+  .wn-grid { grid-template-columns: 1fr; }
+  .wn-controls { flex-direction: column; align-items: stretch; }
+  .wn-play-btn { width: 100%; }
+  .wn-timer-group { justify-content: space-between; }
+}

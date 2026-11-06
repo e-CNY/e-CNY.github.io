@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meme 梗图生成器 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/meme-generator.css">
+</head>
+<body>
+<div class="tool-page-header">
+  <h1>😂 Meme 梗图生成器</h1>
+  <p>一键生成经典梗图，支持三段式文字、图片滤镜与自定义字体</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+
+<main class="mg-wrap">
+  <!-- 左侧控制面板 -->
+  <div class="control-panel">
+    <div class="panel-section">
+      <label class="section-title">🖼️ 1. 上传底图</label>
+      <div class="upload-box" id="drop-zone">
+        <span>📁 点击或拖拽图片至此</span>
+        <small>支持 PNG / JPG</small>
+        <input type="file" id="file-input" accept="image/*" hidden>
+      </div>
+    </div>
+
+    <!-- 关键修复：移除内联的 style="display: none;"，交由 CSS 控制 -->
+    <div id="settings" class="settings-panel">
+      <!-- 图片滤镜 -->
+      <div class="panel-section">
+        <label class="section-title">📷 2. 图片滤镜</label>
+        <select id="img-filter">
+          <option value="none">原图</option>
+          <option value="grayscale(100%)">黑白 (经典)</option>
+          <option value="sepia(80%) contrast(120%)">复古/怀旧</option>
+          <option value="contrast(150%) saturate(200%)">高对比度</option>
+          <option value="blur(2px)">模糊 (防晕图)</option>
+        </select>
+      </div>
+
+      <!-- 文字输入 -->
+      <div class="panel-section">
+        <label class="section-title">📝 3. 梗图文字</label>
+        <div class="slider-group">
+          <label>顶部文字</label>
+          <textarea id="text-top" rows="1" placeholder="输入顶部文字..."></textarea>
+        </div>
+        <div class="slider-group">
+          <label>中间文字 (可选)</label>
+          <textarea id="text-middle" rows="1" placeholder="输入中间文字..."></textarea>
+        </div>
+        <div class="slider-group">
+          <label>底部文字</label>
+          <textarea id="text-bottom" rows="1" placeholder="输入底部文字..."></textarea>
+        </div>
+      </div>
+
+      <!-- 文字样式 -->
+      <div class="panel-section">
+        <label class="section-title">🎨 4. 文字样式</label>
+        <div class="slider-group">
+          <label>字体</label>
+          <select id="font-family">
+            <option value="Impact, 'Arial Black', sans-serif">Impact (经典英)</option>
+            <option value="'Microsoft YaHei', sans-serif">微软雅黑 (粗)</option>
+            <option value="'SimSun', serif">宋体</option>
+          </select>
+        </div>
+        <div class="slider-group">
+          <label>字号比例</label>
+          <div class="row">
+            <input type="range" id="font-size" min="10" max="80" value="40">
+            <span id="font-size-val">40</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label>文字颜色</label>
+            <input type="color" id="text-color" value="#ffffff">
+          </div>
+          <div class="col">
+            <label>描边颜色</label>
+            <input type="color" id="stroke-color" value="#000000">
+          </div>
+        </div>
+        <div class="slider-group" style="margin-top: 8px;">
+          <label>描边粗细</label>
+          <div class="row">
+            <input type="range" id="stroke-width" min="0" max="20" value="6">
+            <span id="stroke-val">6</span>
+          </div>
+        </div>
+      </div>
+
+      <button id="btn-download" class="primary-btn">💾 下载表情包</button>
+    </div>
+  </div>
+
+  <!-- 右侧预览区 -->
+  <div class="preview-panel">
+    <div class="canvas-container" id="canvas-container">
+      <div class="empty-hint" id="empty-hint">请上传图片以开始制作</div>
+      <canvas id="meme-canvas"></canvas>
+    </div>
+  </div>
+</main>
+
+<script src="../../js/meme-generator.js"></script>
+</body>
+</html>

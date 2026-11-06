@@ -1,0 +1,194 @@
+.mg-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr); /* 防止右侧撑爆 */
+  gap: 20px;
+  align-items: start;
+}
+
+.control-panel {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* 修复核心：明确指定垂直布局，默认隐藏 */
+.settings-panel {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+.settings-panel.active {
+  display: flex; /* 通过 JS 添加此类来显示 */
+}
+
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.section-title {
+  font-weight: 600;
+  color: #3d3226;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #ddcfb3;
+  padding-bottom: 6px;
+  white-space: nowrap;
+}
+
+/* 上传框 */
+.upload-box {
+  border: 2px dashed #ddcfb3;
+  border-radius: 8px;
+  padding: 30px 10px;
+  text-align: center;
+  cursor: pointer;
+  background: #fdf8ec;
+  transition: all 0.15s;
+}
+.upload-box:hover, .upload-box.dragover {
+  border-color: #8a5a2b;
+  background: #efe6d0;
+}
+.upload-box span {
+  display: block;
+  font-size: 0.95rem;
+  color: #3d3226;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.upload-box small {
+  font-size: 0.75rem;
+  color: #8a7a5f;
+}
+
+/* 设置项 */
+.slider-group { display: flex; flex-direction: column; gap: 6px; }
+.slider-group label { font-size: 0.85rem; color: #6b5d47; font-weight: 600; white-space: nowrap; }
+
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddcfb3;
+  border-radius: 6px;
+  background: #fff;
+  color: #3d3226;
+  font-size: 0.9rem;
+  outline: none;
+  resize: vertical;
+  box-sizing: border-box; /* 防止撑破宽度 */
+}
+textarea:focus { border-color: #b08a5a; }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.row .col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.row .col label {
+  font-size: 0.85rem;
+  color: #6b5d47;
+  font-weight: 600;
+}
+
+input[type="range"] {
+  flex: 1;
+  accent-color: #8a5a2b;
+}
+.row span {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #3d3226;
+  width: 30px;
+  text-align: right;
+}
+
+select, input[type="color"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddcfb3;
+  border-radius: 6px;
+  background: #fff;
+  color: #3d3226;
+  outline: none;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+input[type="color"] {
+  padding: 2px;
+  height: 36px;
+  cursor: pointer;
+}
+
+/* 按钮 */
+.primary-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  background: #8a5a2b;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: 100%;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.primary-btn:hover { background: #6b4420; }
+
+/* 预览区 */
+.preview-panel {
+  background: #e5d9bd;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-height: 500px;
+  overflow: hidden;
+}
+.canvas-container {
+  position: relative;
+  max-width: 100%;
+  max-height: 75vh;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#meme-canvas {
+  display: none;
+  max-width: 100%;
+  max-height: 75vh; 
+  object-fit: contain;
+  border-radius: 4px;
+}
+.empty-hint {
+  color: #8a7a5f;
+  font-size: 1rem;
+  padding: 40px;
+}
+
+@media (max-width: 800px) {
+  .mg-wrap { grid-template-columns: 1fr; }
+  .preview-panel { min-height: 300px; }
+}

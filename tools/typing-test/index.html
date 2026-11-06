@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>打字速度测试 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/typing-test.css">
+</head>
+<body>
+<div class="tool-page-header">
+  <h1>🏎️ 打字速度测试</h1>
+  <p>测试你的指尖极限：支持中英文，实时统计 WPM 与正确率</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+
+<main class="tt-wrap">
+  <!-- 顶部控制与统计 -->
+  <div class="tt-dashboard">
+    <div class="tt-controls">
+      <div class="tt-mode-group">
+        <button class="tt-mode-btn active" data-mode="time">限时</button>
+        <button class="tt-mode-btn" data-mode="words">限字</button>
+      </div>
+      <div class="tt-options">
+        <select id="tt-lang">
+          <option value="en">English</option>
+          <option value="zh">中文 (支持拼音输入)</option>
+        </select>
+        <select id="tt-limit">
+          <option value="15">15秒</option>
+          <option value="30">30秒</option>
+          <option value="60" selected>60秒</option>
+          <option value="120">120秒</option>
+        </select>
+      </div>
+      <button id="tt-restart" class="tt-restart-btn" title="重新开始">🔄</button>
+    </div>
+
+    <div class="tt-stats">
+      <div class="tt-stat-box">
+        <span class="tt-stat-val" id="tt-wpm">0</span>
+        <span class="tt-stat-label">WPM</span>
+      </div>
+      <div class="tt-stat-box">
+        <span class="tt-stat-val" id="tt-cpm">0</span>
+        <span class="tt-stat-label">字符/分</span>
+      </div>
+      <div class="tt-stat-box">
+        <span class="tt-stat-val" id="tt-acc">100%</span>
+        <span class="tt-stat-label">正确率</span>
+      </div>
+      <div class="tt-stat-box highlight">
+        <span class="tt-stat-val" id="tt-time">60</span>
+        <span class="tt-stat-label">秒</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 打字区域 -->
+  <div class="tt-typing-area">
+    <div class="tt-text-display" id="tt-text-display">
+      <!-- 目标文字渲染在此 -->
+    </div>
+    <!-- 隐藏的输入框 -->
+    <textarea id="tt-input" class="tt-hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    
+    <!-- 点击遮罩层开始 -->
+    <div class="tt-overlay" id="tt-overlay">
+      <button class="tt-start-btn" id="tt-start-btn">点击开始测试</button>
+    </div>
+  </div>
+
+  <!-- 结果面板 -->
+  <div class="tt-result" id="tt-result" style="display: none;">
+    <h2>测试完成！</h2>
+    <div class="tt-result-grid">
+      <div class="tt-res-item">
+        <span class="tt-res-val" id="res-wpm">0</span>
+        <span class="tt-res-lbl">WPM (每分钟单词)</span>
+      </div>
+      <div class="tt-res-item">
+        <span class="tt-res-val" id="res-cpm">0</span>
+        <span class="tt-res-lbl">CPM (每分钟字符)</span>
+      </div>
+      <div class="tt-res-item">
+        <span class="tt-res-val" id="res-acc">0%</span>
+        <span class="tt-res-lbl">正确率</span>
+      </div>
+    </div>
+    <p class="tt-best-record">🏆 历史最佳 WPM: <span id="res-best">0</span></p>
+    <button id="tt-again-btn" class="tt-primary-btn">再测一次</button>
+  </div>
+</main>
+
+<script src="../../js/typing-test.js"></script>
+</body>
+</html>
