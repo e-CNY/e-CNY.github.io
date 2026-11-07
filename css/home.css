@@ -34,15 +34,23 @@
   box-shadow: 0 0 0 3px rgba(176, 138, 90, .22);
 }
 
+/* 顶部 Tabs 优化为强制单行 */
 .tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-wrap: nowrap; /* 强制单行 */
+  gap: 6px; /* 稍微缩小间隙以容纳 12 个分类 */
   justify-content: center;
   margin-bottom: 24px;
+  overflow-x: auto; /* 如果屏幕太小，允许横向滑动 */
+  padding-bottom: 6px; /* 给滚动条留点空间 */
+  /* 隐藏滚动条让视觉更干净 (Webkit) */
+  -webkit-overflow-scrolling: touch;
+}
+.tabs::-webkit-scrollbar {
+  display: none;
 }
 .tabs button {
-  padding: 6px 14px;
+  padding: 6px 12px; /* 减小左右 padding，防止挤出屏幕 */
   border-radius: 999px;
   border: 1px solid #ddcfb3;
   background: #f9f3e3;
@@ -50,6 +58,8 @@
   font-size: .85rem;
   cursor: pointer;
   transition: background .15s, border-color .15s, color .15s;
+  white-space: nowrap; /* 强制按钮文字不换行 */
+  flex-shrink: 0; /* 防止按钮被挤压变形 */
 }
 .tabs button:hover { border-color: #c4b48f; }
 .tabs button.active {

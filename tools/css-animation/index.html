@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSS 动画生成器</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/css-animation.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>💫 CSS 动画生成器</h1>
+  <p>60+ 经典预设 · 高级参数控制 · 可视化实时预览 · 一键复制代码</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="ca-app">
+  <div class="ca-layout">
+    
+    <!-- 左侧：预设动画列表 -->
+    <aside class="ca-sidebar">
+      <div class="ca-search-wrap">
+        <input type="search" id="ca-search" placeholder="搜索动画 (如 bounce...)" autocomplete="off">
+      </div>
+      <div class="ca-preset-list" id="ca-preset-list">
+        <!-- JS 动态渲染 -->
+      </div>
+    </aside>
+
+    <!-- 右侧：预览与配置 -->
+    <section class="ca-main">
+      
+      <!-- 预览区 -->
+      <div class="ca-preview-area">
+        <div class="ca-grid-bg">
+          <div class="ca-preview-box" id="ca-preview-box">
+            <span class="ca-preview-text" id="ca-preview-text">🎁</span>
+          </div>
+        </div>
+        <div class="ca-preview-actions">
+          <button class="ca-btn ca-btn-primary" id="ca-btn-replay">▶️ 重新播放</button>
+          <div class="ca-preview-input">
+            <input type="text" id="ca-text-input" placeholder="自定义演示内容 (如: Hello 或 🎁)" maxlength="20">
+          </div>
+        </div>
+      </div>
+
+      <!-- 配置区 -->
+      <div class="ca-config-area">
+        <h3 class="ca-config-title">动画参数配置</h3>
+        
+        <div class="ca-controls-grid">
+          <!-- 时长 -->
+          <div class="ca-control">
+            <label>动画时长 (Duration): <span id="val-duration">1s</span></label>
+            <input type="range" id="ctrl-duration" min="0.1" max="5" step="0.1" value="1">
+          </div>
+          
+          <!-- 延迟 -->
+          <div class="ca-control">
+            <label>延迟时间 (Delay): <span id="val-delay">0s</span></label>
+            <input type="range" id="ctrl-delay" min="0" max="3" step="0.1" value="0">
+          </div>
+
+          <!-- 缓动函数 -->
+          <div class="ca-control">
+            <label>缓动函数 (Timing Function)</label>
+            <select id="ctrl-timing">
+              <option value="ease">ease (默认)</option>
+              <option value="linear">linear (匀速)</option>
+              <option value="ease-in">ease-in (渐快)</option>
+              <option value="ease-out">ease-out (渐慢)</option>
+              <option value="ease-in-out">ease-in-out (两头慢)</option>
+              <option value="cubic-bezier(0.68, -0.55, 0.265, 1.55)">cubic-bezier (夸张回弹)</option>
+              <option value="cubic-bezier(0.175, 0.885, 0.32, 1.275)">cubic-bezier (平滑回弹)</option>
+            </select>
+          </div>
+
+          <!-- 迭代次数 -->
+          <div class="ca-control">
+            <label>播放次数 (Iteration)</label>
+            <select id="ctrl-iteration">
+              <option value="1">1 次</option>
+              <option value="2">2 次</option>
+              <option value="3">3 次</option>
+              <option value="infinite" selected>无限循环 (infinite)</option>
+            </select>
+          </div>
+
+          <!-- 播放方向 -->
+          <div class="ca-control">
+            <label>播放方向 (Direction)</label>
+            <select id="ctrl-direction">
+              <option value="normal">normal (正向)</option>
+              <option value="reverse">reverse (反向)</option>
+              <option value="alternate">alternate (来回交替)</option>
+              <option value="alternate-reverse">alternate-reverse (反向来回)</option>
+            </select>
+          </div>
+
+          <!-- 填充模式 -->
+          <div class="ca-control">
+            <label>填充模式 (Fill Mode)</label>
+            <select id="ctrl-fill-mode">
+              <option value="none">none (不保留状态)</option>
+              <option value="forwards">forwards (保留结束状态)</option>
+              <option value="backwards">backwards (应用起始状态)</option>
+              <option value="both">both (双向保留)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 代码输出区 -->
+        <div class="ca-code-wrap">
+          <div class="ca-code-header">
+            <span>生成的 CSS 代码</span>
+            <button class="ca-btn ca-btn-small" id="ca-btn-copy">📋 复制代码</button>
+          </div>
+          <pre><code id="ca-code-output" class="language-css"></code></pre>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</main>
+
+<script src="../../js/css-animation.js"></script>
+</body>
+</html>

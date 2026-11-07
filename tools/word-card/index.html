@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>单词卡片闪记（英/日/韩）</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/word-card.css">
+</head>
+<body>
+<header class="tool-page-header">
+  <h1>📇 单词卡片闪记</h1>
+  <p>英语7大词库·日文JLPT·韩语TOPIK·不是最新仅供参考</p>
+  <a href="../../index.html">← 返回工具站</a>
+</header>
+
+<main class="wc-app">
+  <!-- 语言切换 -->
+  <div class="wc-lang-switch" id="lang-switch">
+    <button type="button" class="active" data-lang="en">🇬🇧 英语</button>
+    <button type="button" data-lang="ja">🇯🇵 日文</button>
+    <button type="button" data-lang="ko">🇰🇷 韩语</button>
+  </div>
+
+  <!-- 顶部词库分类 -->
+  <div class="wc-decks" id="decks"></div>
+
+  <!-- 工具栏按钮 -->
+  <div class="wc-toolbar">
+    <div class="wc-tool-group">
+      <button class="wc-btn" id="btn-load">📥 导入词库</button>
+      <input type="file" id="file-input" accept=".txt,text/plain" multiple hidden>
+      <button class="wc-btn" id="btn-order">🔀 乱序</button>
+      <button class="wc-btn" id="btn-hide-def" title="学习模式下隐藏释义，点击释义区可临时查看">🙈 隐藏释义</button>
+    </div>
+    <div class="wc-tool-group">
+      <button class="wc-btn" id="btn-favonly">⭐ 只看收藏</button>
+      <button class="wc-btn" id="btn-unmastered">🎯 只看未掌握</button>
+      <button class="wc-btn" id="btn-reset">♻️ 重置进度</button>
+    </div>
+  </div>
+
+  <!-- 模式切换 -->
+  <div class="wc-mode-switch">
+    <button id="mode-learn" class="active">📖 学习模式</button>
+    <button id="mode-test">🧠 测试模式</button>
+  </div>
+
+  <!-- 主卡片区 -->
+  <section class="wc-stage">
+    <div class="wc-card" id="card">
+      <div class="wc-card-top">
+        <span class="wc-deck-tag" id="deck-tag">—</span>
+        <span class="wc-status-tag" id="status-tag" hidden></span>
+      </div>
+
+      <div class="wc-visual-wrap">
+        <canvas id="word-img-canvas" width="200" height="200"></canvas>
+      </div>
+
+      <div class="wc-word" id="word">—</div>
+
+      <!-- 学习模式展示区 -->
+      <div class="wc-learn-def" id="learn-def">—</div>
+
+      <!-- 测试模式展示区 -->
+      <div class="wc-test-options" id="test-options" hidden></div>
+      <div class="wc-test-feedback" id="test-feedback" hidden></div>
+    </div>
+  </section>
+
+  <!-- 底部控制按钮 -->
+  <section class="wc-controls" id="controls">
+    <button class="wc-btn wc-btn-prev" id="btn-prev">◀ 上一个</button>
+    <button class="wc-btn wc-btn-danger" id="btn-unmastered-mark">❌ 不会</button>
+    <button class="wc-btn wc-btn-fav" id="btn-fav-mark">☆ 收藏</button>
+    <button class="wc-btn wc-btn-success" id="btn-mastered-mark">✅ 掌握</button>
+    <button class="wc-btn wc-btn-next" id="btn-next">下一个 ▶</button>
+  </section>
+
+  <!-- 统计与生成图片 -->
+  <section class="wc-stats">
+    <div><span>当前</span><b id="stat-idx">0 / 0</b></div>
+    <div><span>✅ 掌握</span><b id="stat-mastered" style="color:#4caf50;">0</b></div>
+    <div><span>❌ 不会</span><b id="stat-unmastered" style="color:#f44336;">0</b></div>
+    <div><span>⭐ 收藏</span><b id="stat-fav">0</b></div>
+    <div class="wc-stats-grow"></div>
+
+    <!-- 音效控制 -->
+    <div class="wc-sound-ctrl">
+      <button id="btn-sound" class="wc-btn" title="开关提示音">🔊</button>
+      <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" title="音量">
+    </div>
+
+    <button class="wc-btn wc-btn-accent" id="btn-share">🎨 生成卡片图</button>
+  </section>
+
+  <!-- 空状态提示 -->
+  <section class="wc-empty" id="empty" hidden>
+    <p>没有找到匹配的单词 🙌</p>
+    <p class="wc-empty-sub">
+      如果当前选中的是「只看未掌握」且所有单词都已掌握，也会显示此提示。
+    </p>
+  </section>
+
+  <!-- 弹窗：生成图片 -->
+  <div class="wc-modal" id="modal" hidden>
+    <div class="wc-modal-body">
+      <div class="wc-modal-head">
+        <span>卡片图预览</span>
+        <button class="wc-modal-close" id="btn-close" aria-label="关闭">✕</button>
+      </div>
+      <div class="wc-modal-canvas-wrap">
+        <canvas id="card-canvas" width="1080" height="1350"></canvas>
+      </div>
+      <div class="wc-modal-actions">
+        <button class="wc-btn" id="btn-change-bg">🔁 换一种背景</button>
+        <button class="wc-btn wc-btn-primary" id="btn-download">⬇️ 下载 PNG</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../../js/word-card-bank.js"></script>
+<script src="../../js/word-card.js"></script>
+</body>
+</html>

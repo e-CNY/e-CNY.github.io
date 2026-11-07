@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>极简 Markdown 简历生成器 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/resume-maker.css">
+</head>
+<body class="rm-body">
+<div class="tool-page-header rm-header">
+  <h1>📋 极简 Markdown 简历生成器</h1>
+  <p>左写右排，支持一键随机生成、头像上传与多格式导出</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+
+<main class="rm-wrap">
+  <!-- 顶部操作栏 -->
+  <div class="rm-toolbar">
+    <div class="rm-toolbar-left">
+      <button id="btn-random" class="secondary-btn">🎲 一键随机生成</button>
+      
+      <div class="rm-upload-avatar">
+        <input type="file" id="avatar-input" accept="image/*" hidden>
+        <button id="btn-upload-avatar" class="secondary-btn">🖼️ 上传头像</button>
+      </div>
+
+      <div class="rm-theme-group">
+        <label>主题色：</label>
+        <input type="color" id="theme-color" value="#2c3e50">
+      </div>
+      
+      <div class="rm-slider-group">
+        <label>字号：</label>
+        <input type="range" id="font-scale" min="80" max="120" value="100">
+        <label>行距：</label>
+        <input type="range" id="line-scale" min="100" max="180" value="150">
+      </div>
+    </div>
+
+    <div class="rm-toolbar-right">
+      <div class="dropdown">
+        <button class="primary-btn dropdown-toggle">💾 导出 ▼</button>
+        <div class="dropdown-menu">
+          <button id="btn-print">🖨️ 导出 PDF (打印)</button>
+          <button id="btn-export-html">🌐 导出 HTML</button>
+          <button id="btn-export-md">📄 下载 .md</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 编辑器与预览区 -->
+  <div class="rm-container">
+    <!-- 左侧 Markdown 输入 -->
+    <div class="rm-editor">
+      <div class="rm-panel-header">
+        <span>✍️ Markdown 编辑</span>
+        <small>支持 # 标题、- 列表、**加粗**、[链接](url)、`代码`</small>
+      </div>
+      <textarea id="md-input" spellcheck="false" placeholder="在此输入 Markdown 内容..."></textarea>
+    </div>
+
+    <!-- 右侧 A4 纸预览 -->
+    <div class="rm-preview-wrap">
+      <div class="rm-preview-page" id="resume-page">
+        <img id="resume-avatar" class="rm-avatar" style="display: none;" alt="头像">
+        <div class="rm-preview-content" id="resume-content">
+          <!-- 实时渲染内容 -->
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../../js/resume-maker.js"></script>
+</body>
+</html>

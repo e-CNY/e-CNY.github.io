@@ -1,0 +1,181 @@
+.es-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.control-panel {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-title {
+  font-weight: 600;
+  color: #3d3226;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #ddcfb3;
+  padding-bottom: 6px;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #3d3226;
+}
+.setting-row label { font-weight: 600; }
+
+/* 颜色选择 */
+.color-presets {
+  display: flex;
+  gap: 8px;
+}
+.color-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #ddcfb3;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.color-btn:hover { transform: scale(1.1); }
+.color-btn.active {
+  border-color: #8a5a2b;
+  box-shadow: 0 0 0 2px #f9f3e3, 0 0 0 4px #8a5a2b;
+}
+input[type="color"] {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid #ddcfb3;
+  border-radius: 4px;
+  cursor: pointer;
+  background: #fff;
+}
+
+/* 滑块 */
+input[type="range"] {
+  flex: 1;
+  margin: 0 10px;
+  accent-color: #8a5a2b;
+}
+#brush-size-val {
+  font-family: monospace;
+  width: 20px;
+  text-align: right;
+}
+
+/* 下拉与复选框 */
+select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddcfb3;
+  border-radius: 6px;
+  background: #fff;
+  color: #3d3226;
+  outline: none;
+  font-size: 0.9rem;
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #3d3226;
+  cursor: pointer;
+}
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #8a5a2b;
+  cursor: pointer;
+}
+.hint {
+  font-size: 0.75rem;
+  color: #8a7a5f;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 按钮 */
+.primary-btn, .secondary-btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  border: none;
+}
+.primary-btn { background: #8a5a2b; color: #fff; }
+.primary-btn:hover { background: #6b4420; }
+.secondary-btn { background: #fff; color: #6b5d47; border: 1px solid #ddcfb3; }
+.secondary-btn:hover:not(:disabled) { background: #efe6d0; }
+.secondary-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* 右侧画板 */
+.preview-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.canvas-container {
+  background: #e5d9bd;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 400px;
+  /* 棋盘格背景，用于透出透明底 */
+  background-image: 
+    linear-gradient(45deg, #ddd 25%, transparent 25%), 
+    linear-gradient(-45deg, #ddd 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #ddd 75%), 
+    linear-gradient(-45deg, transparent 75%, #ddd 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  overflow: hidden;
+}
+
+#signature-canvas {
+  background: #ffffff; /* 默认白底，由 JS 控制切换 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  cursor: crosshair;
+  touch-action: none; /* 防止移动端滚动 */
+}
+
+/* 底部操作栏 */
+.action-bar {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+.action-bar button {
+  flex: 1;
+}
+
+@media (max-width: 800px) {
+  .es-wrap { grid-template-columns: 1fr; }
+  .canvas-container { height: 300px; }
+}

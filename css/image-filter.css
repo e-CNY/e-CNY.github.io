@@ -1,0 +1,189 @@
+.if-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.control-panel {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.settings-panel { display: none; flex-direction: column; gap: 16px; }
+.settings-panel.active { display: flex; }
+
+.panel-section { display: flex; flex-direction: column; gap: 12px; }
+
+.section-title {
+  font-weight: 600;
+  color: #3d3226;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #ddcfb3;
+  padding-bottom: 6px;
+}
+
+/* 上传框 */
+.upload-box {
+  border: 2px dashed #ddcfb3;
+  border-radius: 8px;
+  padding: 20px 10px;
+  text-align: center;
+  cursor: pointer;
+  background: #fdf8ec;
+  transition: all 0.15s;
+}
+.upload-box:hover, .upload-box.dragover {
+  border-color: #8a5a2b;
+  background: #efe6d0;
+}
+.upload-box span { display: block; font-size: 0.95rem; color: #3d3226; font-weight: 600; margin-bottom: 4px; }
+.upload-box small { font-size: 0.75rem; color: #8a7a5f; }
+
+/* 预设滤镜网格 */
+.filter-presets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.preset-btn {
+  padding: 6px 0;
+  border: 1px solid #ddcfb3;
+  background: #fff;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: #3d3226;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.preset-btn:hover { background: #efe6d0; }
+.preset-btn.active {
+  background: #8a5a2b;
+  color: #fff;
+  border-color: #8a5a2b;
+  font-weight: bold;
+}
+
+/* 折叠面板 */
+details {
+  background: #fff;
+  border: 1px solid #ddcfb3;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+details[open] { padding-bottom: 12px; }
+summary {
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #3d3226;
+  cursor: pointer;
+  background: #fdf8ec;
+  border-bottom: 1px solid transparent;
+  user-select: none;
+}
+details[open] summary { border-bottom-color: #ddcfb3; }
+summary:hover { background: #efe6d0; }
+
+/* 滑块 */
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px 0;
+}
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #6b5d47;
+}
+.slider-label span:last-child {
+  font-family: monospace;
+  color: #8a5a2b;
+  font-weight: bold;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: #8a5a2b;
+  cursor: pointer;
+  height: 6px;
+}
+
+/* 按钮 */
+.primary-btn, .secondary-btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s;
+  border: none;
+}
+.primary-btn { background: #8a5a2b; color: #fff; flex: 1; }
+.primary-btn:hover { background: #6b4420; }
+.secondary-btn { background: #fff; color: #6b5d47; border: 1px solid #ddcfb3; width: 100%; }
+.secondary-btn:hover { background: #efe6d0; }
+
+/* 导出区 */
+.export-row { display: flex; gap: 10px; }
+.export-row select {
+  padding: 8px;
+  border: 1px solid #ddcfb3;
+  border-radius: 6px;
+  background: #fff;
+  color: #3d3226;
+  outline: none;
+  font-size: 0.85rem;
+}
+
+/* 预览区 */
+.preview-panel {
+  background: #e5d9bd;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-height: 500px;
+  max-height: calc(100vh - 120px);
+  overflow: hidden;
+}
+.canvas-container {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#main-canvas {
+  display: none;
+  max-width: 100%;
+  max-height: calc(100vh - 160px);
+  object-fit: contain;
+  border-radius: 4px;
+}
+.empty-hint { color: #8a7a5f; font-size: 1rem; padding: 40px; }
+
+@media (max-width: 800px) {
+  .if-wrap { grid-template-columns: 1fr; }
+  .control-panel { max-height: none; }
+  .preview-panel { min-height: 300px; max-height: none; }
+}

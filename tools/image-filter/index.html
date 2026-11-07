@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>专业图片调色与滤镜 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/image-filter.css">
+</head>
+<body>
+<div class="tool-page-header">
+  <h1>🎨 专业图片调色与滤镜</h1>
+  <p>13 项专业调节参数 + 12 种预设滤镜，原生 Canvas 极速渲染</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+
+<main class="if-wrap">
+  <!-- 左侧控制面板 -->
+  <div class="control-panel">
+    <div class="panel-section">
+      <label class="section-title">🖼️ 1. 上传图片</label>
+      <div class="upload-box" id="drop-zone">
+        <span>📁 点击或拖拽图片至此</span>
+        <small>支持 JPG / PNG / WebP</small>
+        <input type="file" id="file-input" accept="image/*" hidden>
+      </div>
+    </div>
+
+    <div id="settings" class="settings-panel">
+      <!-- 预设滤镜 -->
+      <div class="panel-section">
+        <label class="section-title">✨ 2. 预设滤镜</label>
+        <div class="filter-presets">
+          <button class="preset-btn active" data-preset="none">原图</button>
+          <button class="preset-btn" data-preset="cyberpunk">赛博朋克</button>
+          <button class="preset-btn" data-preset="cinematic">电影感</button>
+          <button class="preset-btn" data-preset="japanese">日系</button>
+          <button class="preset-btn" data-preset="hongkong">港风</button>
+          <button class="preset-btn" data-preset="blackgold">黑金</button>
+          <button class="preset-btn" data-preset="morandi">莫兰迪</button>
+          <button class="preset-btn" data-preset="vintage">复古</button>
+          <button class="preset-btn" data-preset="blackwhite">黑白</button>
+          <button class="preset-btn" data-preset="warm">暖夏</button>
+          <button class="preset-btn" data-preset="cool">冷冬</button>
+          <button class="preset-btn" data-preset="dramatic">高对比</button>
+        </div>
+      </div>
+
+      <!-- 调节面板 (折叠式) -->
+      <div class="panel-section">
+        <label class="section-title">🎛️ 3. 精细调节</label>
+        
+        <details open>
+          <summary>光影调整</summary>
+          <div class="slider-group">
+            <div class="slider-label"><span>亮度 (Brightness)</span><span id="val-brightness">100%</span></div>
+            <input type="range" id="filter-brightness" min="0" max="200" value="100">
+          </div>
+          <div class="slider-group">
+            <div class="slider-label"><span>对比度 (Contrast)</span><span id="val-contrast">100%</span></div>
+            <input type="range" id="filter-contrast" min="0" max="200" value="100">
+          </div>
+          <div class="slider-group">
+            <div class="slider-label"><span>曝光补偿 (Exposure)</span><span id="val-exposure">0</span></div>
+            <input type="range" id="filter-exposure" min="-100" max="100" value="0">
+          </div>
+        </details>
+
+        <details open>
+          <summary>色彩调整</summary>
+          <div class="slider-group">
+            <div class="slider-label"><span>饱和度 (Saturate)</span><span id="val-saturate">100%</span></div>
+            <input type="range" id="filter-saturate" min="0" max="200" value="100">
+          </div>
+          <div class="slider-group">
+            <div class="slider-label"><span>色温 (冷 ↔ 暖)</span><span id="val-temp">0</span></div>
+            <input type="range" id="filter-temp" min="-100" max="100" value="0">
+          </div>
+          <div class="slider-group">
+            <div class="slider-label"><span>色调 (绿 ↔ 洋红)</span><span id="val-tint">0</span></div>
+            <input type="range" id="filter-tint" min="-100" max="100" value="0">
+          </div>
+          <div class="slider-group">
+            <div class="slider-label"><span>色相旋转 (Hue)</span><span id="val-hue">0°</span></div>
+            <input type="range" id="filter-hue" min="0" max="360" value="0">
+          </div>
+          <div class="slider-group">
+            <div class="slider-label"><span>灰度 (Grayscale)</span><span id="val-gray">0%</span></div>
+            <input type="range" id="filter-gray" min="0" max="100" value="0">
+          </div>
+          <div class="slider-group">
+            <div class="slider-label"><span>褐色 (Sepia)</span><span id="val-sepia">0%</span></div>
+            <input type="range" id="filter-sepia" min="0" max="100" value="0">
+          </div>
+          <div class="slider-group">
+            <div class="slider-label"><span>反色 (Invert)</span><span id="val-invert">0%</span></div>
+            <input type="range" id="filter-invert" min="0" max="100" value="0">
+          </div>
+        </details>
+
+        <details open>
+          <summary>特效叠加</summary>
+          <div class="slider-group">
+            <div class="slider-label"><span>模糊 (Blur)</span><span id="val-blur">0px</span></div>
+            <input type="range" id="filter-blur" min="0" max="20" value="0" step="0.5">
+          </div>
+          <div class="slider-group">
+            <div class="slider-label"><span>暗角 (Vignette)</span><span id="val-vignette">0%</span></div>
+            <input type="range" id="filter-vignette" min="0" max="100" value="0">
+          </div>
+          <div class="slider-group">
+            <div class="slider-label"><span>胶片噪点 (Noise)</span><span id="val-noise">0%</span></div>
+            <input type="range" id="filter-noise" min="0" max="100" value="0">
+          </div>
+        </details>
+      </div>
+
+      <button id="btn-reset" class="secondary-btn" style="margin-top: 10px;">🔄 重置所有参数</button>
+      
+      <div class="panel-section" style="margin-top: 10px;">
+        <label class="section-title">💾 4. 导出图片</label>
+        <div class="export-row">
+          <select id="export-format">
+            <option value="jpeg">JPG (推荐)</option>
+            <option value="png">PNG</option>
+            <option value="webp">WebP</option>
+          </select>
+          <button id="btn-download" class="primary-btn">⬇️ 下载</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧预览区 -->
+  <div class="preview-panel">
+    <div class="canvas-container" id="canvas-container">
+      <div class="empty-hint" id="empty-hint">请上传图片以开始调色</div>
+      <canvas id="main-canvas"></canvas>
+    </div>
+  </div>
+</main>
+
+<script src="../../js/image-filter.js"></script>
+</body>
+</html>

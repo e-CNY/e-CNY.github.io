@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图片取色器与配色方案 - 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/color-extractor.css">
+</head>
+<body>
+<div class="tool-page-header">
+  <h1>🎨 图片取色器与配色方案</h1>
+  <p>智能提取图片主色调，支持放大镜吸管与 UI 配色预览</p>
+  <a href="../../index.html">← 返回首页</a>
+</div>
+
+<main class="ce-wrap">
+  <!-- 左侧控制面板 -->
+  <div class="control-panel">
+    <div class="panel-section">
+      <label class="section-title">🖼️ 1. 上传图片</label>
+      <div class="upload-box" id="drop-zone">
+        <span>📁 点击或拖拽图片至此</span>
+        <small>支持 PNG / JPG / WebP</small>
+        <input type="file" id="file-input" accept="image/*" hidden>
+      </div>
+    </div>
+
+    <div id="settings" class="settings-panel">
+      <!-- 模式切换 -->
+      <div class="panel-section">
+        <label class="section-title">🛠️ 2. 取色模式</label>
+        <div class="mode-group">
+          <button class="mode-btn active" id="btn-mode-auto">🎨 智能提取</button>
+          <button class="mode-btn" id="btn-mode-picker">🔍 吸管拾色</button>
+        </div>
+      </div>
+
+      <!-- 智能提取结果 -->
+      <div class="panel-section" id="auto-panel">
+        <label class="section-title">📊 主色调提取</label>
+        <div class="palette-list" id="palette-list">
+          <!-- JS 动态生成 -->
+        </div>
+      </div>
+
+      <!-- 吸管拾色结果 -->
+      <div class="panel-section" id="picker-panel" style="display: none;">
+        <label class="section-title">💧 当前拾取颜色</label>
+        <div class="picked-color-box">
+          <div class="picked-swatch" id="picked-swatch" style="background: #ffffff;"></div>
+          <div class="picked-values">
+            <div class="color-row">
+              <span class="val-label">HEX</span>
+              <span class="val-text" id="val-hex">#FFFFFF</span>
+              <button class="copy-btn" data-copy="val-hex">复制</button>
+            </div>
+            <div class="color-row">
+              <span class="val-label">RGB</span>
+              <span class="val-text" id="val-rgb">255, 255, 255</span>
+              <button class="copy-btn" data-copy="val-rgb">复制</button>
+            </div>
+            <div class="color-row">
+              <span class="val-label">HSL</span>
+              <span class="val-text" id="val-hsl">0, 0%, 100%</span>
+              <button class="copy-btn" data-copy="val-hsl">复制</button>
+            </div>
+          </div>
+        </div>
+        <p class="hint">💡 提示：在右侧图片上移动鼠标，点击即可锁定颜色。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧预览区 -->
+  <div class="preview-panel">
+    <div class="canvas-container" id="canvas-container">
+      <div class="empty-hint" id="empty-hint">请上传图片以开始提取配色</div>
+      <canvas id="main-canvas"></canvas>
+      
+      <!-- 放大镜取色器 (悬浮在 canvas 上) -->
+      <canvas id="magnifier" class="magnifier" width="120" height="120" style="display: none;"></canvas>
+    </div>
+    
+    <!-- UI 配色预览区 -->
+    <div class="ui-preview-panel" id="ui-preview-panel" style="display: none;">
+      <h3>🖥️ UI 配色实战预览</h3>
+      <div class="ui-cards">
+        <div class="ui-card" id="ui-card-bg">
+          <h4 id="ui-card-title">Card Title</h4>
+          <p id="ui-card-desc">这是一段示例文本，用于展示色彩对比度。这段背景和文字采用了提取的配色。</p>
+          <button class="ui-btn" id="ui-btn-primary">Primary Button</button>
+          <button class="ui-btn ui-btn-outline" id="ui-btn-outline">Outline</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../../js/color-extractor.js"></script>
+</body>
+</html>
