@@ -21,7 +21,7 @@
         <p style="font-size: 1.1rem; margin-top: 24px; margin-bottom: 32px;">
             您依然可以使用全部功能，只需 <strong>免费下载源码在本地运行</strong>：
         </p>
-        <a href="https://github.com/你的用户名/你的仓库名" target="_blank" style="
+        <a href="https://github.com/e-CNY/e-CNY.github.io" target="_blank" style="
             background: #7ba05b; color: #fff; padding: 14px 32px; border-radius: 8px;
             text-decoration: none; font-weight: bold; font-size: 1.1rem;
         ">📦 点击前往 GitHub 下载源码</a>
