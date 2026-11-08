@@ -1,7 +1,6 @@
 (function () {
-  // ====== 国内高频工具矩阵（方案 A：全部 2 字分类，按人气顺排） ======
   var tools = [
-    // === 1. 图像 (人气最高) ===
+    // === 1. 图像 ===
     { name: '高清电子签名生成器', emoji: '✒️', desc: '丝滑手写 / 自动裁切留白 / 导出透明PNG', href: 'tools/e-signature/index.html', category: '图像' },
     { name: '图片调色与滤镜', emoji: '🌅', desc: '极速调整亮度/对比度/饱和度，支持一键复古滤镜', href: 'tools/image-filter/index.html', category: '图像' },
     { name: '图片取色器与配色', emoji: '🖍️', desc: '提取图片主色调 / 放大镜吸管 / UI 实战预览', href: 'tools/color-extractor/index.html', category: '图像' },
@@ -19,6 +18,7 @@
     { name: '页面标尺与网格', emoji: '📏', desc: '辅助网格 / 吸管取色', href: 'tools/ruler-tool/index.html', category: '图像' },
 
     // === 2. 文档 ===
+    { name: 'Lorem Ipsum 生成器', emoji: '🗒️', desc: '中英日韩占位文本 / HTML 元素包裹 / 字数限制与统计', href: 'tools/lorem-ipsum/index.html', category: '文档' },
     { name: 'Markdown 简历生成器', emoji: '📋', desc: '一键随机生成 / 导出高清PDF/HTML', href: 'tools/resume-maker/index.html', category: '文档' },
     { name: '简繁体转换', emoji: '🔄', desc: '中文简繁体互相转换 / 词组精准转换', href: 'tools/zh-convert/index.html', category: '文档' },
     { name: '英汉词典', emoji: '📖', desc: '离线词库 / 前缀模糊搜索 / 生词本 / 发音', href: 'tools/dictionary/index.html', category: '文档' },

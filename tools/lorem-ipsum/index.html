@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>window.IS_WASM_TOOL = false;</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lorem Ipsum 生成器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/lorem-ipsum.css">
+</head>
+<body>
+<main class="tool-page-header">
+  <h1>🗒️ Lorem Ipsum 生成器</h1>
+  <p>多语言占位文本 · HTML 元素包裹 · 实时字数统计</p>
+  <a href="../../index.html">← 返回首页</a>
+</main>
+
+<main class="lorem-wrap">
+  <section class="lorem-controls">
+    <label>
+      语言
+      <select id="lang">
+        <option value="latin">拉丁 Lorem</option>
+        <option value="zh">中文</option>
+        <option value="ja">日文</option>
+        <option value="ko">韩文</option>
+      </select>
+    </label>
+    <label>
+      生成方式
+      <select id="mode">
+        <option value="paragraphs">按段落</option>
+        <option value="sentences">按句子</option>
+        <option value="words">按单词</option>
+      </select>
+    </label>
+    <label>
+      数量
+      <input id="count" type="number" min="1" max="200" value="3">
+    </label>
+    <label>
+      字数上限（0=不限）
+      <input id="maxChars" type="number" min="0" max="100000" value="0">
+    </label>
+    <label class="checkbox-label">
+      <input id="startClassic" type="checkbox" checked>
+      以 "Lorem ipsum…" 开头（仅拉丁）
+    </label>
+    <label class="checkbox-label">
+      <input id="useCustom" type="checkbox">
+      使用自定义文本作为词源
+    </label>
+    <button id="generate">生成文本</button>
+  </section>
+
+  <section id="customWrap" class="custom-source" hidden>
+    <label>
+      自定义词源（自动按空白/标点分割，无分隔符时按 2 字组合切分）
+      <textarea id="customText" placeholder="把你自己的文本粘贴到这里，生成时将从中随机抽取…" spellcheck="false"></textarea>
+    </label>
+  </section>
+
+  <section class="html-controls">
+    <fieldset class="block-fieldset">
+      <legend>块级容器</legend>
+      <label><input type="radio" name="blockTag" value="none" checked> 纯文本</label>
+      <label><input type="radio" name="blockTag" value="p"> &lt;p&gt; 段落</label>
+      <label><input type="radio" name="blockTag" value="h1"> &lt;h1&gt; 标题</label>
+      <label><input type="radio" name="blockTag" value="h2"> &lt;h2&gt; 标题</label>
+      <label><input type="radio" name="blockTag" value="h3"> &lt;h3&gt; 标题</label>
+      <label><input type="radio" name="blockTag" value="h4"> &lt;h4&gt; 标题</label>
+      <label><input type="radio" name="blockTag" value="h5"> &lt;h5&gt; 标题</label>
+      <label><input type="radio" name="blockTag" value="blockquote"> &lt;blockquote&gt; 引用</label>
+      <label><input type="radio" name="blockTag" value="pre"> &lt;pre&gt;&lt;code&gt;</label>
+      <label><input type="radio" name="blockTag" value="ul"> &lt;ul&gt;&lt;li&gt; 无序列表</label>
+      <label><input type="radio" name="blockTag" value="ol"> &lt;ol&gt;&lt;li&gt; 有序列表</label>
+      <label><input type="radio" name="blockTag" value="dl"> &lt;dl&gt; 描述列表</label>
+      <label><input type="radio" name="blockTag" value="mixed"> 🎲 随机混搭</label>
+    </fieldset>
+    <fieldset class="inline-fieldset">
+      <legend>行内修饰（可多选，随机包裹）</legend>
+      <label><input type="checkbox" value="a"> &lt;a&gt; 链接</label>
+      <label><input type="checkbox" value="b"> &lt;b&gt; 粗体</label>
+      <label><input type="checkbox" value="i"> &lt;i&gt; 斜体</label>
+      <label><input type="checkbox" value="u"> &lt;u&gt; 下划线</label>
+      <label><input type="checkbox" value="strong"> &lt;strong&gt;</label>
+      <label><input type="checkbox" value="em"> &lt;em&gt;</label>
+      <label><input type="checkbox" value="mark"> &lt;mark&gt; 高亮</label>
+      <label><input type="checkbox" value="del"> &lt;del&gt; 删除</label>
+      <label><input type="checkbox" value="ins"> &lt;ins&gt; 插入</label>
+      <label><input type="checkbox" value="sub"> &lt;sub&gt; 下标</label>
+      <label><input type="checkbox" value="sup"> &lt;sup&gt; 上标</label>
+      <label><input type="checkbox" value="q"> &lt;q&gt; 短引用</label>
+      <label><input type="checkbox" value="cite"> &lt;cite&gt; 引用源</label>
+      <label><input type="checkbox" value="abbr"> &lt;abbr&gt; 缩写</label>
+      <label><input type="checkbox" value="kbd"> &lt;kbd&gt; 键盘</label>
+      <label><input type="checkbox" value="samp"> &lt;samp&gt; 示例</label>
+      <label><input type="checkbox" value="var"> &lt;var&gt; 变量</label>
+      <label><input type="checkbox" value="small"> &lt;small&gt; 小字</label>
+      <label><input type="checkbox" value="time"> &lt;time&gt; 时间</label>
+    </fieldset>
+  </section>
+
+  <section class="lorem-output">
+    <div class="output-header">
+      <span class="output-title">输出源码</span>
+      <span class="output-actions">
+        <button id="copy">📋 复制源码</button>
+        <button id="copyText" class="secondary">📄 复制纯文本</button>
+        <span id="copyHint" class="hint" hidden>已复制</span>
+      </span>
+    </div>
+    <textarea id="output" readonly spellcheck="false" placeholder="生成结果将出现在这里…"></textarea>
+    <div class="stats">
+      <span>单词：<b id="stWords">0</b></span>
+      <span>字符（不含空格）：<b id="stChars">0</b></span>
+      <span>句子：<b id="stSentences">0</b></span>
+      <span>段落：<b id="stParagraphs">0</b></span>
+    </div>
+    <details class="preview-wrap">
+      <summary>🔍 渲染预览</summary>
+      <div id="preview" class="preview"></div>
+    </details>
+  </section>
+</main>
+
+<script src="../../js/lorem-ipsum.js"></script>
+<script src="../../js/traffic-guard.js"></script>
+</body>
+</html>
