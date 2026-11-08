@@ -65,7 +65,7 @@
     { name: '办公文档自动化', emoji: '📂', desc: 'Word 转 HTML 与提取图片', href: 'tools/doc-automation/index.html', category: '办公' },
 
     // === 6. 生活 ===
-    { name: '英文单词卡片闪记', emoji: '📇', desc: '英日韩 词库 · 翻卡记忆 · 一键生成精美卡片图', href: 'tools/word-card/index.html', category: '生活' },
+    { name: '单词卡片闪记', emoji: '📇', desc: '英日韩词库·学习和测试·一键生成精美卡片图', href: 'tools/word-card/index.html', category: '生活' },
     { name: '打字速度测试', emoji: '🏎️', desc: '中英文打字测速 / 实时统计 WPM / 正确率', href: 'tools/typing-test/index.html', category: '生活' },
     { name: '计算器工具箱', emoji: '🧮', desc: '科学 / 统计 / 房贷 / 理财', href: 'tools/calc-toolbox/index.html', category: '生活' },
     { name: '时间日期工具箱', emoji: '🕒', desc: '时间戳 / 时区 / 日期加减 / 农历', href: 'tools/time-date-tool/index.html', category: '生活' },
