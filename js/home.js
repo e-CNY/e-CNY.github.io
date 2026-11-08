@@ -19,7 +19,6 @@
     { name: '页面标尺与网格', emoji: '📏', desc: '辅助网格 / 吸管取色', href: 'tools/ruler-tool/index.html', category: '图像' },
 
     // === 2. 文档 ===
-    { name: '文本差异对比', emoji: '🔀', desc: '精准识别两段文本的增删改差异', href: 'tools/text-diff/index.html', category: '文档' },
     { name: 'Markdown 简历生成器', emoji: '📋', desc: '一键随机生成 / 导出高清PDF/HTML', href: 'tools/resume-maker/index.html', category: '文档' },
     { name: '简繁体转换', emoji: '🔄', desc: '中文简繁体互相转换 / 词组精准转换', href: 'tools/zh-convert/index.html', category: '文档' },
     { name: '英汉词典', emoji: '📖', desc: '离线词库 / 前缀模糊搜索 / 生词本 / 发音', href: 'tools/dictionary/index.html', category: '文档' },
@@ -51,7 +50,7 @@
     { name: '文字云生成器', emoji: '☁️', desc: '智能词频统计 / 自定义形状 / 导出高清图', href: 'tools/wordcloud/index.html', category: '媒体' },
     { name: '在线录音机与转文字', emoji: '🎙️', desc: '实时录音、波形展示、语音转文字', href: 'tools/audio-recorder/index.html', category: '媒体' },
     { name: '架构图 & 脑图', emoji: '🧠', desc: 'Mermaid 流程图 / 时序图', href: 'tools/mermaid-tool/index.html', category: '媒体' },
-    { name: '图表生成预览', emoji: '📉', desc: 'Chart.js 折线 / 柱状 / 饼图', href: 'tools/chart-tool/index.html', category: '媒体' },
+    { name: '图表生成预览', emoji: '📉', desc: '折线 / 柱状 / 饼图', href: 'tools/chart-tool/index.html', category: '媒体' },
     { name: '乐器调音器 & 节拍器', emoji: '🎸', desc: '高精度麦克风调音与节拍器', href: 'tools/tuner-metronome/index.html', category: '媒体' },
     { name: '音频工具', emoji: '🎵', desc: '波形预览 / 音量调节 / 裁剪', href: 'tools/audio-tool/index.html', category: '媒体' },
     { name: '高级音频合成器', emoji: '🎹', desc: '11种乐器音色 / 支持录制', href: 'tools/audio-synth/index.html', category: '媒体' },
