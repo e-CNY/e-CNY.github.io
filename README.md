@@ -12,7 +12,7 @@
 ### 使用方法
 访问[工具站](https://e-cny.github.io/)、[哔哩哔哩小玩具](https://www.bilibili.com/toy/3/index.html)或克隆本仓库后双击index.html
 
-[视频演示](https://www.bilibili.com/video/BV178ns6HE2y)
+[视频演示](https://www.bilibili.com/video/BV1Ed4G6qEau)
 
 ---
 
@@ -23,4 +23,4 @@ A website containing various tools, all tools run locally in the browser without
 ### Usage
 Visit [Tools website](https://e-cny.github.io/),[bilibili Toy](https://www.bilibili.com/toy/3/index.html) or clone this repository and double-click index.html
 
-[Video Demonstration](https://www.bilibili.com/video/BV178ns6HE2y)
+[Video Demonstration](https://www.bilibili.com/video/BV1Ed4G6qEau)
