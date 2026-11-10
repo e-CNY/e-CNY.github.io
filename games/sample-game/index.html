@@ -1,0 +1,77 @@
+<!-- games/sample-game/index.html —— 示例游戏：数学闪电战 -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数学闪电战 · 像素风游戏厅</title>
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="game-page">
+  <a href="../index.html" class="back-link">← 返回游戏厅</a>
+
+  <header class="game-head">
+    <h1>⚡ 数学闪电战</h1>
+    <p class="game-sub">60 秒内答对尽可能多的题目 · 提升心算速度</p>
+  </header>
+
+  <!-- 状态栏 -->
+  <div class="hud">
+    <div class="hud-item">
+      <span class="hud-label">分数</span>
+      <span class="hud-value" id="scoreVal">0</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">连对</span>
+      <span class="hud-value" id="streakVal">0</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">时间</span>
+      <span class="hud-value" id="timeVal">60</span>
+    </div>
+  </div>
+
+  <!-- 游戏区 -->
+  <div class="game-stage">
+    <div class="stage-idle" id="stageIdle">
+      <div class="idle-emoji">🧮</div>
+      <p class="idle-title">准备好了吗？</p>
+      <p class="idle-desc">60 秒内答对尽可能多的题目</p>
+      <button class="start-btn" id="startBtn" type="button">开 始 游 戏</button>
+    </div>
+
+    <div class="stage-playing" id="stagePlaying" hidden>
+      <div class="question-box">
+        <span class="q-text" id="questionText">1 + 1 = ?</span>
+      </div>
+      <div class="options-grid" id="optionsGrid"></div>
+    </div>
+
+    <div class="stage-end" id="stageEnd" hidden>
+      <div class="end-emoji" id="endEmoji">🎉</div>
+      <p class="end-title" id="endTitle">时间到！</p>
+      <div class="end-stats">
+        <div class="end-stat">
+          <div class="end-stat-label">总分</div>
+          <div class="end-stat-value" id="finalScore">0</div>
+        </div>
+        <div class="end-stat">
+          <div class="end-stat-label">最大连对</div>
+          <div class="end-stat-value" id="maxStreak">0</div>
+        </div>
+        <div class="end-stat">
+          <div class="end-stat-label">正确率</div>
+          <div class="end-stat-value" id="accuracy">0%</div>
+        </div>
+      </div>
+      <button class="start-btn" id="againBtn" type="button">再 来 一 局</button>
+    </div>
+  </div>
+
+  <p class="game-tip">💡 提示：答对不扣时间，答错会扣 2 秒；连对越多，题目越难</p>
+</main>
+<script src="game.js" defer></script>
+</body>
+</html>

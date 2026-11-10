@@ -1,0 +1,353 @@
+/* css/percentage.css */
+
+.pct-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+}
+
+.pct-app {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---------- 模式 Tabs ---------- */
+.mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+
+.mode-tabs button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 6px;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  background: #fdf8ec;
+  color: #6b5d47;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all .15s;
+  min-width: 0;
+}
+.mode-tabs button:hover {
+  border-color: #b08a5a;
+  background: #fff;
+}
+.mode-tabs button.active {
+  background: #8a5a2b;
+  border-color: #8a5a2b;
+  color: #fdf8ec;
+}
+.mode-tabs button.active .tab-desc { color: rgba(253, 248, 236, .75); }
+
+.tab-emoji {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+.tab-name {
+  font-size: .8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.tab-desc {
+  font-size: .68rem;
+  color: #a0947c;
+  white-space: nowrap;
+}
+
+/* ---------- 计算面板 ---------- */
+.calc-panel {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 16px;
+  padding: 28px 24px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mode-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: fadeIn .25s ease;
+}
+.mode-form[hidden] { display: none; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.seg-row {
+  display: flex;
+  justify-content: center;
+}
+.seg {
+  display: inline-flex;
+  border: 1px solid #ddcfb3;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+.seg button {
+  padding: 8px 20px;
+  border: none;
+  background: transparent;
+  color: #6b5d47;
+  font-size: .86rem;
+  cursor: pointer;
+  border-right: 1px solid #ecdfc4;
+  transition: background .15s, color .15s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.seg button:last-child { border-right: none; }
+.seg button:hover { background: #f4ead2; }
+.seg button.active { background: #8a5a2b; color: #fdf8ec; }
+
+/* ---------- 句句式输入 ---------- */
+.form-sentence {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #3d3226;
+  line-height: 1.5;
+}
+
+.inline-text {
+  font-size: 1.05rem;
+  color: #6b5d47;
+  white-space: nowrap;
+}
+.inline-unit {
+  font-size: 1rem;
+  color: #a0947c;
+  margin-left: -4px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.inline-num {
+  width: 140px;
+  padding: 10px 14px;
+  border: 2px solid #ddcfb3;
+  border-radius: 10px;
+  background: #fff;
+  color: #3d3226;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-align: center;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  transition: border-color .15s, box-shadow .15s;
+}
+.inline-num.small { width: 70px; }
+.inline-num::placeholder {
+  color: #d0c4a8;
+  font-weight: 400;
+  font-size: .95rem;
+}
+.inline-num:hover {
+  border-color: #c4b48f;
+}
+.inline-num:focus {
+  outline: none;
+  border-color: #8a5a2b;
+  box-shadow: 0 0 0 3px rgba(176, 138, 90, .22);
+}
+.inline-num::-webkit-outer-spin-button,
+.inline-num::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.inline-num { -moz-appearance: textfield; }
+
+.inline-answer {
+  display: inline-block;
+  min-width: 80px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #8a5a2b, #a06a34);
+  color: #fdf8ec;
+  font-size: 1.35rem;
+  font-weight: 800;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.01em;
+  transition: all .2s ease;
+  box-shadow: 0 4px 12px rgba(138, 90, 43, .2);
+}
+.inline-answer.empty {
+  background: #f0e6d2;
+  color: #b0a48e;
+  box-shadow: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+.inline-answer.negative {
+  background: linear-gradient(135deg, #b3261e, #c0392b);
+  box-shadow: 0 4px 12px rgba(179, 38, 30, .25);
+}
+
+.form-formula {
+  text-align: center;
+  font-size: .78rem;
+  color: #a0947c;
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px dashed #e6d9bf;
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  letter-spacing: .02em;
+}
+
+/* ---------- 折扣结果 ---------- */
+.disc-result {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 18px;
+  background: #fff;
+  border: 1px solid #ecdfc4;
+  border-radius: 12px;
+  animation: fadeIn .25s ease;
+}
+.disc-result[hidden] { display: none; }
+
+.disc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 4px 0;
+}
+.disc-row + .disc-row { border-top: 1px dashed #f0e6d2; }
+.disc-label {
+  font-size: .86rem;
+  color: #6b5d47;
+}
+.disc-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #3d3226;
+  font-variant-numeric: tabular-nums;
+}
+.disc-value.primary {
+  font-size: 1.5rem;
+  color: #8a5a2b;
+}
+.disc-value.save { color: #1f6a29; }
+
+/* ---------- 小费结果 ---------- */
+.tip-result {
+  animation: fadeIn .25s ease;
+}
+.tip-result[hidden] { display: none; }
+
+.tip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.tip-card {
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #ecdfc4;
+  border-radius: 12px;
+  text-align: center;
+}
+.tip-card.primary {
+  background: linear-gradient(135deg, #8a5a2b, #a06a34);
+  border-color: #8a5a2b;
+  color: #fdf8ec;
+}
+.tip-label {
+  font-size: .76rem;
+  color: #a0947c;
+  margin-bottom: 4px;
+}
+.tip-card.primary .tip-label { color: rgba(253, 248, 236, .85); }
+.tip-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #3d3226;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+.tip-card.primary .tip-value { color: #fdf8ec; }
+
+/* ---------- 快捷 Chips ---------- */
+.quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  padding-top: 4px;
+}
+.chip-label {
+  font-size: .78rem;
+  color: #a0947c;
+  white-space: nowrap;
+}
+.chip {
+  padding: 4px 12px;
+  border: 1px solid #ddcfb3;
+  border-radius: 999px;
+  background: #fdf8ec;
+  color: #6b5d47;
+  font-size: .78rem;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: all .15s;
+}
+.chip:hover {
+  border-color: #b08a5a;
+  color: #8a5a2b;
+  background: #fff;
+}
+.chip:active { transform: translateY(1px); }
+
+/* ---------- 提示 ---------- */
+.tips {
+  text-align: center;
+  font-size: .76rem;
+  color: #a0947c;
+  margin: 0;
+  line-height: 1.55;
+  padding: 0 8px;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 760px) {
+  .mode-tabs { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .pct-page { padding: 0 10px 28px; }
+  .calc-panel { padding: 20px 14px; }
+  .mode-tabs { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .mode-tabs button { padding: 8px 4px; }
+  .tab-emoji { font-size: 1.1rem; }
+  .tab-name { font-size: .72rem; }
+  .tab-desc { display: none; }
+  .form-sentence { font-size: 1rem; gap: 6px; }
+  .inline-num { width: 100px; padding: 8px 10px; font-size: 1rem; }
+  .inline-num.small { width: 56px; }
+  .inline-text { font-size: .92rem; }
+  .inline-answer { min-width: 60px; padding: 6px 10px; font-size: 1.1rem; }
+  .tip-grid { grid-template-columns: 1fr; }
+  .disc-value.primary { font-size: 1.3rem; }
+}

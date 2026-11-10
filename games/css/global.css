@@ -1,0 +1,15 @@
+/* games/css/global.css —— 独立的自包含全局样式，引用同级 fonts 目录 */
+@import url('../../fonts/lxgw-wenkai/result.css');
+
+html {
+  font-family: "LXGW WenKai", system-ui, -apple-system, "Segoe UI", Roboto,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  color: #3d3226;
+  background: #efe6d0;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }

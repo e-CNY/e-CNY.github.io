@@ -1,0 +1,203 @@
+<!-- tools/percentage/index.html -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>window.IS_WASM_TOOL = false;</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>百分比计算器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/percentage.css">
+</head>
+<body>
+<main class="pct-page">
+  <header class="tool-page-header">
+    <h1>💯 百分比计算器</h1>
+    <p>6 种常用场景 · 输入即计算 · 公式全透明 · 数字格式化</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="pct-app">
+    <!-- 模式切换 -->
+    <div class="mode-tabs" id="modeTabs">
+      <button data-mode="of" class="active" type="button">
+        <span class="tab-emoji">🧮</span>
+        <span class="tab-name">Y 的 X%</span>
+        <span class="tab-desc">求结果</span>
+      </button>
+      <button data-mode="is" type="button">
+        <span class="tab-emoji">❓</span>
+        <span class="tab-name">X 是 Y 的</span>
+        <span class="tab-desc">求百分比</span>
+      </button>
+      <button data-mode="change" type="button">
+        <span class="tab-emoji">📈</span>
+        <span class="tab-name">增减 Y%</span>
+        <span class="tab-desc">X 变化后</span>
+      </button>
+      <button data-mode="diff" type="button">
+        <span class="tab-emoji">🔀</span>
+        <span class="tab-name">X → Y</span>
+        <span class="tab-desc">变化率</span>
+      </button>
+      <button data-mode="discount" type="button">
+        <span class="tab-emoji">🏷️</span>
+        <span class="tab-name">折扣</span>
+        <span class="tab-desc">打折后价</span>
+      </button>
+      <button data-mode="tip" type="button">
+        <span class="tab-emoji">💰</span>
+        <span class="tab-name">小费</span>
+        <span class="tab-desc">分账</span>
+      </button>
+    </div>
+
+    <!-- 计算区 -->
+    <div class="calc-panel">
+      <!-- 模式 1: Y 的 X% 是多少 -->
+      <div class="mode-form" data-mode="of">
+        <div class="form-sentence">
+          <input type="number" id="ofPercent" class="inline-num" placeholder="15" min="0" step="any" inputmode="decimal">
+          <span class="inline-unit">%</span>
+          <span class="inline-text">的</span>
+          <input type="number" id="ofValue" class="inline-num" placeholder="200" step="any" inputmode="decimal">
+          <span class="inline-text">是</span>
+          <span class="inline-answer" id="ofAnswer">—</span>
+        </div>
+        <p class="form-formula" id="ofFormula">公式：结果 = Y × X ÷ 100</p>
+      </div>
+
+      <!-- 模式 2: X 是 Y 的百分之几 -->
+      <div class="mode-form" data-mode="is" hidden>
+        <div class="form-sentence">
+          <input type="number" id="isValue" class="inline-num" placeholder="30" step="any" inputmode="decimal">
+          <span class="inline-text">是</span>
+          <input type="number" id="isTotal" class="inline-num" placeholder="200" step="any" inputmode="decimal">
+          <span class="inline-text">的</span>
+          <span class="inline-answer" id="isAnswer">—</span>
+          <span class="inline-unit">%</span>
+        </div>
+        <p class="form-formula" id="isFormula">公式：百分比 = X ÷ Y × 100</p>
+      </div>
+
+      <!-- 模式 3: X 增加/减少 Y% 后 -->
+      <div class="mode-form" data-mode="change" hidden>
+        <div class="seg-row">
+          <div class="seg" id="changeDirSeg">
+            <button data-value="add" class="active" type="button">📈 增加</button>
+            <button data-value="sub" type="button">📉 减少</button>
+          </div>
+        </div>
+        <div class="form-sentence">
+          <input type="number" id="chgBase" class="inline-num" placeholder="200" step="any" inputmode="decimal">
+          <span class="inline-text" id="chgDirText">增加</span>
+          <input type="number" id="chgPercent" class="inline-num" placeholder="15" min="0" step="any" inputmode="decimal">
+          <span class="inline-unit">%</span>
+          <span class="inline-text">后是</span>
+          <span class="inline-answer" id="chgAnswer">—</span>
+        </div>
+        <p class="form-formula" id="chgFormula">公式：结果 = 原值 × (1 ± Y ÷ 100)</p>
+      </div>
+
+      <!-- 模式 4: 从 X 到 Y 变化百分之几 -->
+      <div class="mode-form" data-mode="diff" hidden>
+        <div class="form-sentence">
+          <span class="inline-text">从</span>
+          <input type="number" id="diffFrom" class="inline-num" placeholder="200" step="any" inputmode="decimal">
+          <span class="inline-text">到</span>
+          <input type="number" id="diffTo" class="inline-num" placeholder="230" step="any" inputmode="decimal">
+          <span class="inline-text">变化了</span>
+          <span class="inline-answer" id="diffAnswer">—</span>
+          <span class="inline-unit">%</span>
+        </div>
+        <p class="form-formula" id="diffFormula">公式：变化率 = (Y − X) ÷ X × 100</p>
+      </div>
+
+      <!-- 模式 5: 折扣计算 -->
+      <div class="mode-form" data-mode="discount" hidden>
+        <div class="seg-row">
+          <div class="seg" id="discModeSeg">
+            <button data-value="zhe" class="active" type="button">几折</button>
+            <button data-value="percent" type="button">百分比</button>
+          </div>
+        </div>
+        <div class="form-sentence">
+          <span class="inline-text">原价</span>
+          <input type="number" id="discPrice" class="inline-num" placeholder="200" min="0" step="any" inputmode="decimal">
+          <span class="inline-text">元，打</span>
+          <input type="number" id="discValue" class="inline-num" placeholder="8" min="0" step="any" inputmode="decimal">
+          <span class="inline-text" id="discUnit">折</span>
+        </div>
+        <div class="disc-result" id="discResult" hidden>
+          <div class="disc-row">
+            <span class="disc-label">折后价</span>
+            <span class="disc-value primary" id="discFinal">—</span>
+          </div>
+          <div class="disc-row">
+            <span class="disc-label">节省</span>
+            <span class="disc-value" id="discSave">—</span>
+          </div>
+          <div class="disc-row">
+            <span class="disc-label">折扣比例</span>
+            <span class="disc-value" id="discPercent">—</span>
+          </div>
+        </div>
+        <div class="quick-chips">
+          <span class="chip-label">快捷：</span>
+          <button class="chip" data-disc="9.5" type="button">9.5 折</button>
+          <button class="chip" data-disc="9" type="button">9 折</button>
+          <button class="chip" data-disc="8.5" type="button">8.5 折</button>
+          <button class="chip" data-disc="8" type="button">8 折</button>
+          <button class="chip" data-disc="7" type="button">7 折</button>
+          <button class="chip" data-disc="5" type="button">5 折</button>
+        </div>
+      </div>
+
+      <!-- 模式 6: 小费计算 -->
+      <div class="mode-form" data-mode="tip" hidden>
+        <div class="form-sentence">
+          <span class="inline-text">账单</span>
+          <input type="number" id="tipBill" class="inline-num" placeholder="200" min="0" step="any" inputmode="decimal">
+          <span class="inline-text">元，小费</span>
+          <input type="number" id="tipPercent" class="inline-num" placeholder="15" min="0" step="any" inputmode="decimal">
+          <span class="inline-unit">%</span>
+          <span class="inline-text">，</span>
+          <input type="number" id="tipPeople" class="inline-num small" placeholder="1" min="1" step="1" inputmode="numeric">
+          <span class="inline-text">人分摊</span>
+        </div>
+        <div class="tip-result" id="tipResult" hidden>
+          <div class="tip-grid">
+            <div class="tip-card">
+              <div class="tip-label">小费</div>
+              <div class="tip-value" id="tipAmount">—</div>
+            </div>
+            <div class="tip-card">
+              <div class="tip-label">总金额</div>
+              <div class="tip-value" id="tipTotal">—</div>
+            </div>
+            <div class="tip-card primary">
+              <div class="tip-label">每人付</div>
+              <div class="tip-value" id="tipPerPerson">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="quick-chips">
+          <span class="chip-label">小费比例：</span>
+          <button class="chip" data-tip="10" type="button">10%</button>
+          <button class="chip" data-tip="15" type="button">15%</button>
+          <button class="chip" data-tip="18" type="button">18%</button>
+          <button class="chip" data-tip="20" type="button">20%</button>
+          <button class="chip" data-tip="25" type="button">25%</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 使用提示 -->
+    <p class="tips">💡 所有结果实时计算，无需点击按钮。支持小数输入，结果自动保留适当精度并做千分位分隔。</p>
+  </div>
+</main>
+<script src="../../js/percentage.js" defer></script>
+<script src="../../js/traffic-guard.js"></script>
+</body>
+</html>

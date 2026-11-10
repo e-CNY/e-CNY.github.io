@@ -1,0 +1,183 @@
+<!-- tools/loan/index.html -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>window.IS_WASM_TOOL = false;</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>贷款计算器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/loan.css">
+</head>
+<body>
+<main class="loan-page">
+  <header class="tool-page-header">
+    <h1>🏦 贷款计算器</h1>
+    <p>等额本息 / 等额本金 / 组合贷款 / 提前还款 / 完整还款计划 / 图表可视化</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="loan-app">
+    <!-- 输入区 -->
+    <section class="input-section">
+      <!-- 贷款类型 -->
+      <div class="field full">
+        <label>贷款类型</label>
+        <div class="seg" id="loanTypeSeg">
+          <button data-value="commercial" class="active" type="button">商业贷款</button>
+          <button data-value="fund" type="button">公积金贷款</button>
+          <button data-value="combined" type="button">组合贷款</button>
+        </div>
+      </div>
+
+      <div class="input-grid" id="singleLoanFields">
+        <div class="field">
+          <label for="loanAmount">贷款金额</label>
+          <div class="input-unit">
+            <input type="number" id="loanAmount" value="1000000" min="1000" max="100000000" step="10000" inputmode="numeric">
+            <span>元</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="annualRate">年利率</label>
+          <div class="input-unit">
+            <input type="number" id="annualRate" value="3.5" min="0.01" max="30" step="0.01" inputmode="decimal">
+            <span>%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="loanTerm">贷款期限</label>
+          <div class="input-unit">
+            <input type="number" id="loanTerm" value="30" min="1" max="40" step="1" inputmode="numeric">
+            <span>年</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>还款方式</label>
+          <div class="seg" id="repayMethodSeg">
+            <button data-value="equal_payment" class="active" type="button">等额本息</button>
+            <button data-value="equal_principal" type="button">等额本金</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 组合贷款额外字段 -->
+      <div class="input-grid" id="combinedFields" hidden>
+        <div class="field">
+          <label for="commercialAmount">商业贷款金额</label>
+          <div class="input-unit">
+            <input type="number" id="commercialAmount" value="700000" min="1000" step="10000" inputmode="numeric">
+            <span>元</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="commercialRate">商业贷款年利率</label>
+          <div class="input-unit">
+            <input type="number" id="commercialRate" value="3.5" min="0.01" max="30" step="0.01" inputmode="decimal">
+            <span>%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fundAmount">公积金贷款金额</label>
+          <div class="input-unit">
+            <input type="number" id="fundAmount" value="300000" min="1000" step="10000" inputmode="numeric">
+            <span>元</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fundRate">公积金贷款年利率</label>
+          <div class="input-unit">
+            <input type="number" id="fundRate" value="2.85" min="0.01" max="30" step="0.01" inputmode="decimal">
+            <span>%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 提前还款 -->
+      <details class="advanced" id="prepayDetails">
+        <summary>📉 提前还款设置（可选）</summary>
+        <div class="input-grid">
+          <div class="field">
+            <label for="prepayMonth">第几个月提前还款</label>
+            <div class="input-unit">
+              <input type="number" id="prepayMonth" placeholder="例如 60" min="1" max="480" step="1" inputmode="numeric">
+              <span>月</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="prepayAmount">提前还款金额</label>
+            <div class="input-unit">
+              <input type="number" id="prepayAmount" placeholder="例如 200000" min="1000" step="10000" inputmode="numeric">
+              <span>元</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>提前还款后处理方式</label>
+            <div class="seg" id="prepayModeSeg">
+              <button data-value="reduce_term" class="active" type="button">缩短期限</button>
+              <button data-value="reduce_payment" type="button">减少月供</button>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <div class="input-actions">
+        <button class="primary-btn" id="calcBtn" type="button">📊 开始计算</button>
+        <button class="ghost-btn" id="resetBtn" type="button">↩️ 重置</button>
+      </div>
+    </section>
+
+    <!-- 结果区 -->
+    <section class="result-section" id="resultSection" hidden>
+      <!-- 摘要卡片 -->
+      <div class="summary-grid" id="summaryGrid"></div>
+
+      <!-- 图表 -->
+      <div class="chart-card">
+        <div class="chart-head">
+          <h2>📈 还款趋势图</h2>
+          <div class="chart-legend">
+            <span><i class="dot principal"></i> 本金</span>
+            <span><i class="dot interest"></i> 利息</span>
+            <span><i class="dot balance"></i> 剩余余额</span>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="loanChart"></canvas>
+        </div>
+      </div>
+
+      <!-- 还款计划表 -->
+      <div class="schedule-card">
+        <div class="schedule-head">
+          <h2>📋 还款计划表</h2>
+          <div class="schedule-actions">
+            <div class="seg sm" id="scheduleViewSeg">
+              <button data-value="monthly" class="active" type="button">按月</button>
+              <button data-value="yearly" type="button">按年</button>
+            </div>
+            <button class="ghost-btn sm" id="exportCSVBtn" type="button">📤 导出 CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="schedule-table" id="scheduleTable">
+            <thead id="scheduleHead"></thead>
+            <tbody id="scheduleBody"></tbody>
+          </table>
+        </div>
+        <div class="schedule-pagination" id="schedulePagination" hidden>
+          <button id="prevPageBtn" type="button" class="ghost-btn sm">← 上一页</button>
+          <span id="pageInfo"></span>
+          <button id="nextPageBtn" type="button" class="ghost-btn sm">下一页 →</button>
+        </div>
+      </div>
+
+      <p class="disclaimer">⚠️ 以上结果基于标准贷款公式估算，实际月供以银行最终审批为准。提前还款违约金、保险费、税费等未计入。</p>
+    </section>
+  </div>
+</main>
+<script src="../../js/loan.js" defer></script>
+<script src="../../js/traffic-guard.js"></script>
+</body>
+</html>

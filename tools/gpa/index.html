@@ -1,0 +1,155 @@
+<!-- tools/gpa/index.html -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>window.IS_WASM_TOOL = false;</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPA 绩点计算器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/gpa.css">
+</head>
+<body>
+<main class="gpa-page">
+  <header class="tool-page-header">
+    <h1>🎓 GPA 绩点计算器</h1>
+    <p>4.0 / 4.3 / 5.0 多种制度 · 加权计算 · 目标反推 · 本地保存</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="gpa-app">
+    <!-- 制度选择 + 统计 -->
+    <section class="top-panel">
+      <div class="system-row">
+        <label class="system-label">GPA 制度</label>
+        <div class="seg" id="systemSeg">
+          <button data-value="4.0" class="active" type="button">4.0 标准</button>
+          <button data-value="4.3" type="button">4.3 制</button>
+          <button data-value="5.0" type="button">5.0 制</button>
+          <button data-value="100" type="button">百分制</button>
+        </div>
+        <button id="tableBtn" class="ghost-btn" type="button" title="查看等级对照">📖 对照表</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card primary">
+          <span class="stat-label" id="gpaLabel">GPA 绩点</span>
+          <span class="stat-value" id="statGPA">0.00</span>
+          <span class="stat-sub" id="statGPASub">4.0 制</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">总学分</span>
+          <span class="stat-value" id="statCredits">0</span>
+          <span class="stat-sub">credits</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">课程数</span>
+          <span class="stat-value" id="statCount">0</span>
+          <span class="stat-sub">门</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">加权平均分</span>
+          <span class="stat-value" id="statAvg">0.00</span>
+          <span class="stat-sub">按学分加权</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">最高分</span>
+          <span class="stat-value sm" id="statMax">—</span>
+          <span class="stat-sub">百分制换算</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">最低分</span>
+          <span class="stat-value sm" id="statMin">—</span>
+          <span class="stat-sub">百分制换算</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 课程表格 -->
+    <section class="list-panel">
+      <div class="list-head">
+        <h2>📚 课程列表 <span class="count" id="listCount">0</span></h2>
+        <div class="head-actions">
+          <button id="addRowBtn" class="primary-btn sm" type="button">＋ 添加课程</button>
+          <button id="clearBtn" class="ghost-btn sm" type="button">清空</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="course-table">
+          <thead>
+            <tr>
+              <th class="col-num">#</th>
+              <th class="col-name">课程名称</th>
+              <th class="col-credit">学分</th>
+              <th class="col-grade">成绩</th>
+              <th class="col-point">绩点</th>
+              <th class="col-act"></th>
+            </tr>
+          </thead>
+          <tbody id="courseBody"></tbody>
+        </table>
+        <p class="empty-tip" id="emptyTip">
+          🎯 还没有课程，点击上方「＋ 添加课程」开始录入
+        </p>
+      </div>
+
+      <div class="quick-add">
+        <span class="quick-label">快捷添加：</span>
+        <button class="quick-tag" data-name="高等数学" data-credit="5" type="button">高等数学</button>
+        <button class="quick-tag" data-name="大学英语" data-credit="3" type="button">大学英语</button>
+        <button class="quick-tag" data-name="线性代数" data-credit="3" type="button">线性代数</button>
+        <button class="quick-tag" data-name="C 语言程序设计" data-credit="4" type="button">C 语言</button>
+        <button class="quick-tag" data-name="数据结构" data-credit="4" type="button">数据结构</button>
+        <button class="quick-tag" data-name="大学物理" data-credit="4" type="button">大学物理</button>
+        <button class="quick-tag" data-name="马克思基本原理" data-credit="3" type="button">马原</button>
+        <button class="quick-tag" data-name="体育" data-credit="1" type="button">体育</button>
+      </div>
+    </section>
+
+    <!-- 目标反推 -->
+    <section class="target-panel">
+      <h2>🎯 目标 GPA 反推</h2>
+      <p class="target-desc">假设你已经修完上述课程，想通过未来 <strong>N 个学分</strong> 的课程把 GPA 拉到目标值，反推还需要达到什么成绩。</p>
+      <div class="target-grid">
+        <div class="field">
+          <label for="targetGPA">目标 GPA</label>
+          <input type="number" id="targetGPA" placeholder="例如 3.5" min="0" max="5" step="0.01" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="addCredits">未来新增学分</label>
+          <input type="number" id="addCredits" placeholder="例如 30" min="0" max="500" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <button id="calcTargetBtn" class="primary-btn" type="button">计算</button>
+        </div>
+      </div>
+      <div class="target-result" id="targetResult" hidden></div>
+    </section>
+
+    <!-- 导入导出 -->
+    <section class="io-panel">
+      <button id="exportCSVBtn" class="ghost-btn" type="button">📤 导出 CSV</button>
+      <button id="importCSVBtn" class="ghost-btn" type="button">📥 导入 CSV</button>
+      <input type="file" id="importFile" accept=".csv,.txt" hidden>
+      <span class="io-hint">数据已自动保存在浏览器本地</span>
+    </section>
+
+    <p class="tips">⚠️ 不同学校 / 国家的 GPA 换算标准略有差异，本工具结果仅供估算参考。正式申请请以学校官方成绩单为准。</p>
+  </div>
+
+  <!-- 等级对照表弹窗 -->
+  <div class="modal-mask" id="tableModal" hidden>
+    <div class="modal-body">
+      <button class="modal-close" id="tableModalClose" type="button" aria-label="关闭">×</button>
+      <h3 class="modal-title" id="tableModalTitle">📖 GPA 等级对照表</h3>
+      <div class="table-ref" id="tableRef"></div>
+    </div>
+  </div>
+</main>
+<script src="../../js/gpa.js" defer></script>
+<script src="../../js/traffic-guard.js"></script>
+</body>
+</html>

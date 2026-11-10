@@ -1,0 +1,113 @@
+<!-- tools/age/index.html -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>window.IS_WASM_TOOL = false;</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>年龄计算器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/age.css">
+</head>
+<body>
+<main class="age-page">
+  <header class="tool-page-header">
+    <h1>🎂 年龄计算器</h1>
+    <p>精确年龄 / 生肖星座 / 生日倒计时 / 虚岁 / 人生进度 / 里程碑</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="age-app">
+    <!-- 输入区 -->
+    <section class="input-panel">
+      <div class="input-row">
+        <div class="field grow">
+          <label for="birthDate">出生日期</label>
+          <input type="date" id="birthDate">
+        </div>
+        <div class="field">
+          <label for="refDate">计算日期</label>
+          <input type="date" id="refDate">
+        </div>
+        <div class="field">
+          <label for="lifeExpectancy">预期寿命</label>
+          <div class="input-unit">
+            <input type="number" id="lifeExpectancy" value="80" min="30" max="150" step="1" inputmode="numeric">
+            <span>岁</span>
+          </div>
+        </div>
+        <button class="primary-btn" id="calcBtn" type="button">计算</button>
+      </div>
+      <p class="input-hint">💡 默认以今天作为计算日期，也可以指定某个未来/过去的日期</p>
+    </section>
+
+    <!-- 主结果 -->
+    <section class="result-section" id="resultSection" hidden>
+      <!-- 主卡片 -->
+      <div class="main-card">
+        <div class="main-left">
+          <div class="main-label">当前年龄</div>
+          <div class="main-age" id="mainAge">
+            <span class="big-num" id="ageYears">0</span>
+            <span class="age-unit">岁</span>
+            <span class="age-sub" id="ageExtra"></span>
+          </div>
+          <div class="main-birth" id="birthInfo"></div>
+        </div>
+        <div class="main-right">
+          <div class="zodiac-block">
+            <div class="zodiac-emoji" id="zodiacEmoji">🐭</div>
+            <div class="zodiac-name" id="zodiacName">鼠</div>
+          </div>
+          <div class="zodiac-block">
+            <div class="zodiac-emoji" id="signEmoji">♈</div>
+            <div class="zodiac-name" id="signName">白羊座</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 数据网格 -->
+      <div class="stats-grid" id="statsGrid"></div>
+
+      <!-- 下一个生日 -->
+      <div class="section-block">
+        <h2 class="section-title">🎈 下一个生日</h2>
+        <div class="birthday-card" id="nextBirthdayCard"></div>
+      </div>
+
+      <!-- 人生进度 -->
+      <div class="section-block">
+        <h2 class="section-title">📊 人生进度</h2>
+        <div class="progress-wrap">
+          <div class="progress-info" id="progressInfo"></div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-marker" id="progressMarker"></div>
+          </div>
+          <div class="progress-labels">
+            <span>出生</span>
+            <span id="progressEnd">80 岁</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 里程碑 -->
+      <div class="section-block">
+        <h2 class="section-title">🏆 重要年龄里程碑</h2>
+        <div class="milestone-list" id="milestoneList"></div>
+      </div>
+
+      <!-- 复制总结 -->
+      <div class="copy-row">
+        <button class="ghost-btn" id="copyBtn" type="button">📋 复制文字总结</button>
+      </div>
+
+      <p class="disclaimer">⚠️ 虚岁按"生下来就 1 岁，每过农历年长 1 岁"的中国传统算法；生肖以农历年为准，由浏览器原生 Intl 中文日历计算。</p>
+    </section>
+  </div>
+</main>
+<script src="../../js/age.js" defer></script>
+<script src="../../js/traffic-guard.js"></script>
+</body>
+</html>

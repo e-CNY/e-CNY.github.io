@@ -1,0 +1,465 @@
+/* css/age.css */
+
+.age-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+}
+
+.age-app {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---------- 输入区 ---------- */
+.input-panel {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.field.grow { flex: 1; min-width: 140px; }
+
+.field label {
+  font-size: .8rem;
+  font-weight: 600;
+  color: #6b5d47;
+}
+
+input[type="date"], input[type="number"] {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #ddcfb3;
+  border-radius: 9px;
+  background: #fff;
+  color: #3d3226;
+  font-size: .9rem;
+  font-family: inherit;
+  transition: border-color .15s, box-shadow .15s;
+}
+input[type="date"]:focus, input[type="number"]:focus {
+  outline: none;
+  border-color: #b08a5a;
+  box-shadow: 0 0 0 3px rgba(176, 138, 90, .18);
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] { -moz-appearance: textfield; }
+
+.input-unit {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.input-unit input { padding-right: 34px; }
+.input-unit > span {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: .78rem;
+  color: #a0947c;
+  pointer-events: none;
+  font-weight: 600;
+}
+
+.primary-btn {
+  padding: 10px 26px;
+  border: none;
+  border-radius: 9px;
+  background: #8a5a2b;
+  color: #fdf8ec;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background .15s, transform .1s;
+}
+.primary-btn:hover { background: #a06a34; }
+.primary-btn:active { transform: translateY(1px); }
+
+.input-hint {
+  margin: 10px 0 0;
+  font-size: .76rem;
+  color: #a0947c;
+  line-height: 1.5;
+}
+
+/* ---------- 结果区 ---------- */
+.result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeIn .3s ease;
+}
+.result-section[hidden] { display: none; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 主卡片 */
+.main-card {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, #8a5a2b, #a06a34);
+  border-radius: 16px;
+  color: #fdf8ec;
+  box-shadow: 0 8px 24px rgba(138, 90, 43, .25);
+  flex-wrap: wrap;
+}
+
+.main-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.main-label {
+  font-size: .82rem;
+  font-weight: 600;
+  color: rgba(253, 248, 236, .8);
+  letter-spacing: .03em;
+}
+
+.main-age {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.big-num {
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.02em;
+}
+.age-unit {
+  font-size: 1.3rem;
+  font-weight: 500;
+  opacity: .85;
+}
+.age-sub {
+  font-size: 1.1rem;
+  font-weight: 500;
+  opacity: .9;
+  margin-left: 8px;
+}
+
+.main-birth {
+  font-size: .82rem;
+  color: rgba(253, 248, 236, .82);
+  line-height: 1.5;
+}
+
+.main-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.zodiac-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 14px;
+  background: rgba(253, 248, 236, .15);
+  border-radius: 12px;
+  min-width: 76px;
+}
+.zodiac-emoji {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.zodiac-name {
+  font-size: .78rem;
+  font-weight: 600;
+  color: #fdf8ec;
+}
+
+/* 数据网格 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.stat-cell {
+  padding: 12px;
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.stat-cell-label {
+  font-size: .72rem;
+  font-weight: 600;
+  color: #6b5d47;
+}
+.stat-cell-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #8a5a2b;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stat-cell-value.sm { font-size: .95rem; }
+.stat-cell-sub {
+  font-size: .68rem;
+  color: #a0947c;
+}
+
+/* 通用段落 */
+.section-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.section-title {
+  margin: 0;
+  font-size: .92rem;
+  font-weight: 700;
+  color: #3d3226;
+  padding: 0 2px;
+}
+
+/* 下一个生日 */
+.birthday-card {
+  padding: 16px;
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bd-main {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.bd-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #8a5a2b;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.bd-unit {
+  font-size: 1rem;
+  color: #6b5d47;
+}
+.bd-date {
+  font-size: .88rem;
+  color: #6b5d47;
+}
+.bd-today {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: #fce0e0;
+  color: #a32222;
+  font-size: .82rem;
+  font-weight: 700;
+}
+.bd-detail {
+  display: flex;
+  gap: 20px;
+  font-size: .82rem;
+  color: #6b5d47;
+  flex-wrap: wrap;
+}
+.bd-detail strong { color: #8a5a2b; }
+
+/* 进度条 */
+.progress-wrap {
+  padding: 16px;
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 14px;
+}
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+  font-size: .86rem;
+  color: #6b5d47;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.progress-info strong {
+  font-size: 1.25rem;
+  color: #8a5a2b;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.progress-bar {
+  position: relative;
+  height: 18px;
+  background: #ecdfc4;
+  border-radius: 9px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8a5a2b, #a06a34);
+  border-radius: 9px;
+  width: 0%;
+  transition: width .8s cubic-bezier(.4, 1.3, .6, 1);
+}
+.progress-marker {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 4px;
+  background: #3d3226;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 2px #f9f3e3;
+  transition: left .8s cubic-bezier(.4, 1.3, .6, 1);
+  left: 0;
+}
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: .72rem;
+  color: #a0947c;
+  margin-top: 6px;
+}
+
+/* 里程碑 */
+.milestone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.milestone-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+.milestone-item.passed {
+  background: #f4ead2;
+  border-color: #d8c8a6;
+  opacity: .75;
+}
+.milestone-age {
+  font-size: .92rem;
+  font-weight: 700;
+  color: #3d3226;
+  min-width: 66px;
+}
+.milestone-tag {
+  font-size: .72rem;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #e3f0fa;
+  color: #2a6ba8;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.milestone-tag.passed-tag {
+  background: #dcf3dc;
+  color: #1f6a29;
+}
+.milestone-status {
+  flex: 1;
+  text-align: right;
+  font-size: .82rem;
+  color: #6b5d47;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.milestone-status strong { color: #8a5a2b; }
+.milestone-item.passed .milestone-status strong { color: #6b5d47; }
+
+/* 复制 */
+.copy-row {
+  display: flex;
+  justify-content: center;
+}
+.ghost-btn {
+  padding: 9px 24px;
+  border: 1px solid #ddcfb3;
+  border-radius: 10px;
+  background: #fff;
+  color: #6b5d47;
+  font-size: .86rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+}
+.ghost-btn:hover { border-color: #b08a5a; color: #8a5a2b; }
+.ghost-btn:active { transform: translateY(1px); }
+
+.disclaimer {
+  text-align: center;
+  font-size: .74rem;
+  color: #a0947c;
+  line-height: 1.55;
+  margin: 4px 0 0;
+  padding: 0 8px;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 700px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .age-page { padding: 0 10px 32px; }
+  .input-panel { padding: 12px; }
+  .input-row { gap: 8px; }
+  .field { flex-basis: 100%; }
+  .field.grow { flex-basis: 100%; }
+  .main-card { padding: 16px; flex-direction: column; }
+  .main-right { justify-content: center; }
+  .big-num { font-size: 2.6rem; }
+  .age-sub { font-size: .92rem; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-cell { padding: 10px; }
+  .stat-cell-value { font-size: 1rem; }
+  .stat-cell-value.sm { font-size: .84rem; }
+  .bd-num { font-size: 1.6rem; }
+  .bd-detail { font-size: .78rem; gap: 12px; }
+  .milestone-item { gap: 8px; }
+  .milestone-age { min-width: 56px; font-size: .86rem; }
+  .milestone-status { font-size: .76rem; }
+  .section-title { font-size: .86rem; }
+  .progress-info strong { font-size: 1.1rem; }
+}

@@ -1,0 +1,502 @@
+/* css/health.css */
+
+.health-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+}
+
+.health-app {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---------- 输入区 ---------- */
+.input-section {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.field.full { grid-column: 1 / -1; }
+
+.field label {
+  font-size: .82rem;
+  font-weight: 600;
+  color: #6b5d47;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.opt {
+  font-size: .68rem;
+  font-weight: 500;
+  color: #a0947c;
+  background: #f4ead2;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+input[type="number"], select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #ddcfb3;
+  border-radius: 9px;
+  background: #fff;
+  color: #3d3226;
+  font-size: .9rem;
+  font-family: inherit;
+  transition: border-color .15s, box-shadow .15s;
+}
+input[type="number"]:focus, select:focus {
+  outline: none;
+  border-color: #b08a5a;
+  box-shadow: 0 0 0 3px rgba(176, 138, 90, .18);
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] { -moz-appearance: textfield; }
+
+.input-unit {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.input-unit input { padding-right: 52px; }
+.input-unit > span {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: .78rem;
+  color: #a0947c;
+  pointer-events: none;
+  font-weight: 600;
+}
+
+.seg {
+  display: flex;
+  border: 1px solid #ddcfb3;
+  border-radius: 9px;
+  overflow: hidden;
+  background: #fff;
+  height: 38px;
+}
+.seg button {
+  flex: 1;
+  padding: 0 12px;
+  border: none;
+  background: transparent;
+  color: #6b5d47;
+  font-size: .88rem;
+  cursor: pointer;
+  border-right: 1px solid #ecdfc4;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.seg button:last-child { border-right: none; }
+.seg button:hover { background: #f4ead2; }
+.seg button.active {
+  background: #8a5a2b;
+  color: #fdf8ec;
+}
+
+/* 高级选项 */
+.advanced {
+  border: 1px dashed #ddcfb3;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fdf8ec;
+}
+.advanced summary {
+  cursor: pointer;
+  font-size: .85rem;
+  font-weight: 600;
+  color: #8a5a2b;
+  user-select: none;
+  list-style: none;
+  padding: 2px 0;
+}
+.advanced summary::-webkit-details-marker { display: none; }
+.advanced summary::before {
+  content: '▸ ';
+  display: inline-block;
+  transition: transform .2s;
+}
+.advanced[open] summary::before { content: '▾ '; }
+.advanced .input-grid { margin-top: 10px; }
+
+.advanced-tip {
+  margin: 8px 0 0;
+  font-size: .74rem;
+  color: #a0947c;
+  line-height: 1.5;
+}
+
+.female-only { display: none; }
+.gender-female .female-only { display: flex; }
+
+/* 操作 */
+.input-actions {
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+.primary-btn {
+  padding: 11px 40px;
+  border: none;
+  border-radius: 10px;
+  background: #8a5a2b;
+  color: #fdf8ec;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  font-family: inherit;
+  letter-spacing: .02em;
+}
+.primary-btn:hover { background: #a06a34; }
+.primary-btn:active { transform: translateY(1px); }
+
+/* ---------- 结果区 ---------- */
+.result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: fadeIn .3s ease;
+}
+.result-section[hidden] { display: none; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#resultContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* 分组 */
+.group-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.group-title {
+  font-size: .92rem;
+  font-weight: 700;
+  color: #6b5d47;
+  margin: 0;
+  padding: 0 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.group-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, #ddcfb3, transparent);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+.card-grid.wide { grid-template-columns: 1fr; }
+
+/* 卡片 */
+.result-card {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.card-title {
+  font-size: .86rem;
+  font-weight: 700;
+  color: #3d3226;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.card-tag {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.card-value {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #8a5a2b;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+.card-value .unit {
+  font-size: .85rem;
+  font-weight: 500;
+  color: #a0947c;
+  margin-left: 4px;
+  letter-spacing: 0;
+}
+.card-value.sm { font-size: 1.45rem; }
+
+.card-note {
+  font-size: .78rem;
+  color: #6b5d47;
+  line-height: 1.55;
+  margin: 0;
+}
+.card-note strong { color: #8a5a2b; }
+
+/* 分类色 */
+.c-blue   { background: #e3f0fa; color: #2a6ba8; }
+.c-green  { background: #dcf3dc; color: #1f6a29; }
+.c-orange { background: #fdead0; color: #a05b00; }
+.c-red    { background: #fce0e0; color: #a32222; }
+.c-purple { background: #f0e5fa; color: #6b2e9a; }
+.c-teal   { background: #d9f0ec; color: #166a5a; }
+
+/* 色条 */
+.card-bar {
+  position: relative;
+  height: 22px;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  background: #eee;
+  margin-top: 2px;
+}
+.card-bar-seg { height: 100%; }
+.card-bar-marker {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 4px;
+  background: #3d3226;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 2px #f9f3e3;
+  transition: left .4s cubic-bezier(.4, 1.4, .6, 1);
+}
+.card-bar-labels {
+  display: flex;
+  font-size: .66rem;
+  color: #a0947c;
+  margin-top: 2px;
+}
+.card-bar-labels > span {
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0 1px;
+}
+
+.bmi-thin   { background: #9cc5e8; }
+.bmi-normal { background: #8fd49c; }
+.bmi-over   { background: #f5c26b; }
+.bmi-obese  { background: #e88585; }
+
+.bf-essential { background: #9cc5e8; }
+.bf-athlete   { background: #8fd49c; }
+.bf-fit       { background: #a8dda8; }
+.bf-average   { background: #f5c26b; }
+.bf-obese     { background: #e88585; }
+
+.whtr-thin    { background: #9cc5e8; }
+.whtr-healthy { background: #8fd49c; }
+.whtr-over    { background: #f5c26b; }
+.whtr-obese   { background: #e88585; }
+
+/* 心率区间 */
+.hr-zones {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hr-zone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: .8rem;
+}
+.hr-zone-idx {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .72rem;
+  flex-shrink: 0;
+}
+.hr-zone-name { flex: 1; font-weight: 600; }
+.hr-zone-bpm { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hr-z1 { background: #d9f0ec; color: #166a5a; }
+.hr-z2 { background: #dcf3dc; color: #1f6a29; }
+.hr-z3 { background: #fdead0; color: #a05b00; }
+.hr-z4 { background: #fce0e0; color: #a32222; }
+.hr-z5 { background: #f0d5f5; color: #8b1a9b; }
+
+/* 三大营养素 */
+.macro-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.macro-item {
+  padding: 10px 8px;
+  border-radius: 10px;
+  text-align: center;
+}
+.macro-value {
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.macro-value .u {
+  font-size: .74rem;
+  font-weight: 500;
+  opacity: .8;
+  margin-left: 2px;
+}
+.macro-label {
+  font-size: .74rem;
+  font-weight: 600;
+  margin-top: 4px;
+  opacity: .88;
+}
+.macro-protein { background: #fdead0; color: #a05b00; }
+.macro-carb    { background: #e3f0fa; color: #2a6ba8; }
+.macro-fat     { background: #fce0e0; color: #a32222; }
+
+/* 双列数据 */
+.dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.dual-item {
+  padding: 8px 10px;
+  background: #fdf8ec;
+  border-radius: 8px;
+  border: 1px solid #ecdfc4;
+}
+.dual-label {
+  font-size: .7rem;
+  color: #a0947c;
+  margin-bottom: 2px;
+}
+.dual-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #3d3226;
+  font-variant-numeric: tabular-nums;
+}
+.dual-value .u {
+  font-size: .72rem;
+  font-weight: 500;
+  color: #a0947c;
+  margin-left: 2px;
+}
+
+/* MET 表格 */
+.met-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .82rem;
+  margin-top: 2px;
+}
+.met-table th, .met-table td {
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 1px solid #ecdfc4;
+}
+.met-table th {
+  background: #fdf8ec;
+  font-weight: 600;
+  color: #6b5d47;
+  font-size: .76rem;
+  position: sticky;
+  top: 0;
+}
+.met-table td:first-child { color: #3d3226; }
+.met-table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #8a5a2b;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.met-table tr:last-child td { border-bottom: none; }
+.met-table tr:hover td { background: #fbf6e9; }
+
+.disclaimer {
+  text-align: center;
+  font-size: .76rem;
+  color: #a0947c;
+  line-height: 1.55;
+  margin: 10px 0 0;
+  padding: 0 8px;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 640px) {
+  .health-page { padding: 0 10px 32px; }
+  .input-section { padding: 12px; }
+  .input-grid { grid-template-columns: 1fr; gap: 10px; }
+  .seg button { padding: 0 8px; font-size: .82rem; }
+  .primary-btn { width: 100%; }
+  .card-value { font-size: 1.65rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .result-card { padding: 12px; }
+  .macro-value { font-size: 1.05rem; }
+  .hr-zone { font-size: .78rem; }
+  .met-table { font-size: .78rem; }
+  .met-table th, .met-table td { padding: 6px 8px; }
+}

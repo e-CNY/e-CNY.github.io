@@ -1,0 +1,400 @@
+/* css/loan.css */
+
+.loan-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+}
+
+.loan-app {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---------- 输入区 ---------- */
+.input-section {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.field.full { grid-column: 1 / -1; }
+
+.field label {
+  font-size: .8rem;
+  font-weight: 600;
+  color: #6b5d47;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #ddcfb3;
+  border-radius: 9px;
+  background: #fff;
+  color: #3d3226;
+  font-size: .9rem;
+  font-family: inherit;
+  transition: border-color .15s, box-shadow .15s;
+}
+input[type="number"]:focus {
+  outline: none;
+  border-color: #b08a5a;
+  box-shadow: 0 0 0 3px rgba(176, 138, 90, .18);
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] { -moz-appearance: textfield; }
+
+.input-unit {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.input-unit input { padding-right: 46px; }
+.input-unit > span {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: .78rem;
+  color: #a0947c;
+  pointer-events: none;
+  font-weight: 600;
+}
+
+.seg {
+  display: flex;
+  border: 1px solid #ddcfb3;
+  border-radius: 9px;
+  overflow: hidden;
+  background: #fff;
+  height: 38px;
+}
+.seg button {
+  flex: 1;
+  padding: 0 10px;
+  border: none;
+  background: transparent;
+  color: #6b5d47;
+  font-size: .82rem;
+  cursor: pointer;
+  border-right: 1px solid #ecdfc4;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.seg button:last-child { border-right: none; }
+.seg button:hover { background: #f4ead2; }
+.seg button.active { background: #8a5a2b; color: #fdf8ec; }
+.seg.sm { height: 32px; }
+.seg.sm button { font-size: .78rem; padding: 0 8px; }
+
+/* 高级选项 */
+.advanced {
+  border: 1px dashed #ddcfb3;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fdf8ec;
+}
+.advanced summary {
+  cursor: pointer;
+  font-size: .85rem;
+  font-weight: 600;
+  color: #8a5a2b;
+  user-select: none;
+  list-style: none;
+  padding: 2px 0;
+}
+.advanced summary::-webkit-details-marker { display: none; }
+.advanced summary::before {
+  content: '▸ ';
+  display: inline-block;
+  transition: transform .2s;
+}
+.advanced[open] summary::before { content: '▾ '; }
+.advanced .input-grid { margin-top: 10px; }
+
+.input-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.primary-btn {
+  padding: 10px 32px;
+  border: none;
+  border-radius: 10px;
+  background: #8a5a2b;
+  color: #fdf8ec;
+  font-size: .92rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s, transform .1s;
+}
+.primary-btn:hover { background: #a06a34; }
+.primary-btn:active { transform: translateY(1px); }
+
+.ghost-btn {
+  padding: 9px 20px;
+  border: 1px solid #ddcfb3;
+  border-radius: 10px;
+  background: #fff;
+  color: #6b5d47;
+  font-size: .88rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+}
+.ghost-btn:hover { border-color: #b08a5a; color: #8a5a2b; }
+.ghost-btn:active { transform: translateY(1px); }
+.ghost-btn.sm { padding: 6px 14px; font-size: .8rem; }
+
+/* ---------- 结果区 ---------- */
+.result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeIn .3s ease;
+}
+.result-section[hidden] { display: none; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 摘要卡片 */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.summary-card {
+  padding: 14px;
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.summary-card.primary {
+  background: #8a5a2b;
+  border-color: #8a5a2b;
+  color: #fdf8ec;
+}
+.summary-card.primary .summary-label,
+.summary-card.primary .summary-sub { color: rgba(253, 248, 236, .8); }
+.summary-card.primary .summary-value { color: #fdf8ec; }
+
+.summary-label {
+  font-size: .74rem;
+  font-weight: 600;
+  color: #6b5d47;
+  letter-spacing: .02em;
+}
+.summary-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #8a5a2b;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+.summary-value .unit {
+  font-size: .8rem;
+  font-weight: 500;
+  color: #a0947c;
+  margin-left: 3px;
+}
+.summary-sub {
+  font-size: .7rem;
+  color: #a0947c;
+}
+
+/* 图表 */
+.chart-card {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 14px;
+  padding: 14px;
+}
+.chart-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.chart-head h2 {
+  margin: 0;
+  font-size: .95rem;
+  color: #3d3226;
+  font-weight: 700;
+}
+.chart-legend {
+  display: flex;
+  gap: 14px;
+  font-size: .76rem;
+  color: #6b5d47;
+}
+.chart-legend span { display: flex; align-items: center; gap: 5px; }
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot.principal { background: #8a5a2b; }
+.dot.interest { background: #e88585; }
+.dot.balance { background: #a0947c; }
+
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+#loanChart {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 还款计划表 */
+.schedule-card {
+  background: #f9f3e3;
+  border: 1px solid #ddcfb3;
+  border-radius: 14px;
+  padding: 14px;
+}
+.schedule-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.schedule-head h2 {
+  margin: 0;
+  font-size: .95rem;
+  color: #3d3226;
+  font-weight: 700;
+}
+.schedule-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid #ecdfc4;
+  border-radius: 10px;
+  background: #fff;
+  max-height: 420px;
+  overflow-y: auto;
+}
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .84rem;
+  min-width: 680px;
+}
+.schedule-table th {
+  position: sticky;
+  top: 0;
+  padding: 9px 12px;
+  background: #fbf6e9;
+  text-align: right;
+  font-size: .76rem;
+  font-weight: 600;
+  color: #6b5d47;
+  border-bottom: 1px solid #ecdfc4;
+  white-space: nowrap;
+  z-index: 2;
+}
+.schedule-table th:first-child,
+.schedule-table td:first-child {
+  text-align: center;
+  width: 60px;
+}
+.schedule-table td {
+  padding: 7px 12px;
+  text-align: right;
+  border-bottom: 1px solid #f4ead2;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.schedule-table tr:last-child td { border-bottom: none; }
+.schedule-table tr:hover td { background: #fdfbf5; }
+.schedule-table .total-row td {
+  font-weight: 700;
+  color: #8a5a2b;
+  background: #fdf8ec;
+  border-top: 2px solid #ddcfb3;
+}
+
+.schedule-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding-top: 10px;
+  font-size: .82rem;
+  color: #6b5d47;
+}
+
+.disclaimer {
+  text-align: center;
+  font-size: .76rem;
+  color: #a0947c;
+  line-height: 1.55;
+  margin: 0;
+  padding: 0 8px;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 860px) {
+  .input-grid { grid-template-columns: repeat(2, 1fr); }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .loan-page { padding: 0 10px 32px; }
+  .input-section, .chart-card, .schedule-card { padding: 12px; }
+  .input-grid { grid-template-columns: 1fr; gap: 10px; }
+  .seg button { padding: 0 8px; font-size: .78rem; }
+  .input-actions { flex-direction: column; }
+  .input-actions button { width: 100%; }
+  .summary-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .summary-value { font-size: 1.2rem; }
+  .chart-wrap { height: 220px; }
+  .schedule-actions { width: 100%; justify-content: space-between; }
+  .chart-legend { font-size: .7rem; gap: 8px; }
+  .schedule-table { font-size: .78rem; }
+  .schedule-table th, .schedule-table td { padding: 6px 8px; }
+}

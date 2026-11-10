@@ -1,8 +1,14 @@
+/* js/home.js —— 工具站首页（教育类游戏厅放第 3 位，归属趣味分类） */
 (function () {
   var tools = [
     // === 1. 图像 ===
     { name: '高清电子签名生成器', emoji: '✒️', desc: '丝滑手写 / 自动裁切留白 / 导出透明PNG', href: 'tools/e-signature/index.html', category: '图像' },
     { name: '图片调色与滤镜', emoji: '🌅', desc: '极速调整亮度/对比度/饱和度，支持一键复古滤镜', href: 'tools/image-filter/index.html', category: '图像' },
+    
+    // === 插入到全部的第三位 ===
+    { name: '教育类游戏厅', emoji: '🕹️', desc: '各种教育类像素游戏不定期开发中...', href: 'games/index.html', category: '趣味' },
+
+    // === 继续图像分类 ===
     { name: '图片取色器与配色', emoji: '🖍️', desc: '提取图片主色调 / 放大镜吸管 / UI 实战预览', href: 'tools/color-extractor/index.html', category: '图像' },
     { name: '图片加水印', emoji: '💧', desc: '自定义字体与九宫格水印', href: 'tools/watermark/index.html', category: '图像' },
     { name: '证件照处理与排版', emoji: '📸', desc: '换底色 / 加水印 / 拼版打印，全能本地处理', href: 'tools/watermark/index.html', category: '图像' },
@@ -58,12 +64,23 @@
     { name: 'Lottie 动画预览', emoji: '🎞️', desc: '渲染 Lottie JSON 动画', href: 'tools/lottie-tool/index.html', category: '媒体' },
 
     // === 5. 办公 ===
+    { name: '电子印章生成器', emoji: '📮', desc: '环形文字 / 五角星 / 做旧效果 / 导出透明PNG', href: 'tools/seal/index.html', category: '办公' },
     { name: '代码截图美化器', emoji: '📸', desc: '将代码生成极客风精美截图', href: 'tools/code-screenshot/index.html', category: '办公' },
     { name: 'Markdown 编辑器', emoji: '📑', desc: '实时预览 / 公式支持 / 提取目录', href: 'tools/markdown-tool/index.html', category: '办公' },
     { name: '表格处理工具', emoji: '📊', desc: 'CSV 与 Excel 互转、预览', href: 'tools/table-tool/index.html', category: '办公' },
     { name: '办公文档自动化', emoji: '📂', desc: 'Word 转 HTML 与提取图片', href: 'tools/doc-automation/index.html', category: '办公' },
 
     // === 6. 生活 ===
+    { name: '待办清单', emoji: '✅', desc: '任务管理 / 分类标签 / 优先级 / 拖拽排序 / 本地保存', href: 'tools/todo/index.html', category: '生活' },
+    { name: '习惯打卡', emoji: '🔥', desc: '每日好习惯追踪 / 连续天数 / GitHub 风格热力图 / 本地保存', href: 'tools/habit/index.html', category: '生活' },
+    { name: '倒数日 · 纪念日', emoji: '📅', desc: '重要日子倒数/正数 / 每年重复 / 生日周年 / 分享卡片图', href: 'tools/countdown/index.html', category: '生活' },
+    { name: '年龄计算器', emoji: '🎂', desc: '精确年龄 / 虚岁 / 生肖星座 / 生日倒计时 / 人生进度 / 里程碑', href: 'tools/age/index.html', category: '生活' },
+    { name: 'GPA 绩点计算器', emoji: '🎓', desc: '4.0/4.3/5.0/百分制 · 加权计算 · 目标反推 · CSV 导入导出', href: 'tools/gpa/index.html', category: '生活' },
+    { name: '贷款计算器', emoji: '🏦', desc: '等额本息/等额本金/组合贷款 / 提前还款 / 完整还款计划 / 图表可视化', href: 'tools/loan/index.html', category: '生活' },
+    { name: '复利 · 投资收益计算器', emoji: '💰', desc: '初始本金 / 定期定投 / 复利增长 / 通胀调整 / IRR / 逐年明细 / 增长曲线', href: 'tools/investment/index.html', category: '生活' },
+    { name: '百分比计算器', emoji: '💯', desc: '6 种常用场景：占比/百分比/增减率/折扣/小费 · 输入即算', href: 'tools/percentage/index.html', category: '生活' },
+    { name: '世界时钟 · 时区转换', emoji: '🌍', desc: '多城市实时时钟 / 日期时间转换 / 会议规划器 / 夏令时自动处理', href: 'tools/world-clock/index.html', category: '生活' },
+    { name: '健康计算器', emoji: '💪', desc: '19 项指标：BMI/代谢/体脂/腰高比/血压/血糖/心率/VO2max/运动消耗', href: 'tools/health/index.html', category: '生活' },
     { name: '单词卡片闪记', emoji: '📇', desc: '英日韩词库·学习和测试·一键生成精美卡片图', href: 'tools/word-card/index.html', category: '生活' },
     { name: '打字速度测试', emoji: '🏎️', desc: '中英文打字测速 / 实时统计 WPM / 正确率', href: 'tools/typing-test/index.html', category: '生活' },
     { name: '计算器工具箱', emoji: '🧮', desc: '科学 / 统计 / 房贷 / 理财', href: 'tools/calc-toolbox/index.html', category: '生活' },
@@ -93,12 +110,10 @@
     { name: '硬件串口调试', emoji: '🔌', desc: '纯浏览器连接 Arduino/ESP32', href: 'tools/serial-tool/index.html', category: '硬件' },
 
     // === 11. 趣味 ===
+    { name: '幸运大转盘', emoji: '🎡', desc: '自定义名单 / 随机公平抽取 / 流畅转盘动画', href: 'tools/wheel/index.html', category: '趣味' },
     { name: '数学函数绘图', emoji: '📈', desc: '输入表达式渲染 2D 曲线', href: 'tools/math-plot/index.html', category: '趣味' },
     { name: '图标与 Emoji', emoji: '🔣', desc: '一键检索复制符号', href: 'tools/icon-tool/index.html', category: '趣味' },
-    { name: '玄学八字排盘', emoji: '🔮', desc: '干支 / 十神 / 五行推演', href: 'tools/bazi/index.html', category: '趣味' },
-
-    // === 占位 ===
-    { name: 'Coming Soon', emoji: '🚧', desc: '敬请期待，更多极客工具开发中...', href: '#', category: '趣味' }
+    { name: '玄学八字排盘', emoji: '🔮', desc: '干支 / 十神 / 五行推演', href: 'tools/bazi/index.html', category: '趣味' }
   ];
 
   var basePath = window.location.pathname;

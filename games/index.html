@@ -1,0 +1,24 @@
+<!-- tools 目录外的 games/index.html —— 像素风游戏厅首页（布局与工具站完全一致） -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>像素风游戏厅</title>
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+<main class="home">
+  <h1>🕹️ 教育类游戏厅</h1>
+  <div class="search-wrap">
+    <span class="search-icon" aria-hidden="true">🔍</span>
+    <input id="search" type="search" placeholder="搜索游戏…（本地运行，不上传服务器）" autocomplete="off">
+  </div>
+  <nav class="tabs" id="tabs" aria-label="分类"></nav>
+  <section id="grid" class="grid"></section>
+  <p id="empty" hidden>没有找到匹配的游戏</p>
+</main>
+<script src="js/home.js" defer></script>
+</body>
+</html>

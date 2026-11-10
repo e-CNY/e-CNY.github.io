@@ -1,0 +1,75 @@
+<!-- tools/habit/index.html -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>window.IS_WASM_TOOL = false;</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>习惯打卡 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/habit.css">
+</head>
+<body>
+<main class="habit-page">
+  <header class="tool-page-header">
+    <h1>🔥 习惯打卡</h1>
+    <p>每日好习惯追踪 / 连续天数 / GitHub 风格热力图 / 本地保存</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="habit-app">
+    <!-- 概览 -->
+    <section class="overview-grid" id="overviewGrid"></section>
+
+    <!-- 顶部操作栏 -->
+    <div class="toolbar">
+      <button class="primary-btn" id="addHabitBtn" type="button">＋ 添加习惯</button>
+      <div class="toolbar-right">
+        <button class="ghost-btn" id="importBtn" type="button">📥 导入</button>
+        <button class="ghost-btn" id="exportBtn" type="button">📤 导出</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </div>
+
+    <!-- 习惯列表 -->
+    <div class="habit-list" id="habitList"></div>
+    <p class="empty-tip" id="emptyTip" hidden>
+      🌱 还没有习惯，点击「＋ 添加习惯」开始记录第一个好习惯！
+    </p>
+
+    <p class="tips">💡 数据保存在浏览器本地，清理浏览器数据会丢失记录。建议定期导出备份。</p>
+  </div>
+
+  <!-- 添加 / 编辑习惯 Modal -->
+  <div class="modal-mask" id="habitModal" hidden>
+    <div class="modal-body">
+      <button class="modal-close" id="modalClose" type="button" aria-label="关闭">×</button>
+      <h3 class="modal-title" id="modalTitle">添加习惯</h3>
+
+      <div class="modal-section">
+        <label class="modal-label">习惯名称</label>
+        <input type="text" id="habitName" placeholder="例如：早起、跑步、读书…" maxlength="20" autocomplete="off">
+      </div>
+
+      <div class="modal-section">
+        <label class="modal-label">图标</label>
+        <div class="emoji-grid" id="emojiGrid"></div>
+      </div>
+
+      <div class="modal-section">
+        <label class="modal-label">颜色</label>
+        <div class="color-row" id="colorRow"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="ghost-btn" id="cancelBtn" type="button">取消</button>
+        <button class="primary-btn" id="saveBtn" type="button">保存</button>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="../../js/habit.js" defer></script>
+<script src="../../js/traffic-guard.js"></script>
+</body>
+</html>

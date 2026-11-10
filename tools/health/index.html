@@ -1,0 +1,144 @@
+<!-- tools/health/index.html -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>window.IS_WASM_TOOL = false;</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>健康计算器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/health.css">
+</head>
+<body>
+<main class="health-page">
+  <header class="tool-page-header">
+    <h1>💪 健康计算器</h1>
+    <p>19 项综合指标：BMI / 代谢 / 体脂 / 腰围 / 心血管 / 运动消耗 / 血糖</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="health-app">
+    <!-- 输入区 -->
+    <section class="input-section">
+      <div class="input-grid">
+        <div class="field">
+          <label>性别</label>
+          <div class="seg" id="genderSeg">
+            <button data-value="male" class="active" type="button">👨 男</button>
+            <button data-value="female" type="button">👩 女</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="age">年龄</label>
+          <div class="input-unit">
+            <input type="number" id="age" value="25" min="10" max="120" inputmode="numeric">
+            <span>岁</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="height">身高</label>
+          <div class="input-unit">
+            <input type="number" id="height" value="170" min="100" max="250" step="0.5" inputmode="decimal">
+            <span>cm</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="weight">体重</label>
+          <div class="input-unit">
+            <input type="number" id="weight" value="65" min="20" max="300" step="0.1" inputmode="decimal">
+            <span>kg</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="waist">腰围 <span class="opt">选填</span></label>
+          <div class="input-unit">
+            <input type="number" id="waist" placeholder="肚脐水平" min="30" max="200" step="0.1" inputmode="decimal">
+            <span>cm</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="activity">活动水平</label>
+          <select id="activity">
+            <option value="1.2">久坐 · 几乎不运动（办公室工作）</option>
+            <option value="1.375" selected>轻度 · 每周 1-3 天运动</option>
+            <option value="1.55">中度 · 每周 3-5 天运动</option>
+            <option value="1.725">高度 · 每周 6-7 天运动</option>
+            <option value="1.9">极限 · 体力劳动 / 每天两练</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>目标</label>
+          <div class="seg" id="goalSeg">
+            <button data-value="cut" type="button">🔥 减脂</button>
+            <button data-value="maintain" class="active" type="button">⚖️ 保持</button>
+            <button data-value="bulk" type="button">💪 增肌</button>
+          </div>
+        </div>
+      </div>
+
+      <details class="advanced">
+        <summary>🔬 更多可选指标（颈围 / 臀围 / 静息心率 / 血压 / 血糖）</summary>
+        <div class="input-grid">
+          <div class="field">
+            <label for="neck">颈围 <span class="opt">选填</span></label>
+            <div class="input-unit">
+              <input type="number" id="neck" placeholder="最细处" min="20" max="80" step="0.1" inputmode="decimal">
+              <span>cm</span>
+            </div>
+          </div>
+          <div class="field female-only">
+            <label for="hip">臀围 <span class="opt">选填</span></label>
+            <div class="input-unit">
+              <input type="number" id="hip" placeholder="最宽处" min="40" max="200" step="0.1" inputmode="decimal">
+              <span>cm</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="restHR">静息心率 <span class="opt">选填</span></label>
+            <div class="input-unit">
+              <input type="number" id="restHR" placeholder="晨起静坐" min="30" max="150" inputmode="numeric">
+              <span>次/分</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="bpSys">收缩压（高压）<span class="opt">选填</span></label>
+            <div class="input-unit">
+              <input type="number" id="bpSys" placeholder="例如 120" min="60" max="250" inputmode="numeric">
+              <span>mmHg</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="bpDia">舒张压（低压）<span class="opt">选填</span></label>
+            <div class="input-unit">
+              <input type="number" id="bpDia" placeholder="例如 80" min="30" max="150" inputmode="numeric">
+              <span>mmHg</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="glucose">空腹血糖 <span class="opt">选填</span></label>
+            <div class="input-unit">
+              <input type="number" id="glucose" placeholder="例如 5.2" min="1" max="30" step="0.1" inputmode="decimal">
+              <span>mmol/L</span>
+            </div>
+          </div>
+        </div>
+        <p class="advanced-tip">💡 填得越多，结果越全面。没有对应输入的指标卡片会自动隐藏。</p>
+      </details>
+
+      <div class="input-actions">
+        <button class="primary-btn" id="calcBtn" type="button">📊 开始计算</button>
+      </div>
+    </section>
+
+    <!-- 结果区 -->
+    <section class="result-section" id="resultSection" hidden>
+      <div id="resultContainer"></div>
+      <p class="disclaimer">⚠️ 以上结果基于通用经验公式估算，仅供参考。健康问题请咨询专业医生或注册营养师。</p>
+    </section>
+  </div>
+</main>
+<script src="../../js/health.js" defer></script>
+<script src="../../js/traffic-guard.js"></script>
+</body>
+</html>

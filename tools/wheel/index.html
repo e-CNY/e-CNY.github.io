@@ -1,0 +1,66 @@
+<!-- tools/wheel/index.html -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>window.IS_WASM_TOOL = false;</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>幸运大转盘 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/wheel.css">
+</head>
+<body>
+<main class="wheel-page">
+  <header class="tool-page-header">
+    <h1>🎡 幸运大转盘</h1>
+    <p>输入名单，点击转盘随机抽取 · 纯本地运行，数据不上传</p>
+    <a href="../../index.html">← 返回工具站</a>
+  </header>
+
+  <div class="wheel-layout">
+    <!-- 左侧设置面板 -->
+    <aside class="panel">
+      <h2>抽奖名单 <span id="count">0 项</span></h2>
+      <textarea id="entries" spellcheck="false" placeholder="每行输入一个选项…&#10;例如：&#10;奖品A&#10;奖品B&#10;谢谢参与"></textarea>
+      <p class="warn" id="warn" hidden></p>
+
+      <div class="btn-row">
+        <button class="btn" id="shuffleBtn" type="button">🔀 打乱顺序</button>
+        <button class="btn" id="resetBtn" type="button">↩️ 恢复默认</button>
+      </div>
+
+      <h2 class="sep">选项</h2>
+      <label class="check-row"><input type="checkbox" id="removeWinner"> 抽中后从名单移除</label>
+      <label class="check-row"><input type="checkbox" id="soundToggle" checked> 转动音效</label>
+
+      <h2 class="sep">抽奖结果</h2>
+      <div class="result-box" id="result">
+        <span class="result-text">等待抽奖…</span>
+      </div>
+    </aside>
+
+    <!-- 右侧转盘舞台 -->
+    <section class="stage">
+      <div class="wheel-wrap">
+        <canvas id="wheel"></canvas>
+        <div class="pointer" aria-hidden="true"></div>
+      </div>
+
+      <button class="spin-btn" id="spinBtn" type="button">开 始 抽 奖</button>
+
+      <div class="history-wrap">
+        <div class="history-head">
+          <span>历史记录</span>
+          <button class="btn small" id="clearHistory" type="button">清空</button>
+        </div>
+        <p class="history-empty" id="historyEmpty">暂无记录</p>
+        <ul class="history-list" id="historyList"></ul>
+      </div>
+    </section>
+  </div>
+</main>
+<script src="../../js/wheel.js" defer></script>
+<script src="../../js/traffic-guard.js"></script>
+</body>
+</html>
