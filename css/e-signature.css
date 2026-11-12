@@ -8,6 +8,10 @@
   align-items: start;
 }
 
+body {
+  font-family: 'LXGW WenKai', 'LXGW WenKai Screen', system-ui, -apple-system, sans-serif;
+}
+
 .control-panel {
   background: #f9f3e3;
   border: 1px solid #ddcfb3;
@@ -15,14 +19,11 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
 }
 
-.panel-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.panel-section { display: flex; flex-direction: column; gap: 10px; }
+[hidden] { display: none !important; }
 
 .section-title {
   font-weight: 600;
@@ -38,21 +39,18 @@
   justify-content: space-between;
   font-size: 0.9rem;
   color: #3d3226;
-}
-.setting-row label { font-weight: 600; }
-
-/* 颜色选择 */
-.color-presets {
-  display: flex;
   gap: 8px;
 }
+.setting-row label { font-weight: 600; white-space: nowrap; }
+
+.color-presets { display: flex; gap: 8px; }
 .color-btn {
-  width: 24px;
-  height: 24px;
+  width: 24px; height: 24px;
   border-radius: 50%;
   border: 2px solid #ddcfb3;
   cursor: pointer;
   transition: transform 0.15s;
+  padding: 0;
 }
 .color-btn:hover { transform: scale(1.1); }
 .color-btn.active {
@@ -60,28 +58,31 @@
   box-shadow: 0 0 0 2px #f9f3e3, 0 0 0 4px #8a5a2b;
 }
 input[type="color"] {
-  width: 28px;
-  height: 28px;
+  width: 28px; height: 28px;
   padding: 0;
   border: 1px solid #ddcfb3;
   border-radius: 4px;
   cursor: pointer;
   background: #fff;
+  flex: 0 0 auto;
 }
 
-/* 滑块 */
 input[type="range"] {
   flex: 1;
-  margin: 0 10px;
+  min-width: 0;
+  margin: 0 6px;
   accent-color: #8a5a2b;
 }
-#brush-size-val {
+#brush-size-val,
+#image-zoom-val {
   font-family: monospace;
-  width: 20px;
+  width: 44px;
   text-align: right;
+  flex: 0 0 auto;
+  color: #6b5d47;
 }
+#brush-size-val { width: 22px; }
 
-/* 下拉与复选框 */
 select {
   width: 100%;
   padding: 8px 12px;
@@ -92,6 +93,7 @@ select {
   outline: none;
   font-size: 0.9rem;
 }
+
 .checkbox-label {
   display: flex;
   align-items: center;
@@ -101,23 +103,23 @@ select {
   cursor: pointer;
 }
 .checkbox-label input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 16px; height: 16px;
   accent-color: #8a5a2b;
   cursor: pointer;
 }
+
 .hint {
   font-size: 0.75rem;
   color: #8a7a5f;
   line-height: 1.5;
   margin: 0;
 }
+.hint b { color: #6b5d47; }
 
-/* 按钮 */
 .primary-btn, .secondary-btn {
-  padding: 10px 16px;
+  padding: 10px 14px;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   text-align: center;
@@ -129,13 +131,13 @@ select {
 .secondary-btn { background: #fff; color: #6b5d47; border: 1px solid #ddcfb3; }
 .secondary-btn:hover:not(:disabled) { background: #efe6d0; }
 .secondary-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* 右侧画板 */
-.preview-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+#btn-move-image.active {
+  background: #8a5a2b;
+  color: #fff;
+  border-color: #8a5a2b;
 }
+
+.preview-panel { display: flex; flex-direction: column; gap: 16px; }
 
 .canvas-container {
   background: #e5d9bd;
@@ -146,36 +148,36 @@ select {
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 400px;
-  /* 棋盘格背景，用于透出透明底 */
-  background-image: 
-    linear-gradient(45deg, #ddd 25%, transparent 25%), 
-    linear-gradient(-45deg, #ddd 25%, transparent 25%), 
-    linear-gradient(45deg, transparent 75%, #ddd 75%), 
+  min-height: 300px;
+  background-image:
+    linear-gradient(45deg, #ddd 25%, transparent 25%),
+    linear-gradient(-45deg, #ddd 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ddd 75%),
     linear-gradient(-45deg, transparent 75%, #ddd 75%);
   background-size: 20px 20px;
   background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
   overflow: hidden;
 }
+.canvas-container.has-image {
+  background-image: none;
+  background-color: #e5d9bd;
+}
 
-#signature-canvas {
-  background: #ffffff; /* 默认白底，由 JS 控制切换 */
+.canvas-stack {
+  position: relative;
+  width: 100%;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  cursor: crosshair;
-  touch-action: none; /* 防止移动端滚动 */
 }
+.canvas-stack canvas { display: block; width: 100%; height: auto; }
+#bg-canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+#signature-canvas { position: relative; z-index: 2; cursor: crosshair; touch-action: none; }
 
-/* 底部操作栏 */
-.action-bar {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-}
-.action-bar button {
-  flex: 1;
-}
+.canvas-stack.move-mode #signature-canvas,
+.canvas-stack.move-mode #bg-canvas { pointer-events: none; }
+.canvas-container.move-mode { cursor: grab; }
+.canvas-container.move-mode:active { cursor: grabbing; }
 
-@media (max-width: 800px) {
-  .es-wrap { grid-template-columns: 1fr; }
-  .canvas-container { height: 300px; }
-}
+.action-bar { display: flex; gap: 12px; }
+.action-bar button { flex: 1; }
+
+@media (max-width: 800px) { .es-wrap { grid-template-columns: 1fr; } }

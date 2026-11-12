@@ -1,77 +1,118 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<script>window.IS_WASM_TOOL = false;</script>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>高清电子签名生成器 - 工具站</title>
 <link rel="stylesheet" href="../../css/global.css">
+<!-- 霞鹜文楷（如果 fonts.css 存在则生效，不影响功能） -->
+<link rel="stylesheet" href="../../fonts/fonts.css">
 <link rel="stylesheet" href="../../css/e-signature.css">
 </head>
 <body>
 <div class="tool-page-header">
   <h1>✒️ 高清电子签名生成器</h1>
-  <p>丝滑手写体验，自动裁切留白，一键导出透明背景 PNG</p>
+  <p>速度笔锋 · 压感支持 · 底图拖放 · 多格式导出，纯本地运行无依赖</p>
   <a href="../../index.html">← 返回首页</a>
 </div>
 
 <main class="es-wrap">
-  <!-- 左侧控制面板 -->
   <div class="control-panel">
+    <!-- 1. 画笔 -->
     <div class="panel-section">
       <label class="section-title">🖋️ 1. 画笔设置</label>
-      
       <div class="setting-row">
-        <label>画笔颜色：</label>
+        <label>颜色：</label>
         <div class="color-presets">
-          <button class="color-btn active" data-color="#000000" style="background: #000000;" title="黑色"></button>
-          <button class="color-btn" data-color="#1a56db" style="background: #1a56db;" title="深蓝"></button>
-          <button class="color-btn" data-color="#e02424" style="background: #e02424;" title="红色"></button>
+          <button class="color-btn active" data-color="#000000" style="background:#000;" title="黑色"></button>
+          <button class="color-btn" data-color="#1a56db" style="background:#1a56db;" title="深蓝"></button>
+          <button class="color-btn" data-color="#e02424" style="background:#e02424;" title="红色"></button>
         </div>
         <input type="color" id="custom-color" value="#000000" title="自定义颜色">
       </div>
-
       <div class="setting-row">
-        <label>笔画粗细：</label>
-        <input type="range" id="brush-size" min="1" max="10" step="0.5" value="3">
-        <span id="brush-size-val">3</span>
+        <label>粗细：</label>
+        <input type="range" id="brush-size" min="1" max="12" step="0.5" value="4">
+        <span id="brush-size-val">4</span>
       </div>
+      <label class="checkbox-label">
+        <input type="checkbox" id="pressure-enabled" checked>
+        启用速度感应笔锋（写快变细 / 写慢变粗）
+      </label>
+      <p class="hint">支持触控笔压感设备（如 iPad / Surface）会自动叠加真实压力。</p>
     </div>
 
+    <!-- 2. 底图 -->
     <div class="panel-section">
-      <label class="section-title">📄 2. 画板背景</label>
-      <select id="bg-mode">
-        <option value="white">白底 (方便手写)</option>
-        <option value="transparent">透明底 (预览网格)</option>
-        <option value="grid">点阵辅助线</option>
-      </select>
-      <p class="hint">注：无论选择什么背景，导出的图片均为**透明背景**。</p>
+      <label class="section-title">🖼️ 2. 画板底图</label>
+      <div class="setting-row">
+        <label>空白画板：</label>
+        <select id="bg-mode">
+          <option value="white">白底</option>
+          <option value="transparent">透明底（棋盘格）</option>
+          <option value="grid">点阵辅助线</option>
+        </select>
+      </div>
+      <button id="btn-upload" class="secondary-btn">📷 上传图片作为底图</button>
+      <input type="file" id="image-input" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" hidden>
+      <p class="hint">支持 PNG / JPG / WebP / GIF / BMP，单张 ≤ <b>10MB</b>。导出时自动跟随底图格式。</p>
     </div>
 
+    <!-- 3. 图片调整 -->
+    <div class="panel-section" id="image-panel" hidden>
+      <label class="section-title">🔍 3. 图片调整</label>
+      <div class="setting-row">
+        <label>缩放：</label>
+        <input type="range" id="image-zoom" min="0.2" max="3" step="0.01" value="1">
+        <span id="image-zoom-val">100%</span>
+      </div>
+      <button id="btn-move-image" class="secondary-btn">✋ 拖动图片</button>
+      <button id="btn-fit-image" class="secondary-btn">⤢ 适应画板</button>
+      <button id="btn-fill-image" class="secondary-btn">⤢ 填充画板</button>
+      <button id="btn-reset-image" class="secondary-btn">↺ 重置</button>
+      <button id="btn-remove-image" class="secondary-btn">✖ 移除底图</button>
+      <p class="hint">开启「拖动图片」后可在画板上拖动底图；画板上滚动滚轮也可缩放。</p>
+    </div>
+
+    <!-- 4. 裁切 -->
     <div class="panel-section">
-      <label class="section-title">✂️ 3. 智能裁切</label>
+      <label class="section-title">✂️ 4. 智能裁切</label>
       <label class="checkbox-label">
         <input type="checkbox" id="auto-crop" checked>
-        导出时自动裁切四周多余空白
+        导出时自动裁切四周空白
       </label>
+      <p class="hint">仅对空白画板生效；有底图时导出完整画面。</p>
     </div>
 
+    <!-- 5. 导出 -->
     <div class="panel-section">
-      <label class="section-title">💾 4. 导出保存</label>
-      <button id="btn-download" class="primary-btn" style="width: 100%;">⬇️ 下载透明 PNG</button>
+      <label class="section-title">💾 5. 导出保存</label>
+      <div class="setting-row">
+        <label>格式：</label>
+        <select id="export-format">
+          <option value="auto">自动（跟随底图格式）</option>
+          <option value="png">PNG（透明）</option>
+          <option value="jpeg">JPEG（白底）</option>
+          <option value="webp">WebP</option>
+        </select>
+      </div>
+      <button id="btn-download" class="primary-btn" style="width:100%;">⬇️ 下载签名图片</button>
+      <p class="hint">快捷键：Ctrl+Z 撤销，Ctrl+Shift+Z 重做，Delete 清空。</p>
     </div>
   </div>
 
-  <!-- 右侧画板区 -->
+  <!-- 右侧画板 -->
   <div class="preview-panel">
     <div class="canvas-container" id="canvas-container">
-      <canvas id="signature-canvas"></canvas>
+      <div class="canvas-stack" id="canvas-stack">
+        <canvas id="bg-canvas"></canvas>
+        <canvas id="signature-canvas"></canvas>
+      </div>
     </div>
-    
     <div class="action-bar">
-      <button id="btn-undo" class="secondary-btn" disabled>↩️ 撤销上一步</button>
-      <button id="btn-clear" class="secondary-btn">🗑️ 清空画板</button>
+      <button id="btn-undo" class="secondary-btn" disabled>↩️ 撤销</button>
+      <button id="btn-redo" class="secondary-btn" disabled>↪️ 重做</button>
+      <button id="btn-clear" class="secondary-btn">🗑️ 清空</button>
     </div>
   </div>
 </main>
