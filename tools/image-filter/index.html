@@ -7,23 +7,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>专业图片调色与滤镜 - 工具站</title>
 <link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../fonts/fonts.css">
 <link rel="stylesheet" href="../../css/image-filter.css">
 </head>
 <body>
 <div class="tool-page-header">
   <h1>🎨 专业图片调色与滤镜</h1>
-  <p>13 项专业调节参数 + 12 种预设滤镜，原生 Canvas 极速渲染</p>
+  <p>30+ 项精细调节 + 28 种预设滤镜 · 撤销重做 · 原图对比 · 纯本地 Canvas 渲染</p>
   <a href="../../index.html">← 返回首页</a>
 </div>
 
 <main class="if-wrap">
   <!-- 左侧控制面板 -->
   <div class="control-panel">
+    <!-- 上传 -->
     <div class="panel-section">
       <label class="section-title">🖼️ 1. 上传图片</label>
       <div class="upload-box" id="drop-zone">
         <span>📁 点击或拖拽图片至此</span>
-        <small>支持 JPG / PNG / WebP</small>
+        <small>支持 JPG / PNG / WebP / GIF / BMP</small>
         <input type="file" id="file-input" accept="image/*" hidden>
       </div>
     </div>
@@ -32,109 +34,189 @@
       <!-- 预设滤镜 -->
       <div class="panel-section">
         <label class="section-title">✨ 2. 预设滤镜</label>
-        <div class="filter-presets">
-          <button class="preset-btn active" data-preset="none">原图</button>
-          <button class="preset-btn" data-preset="cyberpunk">赛博朋克</button>
-          <button class="preset-btn" data-preset="cinematic">电影感</button>
-          <button class="preset-btn" data-preset="japanese">日系</button>
-          <button class="preset-btn" data-preset="hongkong">港风</button>
-          <button class="preset-btn" data-preset="blackgold">黑金</button>
-          <button class="preset-btn" data-preset="morandi">莫兰迪</button>
-          <button class="preset-btn" data-preset="vintage">复古</button>
-          <button class="preset-btn" data-preset="blackwhite">黑白</button>
-          <button class="preset-btn" data-preset="warm">暖夏</button>
-          <button class="preset-btn" data-preset="cool">冷冬</button>
-          <button class="preset-btn" data-preset="dramatic">高对比</button>
+        <div class="filter-presets" id="presets-grid"></div>
+      </div>
+
+      <!-- 几何变换 -->
+      <details>
+        <summary>🔄 3. 旋转与翻转</summary>
+        <div class="btn-group">
+          <button class="geo-btn active" data-rotate="0">0°</button>
+          <button class="geo-btn" data-rotate="90">90°</button>
+          <button class="geo-btn" data-rotate="180">180°</button>
+          <button class="geo-btn" data-rotate="270">270°</button>
         </div>
-      </div>
+        <div class="checkbox-row">
+          <label class="checkbox-label"><input type="checkbox" id="p-flipH"> 水平翻转</label>
+          <label class="checkbox-label"><input type="checkbox" id="p-flipV"> 垂直翻转</label>
+        </div>
+      </details>
 
-      <!-- 调节面板 (折叠式) -->
-      <div class="panel-section">
-        <label class="section-title">🎛️ 3. 精细调节</label>
-        
-        <details open>
-          <summary>光影调整</summary>
-          <div class="slider-group">
-            <div class="slider-label"><span>亮度 (Brightness)</span><span id="val-brightness">100%</span></div>
-            <input type="range" id="filter-brightness" min="0" max="200" value="100">
-          </div>
-          <div class="slider-group">
-            <div class="slider-label"><span>对比度 (Contrast)</span><span id="val-contrast">100%</span></div>
-            <input type="range" id="filter-contrast" min="0" max="200" value="100">
-          </div>
-          <div class="slider-group">
-            <div class="slider-label"><span>曝光补偿 (Exposure)</span><span id="val-exposure">0</span></div>
-            <input type="range" id="filter-exposure" min="-100" max="100" value="0">
-          </div>
-        </details>
+      <!-- 光影 -->
+      <details open>
+        <summary>💡 4. 光影调整</summary>
+        <div class="slider-group">
+          <div class="slider-label"><span>亮度 Brightness</span><span id="val-brightness">100</span></div>
+          <input type="range" id="p-brightness" min="0" max="200" value="100" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>对比度 Contrast</span><span id="val-contrast">100</span></div>
+          <input type="range" id="p-contrast" min="0" max="200" value="100" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>曝光 Exposure</span><span id="val-exposure">0</span></div>
+          <input type="range" id="p-exposure" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>高光 Highlights</span><span id="val-highlights">0</span></div>
+          <input type="range" id="p-highlights" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>阴影 Shadows</span><span id="val-shadows">0</span></div>
+          <input type="range" id="p-shadows" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>白色阶 Whites</span><span id="val-whites">0</span></div>
+          <input type="range" id="p-whites" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>黑色阶 Blacks</span><span id="val-blacks">0</span></div>
+          <input type="range" id="p-blacks" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>清晰度 Clarity</span><span id="val-clarity">0</span></div>
+          <input type="range" id="p-clarity" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>自然饱和度 Vibrance</span><span id="val-vibrance">0</span></div>
+          <input type="range" id="p-vibrance" min="-100" max="100" value="0" step="1">
+        </div>
+      </details>
 
-        <details open>
-          <summary>色彩调整</summary>
-          <div class="slider-group">
-            <div class="slider-label"><span>饱和度 (Saturate)</span><span id="val-saturate">100%</span></div>
-            <input type="range" id="filter-saturate" min="0" max="200" value="100">
-          </div>
-          <div class="slider-group">
-            <div class="slider-label"><span>色温 (冷 ↔ 暖)</span><span id="val-temp">0</span></div>
-            <input type="range" id="filter-temp" min="-100" max="100" value="0">
-          </div>
-          <div class="slider-group">
-            <div class="slider-label"><span>色调 (绿 ↔ 洋红)</span><span id="val-tint">0</span></div>
-            <input type="range" id="filter-tint" min="-100" max="100" value="0">
-          </div>
-          <div class="slider-group">
-            <div class="slider-label"><span>色相旋转 (Hue)</span><span id="val-hue">0°</span></div>
-            <input type="range" id="filter-hue" min="0" max="360" value="0">
-          </div>
-          <div class="slider-group">
-            <div class="slider-label"><span>灰度 (Grayscale)</span><span id="val-gray">0%</span></div>
-            <input type="range" id="filter-gray" min="0" max="100" value="0">
-          </div>
-          <div class="slider-group">
-            <div class="slider-label"><span>褐色 (Sepia)</span><span id="val-sepia">0%</span></div>
-            <input type="range" id="filter-sepia" min="0" max="100" value="0">
-          </div>
-          <div class="slider-group">
-            <div class="slider-label"><span>反色 (Invert)</span><span id="val-invert">0%</span></div>
-            <input type="range" id="filter-invert" min="0" max="100" value="0">
-          </div>
-        </details>
+      <!-- 色彩 -->
+      <details open>
+        <summary>🎨 5. 色彩调整</summary>
+        <div class="slider-group">
+          <div class="slider-label"><span>饱和度 Saturate</span><span id="val-saturate">100</span></div>
+          <input type="range" id="p-saturate" min="0" max="200" value="100" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>色温 冷 ↔ 暖</span><span id="val-temp">0</span></div>
+          <input type="range" id="p-temp" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>色调 绿 ↔ 洋红</span><span id="val-tint">0</span></div>
+          <input type="range" id="p-tint" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>色相旋转 Hue</span><span id="val-hue">0</span></div>
+          <input type="range" id="p-hue" min="0" max="360" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>灰度 Grayscale</span><span id="val-gray">0</span></div>
+          <input type="range" id="p-gray" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>褐色 Sepia</span><span id="val-sepia">0</span></div>
+          <input type="range" id="p-sepia" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>反色 Invert</span><span id="val-invert">0</span></div>
+          <input type="range" id="p-invert" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>红通道偏移</span><span id="val-redShift">0</span></div>
+          <input type="range" id="p-redShift" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>绿通道偏移</span><span id="val-greenShift">0</span></div>
+          <input type="range" id="p-greenShift" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>蓝通道偏移</span><span id="val-blueShift">0</span></div>
+          <input type="range" id="p-blueShift" min="-100" max="100" value="0" step="1">
+        </div>
+      </details>
 
-        <details open>
-          <summary>特效叠加</summary>
-          <div class="slider-group">
-            <div class="slider-label"><span>模糊 (Blur)</span><span id="val-blur">0px</span></div>
-            <input type="range" id="filter-blur" min="0" max="20" value="0" step="0.5">
-          </div>
-          <div class="slider-group">
-            <div class="slider-label"><span>暗角 (Vignette)</span><span id="val-vignette">0%</span></div>
-            <input type="range" id="filter-vignette" min="0" max="100" value="0">
-          </div>
-          <div class="slider-group">
-            <div class="slider-label"><span>胶片噪点 (Noise)</span><span id="val-noise">0%</span></div>
-            <input type="range" id="filter-noise" min="0" max="100" value="0">
-          </div>
-        </details>
-      </div>
+      <!-- 特效 -->
+      <details>
+        <summary>✨ 6. 特效叠加</summary>
+        <div class="slider-group">
+          <div class="slider-label"><span>模糊 Blur</span><span id="val-blur">0</span></div>
+          <input type="range" id="p-blur" min="0" max="20" value="0" step="0.5">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>锐化 Sharpen</span><span id="val-sharpen">0</span></div>
+          <input type="range" id="p-sharpen" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>暗角 Vignette</span><span id="val-vignette">0</span></div>
+          <input type="range" id="p-vignette" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>胶片噪点 Noise</span><span id="val-noise">0</span></div>
+          <input type="range" id="p-noise" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>色调分离 Posterize</span><span id="val-posterize">关闭</span></div>
+          <input type="range" id="p-posterize" min="0" max="32" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>像素化 Pixelate</span><span id="val-pixelate">关闭</span></div>
+          <input type="range" id="p-pixelate" min="0" max="50" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>浮雕 Emboss</span><span id="val-emboss">0</span></div>
+          <input type="range" id="p-emboss" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>边缘检测 Edge</span><span id="val-edge">0</span></div>
+          <input type="range" id="p-edge" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>色差 Chromatic</span><span id="val-chromatic">0</span></div>
+          <input type="range" id="p-chromatic" min="0" max="20" value="0" step="0.5">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>光晕 Bloom</span><span id="val-bloom">0</span></div>
+          <input type="range" id="p-bloom" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>扫描线 Scanline</span><span id="val-scanline">0</span></div>
+          <input type="range" id="p-scanline" min="0" max="100" value="0" step="1">
+        </div>
+      </details>
 
-      <button id="btn-reset" class="secondary-btn" style="margin-top: 10px;">🔄 重置所有参数</button>
-      
-      <div class="panel-section" style="margin-top: 10px;">
-        <label class="section-title">💾 4. 导出图片</label>
+      <button id="btn-reset" class="secondary-btn" style="margin-top: 8px;">🔄 重置所有参数</button>
+
+      <!-- 导出 -->
+      <div class="panel-section" style="margin-top: 8px;">
+        <label class="section-title">💾 7. 导出图片</label>
+        <div class="slider-group">
+          <div class="slider-label"><span>导出质量</span><span id="val-quality">92%</span></div>
+          <input type="range" id="p-quality" min="10" max="100" value="92" step="1">
+        </div>
         <div class="export-row">
           <select id="export-format">
-            <option value="jpeg">JPG (推荐)</option>
+            <option value="jpeg">JPG</option>
             <option value="png">PNG</option>
             <option value="webp">WebP</option>
           </select>
           <button id="btn-download" class="primary-btn">⬇️ 下载</button>
         </div>
+        <input type="text" id="export-name" class="text-input" placeholder="文件名（不含扩展名）" value="filtered">
       </div>
     </div>
   </div>
 
   <!-- 右侧预览区 -->
   <div class="preview-panel">
+    <div class="preview-toolbar">
+      <button id="btn-undo" class="tool-btn" disabled title="撤销 (Ctrl+Z)">↩️ 撤销</button>
+      <button id="btn-redo" class="tool-btn" disabled title="重做 (Ctrl+Shift+Z)">↪️ 重做</button>
+      <button id="btn-compare" class="tool-btn" title="按住查看原图">👁️ 按住对比</button>
+      <span class="image-info" id="image-info"></span>
+    </div>
     <div class="canvas-container" id="canvas-container">
       <div class="empty-hint" id="empty-hint">请上传图片以开始调色</div>
       <canvas id="main-canvas"></canvas>

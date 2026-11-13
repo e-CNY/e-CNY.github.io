@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>window.IS_WASM_TOOL = false;</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Favicon 生成器 · 工具站</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="../../css/favicon-generator.css">
+</head>
+<body>
+<main class="tool-page-header">
+  <h1>🏷️ Favicon 生成器</h1>
+  <p>从图片或文字一键生成全套网站图标 · 纯本地处理</p>
+  <a href="../../index.html">← 返回首页</a>
+</main>
+
+<main class="fg-wrap">
+  <nav class="fg-tabs">
+    <button data-mode="image" class="active">🖼️ 从图片生成</button>
+    <button data-mode="text">🔤 从文字生成</button>
+  </nav>
+
+  <!-- 图片模式 -->
+  <section id="imagePanel" class="fg-panel">
+    <div class="fg-upload" id="dropZone">
+      <input type="file" id="fileInput" accept="image/*" hidden>
+      <div class="upload-icon">📁</div>
+      <p>点击选择或拖拽图片到此处</p>
+      <small>支持 PNG / JPG / WebP / SVG，建议正方形</small>
+    </div>
+    <div class="fg-preview-grid" id="imagePreviewGrid"></div>
+  </section>
+
+  <!-- 文字模式 -->
+  <section id="textPanel" class="fg-panel" hidden>
+    <div class="fg-text-controls">
+      <label>
+        文字（1–2 个字符）
+        <input id="textInput" type="text" maxlength="2" value="A" placeholder="A">
+      </label>
+      <label>
+        背景色
+        <input id="bgColor" type="color" value="#8a5a2b">
+      </label>
+      <label>
+        文字颜色
+        <input id="fgColor" type="color" value="#fdf8ec">
+      </label>
+      <label>
+        字体
+        <select id="fontFamily">
+          <option value="sans-serif">无衬线</option>
+          <option value="serif">衬线</option>
+          <option value="monospace">等宽</option>
+        </select>
+      </label>
+      <label>
+        圆角（%）
+        <input id="radius" type="range" min="0" max="50" value="20">
+        <span id="radiusVal">20%</span>
+      </label>
+      <label class="checkbox-label">
+        <input id="bold" type="checkbox" checked> 粗体
+      </label>
+    </div>
+    <div class="fg-preview-grid" id="textPreviewGrid"></div>
+  </section>
+
+  <!-- 操作区 -->
+  <section class="fg-actions">
+    <button id="downloadZip" class="primary" disabled>📦 下载全部（ZIP）</button>
+    <button id="downloadSizes" class="secondary" disabled>📥 单独下载尺寸</button>
+    <span id="status" class="status"></span>
+  </section>
+
+  <!-- 生成的 HTML 代码 -->
+  <section id="codeSection" class="fg-code" hidden>
+    <h2>HTML 引用代码</h2>
+    <pre id="htmlCode"></pre>
+    <button id="copyCode" class="secondary">📋 复制代码</button>
+  </section>
+
+  <!-- 尺寸列表 -->
+  <section id="sizesSection" class="fg-sizes" hidden>
+    <h2>包含的尺寸</h2>
+    <ul id="sizeList"></ul>
+  </section>
+</main>
+
+<script src="../../js/libs/jszip.min.js"></script>
+<script src="../../js/favicon-generator.js"></script>
+<script src="../../js/traffic-guard.js"></script>
+</body>
+</html>

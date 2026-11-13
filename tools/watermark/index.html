@@ -17,7 +17,7 @@
 </header>
 
 <main class="wm-tool" style="padding-top: 0;">
-  
+
   <!-- Tab 切换按钮 -->
   <div class="app-tabs">
     <button class="tab-btn active" data-tab="tab-watermark">💧 加水印与换底色</button>
@@ -33,10 +33,11 @@
         <div class="wm-section">
           <h2>1. 上传图片</h2>
           <div id="wm-drop-zone" class="wm-drop-zone">
-            <span>📁 点击选择或拖拽图片到这里</span>
-            <span class="wm-hint">支持 JPG / PNG / WebP，最大 20MB</span>
+            <span>📁 点击 / 拖拽 / 粘贴图片</span>
+            <span class="wm-hint">支持 JPG / PNG / WebP / GIF / SVG，最大 20MB</span>
             <input id="wm-image-input" type="file" accept="image/*,.heic,.heif" hidden>
           </div>
+          <div class="wm-img-info" id="wm-img-info" style="display:none;"></div>
         </div>
 
         <!-- 2. 水印 -->
@@ -44,6 +45,7 @@
           <h2>2. 水印设置</h2>
           <label class="wm-label">水印文字</label>
           <input id="wm-text" class="wm-input" type="text" placeholder="输入水印文字" value="仅供办理业务使用，他用无效">
+
           <div class="wm-row">
             <div class="wm-col">
               <label class="wm-label">字体文件 (可选)</label>
@@ -55,9 +57,38 @@
               <div class="wm-color-wrap" title="点击选择颜色"><input id="wm-color" type="color" value="#8a5a2b"></div>
             </div>
           </div>
+
           <div class="wm-row">
-            <div class="wm-col"><label class="wm-label">字号大小</label><input id="wm-size" type="range" min="10" max="200" value="40"></div>
-            <div class="wm-col"><label class="wm-label">透明度</label><input id="wm-opacity" type="range" min="10" max="100" value="40"></div>
+            <div class="wm-col">
+              <label class="wm-label">字号 <span id="wm-size-val">40</span></label>
+              <input id="wm-size" type="range" min="10" max="200" value="40">
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">透明度 <span id="wm-opacity-val">40</span>%</label>
+              <input id="wm-opacity" type="range" min="5" max="100" value="40">
+            </div>
+          </div>
+
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">旋转 <span id="wm-rotate-val">0</span>°</label>
+              <input id="wm-rotate" type="range" min="-90" max="90" value="0">
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">边距 <span id="wm-padding-val">30</span>px</label>
+              <input id="wm-padding" type="range" min="0" max="200" value="30">
+            </div>
+          </div>
+
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">描边</label>
+              <label class="checkbox-label"><input type="checkbox" id="wm-enable-stroke"> 启用描边</label>
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">描边颜色</label>
+              <div class="wm-color-wrap" title="选择描边颜色"><input id="wm-stroke-color" type="color" value="#ffffff"></div>
+            </div>
           </div>
         </div>
 
@@ -76,7 +107,8 @@
                 <label class="wm-label">原背景色 (可点击图片吸取)</label>
                 <div class="wm-row" style="align-items: center; gap: 8px;">
                   <button id="wm-eyedropper" class="wm-btn-small">🔍 吸管</button>
-                  <div id="wm-origin-color-preview" style="width:28px; height:28px; border-radius:6px; background:#438edb; border:1px solid #ccc;"></div>
+                  <div id="wm-origin-color-preview" style="width:28px; height:28px; border-radius:6px; background:#438edb; border:1px solid #ccc; flex-shrink:0;"></div>
+                  <input type="color" id="wm-origin-color" value="#438edb" class="wm-color-square">
                 </div>
               </div>
               <div class="wm-col">
@@ -85,16 +117,22 @@
                   <button type="button" class="wm-bg-color-btn active" data-color="#ffffff" style="background:#ffffff" title="白底"></button>
                   <button type="button" class="wm-bg-color-btn" data-color="#438edb" style="background:#438edb" title="蓝底"></button>
                   <button type="button" class="wm-bg-color-btn" data-color="#ff0000" style="background:#ff0000" title="红底"></button>
+                  <button type="button" class="wm-bg-color-btn" data-color="#888888" style="background:#888888" title="灰底"></button>
+                  <input type="color" id="wm-target-color" value="#ffffff" title="自定义颜色">
                 </div>
               </div>
             </div>
             <div class="wm-row">
               <div class="wm-col">
-                <label class="wm-label">容差微调 (边缘羽化)</label>
+                <label class="wm-label">容差 <span id="wm-tolerance-val">60</span></label>
                 <input id="wm-tolerance" type="range" min="10" max="150" value="60">
               </div>
+              <div class="wm-col">
+                <label class="wm-label">边缘羽化 <span id="wm-feather-val">20</span></label>
+                <input id="wm-feather" type="range" min="0" max="80" value="20">
+              </div>
             </div>
-            <p class="wm-hint">提示：衣服被替换请调小，边缘有杂色请调大。</p>
+            <p class="wm-hint">提示：衣服被误换请调小容差；边缘有杂色请调大容差和羽化。</p>
           </div>
         </div>
 
@@ -114,8 +152,28 @@
             <button data-pos="tile" class="wm-btn-tile">🔲 全屏平铺</button>
           </div>
         </div>
+
+        <!-- 5. 导出设置 -->
+        <div class="wm-section">
+          <h2>5. 导出设置</h2>
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">格式</label>
+              <select id="wm-export-format" class="wm-input">
+                <option value="image/png">PNG (无损)</option>
+                <option value="image/jpeg">JPG</option>
+                <option value="image/webp">WebP</option>
+              </select>
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">质量 <span id="wm-quality-val">92</span>%</label>
+              <input id="wm-quality" type="range" min="30" max="100" value="92">
+            </div>
+          </div>
+          <button id="wm-reset" class="wm-btn-small" style="width: 100%; margin-top: 12px;">🔄 重置所有设置</button>
+        </div>
       </section>
-      
+
       <!-- 右侧预览 -->
       <section class="wm-preview">
         <div class="wm-canvas-container" id="wm-canvas-container">
@@ -135,7 +193,7 @@
         <div class="wm-section">
           <h2>1. 上传单张照片</h2>
           <div id="ps-drop-zone" class="wm-drop-zone">
-            <span>📁 点击或拖拽照片至此</span>
+            <span>📁 点击 / 拖拽 / 粘贴照片</span>
             <span class="wm-hint">系统将自动为您拼版</span>
             <input id="ps-image-input" type="file" accept="image/*" hidden>
           </div>
@@ -143,23 +201,63 @@
 
         <div class="wm-section" id="ps-settings" style="display: none;">
           <h2>2. 排版设置</h2>
-          
-          <div class="wm-row">
-            <label class="wm-label" style="flex: 1; margin: 0;">相纸尺寸：</label>
-            <select id="ps-paper-size" class="wm-input" style="width: 160px;">
-              <option value="6inch">标准 6寸 (4x6英寸)</option>
-              <option value="5inch">标准 5寸 (3.5x5英寸)</option>
-            </select>
+
+          <label class="wm-label">相纸尺寸</label>
+          <select id="ps-paper-size" class="wm-input">
+            <option value="6inch">标准 6寸 (4×6英寸 / 152.4×101.6mm)</option>
+            <option value="5inch">标准 5寸 (3.5×5英寸 / 127×88.9mm)</option>
+            <option value="7inch">标准 7寸 (5×7英寸 / 177.8×127mm)</option>
+            <option value="a4">A4 (210×297mm)</option>
+            <option value="a5">A5 (148×210mm)</option>
+            <option value="custom">自定义尺寸</option>
+          </select>
+
+          <div class="wm-row" id="ps-paper-custom" style="display:none;">
+            <div class="wm-col"><label class="wm-label">宽 (mm)</label><input class="wm-input" id="ps-paper-w" type="number" value="152" min="20"></div>
+            <div class="wm-col"><label class="wm-label">高 (mm)</label><input class="wm-input" id="ps-paper-h" type="number" value="102" min="20"></div>
           </div>
 
-          <div class="wm-row" style="margin-top: 12px;">
-            <label class="wm-label" style="flex: 1; margin: 0;">照片规格：</label>
-            <select id="ps-photo-size" class="wm-input" style="width: 160px;">
-              <option value="1inch">一寸 (25x35mm)</option>
-              <option value="2inch">二寸 (35x53mm)</option>
-              <option value="small1">小一寸 (22x32mm)</option>
-              <option value="small2">小二寸 (35x45mm)</option>
-            </select>
+          <label class="wm-label">照片规格</label>
+          <select id="ps-photo-size" class="wm-input">
+            <option value="1inch">一寸 (25×35mm)</option>
+            <option value="2inch">二寸 (35×53mm)</option>
+            <option value="small1">小一寸 (22×32mm)</option>
+            <option value="small2">小二寸 (35×45mm)</option>
+            <option value="big1">大一寸 (33×48mm)</option>
+            <option value="big2">大二寸 (35×49mm)</option>
+            <option value="visa_us">美国签证 (51×51mm)</option>
+            <option value="visa_jp">日本签证 (35×45mm)</option>
+            <option value="custom">自定义尺寸</option>
+          </select>
+
+          <div class="wm-row" id="ps-photo-custom" style="display:none;">
+            <div class="wm-col"><label class="wm-label">宽 (mm)</label><input class="wm-input" id="ps-photo-w" type="number" value="25" min="5"></div>
+            <div class="wm-col"><label class="wm-label">高 (mm)</label><input class="wm-input" id="ps-photo-h" type="number" value="35" min="5"></div>
+          </div>
+
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">边距 <span id="ps-margin-val">3</span>mm</label>
+              <input id="ps-margin" type="range" min="0" max="20" value="3">
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">间距 <span id="ps-gap-val">0</span>mm</label>
+              <input id="ps-gap" type="range" min="0" max="10" value="0">
+            </div>
+          </div>
+
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">DPI</label>
+              <select id="ps-dpi" class="wm-input">
+                <option value="300">300 (标准)</option>
+                <option value="600">600 (高清)</option>
+              </select>
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">背景色</label>
+              <input type="color" id="ps-bg-color" value="#ffffff" class="wm-color-full">
+            </div>
           </div>
 
           <div class="wm-row" style="margin-top: 12px;">
@@ -168,11 +266,19 @@
             </label>
           </div>
 
+          <div class="wm-info-box" id="ps-info">请选择参数</div>
+
+          <label class="wm-label">导出格式</label>
+          <select id="ps-export-format" class="wm-input">
+            <option value="image/jpeg">JPG</option>
+            <option value="image/png">PNG</option>
+          </select>
+
           <button id="ps-download" class="wm-download-btn" style="margin-top: 16px; width: 100%;">💾 导出打印高清图</button>
-          
+
           <p class="wm-hint" style="margin-top: 12px; line-height: 1.6;">
             💡 <strong>打印提示：</strong><br>
-            发给打印店并强调<strong>“按 6寸相纸、满版、不缩放打印”</strong>。打印后沿辅助线剪开即可。
+            发给打印店并强调 <strong>“按所选相纸尺寸、满版、不缩放打印”</strong>。打印后沿辅助线剪开即可。
           </p>
         </div>
       </section>
@@ -188,6 +294,7 @@
   </div>
 
 </main>
+<div id="toast" class="toast"></div>
 <script src="../../js/watermark.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

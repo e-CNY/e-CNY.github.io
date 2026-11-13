@@ -10,7 +10,6 @@
 
     // === 继续图像分类 ===
     { name: '图片取色器与配色', emoji: '🖍️', desc: '提取图片主色调 / 放大镜吸管 / UI 实战预览', href: 'tools/color-extractor/index.html', category: '图像' },
-    { name: '图片加水印', emoji: '💧', desc: '自定义字体与九宫格水印', href: 'tools/watermark/index.html', category: '图像' },
     { name: '证件照处理与排版', emoji: '📸', desc: '换底色 / 加水印 / 拼版打印，全能本地处理', href: 'tools/watermark/index.html', category: '图像' },
     { name: 'Meme 梗图生成器', emoji: '😂', desc: '一键生成经典黑边文字梗图，支持自动换行', href: 'tools/meme-generator/index.html', category: '图像' },
     { name: '图片切图与拼接', emoji: '🧩', desc: '九宫格切图 / 长图拼接 / 网格拼图', href: 'tools/image-slicer/index.html', category: '图像' },
@@ -22,6 +21,7 @@
     { name: 'SVG 工具箱', emoji: '🔷', desc: '格式化 / 压缩 / 转 PNG', href: 'tools/svg-tool/index.html', category: '图像' },
     { name: '字体预览工具', emoji: '🔤', desc: '上传 TTF 预览与元信息', href: 'tools/font-tool/index.html', category: '图像' },
     { name: '页面标尺与网格', emoji: '📏', desc: '辅助网格 / 吸管取色', href: 'tools/ruler-tool/index.html', category: '图像' },
+    { name: 'Favicon 生成器', emoji: '🏷️', desc: '图片/文字生成全套网站图标 · PNG · PWA manifest', href: 'tools/favicon-generator/index.html', category: '图像' },
 
     // === 2. 文档 ===
     { name: 'Lorem Ipsum 生成器', emoji: '🗒️', desc: '中英日韩占位文本 / HTML 元素包裹 / 字数限制与统计', href: 'tools/lorem-ipsum/index.html', category: '文档' },

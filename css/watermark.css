@@ -11,6 +11,7 @@
   justify-content: center;
   gap: 12px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 .tab-btn {
   padding: 10px 24px;
@@ -74,15 +75,31 @@
 }
 .wm-hint { font-size: .75rem; color: #8a7a5f; margin: 6px 0 0; line-height: 1.4; }
 
+.wm-img-info {
+  margin-top: 8px;
+  font-size: 0.72rem;
+  color: #8a7a5f;
+  font-family: monospace;
+  padding: 6px 8px;
+  background: #fdf8ec;
+  border: 1px solid #e5d9bd;
+  border-radius: 4px;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
 /* 表单元素 */
 .wm-label { display: block; font-size: .82rem; color: #6b5d47; margin: 12px 0 6px; }
+.wm-label span { float: right; color: #8a5a2b; font-family: monospace; font-weight: 600; }
+
 .wm-input {
   width: 100%; padding: 8px 12px; border: 1px solid #d5c7a8;
   border-radius: 8px; background: #fdf8ec; color: #3d3226; font-size: .9rem;
+  box-sizing: border-box;
 }
 .wm-input:focus { outline: none; border-color: #b08a5a; box-shadow: 0 0 0 2px rgba(176,138,90,.2); }
 
-.wm-row { display: flex; gap: 12px; margin-top: 8px; align-items: flex-end; }
+.wm-row { display: flex; gap: 12px; margin-top: 8px; align-items: flex-end; flex-wrap: wrap; }
 .wm-col { flex: 1; min-width: 0; }
 
 .wm-upload-btn {
@@ -90,6 +107,7 @@
   width: 100%; padding: 8px; border: 1px solid #d5c7a8; border-radius: 8px;
   background: #fdf8ec; color: #3d3226; font-size: .82rem; cursor: pointer;
   transition: background .15s; text-align: center;
+  box-sizing: border-box;
 }
 .wm-upload-btn:hover { background: #f5ecd5; }
 .wm-file-name {
@@ -97,19 +115,53 @@
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 
-/* 圆形颜色选择器 */
+/* ==== 颜色选择器区域 ==== */
+/* 1. 圆形颜色选择器 */
 .wm-color-wrap {
   width: 34px; height: 34px; border-radius: 50%; overflow: hidden;
   border: 2px solid #d5c7a8; display: flex; align-items: center; justify-content: center;
   cursor: pointer; padding: 0; background: #fff; transition: border-color .15s;
+  flex-shrink: 0;
 }
 .wm-color-wrap:hover { border-color: #b08a5a; }
-input[type="color"] {
+.wm-color-wrap input[type="color"] {
   padding: 0; border: none; width: 150%; height: 150%;
   transform: scale(1.5); cursor: pointer;
+  background: transparent;
+}
+
+/* 2. 正方形小颜色块 */
+.wm-color-square {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+/* 3. 满宽颜色条 */
+.wm-color-full {
+  width: 100%;
+  height: 36px;
+  border: 1px solid #d5c7a8;
+  border-radius: 8px;
+  padding: 4px;
+  background: #fdf8ec;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
 input[type="range"] { width: 100%; accent-color: #8a5a2b; margin-top: 6px; cursor: pointer; }
+
+/* 复选框 */
+.checkbox-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.85rem; color: #3d3226; cursor: pointer;
+}
+.checkbox-label input { accent-color: #8a5a2b; width: 16px; height: 16px; cursor: pointer; }
 
 /* 换底色模块 */
 .wm-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
@@ -133,16 +185,27 @@ input[type="range"] { width: 100%; accent-color: #8a5a2b; margin-top: 6px; curso
 .wm-btn-small:hover { background: #f5ecd5; border-color: #b08a5a; }
 .wm-btn-small.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; }
 
-.wm-color-presets { display: flex; gap: 8px; margin-top: 4px; }
+.wm-color-presets {
+  display: flex; gap: 8px; margin-top: 4px; align-items: center; flex-wrap: wrap;
+}
 .wm-bg-color-btn {
   width: 28px; height: 28px; border-radius: 50%;
   border: 2px solid #d5c7a8; cursor: pointer; transition: transform 0.15s;
+  padding: 0;
 }
 .wm-bg-color-btn:hover { transform: scale(1.1); }
 .wm-bg-color-btn.active {
   border-color: #8a5a2b;
   box-shadow: 0 0 0 2px #f9f3e3, 0 0 0 4px #8a5a2b;
 }
+.wm-color-presets input[type="color"] {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid #d5c7a8; padding: 0; cursor: pointer;
+  background: transparent; -webkit-appearance: none; appearance: none;
+  overflow: hidden;
+}
+.wm-color-presets input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.wm-color-presets input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
 
 /* 九宫格位置 */
 .wm-positions {
@@ -162,15 +225,29 @@ input[type="range"] { width: 100%; accent-color: #8a5a2b; margin-top: 6px; curso
 }
 .wm-btn-tile { grid-column: span 3; font-size: .85rem !important; padding: 8px 0 !important; }
 
+/* 信息框 */
+.wm-info-box {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #fdf8ec;
+  border: 1px dashed #d5c7a8;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: #4b3f2f;
+  text-align: center;
+  font-family: monospace;
+  line-height: 1.5;
+}
+
 /* 预览区 */
-.wm-preview { display: flex; flex-direction: column; gap: 16px; }
+.wm-preview { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .wm-canvas-container {
   position: relative; min-height: 400px; background: #e5d9bd;
   border-radius: 12px; border: 1px solid #ddcfb3;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden; padding: 16px;
 }
-.wm-placeholder { color: #8a7a5f; font-size: .9rem; pointer-events: none; text-align: center; }
+.wm-placeholder { color: #8a7a5f; font-size: .9rem; pointer-events: none; text-align: center; line-height: 1.6; }
 #wm-canvas, #ps-canvas {
   max-width: 100%; max-height: 65vh; display: none;
   box-shadow: 0 4px 16px rgba(0,0,0,.1); background: #fff;
@@ -189,5 +266,27 @@ input[type="range"] { width: 100%; accent-color: #8a5a2b; margin-top: 6px; curso
 
 /* 排版打印专属补充 */
 .ps-panel .wm-row { align-items: center; }
-.ps-panel .checkbox-label { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #3d3226; cursor: pointer; }
-.ps-panel .checkbox-label input { accent-color: #8a5a2b; width: 16px; height: 16px; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(61, 50, 38, 0.92);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 9999;
+  max-width: 80vw;
+  text-align: center;
+  word-break: break-all;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

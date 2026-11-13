@@ -22,10 +22,11 @@
     <div class="panel-section">
       <label class="section-title">🖼️ 1. 上传图片</label>
       <div class="upload-box" id="drop-zone">
-        <span>📁 点击或拖拽图片至此</span>
-        <small>支持 PNG / JPG / WebP</small>
+        <span>📁 点击 / 拖拽 / 粘贴图片</span>
+        <small>支持 PNG / JPG / WebP / GIF / SVG</small>
         <input type="file" id="file-input" accept="image/*" hidden>
       </div>
+      <div class="img-info" id="img-info" style="display:none;"></div>
     </div>
 
     <div id="settings" class="settings-panel">
@@ -41,14 +42,64 @@
       <!-- 智能提取结果 -->
       <div class="panel-section" id="auto-panel">
         <label class="section-title">📊 主色调提取</label>
+
+        <div class="option-row">
+          <span class="option-label">颜色数量</span>
+          <input type="range" id="color-count" min="2" max="20" value="8">
+          <span class="option-value" id="color-count-val">8</span>
+        </div>
+
+        <div class="option-row">
+          <span class="option-label">排序方式</span>
+          <select id="sort-mode">
+            <option value="none">默认（按占比）</option>
+            <option value="luminance">按明度</option>
+            <option value="hue">按色相</option>
+            <option value="saturation">按饱和度</option>
+          </select>
+        </div>
+
+        <div class="option-row">
+          <span class="option-label">显示格式</span>
+          <select id="copy-format">
+            <option value="hex">HEX</option>
+            <option value="rgb">RGB</option>
+            <option value="hsl">HSL</option>
+          </select>
+        </div>
+
+        <button class="action-btn" id="btn-reextract">🔄 重新提取</button>
+
         <div class="palette-list" id="palette-list">
           <!-- JS 动态生成 -->
+        </div>
+
+        <div class="export-group">
+          <span class="option-label">📤 导出配色</span>
+          <div class="export-buttons">
+            <button class="mini-btn" data-export="css">CSS</button>
+            <button class="mini-btn" data-export="scss">SCSS</button>
+            <button class="mini-btn" data-export="json">JSON</button>
+            <button class="mini-btn" data-export="txt">TXT</button>
+            <button class="mini-btn" data-export="tailwind">Tailwind</button>
+          </div>
         </div>
       </div>
 
       <!-- 吸管拾色结果 -->
       <div class="panel-section" id="picker-panel" style="display: none;">
         <label class="section-title">💧 当前拾取颜色</label>
+
+        <div class="option-row">
+          <span class="option-label">放大倍数</span>
+          <select id="mag-zoom">
+            <option value="8">8x</option>
+            <option value="12" selected>12x</option>
+            <option value="16">16x</option>
+            <option value="24">24x</option>
+          </select>
+        </div>
+
         <div class="picked-color-box">
           <div class="picked-swatch" id="picked-swatch" style="background: #ffffff;"></div>
           <div class="picked-values">
@@ -67,9 +118,25 @@
               <span class="val-text" id="val-hsl">0, 0%, 100%</span>
               <button class="copy-btn" data-copy="val-hsl">复制</button>
             </div>
+            <div class="color-row">
+              <span class="val-label">HSV</span>
+              <span class="val-text" id="val-hsv">0, 0%, 100%</span>
+              <button class="copy-btn" data-copy="val-hsv">复制</button>
+            </div>
+            <div class="color-row">
+              <span class="val-label">CMYK</span>
+              <span class="val-text" id="val-cmyk">0, 0, 0, 0</span>
+              <button class="copy-btn" data-copy="val-cmyk">复制</button>
+            </div>
           </div>
         </div>
-        <p class="hint">💡 提示：在右侧图片上移动鼠标，点击即可锁定颜色。</p>
+
+        <div id="history-section" style="display:none;">
+          <label class="section-title" style="margin-top:8px;">📜 历史记录</label>
+          <div class="history-list" id="history-list"></div>
+        </div>
+
+        <p class="hint">💡 提示：在右侧图片上移动鼠标查看颜色，点击即可锁定并复制 HEX 值。</p>
       </div>
     </div>
   </div>
@@ -79,11 +146,11 @@
     <div class="canvas-container" id="canvas-container">
       <div class="empty-hint" id="empty-hint">请上传图片以开始提取配色</div>
       <canvas id="main-canvas"></canvas>
-      
+
       <!-- 放大镜取色器 (悬浮在 canvas 上) -->
       <canvas id="magnifier" class="magnifier" width="120" height="120" style="display: none;"></canvas>
     </div>
-    
+
     <!-- UI 配色预览区 -->
     <div class="ui-preview-panel" id="ui-preview-panel" style="display: none;">
       <h3>🖥️ UI 配色实战预览</h3>
@@ -98,6 +165,8 @@
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
 
 <script src="../../js/color-extractor.js"></script>
 <script src="../../js/traffic-guard.js"></script>
