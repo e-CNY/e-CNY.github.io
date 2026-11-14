@@ -1,9 +1,9 @@
 .mg-wrap {
-  max-width: 1000px;
+  max-width: 1050px;
   margin: 0 auto;
   padding: 0 16px 48px;
   display: grid;
-  grid-template-columns: 320px minmax(0, 1fr); /* 防止右侧撑爆 */
+  grid-template-columns: 340px minmax(0, 1fr);
   gap: 20px;
   align-items: start;
 }
@@ -19,7 +19,7 @@
   min-width: 0;
 }
 
-/* 修复核心：明确指定垂直布局，默认隐藏 */
+/* 默认隐藏，通过 JS 添加 active 显示 */
 .settings-panel {
   display: none;
   flex-direction: column;
@@ -27,7 +27,7 @@
   min-width: 0;
 }
 .settings-panel.active {
-  display: flex; /* 通过 JS 添加此类来显示 */
+  display: flex; 
 }
 
 .panel-section {
@@ -72,6 +72,18 @@
   color: #8a7a5f;
 }
 
+.img-info {
+  font-size: 0.75rem;
+  color: #8a7a5f;
+  font-family: monospace;
+  padding: 6px 8px;
+  background: #fdf8ec;
+  border: 1px solid #ddcfb3;
+  border-radius: 4px;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
 /* 设置项 */
 .slider-group { display: flex; flex-direction: column; gap: 6px; }
 .slider-group label { font-size: 0.85rem; color: #6b5d47; font-weight: 600; white-space: nowrap; }
@@ -86,13 +98,14 @@ textarea {
   font-size: 0.9rem;
   outline: none;
   resize: vertical;
-  box-sizing: border-box; /* 防止撑破宽度 */
+  box-sizing: border-box;
+  font-family: inherit;
 }
 textarea:focus { border-color: #b08a5a; }
 
 .row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
 }
 .row .col {
@@ -100,6 +113,7 @@ textarea:focus { border-color: #b08a5a; }
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 .row .col label {
   font-size: 0.85rem;
@@ -107,16 +121,23 @@ textarea:focus { border-color: #b08a5a; }
   font-weight: 600;
 }
 
-input[type="range"] {
-  flex: 1;
-  accent-color: #8a5a2b;
+.range-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.row span {
+.range-row span {
   font-family: monospace;
   font-size: 0.85rem;
   color: #3d3226;
-  width: 30px;
+  min-width: 24px;
   text-align: right;
+}
+
+input[type="range"] {
+  flex: 1;
+  accent-color: #8a5a2b;
+  cursor: pointer;
 }
 
 select, input[type="color"] {
@@ -136,6 +157,64 @@ input[type="color"] {
   cursor: pointer;
 }
 
+/* 图片操作按钮网格 */
+.btn-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 4px;
+}
+.op-btn {
+  padding: 8px 4px;
+  border: 1px solid #ddcfb3;
+  border-radius: 6px;
+  background: #fdf8ec;
+  color: #3d3226;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.op-btn:hover {
+  background: #efe6d0;
+  border-color: #8a5a2b;
+}
+
+/* 自定义字体上传 */
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border: 1px solid #ddcfb3;
+  border-radius: 6px;
+  background: #fdf8ec;
+  color: #3d3226;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.upload-btn:hover { background: #efe6d0; }
+.file-name {
+  font-size: 0.75rem;
+  color: #8a7a5f;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #3d3226;
+  cursor: pointer;
+  font-weight: 600;
+}
+.checkbox-label input { accent-color: #8a5a2b; width: 16px; height: 16px; cursor: pointer; }
+
 /* 按钮 */
 .primary-btn {
   padding: 12px 24px;
@@ -151,7 +230,8 @@ input[type="color"] {
   white-space: nowrap;
   flex-shrink: 0;
 }
-.primary-btn:hover { background: #6b4420; }
+.primary-btn:hover:not(:disabled) { background: #6b4420; }
+.primary-btn:disabled { background: #c4b48f; cursor: not-allowed; }
 
 /* 预览区 */
 .preview-panel {
@@ -186,6 +266,30 @@ input[type="color"] {
   color: #8a7a5f;
   font-size: 1rem;
   padding: 40px;
+  text-align: center;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(61, 50, 38, 0.92);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 9999;
+  max-width: 80vw;
+  text-align: center;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 @media (max-width: 800px) {

@@ -23,75 +23,118 @@
     <button class="is-tab" data-target="panel-grid">🧱 网格拼图</button>
   </div>
 
+  <!-- 全局设置条 -->
+  <div class="is-global-settings">
+    <div class="setting-item">
+      <label>导出格式</label>
+      <select id="global-format" class="is-select">
+        <option value="image/png">PNG (支持透明)</option>
+        <option value="image/jpeg">JPG</option>
+        <option value="image/webp">WebP</option>
+      </select>
+    </div>
+    <div class="setting-item">
+      <label>画质 (JPG/WebP)</label>
+      <input type="range" id="global-quality" min="30" max="100" value="92">
+      <span id="global-quality-val">92%</span>
+    </div>
+  </div>
+
   <div class="is-content">
-    <!-- 1. 网格切图 -->
+    <!-- ================= 1. 网格切图 ================= -->
     <div id="panel-slice" class="is-panel active">
       <div class="is-toolbar">
-        <select id="slice-grid" class="is-select">
-          <option value="1x2">上下切分 (1 x 2)</option>
-          <option value="2x1">左右切分 (2 x 1)</option>
-          <option value="1x3">三格竖排 (1 x 3)</option>
-          <option value="3x1">三格横排 (3 x 1)</option>
-          <option value="2x2">四宫格 (2 x 2)</option>
-          <option value="2x3">六宫格 (2 x 3)</option>
-          <option value="3x3" selected>九宫格 (3 x 3)</option>
-          <option value="4x4">十六宫格 (4 x 4)</option>
-        </select>
-        <button id="btn-slice" class="is-btn primary">✂️ 开始切图并打包下载</button>
+        <div class="toolbar-group">
+          <span>行数：</span>
+          <input type="number" id="slice-rows" class="is-input" value="3" min="1" max="20" style="width:60px;">
+          <span>列数：</span>
+          <input type="number" id="slice-cols" class="is-input" value="3" min="1" max="20" style="width:60px;">
+        </div>
+        <button id="btn-slice" class="is-btn primary" disabled>✂️ 开始切图并打包下载</button>
       </div>
       <div id="slice-drop" class="is-drop-zone">
-        <span>📁 点击或拖拽一张大图到这里</span>
+        <span>📁 点击 / 拖拽 / 粘贴一张大图到这里</span>
+        <small>支持 JPG / PNG / WebP</small>
       </div>
       <input id="slice-input" type="file" accept="image/*" hidden>
+      
       <div class="is-preview-wrap">
         <div id="slice-preview" class="is-preview-grid"></div>
       </div>
     </div>
 
-    <!-- 2. 长图拼接 -->
+    <!-- ================= 2. 长图拼接 ================= -->
     <div id="panel-long" class="is-panel">
       <div class="is-toolbar">
-        <select id="long-direction" class="is-select">
-          <option value="vertical">纵向拼接 (聊天记录/代码截图)</option>
-          <option value="horizontal">横向拼接 (全景图)</option>
-        </select>
-        <button id="btn-long" class="is-btn primary">▶️ 开始拼接并下载</button>
-        <button id="btn-long-clear" class="is-btn">🗑️ 清空列表</button>
+        <div class="toolbar-group">
+          <select id="long-direction" class="is-select">
+            <option value="vertical">纵向拼接</option>
+            <option value="horizontal">横向拼接</option>
+          </select>
+          <select id="long-align" class="is-select">
+            <option value="center">居中对齐</option>
+            <option value="left">左对齐</option>
+            <option value="right">右对齐</option>
+          </select>
+          <span>间距：</span>
+          <input type="number" id="long-gap" class="is-input" value="0" min="0" max="100" style="width:60px;">
+          <span>背景：</span>
+          <input type="color" id="long-bg" value="#ffffff" style="height:36px; padding:2px; border-radius:6px; border:1px solid #d5c7a8; cursor:pointer;">
+        </div>
+        <button id="btn-long" class="is-btn primary" disabled>▶️ 开始拼接并下载</button>
+        <button id="btn-long-clear" class="is-btn">🗑️ 清空</button>
       </div>
+      
       <div id="long-drop" class="is-drop-zone">
-        <span>📁 点击或拖拽多张图片到这里 (支持多选)</span>
+        <span>📁 点击 / 拖拽 / 粘贴多张图片 (支持多选)</span>
       </div>
       <input id="long-input" type="file" accept="image/*" multiple hidden>
-      <ul id="long-list" class="is-file-list"></ul>
+      
+      <div class="is-list-wrap">
+        <ul id="long-list" class="is-file-list"></ul>
+      </div>
+      
       <div class="is-preview-wrap">
         <canvas id="long-canvas"></canvas>
+        <div id="long-empty" class="is-empty-hint">请上传图片以预览</div>
       </div>
     </div>
 
-    <!-- 3. 网格拼图 -->
+    <!-- ================= 3. 网格拼图 ================= -->
     <div id="panel-grid" class="is-panel">
       <div class="is-toolbar">
-        <select id="grid-layout" class="is-select">
-          <option value="1x2">1 行 2 列</option>
-          <option value="2x1">2 行 1 列</option>
-          <option value="1x3">1 行 3 列</option>
-          <option value="3x1">3 行 1 列</option>
-          <option value="2x2" selected>2 行 2 列</option>
-          <option value="2x3">2 行 3 列</option>
-          <option value="3x2">3 行 2 列</option>
-          <option value="3x3">3 行 3 列</option>
-        </select>
-        <input type="number" id="grid-gap" class="is-input" placeholder="间距px" value="10" style="width:80px;">
-        <button id="btn-grid" class="is-btn primary">▶️ 开始拼图并下载</button>
+        <div class="toolbar-group">
+          <span>列数：</span>
+          <input type="number" id="grid-cols" class="is-input" value="2" min="1" max="10" style="width:60px;">
+          <span>间距：</span>
+          <input type="number" id="grid-gap" class="is-input" value="10" min="0" max="100" style="width:60px;">
+          <span>圆角：</span>
+          <input type="number" id="grid-radius" class="is-input" value="0" min="0" max="100" style="width:60px;">
+          <span>背景：</span>
+          <input type="color" id="grid-bg" value="#ffffff" style="height:36px; padding:2px; border-radius:6px; border:1px solid #d5c7a8; cursor:pointer;">
+        </div>
+        <button id="btn-grid" class="is-btn primary" disabled>▶️ 开始拼图并下载</button>
+        <button id="btn-grid-clear" class="is-btn">🗑️ 清空</button>
       </div>
+      
       <div id="grid-drop" class="is-drop-zone">
-        <span>📁 请按顺序上传图片 (支持多选)</span>
+        <span>📁 点击 / 拖拽 / 粘贴多张图片 (按顺序拼接)</span>
       </div>
       <input id="grid-input" type="file" accept="image/*" multiple hidden>
-      <ul id="grid-list" class="is-file-list"></ul>
+      
+      <div class="is-list-wrap">
+        <ul id="grid-list" class="is-file-list"></ul>
+      </div>
+      
+      <div class="is-preview-wrap">
+        <canvas id="grid-canvas"></canvas>
+        <div id="grid-empty" class="is-empty-hint">请上传图片以预览</div>
+      </div>
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
 
 <script src="../../js/libs/jszip.min.js"></script>
 <script src="../../js/image-slicer.js" defer></script>

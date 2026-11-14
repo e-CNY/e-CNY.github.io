@@ -1,0 +1,148 @@
+.ic-tool { max-width: 1050px; margin: 0 auto; padding: 0 16px 56px; }
+.ic-header { text-align: center; margin-bottom: 28px; }
+.ic-header h1 { font-size: 1.6rem; margin: 0 0 8px; color: #3d3226; }
+.ic-header p { margin: 0; color: #6b5d47; font-size: 0.9rem; }
+.ic-header a { color: #8a5a2b; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
+.ic-header a:hover { text-decoration: underline; }
+
+/* Tabs */
+.ic-tabs { display: flex; justify-content: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.ic-tab {
+  padding: 10px 20px; border-radius: 20px; border: 1px solid #d5c7a8;
+  background: #fdf8ec; color: #6b5d47; font-size: .95rem; font-weight: 600;
+  cursor: pointer; transition: all .2s; outline: none;
+}
+.ic-tab:hover { border-color: #b08a5a; }
+.ic-tab.active { background: #8a5a2b; border-color: #8a5a2b; color: #fff; }
+
+/* 布局 */
+.ic-layout { display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start; }
+@media (max-width: 768px) { .ic-layout { grid-template-columns: 1fr; } }
+
+.ic-panel { display: none; }
+.ic-panel.active { display: grid; animation: fadeIn .2s; }
+.ic-panel.active.single-col { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+.ic-sidebar { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 16px; min-width: 0; }
+.ic-section { margin-bottom: 24px; }
+.ic-section:last-child { margin-bottom: 0; }
+
+.ic-section-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #e5d9bd; padding-bottom: 6px; margin-bottom: 12px; }
+.ic-section-header h2 { font-size: .95rem; margin: 0; color: #4b3f2f; border: none; padding: 0; }
+.ic-btn-text { background: none; border: none; color: #a8452a; font-size: .8rem; cursor: pointer; padding: 0; }
+.ic-btn-text:hover { text-decoration: underline; }
+
+/* 拖拽上传 */
+.ic-drop-zone {
+  border: 2px dashed #c4b48f; border-radius: 10px; padding: 24px 12px;
+  text-align: center; cursor: pointer; background: #fdf8ec;
+  transition: all .2s; display: flex; flex-direction: column; gap: 6px;
+}
+.ic-drop-zone:hover, .ic-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
+.ic-drop-zone span { font-size: .9rem; color: #3d3226; font-weight: 600; }
+.ic-hint { font-size: .75rem; color: #8a7a5f; line-height: 1.4; }
+
+/* 文件列表 */
+.ic-file-list {
+  list-style: none; padding: 0; margin: 12px 0 0 0;
+  max-height: 150px; overflow-y: auto; font-size: .8rem; color: #3d3226;
+}
+.ic-file-list li {
+  padding: 6px 8px; background: #fdf8ec; border: 1px solid #ddcfb3;
+  border-radius: 6px; margin-bottom: 6px;
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+}
+.ic-file-list li span.name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.ic-file-list li span.size { color: #8a7a5f; flex-shrink: 0; font-family: monospace; }
+.ic-file-list li button.del {
+  background: none; border: none; color: #a8452a; cursor: pointer;
+  font-size: 1.1rem; padding: 0 4px; line-height: 1; flex-shrink: 0;
+}
+.ic-file-list li button.del:hover { color: #d32f2f; }
+
+/* 参数设置 */
+.ic-param-row { margin-bottom: 14px; }
+.ic-param-row label { display: block; font-size: .85rem; color: #6b5d47; margin-bottom: 6px; font-weight: 600; }
+.ic-param-row label span { float: right; font-family: monospace; color: #8a5a2b; }
+
+.ic-param-row select, .ic-param-row input[type="number"], .ic-param-row input[type="text"] {
+  width: 100%; padding: 8px 10px; border: 1px solid #d5c7a8; border-radius: 6px;
+  background: #fdf8ec; color: #3d3226; font-size: .85rem; outline: none; box-sizing: border-box;
+}
+.ic-param-row select:focus, .ic-param-row input:focus { border-color: #b08a5a; }
+.ic-param-row input[type="range"] { width: calc(100% - 40px); accent-color: #8a5a2b; vertical-align: middle; cursor: pointer; }
+.ic-param-row span { font-size: .85rem; color: #8a5a2b; display: inline-block; width: 35px; text-align: right; font-family: monospace; font-weight: 600; }
+
+/* 按钮 */
+.ic-btn-primary, .ic-btn-secondary {
+  width: 100%; padding: 10px 12px; border: none; border-radius: 8px;
+  font-size: .95rem; font-weight: 600; cursor: pointer; transition: background .15s;
+}
+.ic-btn-primary { background: #7ba05b; color: #fff; }
+.ic-btn-primary:hover:not(:disabled) { background: #6b8c4e; }
+.ic-btn-secondary { background: #fdf8ec; color: #3d3226; border: 1px solid #d5c7a8; }
+.ic-btn-secondary:hover:not(:disabled) { background: #f5ecd5; border-color: #b08a5a; }
+.ic-btn-primary:disabled, .ic-btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* 预览主区域 */
+.ic-main { background: #e5d9bd; border-radius: 14px; border: 1px solid #ddcfb3; min-height: 400px; padding: 20px; overflow: hidden; }
+.ic-placeholder { text-align: center; color: #8a7a5f; font-size: .9rem; margin-top: 150px; }
+
+/* 转换结果卡片 */
+.ic-result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.ic-card {
+  background: #fdf8ec; border-radius: 10px; overflow: hidden;
+  border: 1px solid #ddcfb3; box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  display: flex; flex-direction: column;
+}
+.ic-card-img { width: 100%; height: 140px; object-fit: contain; background: #fff; border-bottom: 1px solid #ddcfb3; }
+.ic-card-info { padding: 12px; font-size: .8rem; color: #3d3226; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.ic-card-info .name { font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 4px; }
+.ic-card-info .size-diff { color: #7ba05b; font-weight: bold; }
+.ic-card-info .size-diff.up { color: #a8452a; }
+.ic-card-info a {
+  display: block; text-align: center; margin-top: 8px; padding: 6px;
+  background: #8a5a2b; color: #fff; text-decoration: none; border-radius: 6px;
+}
+.ic-card-info a:hover { background: #744a22; }
+
+/* EXIF 专属样式 */
+.exif-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 20px; }
+.exif-header { display: flex; gap: 24px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
+#exif-preview img { max-height: 200px; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,.1); display: block; }
+.exif-actions { flex: 1; min-width: 250px; }
+.btn-clean-exif {
+  display: inline-block; padding: 10px 20px; background: #a8452a; color: #fff;
+  border: none; border-radius: 8px; font-size: .95rem; font-weight: bold;
+  cursor: pointer; margin-top: 12px; transition: background .15s;
+}
+.btn-clean-exif:hover:not(:disabled) { background: #8c3620; }
+.btn-clean-exif:disabled { background: #c4b48f; cursor: not-allowed; }
+
+.exif-table { width: 100%; border-collapse: collapse; font-size: .85rem; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+.exif-table th, .exif-table td { padding: 10px 14px; border: 1px solid #e5d9bd; text-align: left; word-break: break-all; }
+.exif-table thead th { background: #efe6d0; color: #4b3f2f; }
+.exif-table tbody th { background: #fdf8ec; color: #8a5a2b; width: 30%; }
+.exif-table tr:hover td { background: #fcfcfc; }
+
+/* ASCII 专属样式 */
+.ascii-main { display: flex; flex-direction: column; }
+.ascii-preview {
+  flex: 1; background: #fff; border: 1px solid #ddcfb3; border-radius: 8px;
+  padding: 16px; overflow: auto; max-height: 600px; font-family: monospace;
+}
+.ascii-preview pre {
+  margin: 0; font-family: monospace; font-size: 6px; line-height: 0.9;
+  letter-spacing: 0.5px; color: #3d3226; white-space: pre; font-weight: bold;
+}
+.ascii-preview pre span { display: inline-block; }
+
+/* Toast */
+.toast {
+  position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px);
+  background: rgba(61, 50, 38, 0.92); color: #fff; padding: 8px 16px; border-radius: 6px;
+  font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+  z-index: 9999; max-width: 80vw; text-align: center; word-break: break-all;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }

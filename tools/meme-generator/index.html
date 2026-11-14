@@ -22,24 +22,34 @@
     <div class="panel-section">
       <label class="section-title">🖼️ 1. 上传底图</label>
       <div class="upload-box" id="drop-zone">
-        <span>📁 点击或拖拽图片至此</span>
-        <small>支持 PNG / JPG</small>
+        <span>📁 点击 / 拖拽 / 粘贴图片</span>
+        <small>支持 PNG / JPG / WebP</small>
         <input type="file" id="file-input" accept="image/*" hidden>
       </div>
+      <div class="img-info" id="img-info" style="display: none;"></div>
     </div>
 
-    <!-- 关键修复：移除内联的 style="display: none;"，交由 CSS 控制 -->
     <div id="settings" class="settings-panel">
-      <!-- 图片滤镜 -->
+      <!-- 图片滤镜与操作 -->
       <div class="panel-section">
-        <label class="section-title">📷 2. 图片滤镜</label>
+        <label class="section-title">📷 2. 图片处理</label>
         <select id="img-filter">
           <option value="none">原图</option>
           <option value="grayscale(100%)">黑白 (经典)</option>
           <option value="sepia(80%) contrast(120%)">复古/怀旧</option>
           <option value="contrast(150%) saturate(200%)">高对比度</option>
+          <option value="invert(100%)">反色</option>
+          <option value="hue-rotate(90deg)">色相旋转</option>
           <option value="blur(2px)">模糊 (防晕图)</option>
+          <option value="url(#pixelate)">像素化 (需 Canvas 支持)</option>
         </select>
+        
+        <div class="btn-grid">
+          <button class="op-btn" id="btn-rotate-left">↺ 左转</button>
+          <button class="op-btn" id="btn-rotate-right">↻ 右转</button>
+          <button class="op-btn" id="btn-flip-h">↔ 水平翻转</button>
+          <button class="op-btn" id="btn-flip-v">↕ 垂直翻转</button>
+        </div>
       </div>
 
       <!-- 文字输入 -->
@@ -47,36 +57,58 @@
         <label class="section-title">📝 3. 梗图文字</label>
         <div class="slider-group">
           <label>顶部文字</label>
-          <textarea id="text-top" rows="1" placeholder="输入顶部文字..."></textarea>
+          <textarea id="text-top" rows="2" placeholder="输入顶部文字..."></textarea>
         </div>
         <div class="slider-group">
           <label>中间文字 (可选)</label>
-          <textarea id="text-middle" rows="1" placeholder="输入中间文字..."></textarea>
+          <textarea id="text-middle" rows="2" placeholder="输入中间文字..."></textarea>
         </div>
         <div class="slider-group">
           <label>底部文字</label>
-          <textarea id="text-bottom" rows="1" placeholder="输入底部文字..."></textarea>
+          <textarea id="text-bottom" rows="2" placeholder="输入底部文字..."></textarea>
         </div>
       </div>
 
       <!-- 文字样式 -->
       <div class="panel-section">
         <label class="section-title">🎨 4. 文字样式</label>
+        
         <div class="slider-group">
           <label>字体</label>
           <select id="font-family">
             <option value="Impact, 'Arial Black', sans-serif">Impact (经典英)</option>
             <option value="'Microsoft YaHei', sans-serif">微软雅黑 (粗)</option>
             <option value="'SimSun', serif">宋体</option>
+            <option value="'KaiTi', serif">楷体</option>
+            <option value="system-ui, sans-serif">系统默认</option>
           </select>
-        </div>
-        <div class="slider-group">
-          <label>字号比例</label>
-          <div class="row">
-            <input type="range" id="font-size" min="10" max="80" value="40">
-            <span id="font-size-val">40</span>
+          <div class="row" style="margin-top: 6px;">
+            <label class="upload-btn">📄 上传字体 (TTF/OTF)<input type="file" id="font-input" accept=".ttf,.otf,.woff,.woff2" hidden></label>
+            <span id="font-name" class="file-name"></span>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col">
+            <label>字号比例</label>
+            <div class="range-row">
+              <input type="range" id="font-size" min="10" max="100" value="40">
+              <span id="font-size-val">40</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label>对齐方式</label>
+            <select id="text-align">
+              <option value="center">居中</option>
+              <option value="left">左对齐</option>
+              <option value="right">右对齐</option>
+            </select>
+          </div>
+        </div>
+
         <div class="row">
           <div class="col">
             <label>文字颜色</label>
@@ -87,16 +119,62 @@
             <input type="color" id="stroke-color" value="#000000">
           </div>
         </div>
-        <div class="slider-group" style="margin-top: 8px;">
-          <label>描边粗细</label>
-          <div class="row">
+
+        <div class="row">
+          <div class="col">
+            <label>描边粗细 <span id="stroke-val">6</span></label>
             <input type="range" id="stroke-width" min="0" max="20" value="6">
-            <span id="stroke-val">6</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label>行距 <span id="line-height-val">1.2</span></label>
+            <input type="range" id="line-height" min="80" max="200" value="120">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label>整体上下偏移 <span id="offset-y-val">0</span></label>
+            <input type="range" id="offset-y" min="-100" max="100" value="0">
+          </div>
+        </div>
+
+        <label class="checkbox-label"><input type="checkbox" id="all-caps" checked> 英文字母全大写</label>
+
+        <div class="row" style="margin-top: 8px;">
+          <div class="col">
+            <label class="checkbox-label"><input type="checkbox" id="use-bg"> 文字背景块</label>
+            <input type="color" id="bg-color" value="#000000" style="margin-top:4px;">
+          </div>
+          <div class="col">
+            <label class="checkbox-label"><input type="checkbox" id="use-shadow" checked> 文字阴影</label>
+            <input type="color" id="shadow-color" value="#000000" style="margin-top:4px;">
           </div>
         </div>
       </div>
 
-      <button id="btn-download" class="primary-btn">💾 下载表情包</button>
+      <!-- 导出设置 -->
+      <div class="panel-section">
+        <label class="section-title">💾 5. 导出设置</label>
+        <div class="row">
+          <div class="col">
+            <label>格式</label>
+            <select id="export-format">
+              <option value="image/png">PNG</option>
+              <option value="image/jpeg">JPG</option>
+              <option value="image/webp">WebP</option>
+            </select>
+          </div>
+          <div class="col">
+            <label>质量 <span id="quality-val">92</span>%</label>
+            <input type="range" id="export-quality" min="30" max="100" value="92">
+          </div>
+        </div>
+        
+        <button id="btn-download" class="primary-btn" disabled>💾 下载表情包</button>
+      </div>
     </div>
   </div>
 
@@ -109,6 +187,7 @@
   </div>
 </main>
 
+<div id="toast" class="toast"></div>
 <script src="../../js/meme-generator.js"></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
