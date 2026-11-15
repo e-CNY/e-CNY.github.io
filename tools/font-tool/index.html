@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="../../css/font-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🔤 字体预览与编辑器</h1>
   <p>上传 TTF/OTF 字体，深度解析元信息，可视化调节排版。</p>
   <a href="../../index.html">← 返回工具站</a>
@@ -24,13 +24,14 @@
         <h3>1. 上传字体</h3>
         <div id="ft-drop-zone" class="ft-drop-zone">
           <span>📁 点击或拖拽</span>
-          <span class="ft-hint">支持 .ttf / .otf / .woff</span>
+          <span class="ft-hint">支持 .ttf / .otf / .woff / .woff2</span>
           <input id="ft-input" type="file" accept=".ttf,.otf,.woff,.woff2" hidden>
         </div>
       </div>
 
       <div class="ft-section" id="ft-editor" style="display:none;">
         <h3>2. 排版编辑</h3>
+        
         <div class="ft-control-row">
           <label>字号</label>
           <input type="range" id="ft-size" min="12" max="120" value="32">
@@ -43,9 +44,19 @@
         </div>
         <div class="ft-control-row">
           <label>字间距</label>
-          <input type="range" id="ft-letter-spacing" min="-2" max="10" step="0.5" value="0">
+          <input type="range" id="ft-letter-spacing" min="-2" max="20" step="0.5" value="0">
           <span id="val-ls">0px</span>
         </div>
+        
+        <div class="ft-control-row">
+          <label>对齐</label>
+          <div class="ft-align-group">
+            <button class="ft-align-btn active" data-align="left" title="左对齐">⬅️</button>
+            <button class="ft-align-btn" data-align="center" title="居中">↔️</button>
+            <button class="ft-align-btn" data-align="right" title="右对齐">➡️</button>
+          </div>
+        </div>
+
         <div class="ft-control-row">
           <label>文字颜色</label>
           <input type="color" id="ft-color" value="#3d3226">
@@ -54,32 +65,90 @@
           <label>背景颜色</label>
           <input type="color" id="ft-bg" value="#ffffff">
         </div>
-        <button id="btn-reset-style" class="ft-btn">重置样式</button>
+
+        <div class="ft-control-row" style="margin-top: 16px; border-top: 1px dashed #ddcfb3; padding-top: 12px;">
+          <label>文字描边</label>
+          <input type="checkbox" id="ft-stroke-enable" style="accent-color:#8a5a2b; width:16px; height:16px;">
+        </div>
+        <div id="ft-stroke-settings" style="display:none;">
+          <div class="ft-control-row">
+            <label>粗细</label>
+            <input type="range" id="ft-stroke-width" min="0.5" max="5" step="0.5" value="1">
+            <span id="val-stroke-w">1px</span>
+          </div>
+          <div class="ft-control-row">
+            <label>描边色</label>
+            <input type="color" id="ft-stroke-color" value="#7ba05b">
+          </div>
+        </div>
+
+        <button id="btn-reset-style" class="ft-btn" style="margin-top: 12px;">重置所有样式</button>
       </div>
     </aside>
 
     <!-- 右侧工作区 -->
     <div class="ft-main">
+      <!-- 字体元信息 -->
       <div class="ft-info-panel" id="ft-info" style="display:none;">
         <h3>🔍 底层解析信息</h3>
         <div class="ft-info-grid">
           <div><span>家族名:</span><b id="info-family">-</b></div>
           <div><span>字体版本:</span><b id="info-version">-</b></div>
-          <div><span>版权信息:</span><b id="info-copyright">-</b></div>
           <div><span>总字符数:</span><b id="info-glyphs">-</b></div>
+          <div><span>版权信息:</span><b id="info-copyright" style="word-break: break-all; white-space: normal;">-</b></div>
         </div>
       </div>
 
+      <!-- 预览区 -->
       <div class="ft-preview-wrap">
-        <textarea id="ft-custom-text" class="ft-custom-text" spellcheck="false">The quick brown fox jumps over the lazy dog.
+        <div class="ft-preview-header">
+          <div class="ft-tabs">
+            <button class="ft-tab active" data-tab="tab-text">📝 文本段落</button>
+            <button class="ft-tab" data-tab="tab-specimen">🔠 字号规范表</button>
+            <button class="ft-tab" data-tab="tab-glyphs">🔣 字符集概览</button>
+          </div>
+          <div class="ft-export-actions">
+            <button id="btn-copy-css" class="ft-small-btn" disabled>📋 提取 CSS</button>
+            <button id="btn-export-png" class="ft-small-btn highlight" disabled>🖼️ 导出 PNG</button>
+          </div>
+        </div>
+
+        <div class="ft-preview-content" id="ft-preview-container">
+          <!-- 文本段落模式 -->
+          <div id="tab-text" class="ft-tab-content active">
+            <textarea id="ft-custom-text" class="ft-custom-text" spellcheck="false">The quick brown fox jumps over the lazy dog.
 0123456789 !@#$%^&*()
 中文字体预览效果：落霞与孤鹜齐飞，秋水共长天一色。</textarea>
-        
-        <div id="ft-preview" class="ft-preview">请先上传字体文件...</div>
+            <div id="ft-preview" class="ft-preview">请先上传字体文件...</div>
+          </div>
+
+          <!-- 字号规范表模式 -->
+          <div id="tab-specimen" class="ft-tab-content" style="display:none;">
+            <div id="ft-specimen-preview" class="ft-specimen">
+              <h1>H1 Heading 标题</h1>
+              <h2>H2 Heading 标题</h2>
+              <h3>H3 Heading 标题</h3>
+              <h4>H4 Heading 标题</h4>
+              <p class="body-text">正文段落排版测试。字体不仅是信息的载体，更是情感的表达。通过不同字号的对比，我们可以感受到视觉层级的丰富变化。The quick brown fox jumps over the lazy dog.</p>
+              <p class="small-text">小号辅助文字：这是一段用于测试最小字号的文本，确保在极小尺寸下依然保持清晰的可读性与优雅的轮廓。</p>
+            </div>
+          </div>
+
+          <!-- 字符集模式 -->
+          <div id="tab-glyphs" class="ft-tab-content" style="display:none;">
+            <div id="ft-glyphs-grid" class="ft-glyphs-grid">
+              <p style="text-align:center; color:#8a7a5f; padding: 20px;">字体解析完成后显示字符集...</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
+<!-- 依赖库 -->
 <script src="../../js/libs/opentype.min.js"></script>
 <script src="../../js/font-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

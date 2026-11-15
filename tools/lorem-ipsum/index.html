@@ -10,122 +10,174 @@
 <link rel="stylesheet" href="../../css/lorem-ipsum.css">
 </head>
 <body>
-<main class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🗒️ Lorem Ipsum 生成器</h1>
-  <p>多语言占位文本 · HTML 元素包裹 · 实时字数统计</p>
+  <p>多语言占位文本 · Markdown / HTML / 纯文本 · 实时字数统计</p>
   <a href="../../index.html">← 返回首页</a>
-</main>
+</header>
 
 <main class="lorem-wrap">
-  <section class="lorem-controls">
-    <label>
-      语言
-      <select id="lang">
-        <option value="latin">拉丁 Lorem</option>
-        <option value="zh">中文</option>
-        <option value="ja">日文</option>
-        <option value="ko">韩文</option>
-      </select>
-    </label>
-    <label>
-      生成方式
-      <select id="mode">
-        <option value="paragraphs">按段落</option>
-        <option value="sentences">按句子</option>
-        <option value="words">按单词</option>
-      </select>
-    </label>
-    <label>
-      数量
-      <input id="count" type="number" min="1" max="200" value="3">
-    </label>
-    <label>
-      字数上限（0=不限）
-      <input id="maxChars" type="number" min="0" max="100000" value="0">
-    </label>
-    <label class="checkbox-label">
-      <input id="startClassic" type="checkbox" checked>
-      以 "Lorem ipsum…" 开头（仅拉丁）
-    </label>
-    <label class="checkbox-label">
-      <input id="useCustom" type="checkbox">
-      使用自定义文本作为词源
-    </label>
-    <button id="generate">生成文本</button>
-  </section>
+  <div class="lorem-layout">
+    <!-- 左侧控制区 -->
+    <aside class="lorem-sidebar">
+      
+      <!-- 1. 基本设置 -->
+      <div class="lorem-card">
+        <h3>1. 基础设置</h3>
+        
+        <div class="form-row">
+          <label>语言</label>
+          <select id="lang" class="form-select">
+            <option value="latin">拉丁 Lorem</option>
+            <option value="zh">中文</option>
+            <option value="ja">日文</option>
+            <option value="ko">韩文</option>
+            <option value="de">德语 (Deutsch)</option>
+            <option value="fr">法语 (Français)</option>
+            <option value="es">西语 (Español)</option>
+          </select>
+        </div>
 
-  <section id="customWrap" class="custom-source" hidden>
-    <label>
-      自定义词源（自动按空白/标点分割，无分隔符时按 2 字组合切分）
-      <textarea id="customText" placeholder="把你自己的文本粘贴到这里，生成时将从中随机抽取…" spellcheck="false"></textarea>
-    </label>
-  </section>
+        <div class="form-row">
+          <label>输出格式</label>
+          <select id="format" class="form-select">
+            <option value="html">HTML 源码</option>
+            <option value="markdown">Markdown 源码</option>
+            <option value="text">纯文本</option>
+          </select>
+        </div>
 
-  <section class="html-controls">
-    <fieldset class="block-fieldset">
-      <legend>块级容器</legend>
-      <label><input type="radio" name="blockTag" value="none" checked> 纯文本</label>
-      <label><input type="radio" name="blockTag" value="p"> &lt;p&gt; 段落</label>
-      <label><input type="radio" name="blockTag" value="h1"> &lt;h1&gt; 标题</label>
-      <label><input type="radio" name="blockTag" value="h2"> &lt;h2&gt; 标题</label>
-      <label><input type="radio" name="blockTag" value="h3"> &lt;h3&gt; 标题</label>
-      <label><input type="radio" name="blockTag" value="h4"> &lt;h4&gt; 标题</label>
-      <label><input type="radio" name="blockTag" value="h5"> &lt;h5&gt; 标题</label>
-      <label><input type="radio" name="blockTag" value="blockquote"> &lt;blockquote&gt; 引用</label>
-      <label><input type="radio" name="blockTag" value="pre"> &lt;pre&gt;&lt;code&gt;</label>
-      <label><input type="radio" name="blockTag" value="ul"> &lt;ul&gt;&lt;li&gt; 无序列表</label>
-      <label><input type="radio" name="blockTag" value="ol"> &lt;ol&gt;&lt;li&gt; 有序列表</label>
-      <label><input type="radio" name="blockTag" value="dl"> &lt;dl&gt; 描述列表</label>
-      <label><input type="radio" name="blockTag" value="mixed"> 🎲 随机混搭</label>
-    </fieldset>
-    <fieldset class="inline-fieldset">
-      <legend>行内修饰（可多选，随机包裹）</legend>
-      <label><input type="checkbox" value="a"> &lt;a&gt; 链接</label>
-      <label><input type="checkbox" value="b"> &lt;b&gt; 粗体</label>
-      <label><input type="checkbox" value="i"> &lt;i&gt; 斜体</label>
-      <label><input type="checkbox" value="u"> &lt;u&gt; 下划线</label>
-      <label><input type="checkbox" value="strong"> &lt;strong&gt;</label>
-      <label><input type="checkbox" value="em"> &lt;em&gt;</label>
-      <label><input type="checkbox" value="mark"> &lt;mark&gt; 高亮</label>
-      <label><input type="checkbox" value="del"> &lt;del&gt; 删除</label>
-      <label><input type="checkbox" value="ins"> &lt;ins&gt; 插入</label>
-      <label><input type="checkbox" value="sub"> &lt;sub&gt; 下标</label>
-      <label><input type="checkbox" value="sup"> &lt;sup&gt; 上标</label>
-      <label><input type="checkbox" value="q"> &lt;q&gt; 短引用</label>
-      <label><input type="checkbox" value="cite"> &lt;cite&gt; 引用源</label>
-      <label><input type="checkbox" value="abbr"> &lt;abbr&gt; 缩写</label>
-      <label><input type="checkbox" value="kbd"> &lt;kbd&gt; 键盘</label>
-      <label><input type="checkbox" value="samp"> &lt;samp&gt; 示例</label>
-      <label><input type="checkbox" value="var"> &lt;var&gt; 变量</label>
-      <label><input type="checkbox" value="small"> &lt;small&gt; 小字</label>
-      <label><input type="checkbox" value="time"> &lt;time&gt; 时间</label>
-    </fieldset>
-  </section>
+        <div class="form-row">
+          <label>生成单位</label>
+          <select id="mode" class="form-select">
+            <option value="paragraphs">按段落</option>
+            <option value="sentences">按句子</option>
+            <option value="words">按单词</option>
+          </select>
+        </div>
 
-  <section class="lorem-output">
-    <div class="output-header">
-      <span class="output-title">输出源码</span>
-      <span class="output-actions">
-        <button id="copy">📋 复制源码</button>
-        <button id="copyText" class="secondary">📄 复制纯文本</button>
-        <span id="copyHint" class="hint" hidden>已复制</span>
-      </span>
+        <div class="form-row-group">
+          <div class="form-group-col">
+            <label>数量</label>
+            <input id="count" type="number" min="1" max="500" value="3" class="form-input">
+          </div>
+          <div class="form-group-col">
+            <label title="0表示不限字数">字数上限</label>
+            <input id="maxChars" type="number" min="0" max="100000" value="0" class="form-input">
+          </div>
+        </div>
+
+        <label class="form-checkbox">
+          <input id="startClassic" type="checkbox" checked> 
+          以 "Lorem ipsum…" 开头（仅拉丁文）
+        </label>
+      </div>
+
+      <!-- 2. 自定义词源 -->
+      <div class="lorem-card">
+        <h3 style="display:flex; justify-content:space-between; align-items:center;">
+          <span>2. 自定义词源</span>
+          <label class="form-checkbox" style="margin-bottom:0;">
+            <input id="useCustom" type="checkbox"> 启用
+          </label>
+        </h3>
+        <div id="customWrap" style="display:none; margin-top:10px;">
+          <textarea id="customText" class="form-textarea" placeholder="粘贴你的词源文本，系统将自动按空格或标点分割，中文字符按2字组合切分..." rows="4"></textarea>
+        </div>
+      </div>
+
+      <!-- 3. 标签包裹设置 (仅 HTML/Markdown 格式生效) -->
+      <div class="lorem-card" id="tagsPanel">
+        <h3>3. 标签包裹</h3>
+        
+        <label class="section-label">块级容器</label>
+        <select id="blockTag" class="form-select" style="margin-bottom: 12px;">
+          <option value="none">无包裹 (纯文本)</option>
+          <optgroup label="HTML 标签">
+            <option value="p">&lt;p&gt; 段落</option>
+            <option value="h1">&lt;h1&gt; 大标题</option>
+            <option value="h2">&lt;h2&gt; 中标题</option>
+            <option value="h3">&lt;h3&gt; 小标题</option>
+            <option value="blockquote">&lt;blockquote&gt; 引用</option>
+            <option value="ul">&lt;ul&gt; 无序列表</option>
+            <option value="ol">&lt;ol&gt; 有序列表</option>
+            <option value="mixed">🎲 随机混搭</option>
+          </optgroup>
+          <optgroup label="Markdown 语法">
+            <option value="md_h1"># 大标题</option>
+            <option value="md_h2">## 中标题</option>
+            <option value="md_h3">### 小标题</option>
+            <option value="md_bq">&gt; 引用</option>
+            <option value="md_ul">- 无序列表</option>
+            <option value="md_ol">1. 有序列表</option>
+          </optgroup>
+        </select>
+
+        <div id="inlineTagsWrap">
+          <label class="section-label" style="display:flex; justify-content:space-between;">
+            <span>行内修饰 (多选)</span>
+            <button id="clearInlineTags" class="btn-text">清空选择</button>
+          </label>
+          <div class="inline-tags-grid">
+            <label><input type="checkbox" value="b"> &lt;b&gt;</label>
+            <label><input type="checkbox" value="i"> &lt;i&gt;</label>
+            <label><input type="checkbox" value="u"> &lt;u&gt;</label>
+            <label><input type="checkbox" value="strong"> &lt;strong&gt;</label>
+            <label><input type="checkbox" value="em"> &lt;em&gt;</label>
+            <label><input type="checkbox" value="mark"> &lt;mark&gt;</label>
+            <label><input type="checkbox" value="del"> &lt;del&gt;</label>
+            <label><input type="checkbox" value="a"> &lt;a&gt;</label>
+            <label><input type="checkbox" value="code"> &lt;code&gt;</label>
+            <label><input type="checkbox" value="kbd"> &lt;kbd&gt;</label>
+          </div>
+        </div>
+      </div>
+
+      <button id="generate" class="generate-btn">✨ 重新生成文本</button>
+    </aside>
+
+    <!-- 右侧输出区 -->
+    <div class="lorem-main">
+      
+      <!-- 工具栏 -->
+      <div class="output-toolbar">
+        <div class="stats-bar">
+          <span>单词：<b id="stWords">0</b></span>
+          <span>字符：<b id="stChars">0</b></span>
+          <span>句子：<b id="stSentences">0</b></span>
+          <span>段落：<b id="stParagraphs">0</b></span>
+        </div>
+        <div class="action-bar">
+          <button id="copy" class="action-btn primary">📋 复制源码</button>
+          <button id="copyText" class="action-btn">📄 仅复制文本</button>
+          <button id="download" class="action-btn">💾 下载文件</button>
+        </div>
+      </div>
+
+      <!-- 内容展示 -->
+      <div class="output-content">
+        <!-- 源码 -->
+        <textarea id="output" class="output-code" readonly spellcheck="false" placeholder="生成结果将出现在这里…"></textarea>
+        
+        <!-- 渲染预览 -->
+        <div class="output-preview-wrap" id="previewWrap">
+          <div id="preview" class="output-preview"></div>
+        </div>
+      </div>
+
+      <!-- 切换视图 -->
+      <div class="view-toggle">
+        <button class="view-btn active" data-view="code">💻 源码</button>
+        <button class="view-btn" data-view="preview">👁️ 渲染预览</button>
+      </div>
+
     </div>
-    <textarea id="output" readonly spellcheck="false" placeholder="生成结果将出现在这里…"></textarea>
-    <div class="stats">
-      <span>单词：<b id="stWords">0</b></span>
-      <span>字符（不含空格）：<b id="stChars">0</b></span>
-      <span>句子：<b id="stSentences">0</b></span>
-      <span>段落：<b id="stParagraphs">0</b></span>
-    </div>
-    <details class="preview-wrap">
-      <summary>🔍 渲染预览</summary>
-      <div id="preview" class="preview"></div>
-    </details>
-  </section>
+  </div>
 </main>
 
-<script src="../../js/lorem-ipsum.js"></script>
+<div id="toast" class="toast"></div>
+
+<script src="../../js/lorem-ipsum.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
 </html>

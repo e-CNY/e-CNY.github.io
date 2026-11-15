@@ -10,87 +10,130 @@
 <link rel="stylesheet" href="../../css/favicon-generator.css">
 </head>
 <body>
-<main class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🏷️ Favicon 生成器</h1>
-  <p>从图片或文字一键生成全套网站图标 · 纯本地处理</p>
+  <p>从图片或文字一键生成全套网站图标（含 ICO / PNG / WebP） · 纯本地处理</p>
   <a href="../../index.html">← 返回首页</a>
-</main>
+</header>
 
 <main class="fg-wrap">
-  <nav class="fg-tabs">
-    <button data-mode="image" class="active">🖼️ 从图片生成</button>
-    <button data-mode="text">🔤 从文字生成</button>
-  </nav>
+  <div class="fg-layout">
+    <!-- 左侧控制面板 -->
+    <aside class="fg-sidebar">
+      <!-- 模式切换 -->
+      <div class="fg-tabs">
+        <button data-mode="image" class="active">🖼️ 从图片生成</button>
+        <button data-mode="text">🔤 从文字生成</button>
+      </div>
 
-  <!-- 图片模式 -->
-  <section id="imagePanel" class="fg-panel">
-    <div class="fg-upload" id="dropZone">
-      <input type="file" id="fileInput" accept="image/*" hidden>
-      <div class="upload-icon">📁</div>
-      <p>点击选择或拖拽图片到此处</p>
-      <small>支持 PNG / JPG / WebP / SVG，建议正方形</small>
+      <!-- 图片模式控制 -->
+      <div id="imagePanel" class="fg-panel">
+        <div class="fg-upload" id="dropZone">
+          <input type="file" id="fileInput" accept="image/*" hidden>
+          <div class="upload-icon">📁</div>
+          <p>点击 / 拖拽 / 粘贴图片</p>
+          <small>支持 PNG / JPG / WebP / SVG，建议正方形</small>
+        </div>
+        
+        <div class="fg-settings">
+          <label class="fg-label">缩放模式</label>
+          <select id="imgFitMode" class="fg-input">
+            <option value="cover">裁剪铺满 (无留白)</option>
+            <option value="contain">等比留白 (显示完整)</option>
+            <option value="fill">拉伸变形</option>
+          </select>
+          
+          <label class="fg-label" style="margin-top: 10px;">背景颜色</label>
+          <div class="fg-color-row">
+            <input type="color" id="imgBgColor" value="#ffffff" class="fg-color">
+            <span id="imgBgColorVal" class="fg-color-val">#FFFFFF</span>
+            <label class="fg-checkbox-label" style="margin-left:auto;">
+              <input type="checkbox" id="imgBgTransparent"> 透明
+            </label>
+          </div>
+
+          <label class="fg-label" style="margin-top: 10px;">整体圆角 (<span id="imgRadiusVal">0</span>%)</label>
+          <input type="range" id="imgRadius" min="0" max="50" value="0" class="fg-range">
+        </div>
+      </div>
+
+      <!-- 文字模式控制 -->
+      <div id="textPanel" class="fg-panel" hidden>
+        <div class="fg-settings">
+          <label class="fg-label">文字 (1-2字)</label>
+          <input id="textInput" type="text" maxlength="2" value="A" class="fg-input">
+
+          <label class="fg-label" style="margin-top: 10px;">字体选择</label>
+          <select id="fontFamily" class="fg-input">
+            <option value="sans-serif">系统无衬线</option>
+            <option value="serif">系统衬线</option>
+            <option value="monospace">等宽字体</option>
+            <option value="Impact, sans-serif">Impact (粗英)</option>
+          </select>
+          <div class="fg-row" style="margin-top:6px;">
+            <label class="fg-upload-btn">📄 上传自定义字体<input type="file" id="fontInput" accept=".ttf,.otf" hidden></label>
+            <span id="fontName" class="fg-file-name"></span>
+          </div>
+
+          <div class="fg-row" style="margin-top: 10px;">
+            <div class="fg-col">
+              <label class="fg-label">背景色</label>
+              <input id="bgColor" type="color" value="#8a5a2b" class="fg-color" style="width:100%;">
+            </div>
+            <div class="fg-col">
+              <label class="fg-label">文字色</label>
+              <input id="fgColor" type="color" value="#fdf8ec" class="fg-color" style="width:100%;">
+            </div>
+          </div>
+
+          <label class="fg-label" style="margin-top: 10px;">字重</label>
+          <select id="fontWeight" class="fg-input">
+            <option value="normal">正常</option>
+            <option value="bold" selected>粗体</option>
+            <option value="900">极粗 (900)</option>
+          </select>
+
+          <label class="fg-label" style="margin-top: 10px;">背景圆角 (<span id="radiusVal">20</span>%)</label>
+          <input type="range" id="radius" min="0" max="50" value="20" class="fg-range">
+        </div>
+      </div>
+
+      <!-- 全局操作 -->
+      <div class="fg-actions">
+        <button id="downloadZip" class="fg-btn primary" disabled>📦 打包下载全部 (ZIP)</button>
+        <button id="downloadSizes" class="fg-btn secondary" disabled>📥 逐个下载 PNG</button>
+        <span id="status" class="fg-status"></span>
+      </div>
+    </aside>
+
+    <!-- 右侧预览区 -->
+    <div class="fg-main">
+      <div class="fg-preview-header">
+        <h2>👁️ 实时预览</h2>
+        <span class="fg-hint">点击下方图标可直接下载对应尺寸 PNG</span>
+      </div>
+      
+      <div class="fg-preview-grid" id="previewGrid">
+        <!-- 预览区生成 -->
+        <div class="fg-empty-hint" id="emptyHint">请上传图片或输入文字</div>
+      </div>
+
+      <!-- 生成的 HTML 代码 -->
+      <div id="codeSection" class="fg-code" hidden>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h3>HTML 引用代码</h3>
+          <button id="copyCode" class="fg-btn-small">📋 复制</button>
+        </div>
+        <pre id="htmlCode"></pre>
+      </div>
     </div>
-    <div class="fg-preview-grid" id="imagePreviewGrid"></div>
-  </section>
-
-  <!-- 文字模式 -->
-  <section id="textPanel" class="fg-panel" hidden>
-    <div class="fg-text-controls">
-      <label>
-        文字（1–2 个字符）
-        <input id="textInput" type="text" maxlength="2" value="A" placeholder="A">
-      </label>
-      <label>
-        背景色
-        <input id="bgColor" type="color" value="#8a5a2b">
-      </label>
-      <label>
-        文字颜色
-        <input id="fgColor" type="color" value="#fdf8ec">
-      </label>
-      <label>
-        字体
-        <select id="fontFamily">
-          <option value="sans-serif">无衬线</option>
-          <option value="serif">衬线</option>
-          <option value="monospace">等宽</option>
-        </select>
-      </label>
-      <label>
-        圆角（%）
-        <input id="radius" type="range" min="0" max="50" value="20">
-        <span id="radiusVal">20%</span>
-      </label>
-      <label class="checkbox-label">
-        <input id="bold" type="checkbox" checked> 粗体
-      </label>
-    </div>
-    <div class="fg-preview-grid" id="textPreviewGrid"></div>
-  </section>
-
-  <!-- 操作区 -->
-  <section class="fg-actions">
-    <button id="downloadZip" class="primary" disabled>📦 下载全部（ZIP）</button>
-    <button id="downloadSizes" class="secondary" disabled>📥 单独下载尺寸</button>
-    <span id="status" class="status"></span>
-  </section>
-
-  <!-- 生成的 HTML 代码 -->
-  <section id="codeSection" class="fg-code" hidden>
-    <h2>HTML 引用代码</h2>
-    <pre id="htmlCode"></pre>
-    <button id="copyCode" class="secondary">📋 复制代码</button>
-  </section>
-
-  <!-- 尺寸列表 -->
-  <section id="sizesSection" class="fg-sizes" hidden>
-    <h2>包含的尺寸</h2>
-    <ul id="sizeList"></ul>
-  </section>
+  </div>
 </main>
 
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/jszip.min.js"></script>
-<script src="../../js/favicon-generator.js"></script>
+<script src="../../js/favicon-generator.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
 </html>

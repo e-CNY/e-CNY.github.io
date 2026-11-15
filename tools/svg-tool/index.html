@@ -10,32 +10,80 @@
 <link rel="stylesheet" href="../../css/svg-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🖼️ SVG 工具箱</h1>
-  <p>实时预览 SVG 代码、格式化压缩、转为高清 PNG。</p>
+  <p>实时预览 SVG 代码、格式化压缩、导出高清 PNG。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="sv-layout" style="padding-top: 0;">
   <div class="sv-container">
+    <!-- 左侧输入区 -->
     <div class="sv-col">
-      <div class="sv-toolbar">
-        <button id="btn-format" class="sv-btn">格式化</button>
-        <button id="btn-minify" class="sv-btn">压缩 (Minify)</button>
-        <button id="btn-download-svg" class="sv-btn primary">下载 SVG</button>
-        <button id="btn-download-png" class="sv-btn primary">下载 PNG</button>
+      <div class="sv-panel-header">
+        <h2>📝 代码编辑</h2>
+        <div class="sv-toolbar">
+          <button id="btn-format" class="sv-btn">格式化</button>
+          <button id="btn-minify" class="sv-btn">压缩</button>
+          <button id="btn-copy" class="sv-btn">复制</button>
+          <button id="btn-clear" class="sv-btn danger">清空</button>
+        </div>
       </div>
-      <textarea id="sv-input" class="sv-textarea" spellcheck="false" placeholder="在此粘贴 SVG 代码..."></textarea>
+      <div class="sv-textarea-wrap">
+        <textarea id="sv-input" class="sv-textarea" spellcheck="false" placeholder="在此粘贴 SVG 代码，或拖拽 .svg 文件至此..."></textarea>
+      </div>
     </div>
+
+    <!-- 右侧预览与导出区 -->
     <div class="sv-col">
-      <div class="sv-preview-wrap">
+      <div class="sv-panel-header">
+        <h2>👁️ 实时预览</h2>
+        <div class="sv-toolbar">
+          <select id="sv-bg-mode" class="sv-select">
+            <option value="transparent">棋盘格背景</option>
+            <option value="white">纯白背景</option>
+            <option value="black">纯黑背景</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sv-preview-wrap" id="sv-preview-wrap">
         <div id="sv-preview" class="sv-preview">
           <!-- 渲染区 -->
+        </div>
+        <div id="sv-error" class="sv-error" style="display: none;">⚠️ SVG 语法错误或无法渲染</div>
+      </div>
+
+      <!-- 导出控制条 -->
+      <div class="sv-export-bar">
+        <div class="sv-export-options">
+          <label>导出倍率</label>
+          <select id="sv-export-scale" class="sv-select">
+            <option value="1">1x (原始)</option>
+            <option value="2" selected>2x (高清)</option>
+            <option value="4">4x (超清)</option>
+            <option value="8">8x (极致)</option>
+          </select>
+          
+          <label style="margin-left: 8px;">背景色</label>
+          <select id="sv-export-bg" class="sv-select">
+            <option value="#ffffff">白色</option>
+            <option value="transparent" selected>透明</option>
+            <option value="#000000">黑色</option>
+          </select>
+        </div>
+        
+        <div class="sv-export-actions">
+          <button id="btn-download-svg" class="sv-btn primary">下载 SVG</button>
+          <button id="btn-download-png" class="sv-btn highlight">下载 PNG</button>
         </div>
       </div>
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/svg-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

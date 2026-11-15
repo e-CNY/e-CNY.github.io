@@ -1,5 +1,5 @@
 .b64-wrap {
-  max-width: 1000px;
+  max-width: 1050px;
   margin: 0 auto;
   padding: 0 16px 48px;
 }
@@ -21,29 +21,22 @@
   cursor: pointer;
   transition: all 0.15s;
 }
-.b64-tab:hover {
-  border-color: #b08a5a;
-}
+.b64-tab:hover { border-color: #b08a5a; }
 .b64-tab.active {
   background: #8a5a2b;
   border-color: #8a5a2b;
   color: #fdf8ec;
 }
 
-.b64-panel {
-  display: none;
-  flex-direction: column;
-  gap: 20px;
-}
-.b64-panel.active {
-  display: flex;
-}
+.b64-panel { display: none; flex-direction: column; gap: 20px; }
+.b64-panel.active { display: flex; animation: fadeIn .2s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
 /* 上传区 */
 .upload-area {
   border: 2px dashed #ddcfb3;
   border-radius: 12px;
-  padding: 40px 20px;
+  padding: 50px 20px;
   text-align: center;
   background: #f9f3e3;
   cursor: pointer;
@@ -53,20 +46,9 @@
   border-color: #8a5a2b;
   background: #fdf8ec;
 }
-.upload-icon {
-  font-size: 2.5rem;
-  margin-bottom: 12px;
-}
-.upload-area p {
-  margin: 0 0 6px;
-  color: #3d3226;
-  font-size: 1rem;
-  font-weight: 500;
-}
-.upload-hint {
-  font-size: 0.85rem !important;
-  color: #8a7a5f !important;
-}
+.upload-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.upload-area p { margin: 0 0 6px; color: #3d3226; font-size: 1rem; font-weight: 500; }
+.upload-hint { font-size: 0.85rem !important; color: #8a7a5f !important; }
 
 /* 结果区 */
 .result-area {
@@ -79,10 +61,7 @@
   padding: 20px;
 }
 
-.preview-col {
-  display: flex;
-  flex-direction: column;
-}
+.preview-col { display: flex; flex-direction: column; min-width: 0; }
 .preview-box {
   border: 1px solid #ddcfb3;
   border-radius: 8px;
@@ -104,23 +83,16 @@
   font-size: 0.85rem;
   color: #6b5d47;
   line-height: 1.6;
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddcfb3;
 }
 
-.output-col {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.panel-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.section-title {
-  font-weight: 600;
-  color: #3d3226;
-  font-size: 0.9rem;
-}
+.output-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.panel-section { display: flex; flex-direction: column; gap: 8px; }
+.section-title { font-weight: 600; color: #3d3226; font-size: 0.9rem; }
+
 textarea {
   width: 100%;
   height: 80px;
@@ -134,10 +106,9 @@ textarea {
   line-height: 1.5;
   resize: vertical;
   outline: none;
+  box-sizing: border-box;
 }
-textarea:focus {
-  border-color: #b08a5a;
-}
+textarea:focus { border-color: #b08a5a; box-shadow: 0 0 0 2px rgba(176,138,90,.1); }
 
 .btn {
   padding: 10px 16px;
@@ -148,25 +119,15 @@ textarea:focus {
   cursor: pointer;
   transition: all 0.15s;
 }
-.primary-btn {
-  background: #8a5a2b;
-  color: #fdf8ec;
-}
+.primary-btn { background: #8a5a2b; color: #fdf8ec; }
 .primary-btn:hover { background: #6b4420; }
-.secondary-btn {
-  background: #fff;
-  color: #6b5d47;
-  border: 1px solid #ddcfb3;
-}
+.secondary-btn { background: #fff; color: #6b5d47; border: 1px solid #ddcfb3; }
 .secondary-btn:hover { background: #efe6d0; }
-.small-btn {
-  padding: 4px 10px;
-  font-size: 0.8rem;
-  background: #efe6d0;
-  color: #6b5d47;
-  border: 1px solid #ddcfb3;
-}
+.small-btn { padding: 4px 10px; font-size: 0.8rem; background: #efe6d0; color: #6b5d47; border: 1px solid #ddcfb3; border-radius: 4px; }
 .small-btn:hover { background: #ddcfb3; }
+
+.action-row { display: flex; gap: 12px; }
+.action-row .btn { flex: 1; }
 
 .code-snippets {
   background: #fff;
@@ -184,15 +145,18 @@ textarea:focus {
   background: #f4efe3;
   padding: 6px 10px;
   border-radius: 6px;
-  font-family: monospace;
   font-size: 0.85rem;
   color: #3d3226;
+  gap: 10px;
 }
+.code-item span { font-weight: bold; color: #8a5a2b; width: 45px; flex-shrink: 0; }
 .code-item code {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-right: 10px;
+  flex: 1;
+  font-family: monospace;
+  color: #6b5d47;
 }
 
 /* Base64 转图片 - 输入区 */
@@ -205,19 +169,10 @@ textarea:focus {
   border-radius: 12px;
   padding: 20px;
 }
-.input-area textarea {
-  height: 150px;
-}
-.action-row {
-  display: flex;
-  gap: 12px;
-}
+.input-area textarea { height: 180px; }
 
-.info-col p {
-  margin: 0 0 10px;
-  font-size: 0.95rem;
-  color: #3d3226;
-}
+.info-col p { margin: 0 0 10px; font-size: 0.95rem; color: #3d3226; }
+.info-col strong { color: #4b3f2f; }
 .note {
   font-size: 0.85rem !important;
   color: #8a7a5f !important;
@@ -225,7 +180,19 @@ textarea:focus {
   padding: 10px;
   background: #fdf8ec;
   border-radius: 6px;
+  line-height: 1.5;
 }
+
+/* Toast */
+.toast {
+  position: fixed; left: 50%; bottom: 30px;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(61, 50, 38, 0.92); color: #fff;
+  padding: 8px 16px; border-radius: 6px; font-size: 0.85rem;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+  z-index: 9999; max-width: 80vw; text-align: center; word-break: break-all;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 @media (max-width: 768px) {
   .result-area { grid-template-columns: 1fr; }

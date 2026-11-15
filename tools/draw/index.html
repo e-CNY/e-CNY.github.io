@@ -12,7 +12,7 @@
 <body>
 <header class="tool-page-header">
   <h1>🎨 在线画板</h1>
-  <p>支持多种笔刷、形状、撤销重做与保存。</p>
+  <p>支持多种笔刷、平滑防抖、底图导入、自动保存与多格式导出。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
@@ -44,6 +44,9 @@
         <button type="button" class="tool-btn" data-tool="rect" title="矩形">⬜</button>
         <button type="button" class="tool-btn" data-tool="circle" title="圆形">⭕</button>
       </div>
+      <label class="toggle-label">
+        <input type="checkbox" id="shape-fill"> 填充形状
+      </label>
     </div>
 
     <div class="draw-group">
@@ -63,11 +66,26 @@
     </div>
 
     <div class="draw-group">
-      <h3>⚙️ 笔触大小</h3>
-      <div class="draw-size-row">
-        <input type="range" id="brush-size" min="1" max="50" value="5">
+      <h3>⚙️ 笔触大小与不透明度</h3>
+      <div class="draw-size-row" style="margin-bottom: 8px;">
+        <span style="font-size:.8rem; width: 24px;">粗细</span>
+        <input type="range" id="brush-size" min="1" max="80" value="5">
         <span id="size-val">5px</span>
       </div>
+      <div class="draw-size-row">
+        <span style="font-size:.8rem; width: 24px;">透明</span>
+        <input type="range" id="brush-opacity" min="5" max="100" value="100">
+        <span id="opacity-val">100%</span>
+      </div>
+    </div>
+
+    <div class="draw-group">
+      <h3>🖼️ 画布背景</h3>
+      <label class="action-btn" style="display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer;">
+        📁 导入底图
+        <input type="file" id="btn-upload-bg" accept="image/*" hidden>
+      </label>
+      <button type="button" id="btn-remove-bg" class="action-btn danger" style="margin-top: 6px;">❌ 移除底图</button>
     </div>
 
     <div class="draw-group">
@@ -75,12 +93,18 @@
       <div class="draw-actions">
         <button type="button" id="btn-undo" class="action-btn" title="撤销 (Ctrl+Z)">↩️ 撤销</button>
         <button type="button" id="btn-redo" class="action-btn" title="重做 (Ctrl+Y)">↪️ 重做</button>
-        <button type="button" id="btn-clear" class="action-btn danger" title="清空画板">🗑️ 清空</button>
+        <button type="button" id="btn-clear" class="action-btn danger" title="清空画板">🗑️ 清空笔迹</button>
       </div>
     </div>
 
     <div class="draw-group" style="margin-top: auto;">
-      <button type="button" id="btn-save" class="save-btn">⬇️ 保存图片</button>
+      <h3>💾 导出设置</h3>
+      <select id="export-format" class="export-select">
+        <option value="image/png">PNG (支持透明)</option>
+        <option value="image/jpeg">JPG</option>
+        <option value="image/webp">WebP</option>
+      </select>
+      <button type="button" id="btn-save" class="save-btn" style="margin-top: 8px;">⬇️ 保存图片</button>
     </div>
 
   </aside>
@@ -88,11 +112,15 @@
   <!-- 画板区域 -->
   <section class="draw-canvas-area">
     <div class="canvas-wrapper" id="canvas-wrapper">
+      <canvas id="canvas-bg"></canvas>
       <canvas id="canvas-base"></canvas>
       <canvas id="canvas-top"></canvas>
     </div>
   </section>
 </main>
+
+<!-- 自定义圆形光标 -->
+<div id="custom-cursor" class="custom-cursor"></div>
 
 <script src="../../js/draw.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

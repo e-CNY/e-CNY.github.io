@@ -1,305 +1,473 @@
 (function () {
-  // ============ 尺寸定义 ============
+  'use strict';
+
+  // ================== 通用工具 ==================
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1600);
+  }
+
+  function downloadBlob(blob, filename) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+  }
+
+  // ================== 尺寸定义 ==================
   var SIZES = [
-    { name: 'favicon-16x16.png', width: 16, height: 16, type: 'png' },
-    { name: 'favicon-32x32.png', width: 32, height: 32, type: 'png' },
-    { name: 'favicon-48x48.png', width: 48, height: 48, type: 'png' },
-    { name: 'favicon-64x64.png', width: 64, height: 64, type: 'png' },
-    { name: 'apple-touch-icon.png', width: 180, height: 180, type: 'png' },
-    { name: 'android-chrome-192x192.png', width: 192, height: 192, type: 'png' },
-    { name: 'android-chrome-512x512.png', width: 512, height: 512, type: 'png' }
+    { name: 'favicon-16x16.png', width: 16 },
+    { name: 'favicon-32x32.png', width: 32 },
+    { name: 'favicon-48x48.png', width: 48 },
+    { name: 'favicon-64x64.png', width: 64 },
+    { name: 'apple-touch-icon.png', width: 180 },
+    { name: 'android-chrome-192x192.png', width: 192 },
+    { name: 'android-chrome-512x512.png', width: 512 }
   ];
+  var PREVIEW_SIZES = [16, 32, 48, 64, 128];
 
-  var PREVIEW_SIZES = [
-    { width: 16, height: 16 },
-    { width: 32, height: 32 },
-    { width: 48, height: 48 },
-    { width: 64, height: 64 },
-    { width: 128, height: 128 }
-  ];
-
-  // ============ DOM ============
+  // ================== DOM 元素 ==================
   var tabs = document.querySelectorAll('.fg-tabs button');
   var imagePanel = document.getElementById('imagePanel');
   var textPanel = document.getElementById('textPanel');
   var dropZone = document.getElementById('dropZone');
   var fileInput = document.getElementById('fileInput');
-  var imagePreviewGrid = document.getElementById('imagePreviewGrid');
-  var textPreviewGrid = document.getElementById('textPreviewGrid');
+  var previewGrid = document.getElementById('previewGrid');
+  var emptyHint = document.getElementById('emptyHint');
+
+  // 图片控件
+  var imgFitMode = document.getElementById('imgFitMode');
+  var imgBgColor = document.getElementById('imgBgColor');
+  var imgBgColorVal = document.getElementById('imgBgColorVal');
+  var imgBgTransparent = document.getElementById('imgBgTransparent');
+  var imgRadius = document.getElementById('imgRadius');
+  var imgRadiusVal = document.getElementById('imgRadiusVal');
+
+  // 文字控件
   var textInput = document.getElementById('textInput');
+  var fontFamily = document.getElementById('fontFamily');
+  var fontInput = document.getElementById('fontInput');
+  var fontName = document.getElementById('fontName');
   var bgColor = document.getElementById('bgColor');
   var fgColor = document.getElementById('fgColor');
-  var fontFamily = document.getElementById('fontFamily');
+  var fontWeight = document.getElementById('fontWeight');
   var radiusEl = document.getElementById('radius');
   var radiusVal = document.getElementById('radiusVal');
-  var boldEl = document.getElementById('bold');
+
+  // 操作与代码
   var downloadZipBtn = document.getElementById('downloadZip');
   var downloadSizesBtn = document.getElementById('downloadSizes');
   var statusEl = document.getElementById('status');
   var codeSection = document.getElementById('codeSection');
   var htmlCodeEl = document.getElementById('htmlCode');
   var copyCodeBtn = document.getElementById('copyCode');
-  var sizesSection = document.getElementById('sizesSection');
-  var sizeList = document.getElementById('sizeList');
 
-  // ============ 状态 ============
+  // ================== 状态变量 ==================
   var currentMode = 'image';
-  var sourceImage = null;      // HTMLImageElement（图片模式）
-  var currentCanvases = {};    // 尺寸 -> canvas（用于下载）
+  var sourceImage = null;       
+  var currentCanvases = {};     // { 16: canvas, 32: canvas, ... }
+  var customFontName = '';      
+  var icoBlobCache = null;      // 缓存生成的 ICO 文件 Blob
 
-  // ============ Tabs ============
+  // ================== 1. Tab 切换 ==================
   tabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
       tabs.forEach(function (t) { t.classList.remove('active'); });
       tab.classList.add('active');
       currentMode = tab.dataset.mode;
+      
       imagePanel.hidden = currentMode !== 'image';
       textPanel.hidden = currentMode !== 'text';
+      
       updateUI();
     });
   });
 
-  // ============ 图片上传 ============
+  // ================== 2. 图片上传 ==================
   dropZone.addEventListener('click', function () { fileInput.click(); });
-
-  dropZone.addEventListener('dragover', function (e) {
-    e.preventDefault();
-    dropZone.classList.add('drag-over');
-  });
-  dropZone.addEventListener('dragleave', function () {
-    dropZone.classList.remove('drag-over');
-  });
-  dropZone.addEventListener('drop', function (e) {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      loadImageFile(e.dataTransfer.files[0]);
-    }
-  });
-
   fileInput.addEventListener('change', function () {
-    if (fileInput.files && fileInput.files[0]) {
-      loadImageFile(fileInput.files[0]);
+    if (fileInput.files.length > 0) handleImageFile(fileInput.files[0]);
+    fileInput.value = '';
+  });
+
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (evt) {
+    dropZone.addEventListener(evt, function (e) { e.preventDefault(); e.stopPropagation(); });
+  });
+  dropZone.addEventListener('dragover', function () { dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', function () { dropZone.classList.remove('drag-over'); });
+  dropZone.addEventListener('drop', function (e) {
+    dropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length > 0) handleImageFile(e.dataTransfer.files[0]);
+  });
+
+  window.addEventListener('paste', function(e) {
+    if (currentMode !== 'image') return;
+    if (!e.clipboardData || !e.clipboardData.items) return;
+    for (var i = 0; i < e.clipboardData.items.length; i++) {
+      var item = e.clipboardData.items[i];
+      if (item.type.indexOf('image') !== -1) {
+        var file = item.getAsFile();
+        if (file) { e.preventDefault(); handleImageFile(file); }
+        return;
+      }
     }
   });
 
-  function loadImageFile(file) {
+  function handleImageFile(file) {
     if (!file.type.startsWith('image/')) {
-      setStatus('请选择图片文件。');
-      return;
+      return showToast('请选择图片文件');
     }
     var reader = new FileReader();
     reader.onload = function (e) {
       var img = new Image();
       img.onload = function () {
         sourceImage = img;
-        renderImagePreviews();
+        showToast('图片已加载');
         updateUI();
       };
-      img.onerror = function () { setStatus('图片加载失败。'); };
+      img.onerror = function () { showToast('图片解析失败'); };
       img.src = e.target.result;
     };
     reader.readAsDataURL(file);
   }
 
-  // ============ 渲染图片预览 ============
-  function renderImagePreviews() {
-    imagePreviewGrid.innerHTML = '';
-    if (!sourceImage) return;
-    PREVIEW_SIZES.forEach(function (sz) {
-      var c = drawImageToCanvas(sourceImage, sz.width, sz.height);
-      currentCanvases[sz.width + 'x' + sz.height] = c;
-      imagePreviewGrid.appendChild(makePreviewItem(c, sz.width + '×' + sz.height));
-    });
-    // 额外生成完整尺寸的 canvas 供下载
-    SIZES.forEach(function (s) {
-      if (!currentCanvases[s.width + 'x' + s.height]) {
-        currentCanvases[s.width + 'x' + s.height] = drawImageToCanvas(sourceImage, s.width, s.height);
+  // ================== 3. 文字与字体上传 ==================
+  fontInput.addEventListener('change', function () {
+    var file = fontInput.files[0];
+    if (!file) return;
+    
+    fontName.textContent = '加载中...';
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var uniqueName = 'FgFont_' + Date.now();
+      try {
+        var fontFace = new FontFace(uniqueName, e.target.result);
+        fontFace.load().then(function (loadedFace) {
+          document.fonts.add(loadedFace);
+          customFontName = '"' + uniqueName + '", sans-serif';
+          fontName.textContent = '✅ ' + file.name;
+          showToast('字体加载成功');
+          if (currentMode === 'text') updateUI();
+        }).catch(function () {
+          showToast('字体解析失败');
+          fontName.textContent = '';
+        });
+      } catch (err) {
+        showToast('浏览器不支持该字体');
       }
-    });
-  }
+    };
+    reader.readAsArrayBuffer(file);
+  });
 
-  function drawImageToCanvas(img, w, h) {
-    var c = document.createElement('canvas');
-    c.width = w; c.height = h;
-    var ctx = c.getContext('2d');
-    ctx.clearRect(0, 0, w, h);
-
-    // 保持比例，居中裁剪为正方形
-    var side = Math.min(img.width, img.height);
-    var sx = (img.width - side) / 2;
-    var sy = (img.height - side) / 2;
-    ctx.drawImage(img, sx, sy, side, side, 0, 0, w, h);
-    return c;
-  }
-
-  // ============ 渲染文字预览 ============
-  function renderTextPreviews() {
-    textPreviewGrid.innerHTML = '';
-    var text = (textInput.value || 'A').slice(0, 2);
-    var bg = bgColor.value;
-    var fgc = fgColor.value;
-    var ff = fontFamily.value;
-    var radius = parseInt(radiusEl.value, 10) || 0;
-    var bold = boldEl.checked ? 'bold ' : '';
-
-    PREVIEW_SIZES.forEach(function (sz) {
-      var c = drawTextToCanvas(text, sz.width, sz.height, bg, fgc, ff, radius, bold);
-      currentCanvases[sz.width + 'x' + sz.height] = c;
-      textPreviewGrid.appendChild(makePreviewItem(c, sz.width + '×' + sz.height));
-    });
-
-    SIZES.forEach(function (s) {
-      if (!currentCanvases[s.width + 'x' + s.height]) {
-        currentCanvases[s.width + 'x' + s.height] = drawTextToCanvas(
-          text, s.width, s.height, bg, fgc, ff, radius, bold
-        );
-      }
-    });
-  }
-
-  function drawTextToCanvas(text, w, h, bg, fg, ff, radiusPercent, bold) {
-    var c = document.createElement('canvas');
-    c.width = w; c.height = h;
-    var ctx = c.getContext('2d');
-    ctx.clearRect(0, 0, w, h);
-
-    // 圆角矩形背景
-    var r = (Math.min(w, h) * radiusPercent) / 100;
-    ctx.fillStyle = bg;
-    roundedRect(ctx, 0, 0, w, h, r);
-    ctx.fill();
-
-    // 文字
-    var fontSize = Math.min(w, h) * (text.length === 1 ? 0.55 : 0.4);
-    ctx.font = bold + fontSize + 'px ' + ff;
-    ctx.fillStyle = fg;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text, w / 2, h / 2 + fontSize * 0.04);
-    return c;
-  }
-
-  function roundedRect(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.lineTo(x + w - r, y);
-    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-    ctx.lineTo(x + w, y + h - r);
-    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    ctx.lineTo(x + r, y + h);
-    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-    ctx.lineTo(x, y + r);
-    ctx.quadraticCurveTo(x, y, x + r, y);
-    ctx.closePath();
-  }
-
-  function makePreviewItem(canvas, label) {
-    var wrap = document.createElement('div');
-    wrap.className = 'preview-item';
-    var display = canvas;
-    // 预览时如果太大就缩放到适合显示
-    if (canvas.width > 128) {
-      var tmp = document.createElement('canvas');
-      tmp.width = 128;
-      tmp.height = Math.round(128 * canvas.height / canvas.width);
-      tmp.getContext('2d').drawImage(canvas, 0, 0, tmp.width, tmp.height);
-      display = tmp;
-    }
-    display.style.display = 'block';
-    wrap.appendChild(display);
-    var lb = document.createElement('span');
-    lb.className = 'label';
-    lb.textContent = label;
-    wrap.appendChild(lb);
-    return wrap;
-  }
-
-  // ============ 统一刷新 ============
+  // ================== 4. 实时预览与渲染逻辑 ==================
+  var debounceTimer;
   function updateUI() {
-    var hasData = currentMode === 'image' ? !!sourceImage : true;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(renderAll, 50);
+  }
+
+  function renderAll() {
+    previewGrid.innerHTML = '';
+    currentCanvases = {};
+    icoBlobCache = null; // 重置缓存
+    
+    var hasData = (currentMode === 'image') ? !!sourceImage : true;
     downloadZipBtn.disabled = !hasData;
     downloadSizesBtn.disabled = !hasData;
 
-    if (currentMode === 'text') {
-      renderTextPreviews();
-    } else if (sourceImage) {
-      renderImagePreviews();
+    if (!hasData) {
+      emptyHint.style.display = 'block';
+      codeSection.hidden = true;
+      return;
+    }
+    emptyHint.style.display = 'none';
+    codeSection.hidden = false;
+
+    // 循环生成所有预览尺寸
+    PREVIEW_SIZES.forEach(function (size) {
+      var canvas = generateCanvas(size);
+      currentCanvases[size] = canvas;
+      previewGrid.appendChild(makePreviewItem(canvas, size, false));
+    });
+
+    // 生成用于下载的完整尺寸
+    SIZES.forEach(function (s) {
+      if (!currentCanvases[s.width]) {
+        currentCanvases[s.width] = generateCanvas(s.width);
+      }
+    });
+
+    // 生成 ICO 预览（借用 48 尺寸的图标作为预览，但点击下载 ICO）
+    if (currentCanvases[48]) {
+      previewGrid.appendChild(makePreviewItem(currentCanvases[48], 'ICO 格式', true));
     }
 
-    if (hasData) {
-      renderCode();
-      renderSizeList();
-      codeSection.hidden = false;
-      sizesSection.hidden = false;
-    } else {
-      codeSection.hidden = true;
-      sizesSection.hidden = true;
-    }
+    renderCode();
   }
 
-  // ============ HTML 代码 ============
+  function generateCanvas(size) {
+    var canvas = document.createElement('canvas');
+    canvas.width = size; canvas.height = size;
+    var ctx = canvas.getContext('2d');
+    
+    if (currentMode === 'image' && sourceImage) {
+      if (!imgBgTransparent.checked) {
+        ctx.fillStyle = imgBgColor.value;
+        ctx.fillRect(0, 0, size, size);
+      }
+      
+      var fit = imgFitMode.value;
+      var sw = sourceImage.width, sh = sourceImage.height;
+      var scale, dw = size, dh = size, dx = 0, dy = 0;
+      
+      if (fit === 'cover') {
+        scale = Math.max(size / sw, size / sh);
+        dw = sw * scale; dh = sh * scale;
+        dx = (size - dw) / 2; dy = (size - dh) / 2;
+      } else if (fit === 'contain') {
+        scale = Math.min(size / sw, size / sh);
+        dw = sw * scale; dh = sh * scale;
+        dx = (size - dw) / 2; dy = (size - dh) / 2;
+      } else {
+        dw = size; dh = size;
+      }
+
+      var radiusPercent = parseInt(imgRadius.value, 10) / 100;
+      var r = size * radiusPercent;
+      
+      ctx.save();
+      if (r > 0) {
+        drawRoundedRect(ctx, 0, 0, size, size, r);
+        ctx.clip();
+      }
+      ctx.drawImage(sourceImage, dx, dy, dw, dh);
+      ctx.restore();
+      
+    } else if (currentMode === 'text') {
+      var text = (textInput.value || 'A').slice(0, 2);
+      var bg = bgColor.value;
+      var fg = fgColor.value;
+      var ff = customFontName || fontFamily.value;
+      var fw = fontWeight.value;
+      var radiusPercent = parseInt(radiusEl.value, 10) / 100;
+      var r = size * radiusPercent;
+
+      ctx.fillStyle = bg;
+      if (r > 0) {
+        drawRoundedRect(ctx, 0, 0, size, size, r);
+        ctx.fill();
+      } else {
+        ctx.fillRect(0, 0, size, size);
+      }
+
+      var fontSize = size * (text.length === 1 ? 0.6 : 0.45);
+      ctx.font = fw + ' ' + fontSize + 'px ' + ff;
+      ctx.fillStyle = fg;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, size / 2, size / 2 + fontSize * 0.05);
+    }
+    
+    return canvas;
+  }
+
+  function drawRoundedRect(ctx, x, y, w, h, r) {
+    if (r <= 0) r = 0;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function makePreviewItem(canvas, sizeLabel, isIco) {
+    var wrap = document.createElement('div');
+    wrap.className = 'preview-item' + (isIco ? ' ico-item' : '');
+    wrap.title = isIco ? '点击下载 favicon.ico (内含多尺寸)' : '点击下载 ' + sizeLabel + 'x' + sizeLabel;
+    
+    // 修复：每次生成一个全新的 canvas 副本用于显示，防止原 canvas 被 DOM 移走
+    var displayCanvas = document.createElement('canvas');
+    var maxDisplay = 128;
+    
+    if (canvas.width <= maxDisplay) {
+      displayCanvas.width = canvas.width;
+      displayCanvas.height = canvas.height;
+    } else {
+      displayCanvas.width = maxDisplay;
+      displayCanvas.height = maxDisplay;
+    }
+    
+    var dCtx = displayCanvas.getContext('2d');
+    dCtx.clearRect(0, 0, displayCanvas.width, displayCanvas.height);
+    dCtx.drawImage(canvas, 0, 0, displayCanvas.width, displayCanvas.height);
+
+    wrap.appendChild(displayCanvas);
+    
+    var lb = document.createElement('span');
+    lb.className = 'label';
+    lb.textContent = sizeLabel;
+    wrap.appendChild(lb);
+
+    wrap.addEventListener('click', function() {
+      if (isIco) {
+        downloadIco();
+      } else {
+        canvas.toBlob(function(blob) {
+          downloadBlob(blob, 'favicon-' + sizeLabel + 'x' + sizeLabel + '.png');
+          showToast('已下载 ' + sizeLabel + 'x' + sizeLabel);
+        }, 'image/png');
+      }
+    });
+
+    return wrap;
+  }
+
+  // ================== 5. 核心：生成 ICO 格式 ==================
+  function generateIcoBlob(canvases) {
+    // ICO 标准容器，通常包含 16, 32, 48, 64
+    var icoSizes = [16, 32, 48, 64];
+    var pngBuffers = [];
+    
+    var promises = icoSizes.map(function(size) {
+      return new Promise(function(resolve) {
+        var canvas = canvases[size];
+        if (!canvas) return resolve(null);
+        canvas.toBlob(function(blob) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            resolve({ size: size, buffer: e.target.result });
+          };
+          reader.readAsArrayBuffer(blob);
+        }, 'image/png');
+      });
+    });
+
+    return Promise.all(promises).then(function(results) {
+      var validImages = results.filter(function(r) { return r !== null; });
+      if (validImages.length === 0) return null;
+
+      var totalSize = 6;
+      validImages.forEach(function(img) { totalSize += 16 + img.buffer.byteLength; });
+
+      var icoBuffer = new ArrayBuffer(totalSize);
+      var icoView = new DataView(icoBuffer);
+      var icoBytes = new Uint8Array(icoBuffer);
+
+      // 1. ICONDIR (文件头)
+      icoView.setUint16(0, 0, true); // Reserved
+      icoView.setUint16(2, 1, true); // Type (1 = ICO)
+      icoView.setUint16(4, validImages.length, true); // Count
+
+      var offset = 6;
+      var imageOffset = 6 + validImages.length * 16;
+
+      // 2. ICONDIRENTRY (每个图片的目录信息) 和 实际数据
+      validImages.forEach(function(img) {
+        icoView.setUint8(offset, img.size === 256 ? 0 : img.size);
+        icoView.setUint8(offset + 1, img.size === 256 ? 0 : img.size);
+        icoView.setUint8(offset + 2, 0); // ColorCount
+        icoView.setUint8(offset + 3, 0); // Reserved
+        icoView.setUint16(offset + 4, 1, true); // Planes
+        icoView.setUint16(offset + 6, 32, true); // BitCount
+        icoView.setUint32(offset + 8, img.buffer.byteLength, true); // BytesInRes
+        icoView.setUint32(offset + 12, imageOffset, true); // ImageOffset
+
+        // 写入 PNG 二进制数据
+        icoBytes.set(new Uint8Array(img.buffer), imageOffset);
+
+        offset += 16;
+        imageOffset += img.buffer.byteLength;
+      });
+
+      return new Blob([icoBuffer], { type: 'image/x-icon' });
+    });
+  }
+
+  function downloadIco() {
+    if (icoBlobCache) {
+      downloadBlob(icoBlobCache, 'favicon.ico');
+      showToast('favicon.ico 已下载');
+      return;
+    }
+    
+    showToast('正在生成 ICO...');
+    generateIcoBlob(currentCanvases).then(function(blob) {
+      if (!blob) return showToast('生成 ICO 失败');
+      icoBlobCache = blob;
+      downloadBlob(blob, 'favicon.ico');
+      showToast('favicon.ico 已下载');
+    });
+  }
+
+  // ================== 6. 代码与清单 ==================
   function renderCode() {
-    var lines = [];
-    lines.push('<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">');
-    lines.push('<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">');
-    lines.push('<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">');
-    lines.push('<link rel="manifest" href="/site.webmanifest">');
+    var lines = [
+      '<link rel="icon" href="/favicon.ico" sizes="any">',
+      '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">',
+      '<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">',
+      '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">',
+      '<link rel="manifest" href="/site.webmanifest">'
+    ];
     htmlCodeEl.textContent = lines.join('\n');
   }
 
   copyCodeBtn.addEventListener('click', function () {
-    var text = htmlCodeEl.textContent;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { setStatus('代码已复制'); });
-    } else {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      setStatus('代码已复制');
-    }
+    navigator.clipboard.writeText(htmlCodeEl.textContent).then(function () {
+      showToast('代码已复制');
+    }).catch(function() {
+      showToast('复制失败');
+    });
   });
 
-  // ============ 尺寸列表 ============
-  function renderSizeList() {
-    sizeList.innerHTML = '';
-    SIZES.forEach(function (s) {
-      var li = document.createElement('li');
-      li.textContent = s.name + '（' + s.width + '×' + s.height + '）';
-      sizeList.appendChild(li);
-    });
-    var li = document.createElement('li');
-    li.textContent = 'site.webmanifest（PWA 图标清单，随 ZIP 一起生成）';
-    sizeList.appendChild(li);
-  }
-
-  // ============ 下载 ZIP ============
+  // ================== 7. 下载打包 (ZIP) ==================
   downloadZipBtn.addEventListener('click', function () {
-    if (typeof JSZip === 'undefined') {
-      setStatus('JSZip 库未加载，请检查 js/libs/jszip/jszip.min.js');
-      return;
-    }
-    if (!hasGeneratedData()) {
-      setStatus('请先生成图标。');
-      return;
-    }
+    if (typeof JSZip === 'undefined') return showToast('JSZip 库未加载');
+    if (!hasData()) return;
 
-    setStatus('正在打包…');
+    statusEl.textContent = '正在打包...';
     var zip = new JSZip();
     var folder = zip.folder('favicon');
 
+    var tasks = [];
+
+    // 1. 添加 PNG 尺寸
     SIZES.forEach(function (s) {
-      var canvas = currentCanvases[s.width + 'x' + s.height];
+      var canvas = currentCanvases[s.width];
       if (!canvas) return;
       var dataUrl = canvas.toDataURL('image/png');
-      var base64 = dataUrl.split(',')[1];
-      folder.file(s.name, base64, { base64: true });
+      folder.file(s.name, dataUrl.split(',')[1], { base64: true });
     });
 
-    // PWA manifest
+    // 2. 添加 WebP 格式
+    var webpCanvas = currentCanvases[128] || currentCanvases[48];
+    if (webpCanvas) {
+      tasks.push(new Promise(function(resolve) {
+        webpCanvas.toBlob(function(blob) {
+          if (blob) folder.file('favicon.webp', blob);
+          resolve();
+        }, 'image/webp');
+      }));
+    }
+
+    // 3. 添加 ICO 格式
+    tasks.push(new Promise(function(resolve) {
+      generateIcoBlob(currentCanvases).then(function(blob) {
+        if (blob) folder.file('favicon.ico', blob);
+        resolve();
+      });
+    }));
+
+    // 4. manifest & 测试页
     var manifest = {
       "name": "My App",
       "short_name": "App",
@@ -307,87 +475,69 @@
         { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
         { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
       ],
-      "theme_color": "#ffffff",
+      "theme_color": currentMode === 'text' ? bgColor.value : imgBgColor.value,
       "background_color": "#ffffff",
       "display": "standalone"
     };
     folder.file('site.webmanifest', JSON.stringify(manifest, null, 2));
 
-    // 说明文件
-    folder.file('README.txt',
-      'Favicon 包由工具站 Favicon 生成器生成。\n' +
-      '将本文件夹内的文件上传到网站根目录，并在 HTML <head> 中加入引用代码。'
-    );
+    var testHtml = '<!DOCTYPE html>\n<html>\n<head>\n<meta charset="utf-8">\n<title>Favicon 测试</title>\n';
+    testHtml += '<link rel="icon" href="favicon.ico" sizes="any">\n';
+    testHtml += '<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">\n';
+    testHtml += '<style>body{font-family:sans-serif;padding:40px;text-align:center;background:#f9f3e3;color:#3d3226;}</style>\n';
+    testHtml += '</head>\n<body>\n<h1>🎉 Favicon 生成成功！</h1>\n';
+    testHtml += '<p>包含标准 ICO、PNG 和 WebP 格式。</p>\n';
+    testHtml += '<img src="android-chrome-192x192.png" style="border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">\n';
+    testHtml += '</body>\n</html>';
+    folder.file('index.html', testHtml);
 
-    zip.generateAsync({ type: 'blob' }).then(function (blob) {
-      downloadBlob(blob, 'favicon-package.zip');
-      setStatus('ZIP 已下载');
-    }).catch(function (e) {
-      setStatus('打包失败：' + e.message);
+    // 打包所有任务
+    Promise.all(tasks).then(function() {
+      zip.generateAsync({ type: 'blob' }).then(function (blob) {
+        downloadBlob(blob, 'favicon-package.zip');
+        statusEl.textContent = '✅ 打包完成';
+        showToast('ZIP 已下载');
+        setTimeout(function() { statusEl.textContent = ''; }, 3000);
+      });
     });
   });
 
-  // ============ 单独下载尺寸 ============
+  // 逐个下载 (仅 PNG)
   downloadSizesBtn.addEventListener('click', function () {
-    if (!hasGeneratedData()) {
-      setStatus('请先生成图标。');
-      return;
-    }
-    SIZES.forEach(function (s) {
-      var canvas = currentCanvases[s.width + 'x' + s.height];
-      if (!canvas) return;
-      canvas.toBlob(function (blob) {
-        downloadBlob(blob, s.name);
-      }, 'image/png');
+    if (!hasData()) return;
+    showToast('开始逐个下载...');
+    SIZES.forEach(function (s, index) {
+      setTimeout(function() {
+        var canvas = currentCanvases[s.width];
+        if (canvas) {
+          canvas.toBlob(function(blob) {
+            downloadBlob(blob, s.name);
+          }, 'image/png');
+        }
+      }, index * 300);
     });
-    setStatus('已开始逐个下载');
   });
 
-  function hasGeneratedData() {
-    if (currentMode === 'image') return !!sourceImage;
-    return true;
+  function hasData() {
+    return currentMode === 'image' ? !!sourceImage : true;
   }
 
-  function downloadBlob(blob, filename) {
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
-  }
+  // ================== 8. 事件绑定 ==================
+  [imgFitMode, imgBgColor, imgBgTransparent, imgRadius].forEach(function(el) {
+    el.addEventListener('input', function() {
+      if (el === imgBgColor) imgBgColorVal.textContent = el.value.toUpperCase();
+      if (el === imgRadius) imgRadiusVal.textContent = el.value;
+      if (currentMode === 'image') updateUI();
+    });
+  });
 
-  // ============ 文字控件实时刷新 ============
-  ['input', 'change'].forEach(function (evt) {
-    textInput.addEventListener(evt, function () {
-      if (currentMode === 'text') updateUI();
-    });
-    bgColor.addEventListener(evt, function () {
-      if (currentMode === 'text') updateUI();
-    });
-    fgColor.addEventListener(evt, function () {
-      if (currentMode === 'text') updateUI();
-    });
-    fontFamily.addEventListener(evt, function () {
-      if (currentMode === 'text') updateUI();
-    });
-    boldEl.addEventListener(evt, function () {
+  [textInput, fontFamily, bgColor, fgColor, fontWeight, radiusEl].forEach(function(el) {
+    el.addEventListener('input', function() {
+      if (el === radiusEl) radiusVal.textContent = el.value;
       if (currentMode === 'text') updateUI();
     });
   });
 
-  radiusEl.addEventListener('input', function () {
-    radiusVal.textContent = radiusEl.value + '%';
-    if (currentMode === 'text') updateUI();
-  });
-
-  // ============ 工具函数 ============
-  function setStatus(s) {
-    statusEl.textContent = s || '';
-  }
-
-  // ============ 初始化 ============
+  // 初始化
   updateUI();
 })();

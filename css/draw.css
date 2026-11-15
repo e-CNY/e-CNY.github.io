@@ -18,7 +18,7 @@ body {
 
 /* 工具栏 */
 .draw-sidebar {
-  width: 250px;
+  width: 260px;
   padding: 16px;
   background: #f9f3e3;
   border: 1px solid #ddcfb3;
@@ -31,7 +31,7 @@ body {
 }
 
 .draw-group h3 {
-  font-size: .8rem; color: #6b5d47; margin: 0 0 10px; font-weight: normal;
+  font-size: .8rem; color: #6b5d47; margin: 0 0 10px; font-weight: 600;
 }
 
 /* 4列网格排版 */
@@ -42,7 +42,7 @@ body {
   aspect-ratio: 1; font-size: 1.1rem; background: #fdf8ec;
   border: 1px solid #d5c7a8; border-radius: 8px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: all .15s; padding: 0;
+  transition: all .15s; padding: 0; outline: none;
 }
 .tool-btn:hover { background: #f5ecd5; }
 .tool-btn.active {
@@ -50,12 +50,21 @@ body {
   box-shadow: inset 0 2px 4px rgba(0,0,0,.15);
 }
 
+/* 填充开关 */
+.toggle-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.8rem; color: #4b3f2f; margin-top: 8px;
+  cursor: pointer; font-weight: 600;
+}
+.toggle-label input { accent-color: #8a5a2b; width: 16px; height: 16px; cursor: pointer; }
+
+/* 颜色选择器 */
 .draw-colors {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
 }
 .color-btn {
   aspect-ratio: 1; border-radius: 50%; border: 2px solid transparent;
-  cursor: pointer; padding: 0; transition: transform .1s;
+  cursor: pointer; padding: 0; transition: transform .1s; outline: none;
 }
 .color-btn:hover { transform: scale(1.1); }
 .color-btn.active { border-color: #3d3226; box-shadow: 0 0 0 2px #f9f3e3 inset; }
@@ -67,23 +76,29 @@ body {
 .custom-color input { position: absolute; inset: -10px; opacity: 0; cursor: pointer; }
 
 .draw-size-row { display: flex; align-items: center; gap: 8px; }
-.draw-size-row input[type="range"] { flex: 1; accent-color: #8a5a2b; }
-#size-val { font-size: .8rem; color: #6b5d47; width: 32px; text-align: right; }
+.draw-size-row input[type="range"] { flex: 1; accent-color: #8a5a2b; cursor: pointer; }
+#size-val, #opacity-val { font-size: .8rem; color: #8a5a2b; width: 38px; text-align: right; font-family: monospace; font-weight: 600; }
 
 .draw-actions { display: flex; flex-direction: column; gap: 8px; }
 .action-btn {
   padding: 8px 12px; border-radius: 8px; border: 1px solid #d5c7a8;
   background: #fdf8ec; color: #3d3226; font-size: .85rem; cursor: pointer;
-  transition: background .15s; text-align: left;
+  transition: background .15s; text-align: left; outline: none;
 }
 .action-btn:hover { background: #f5ecd5; }
 .action-btn.danger { color: #a8452a; border-color: #e4b8a8; }
 .action-btn.danger:hover { background: #fbeee6; }
 
+.export-select {
+  width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #d5c7a8;
+  background: #fdf8ec; font-size: .85rem; color: #3d3226; outline: none; box-sizing: border-box;
+}
+.export-select:focus { border-color: #b08a5a; }
+
 .save-btn {
   width: 100%; padding: 12px; border: none; border-radius: 8px;
   background: #7ba05b; color: #fff; font-size: .95rem; font-weight: 600;
-  cursor: pointer; transition: background .15s;
+  cursor: pointer; transition: background .15s; outline: none;
 }
 .save-btn:hover { background: #6b8c4e; }
 
@@ -97,20 +112,35 @@ body {
 }
 
 .canvas-wrapper {
-  position: relative; background: #fff;
+  position: relative;
   box-shadow: 0 4px 20px rgba(0,0,0,.08);
   border-radius: 8px; overflow: hidden;
   width: calc(100% - 32px); height: calc(100% - 32px);
   margin: 16px;
+  background: #fff;
 }
 
 canvas {
   position: absolute; top: 0; left: 0;
   width: 100%; height: 100%; display: block;
-  cursor: crosshair; touch-action: none;
+  touch-action: none;
 }
-#canvas-base { z-index: 1; }
-#canvas-top { z-index: 2; }
+#canvas-bg { z-index: 0; }
+#canvas-base { z-index: 1; cursor: none; }
+#canvas-top { z-index: 2; cursor: none; }
+
+/* 自定义光标 */
+.custom-cursor {
+  position: fixed;
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(0,0,0,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  display: none;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+}
 
 @media (max-width: 768px) {
   .draw-header { padding: 12px 16px 4px; }
@@ -121,7 +151,8 @@ canvas {
   .draw-sidebar {
     width: 100%; border: none; border-radius: 10px; padding: 8px;
     flex-direction: row; flex-wrap: wrap; gap: 8px;
-    overflow-y: visible; align-items: center; justify-content: space-between;
+    overflow-y: auto; align-items: center; justify-content: space-between;
+    max-height: 120px;
   }
   .draw-group h3 { display: none; }
   .draw-tools { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -135,4 +166,5 @@ canvas {
   .save-btn { padding: 8px; font-size: .85rem; }
   .canvas-wrapper { width: 100%; height: 100%; margin: 0; border-radius: 10px; }
   .draw-canvas-area { border-radius: 10px; }
+  .custom-cursor { display: none !important; }
 }

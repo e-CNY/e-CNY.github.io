@@ -9,38 +9,161 @@
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="../../css/ruler-tool.css">
 </head>
-<body>
+<body class="rl-body">
 <header class="tool-page-header">
   <h1>📏 页面标尺与辅助网格</h1>
-  <p>全屏辅助网格、鼠标坐标显示、吸管取色工具。</p>
+  <p>专业设计辅助，支持测距、参考线、屏幕校准与全屏直尺。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="rl-layout" style="padding-top: 0;">
-  <div class="rl-card">
-    <h2>设计辅助工具</h2>
-    <div class="rl-controls">
-      <div class="rl-row">
-        <label>显示网格</label>
-        <input type="checkbox" id="rl-grid-toggle" checked>
-        <label>网格大小</label>
-        <input type="number" id="rl-grid-size" value="20" min="5" max="100">
-        <span>px</span>
-      </div>
-      <div class="rl-row">
-        <label>显示标尺</label>
-        <input type="checkbox" id="rl-ruler-toggle" checked>
-      </div>
-      <button id="btn-eyedropper" class="rl-btn primary">🎨 启用吸管取色</button>
+<main class="rl-layout">
+  <!-- 左侧控制面板 -->
+  <aside class="rl-sidebar">
+    <div class="rl-panel-section">
+      <h3>📱 全屏直尺</h3>
+      <p class="rl-hint">可用于测量现实物品，使用前需校准屏幕尺寸。</p>
+      <button id="btn-calibrate" class="rl-btn" style="margin-bottom:8px;">📐 校准屏幕尺寸</button>
+      <button id="btn-fullscreen-ruler" class="rl-btn primary">📏 进入全屏直尺</button>
     </div>
+
+    <div class="rl-panel-section">
+      <h3>🖼️ 底图与标注</h3>
+      <label class="rl-upload-btn">
+        📁 上传图片作为底图
+        <input type="file" id="rl-image-input" accept="image/*" hidden>
+      </label>
+      <div class="rl-control-row" style="margin-top: 8px;">
+        <label>透明度</label>
+        <input type="range" id="rl-bg-opacity" min="10" max="100" value="100" style="flex:1;">
+        <span id="rl-bg-opacity-val" style="width:35px; text-align:right;">100%</span>
+      </div>
+      <button id="btn-remove-bg-img" class="rl-btn danger" style="margin-top:8px; display:none;">🗑️ 移除图片</button>
+    </div>
+
+    <div class="rl-panel-section">
+      <h3>🔲 网格设置</h3>
+      <div class="rl-control-row">
+        <label class="rl-checkbox-label">
+          <input type="checkbox" id="rl-grid-toggle" checked> 显示网格
+        </label>
+      </div>
+      <div class="rl-control-row">
+        <label>X 轴间距</label>
+        <input type="number" id="rl-grid-x" value="20" min="2" max="200">
+      </div>
+      <div class="rl-control-row">
+        <label>Y 轴间距</label>
+        <input type="number" id="rl-grid-y" value="20" min="2" max="200">
+      </div>
+      <div class="rl-control-row">
+        <label>网格颜色</label>
+        <input type="color" id="rl-grid-color" value="#8a5a2b">
+        <input type="range" id="rl-grid-opacity" min="1" max="100" value="15" style="flex:1;">
+        <span id="rl-grid-opacity-val" style="width:35px; text-align:right;">15%</span>
+      </div>
+    </div>
+
+    <div class="rl-panel-section">
+      <h3>📏 标尺与辅助线</h3>
+      <div class="rl-control-row">
+        <label class="rl-checkbox-label">
+          <input type="checkbox" id="rl-ruler-toggle" checked> 显示刻度标尺
+        </label>
+      </div>
+      <div class="rl-control-row">
+        <label class="rl-checkbox-label">
+          <input type="checkbox" id="rl-crosshair-toggle" checked> 显示十字线
+        </label>
+      </div>
+      <button id="btn-clear-guides" class="rl-btn danger" style="margin-top:8px;">🗑️ 清除参考线</button>
+    </div>
+
+    <div class="rl-panel-section">
+      <h3>📐 测距统计</h3>
+      <div class="rl-stats">
+        <div>起点: <span id="stat-start">-</span></div>
+        <div>终点: <span id="stat-end">-</span></div>
+        <div class="highlight">尺寸: <span id="stat-size">-</span></div>
+      </div>
+      <button id="btn-clear-measure" class="rl-btn">清除测量框</button>
+    </div>
+
+    <div class="rl-panel-section">
+      <h3>🎨 取色工具</h3>
+      <div class="rl-control-row">
+        <button id="btn-eyedropper" class="rl-btn primary" style="width: 100%;">🔍 启动系统吸管</button>
+      </div>
+      <div id="rl-eyedropper-fallback" style="display: none;">
+        <p class="rl-hint" style="color: #a8452a;">当前浏览器不支持原生吸管，请点击上方底图进行取色。</p>
+      </div>
+      <div class="rl-color-preview">
+        <div id="rl-color-circle" class="rl-color-circle"></div>
+        <div class="rl-color-info">
+          <span id="rl-hex">#FFFFFF</span>
+          <span id="rl-rgb">RGB: 255, 255, 255</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 右侧全屏工作区 -->
+  <div class="rl-workspace">
+    <div class="rl-ruler-top" id="ruler-top"></div>
+    <div class="rl-ruler-left" id="ruler-left"></div>
     
-    <div class="rl-preview" id="rl-preview-area">
-      <p>在此区域内移动鼠标查看坐标，或点击吸管取色。</p>
-      <p>当前鼠标坐标: <b id="rl-pos">X: 0, Y: 0</b></p>
-      <p>当前鼠标处颜色: <b id="rl-color" style="display:inline-block; width:12px; height:12px; background:#ccc; border:1px solid #999; border-radius:50%; vertical-align:middle;"></b> <span id="rl-hex">#CCCCCC</span></p>
+    <div class="rl-canvas-area" id="canvas-area">
+      <img id="rl-bg-image" style="display:none; position:absolute; top:0; left:0; pointer-events:none; max-width: none; user-select: none; -webkit-user-drag: none;">
+      <div class="rl-grid-layer" id="grid-layer"></div>
+      
+      <div class="rl-crosshair rl-cross-x" id="cross-x" style="display:none;"></div>
+      <div class="rl-crosshair rl-cross-y" id="cross-y" style="display:none;"></div>
+      
+      <div class="rl-measure-box" id="measure-box" style="display:none;">
+        <div class="rl-measure-size" id="measure-size-label">0 × 0</div>
+      </div>
     </div>
   </div>
 </main>
+
+<!-- 全屏直尺 UI (默认隐藏) -->
+<div id="fullscreen-ruler-view" class="fs-ruler-container" style="display: none;">
+  <div class="fs-ruler-header">
+    <span>📏 全屏直尺 (对齐物体边缘测量)</span>
+    <button id="btn-exit-fullscreen" class="fs-btn">退出全屏</button>
+  </div>
+  <div class="fs-ruler-body">
+    <div id="fs-ticks" class="fs-ticks"></div>
+  </div>
+</div>
+
+<!-- 校准弹窗 -->
+<div id="calibration-modal" class="rl-modal" style="display: none;">
+  <div class="rl-modal-content">
+    <h3>📐 校准屏幕尺寸</h3>
+    <p style="font-size:0.85rem; color:#6b5d47; line-height:1.5;">
+      请拿一张<strong>标准银行卡/身份证</strong>（长 85.6mm），横向贴在屏幕上。<br>
+      拖动下方滑块，使屏幕上的边框宽度与卡片实际长度完全重合。
+    </p>
+    
+    <div class="calib-card-wrap">
+      <div id="calib-card" class="calib-card">
+        <span>请将卡片的边缘对齐此线</span>
+      </div>
+    </div>
+    
+    <div class="rl-control-row" style="margin-top: 16px;">
+      <input type="range" id="calib-slider" min="200" max="800" value="300" style="flex:1; accent-color: #8a5a2b;">
+    </div>
+    
+    <div class="rl-modal-actions">
+      <button class="rl-btn" id="btn-cancel-calib">取消</button>
+      <button class="rl-btn primary" id="btn-confirm-calib">保存校准</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/ruler-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

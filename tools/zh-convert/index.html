@@ -15,38 +15,70 @@
   <p>简体中文与繁体中文互相转换，支持词组精准匹配</p>
   <a href="../../index.html">← 返回首页</a>
 </div>
+
 <main class="zh-convert-wrap">
+  
+  <!-- 顶部工具栏 -->
   <div class="control-bar">
-    <select id="convert-type">
-      <option value="cn2t">简体 ➔ 繁体</option>
-      <option value="t2cn">繁体 ➔ 简体</option>
-    </select>
-    <button id="btn-convert" class="primary-btn">立即转换</button>
-    <button id="btn-swap" class="secondary-btn">⇄ 交换</button>
-    <button id="btn-clear" class="secondary-btn">清空</button>
+    <div class="left-tools">
+      <select id="convert-type">
+        <option value="cn2t">简体 ➔ 繁体</option>
+        <option value="t2cn">繁体 ➔ 简体</option>
+      </select>
+      
+      <label class="switch-label">
+        <input type="checkbox" id="auto-convert" checked> 实时转换
+      </label>
+      
+      <button id="btn-convert" class="primary-btn">⚡ 立即转换</button>
+      <button id="btn-swap" class="secondary-btn" title="交换文本并反转转换方向">⇄ 交换</button>
+      <button id="btn-clear" class="secondary-btn">🗑️ 清空</button>
+    </div>
     
-    <div class="file-actions">
-      <input type="file" id="file-upload" accept=".txt" hidden>
-      <button id="btn-upload" class="secondary-btn">📁 导入TXT</button>
-      <button id="btn-download" class="secondary-btn">💾 导出TXT</button>
+    <div class="right-tools">
+      <input type="file" id="file-upload" accept=".txt,.md" hidden>
+      <button id="btn-upload" class="secondary-btn">📁 导入文件</button>
+      <button id="btn-download" class="secondary-btn">💾 导出结果</button>
     </div>
   </div>
+
+  <!-- 文本编辑区 -->
   <div class="text-container">
-    <div class="textarea-box">
-      <textarea id="input-text" placeholder="在此输入或粘贴需要转换的文本..."></textarea>
-      <div class="status-bar">字符数: <span id="input-count">0</span></div>
-    </div>
-    <div class="textarea-box">
-      <textarea id="output-text" placeholder="转换结果..." readonly></textarea>
+    
+    <!-- 左侧输入 -->
+    <div class="textarea-box" id="input-box">
+      <div class="box-header">
+        <span>📝 原始文本</span>
+        <div class="box-actions">
+          <button class="text-btn" id="btn-trim" title="去除首尾空格">✂️ 去首尾空格</button>
+          <button class="text-btn" id="btn-remove-empty" title="删除所有空行">🪣 删空行</button>
+        </div>
+      </div>
+      <textarea id="input-text" placeholder="在此输入或粘贴文本，或直接拖拽 TXT 文件到这里..."></textarea>
       <div class="status-bar">
-        <span>字符数: <span id="output-count">0</span></span>
+        <span>字符: <b id="input-count">0</b> | 段落: <b id="input-paragraphs">0</b></span>
+      </div>
+    </div>
+
+    <!-- 右侧输出 -->
+    <div class="textarea-box" id="output-box">
+      <div class="box-header">
+        <span>✨ 转换结果</span>
+      </div>
+      <textarea id="output-text" placeholder="转换结果会自动显示在这里..." readonly></textarea>
+      <div class="status-bar">
+        <span>字符: <b id="output-count">0</b> | 段落: <b id="output-paragraphs">0</b></span>
         <button id="btn-copy" class="text-btn">📋 复制结果</button>
       </div>
     </div>
+
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/opencc-js.min.js"></script>
-<script src="../../js/zh-convert.js"></script>
+<script src="../../js/zh-convert.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
 </html>

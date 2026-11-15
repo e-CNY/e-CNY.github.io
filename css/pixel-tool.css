@@ -1,20 +1,58 @@
-.px-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
-.px-container { display: flex; gap: 24px; height: calc(100vh - 150px); }
-@media (max-width: 768px) { .px-container { flex-direction: column; height: auto; } }
+.px-layout { max-width: 1050px; margin: 0 auto; padding: 28px 16px 56px; }
+.px-container { display: flex; gap: 24px; height: calc(100vh - 150px); min-height: 500px; }
+@media (max-width: 768px) { 
+  .px-container { flex-direction: column; height: auto; }
+  .px-main { min-height: 400px; }
+}
 
-.px-sidebar { width: 200px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
+.px-sidebar { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
 .px-section { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
 .px-section label { font-size: .85rem; font-weight: bold; color: #4b3f2f; }
 
-.px-select { padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; font-size: .9rem; background: #fff; }
+.px-select { padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; font-size: .85rem; background: #fff; outline: none; cursor: pointer; box-sizing: border-box; }
+.px-select:focus { border-color: #8a5a2b; }
+
+.px-checkbox-label { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; cursor: pointer; color: #6b5d47; font-weight: normal !important; }
+.px-checkbox-label input { accent-color: #8a5a2b; width: 14px; height: 14px; }
+
+/* 颜色模块 */
 .px-color-wrap { display: flex; gap: 8px; align-items: center; }
-.px-color-wrap input[type="color"] { width: 40px; height: 40px; padding: 0; border: 1px solid #d5c7a8; border-radius: 8px; cursor: pointer; background: #fff; }
+.px-color-wrap input[type="color"] { width: 36px; height: 36px; padding: 0; border: 1px solid #d5c7a8; border-radius: 8px; cursor: pointer; background: #fff; flex-shrink: 0; }
+#px-color-val { font-family: monospace; font-size: 0.9rem; color: #3d3226; font-weight: bold; text-transform: uppercase; }
 
-.px-btn { padding: 10px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; transition: all .15s; text-align: center; }
-.px-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
-.px-btn.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; }
-.px-btn:hover { opacity: 0.9; }
+.px-palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 4px; }
+.px-color-swatch { aspect-ratio: 1; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; padding: 0; transition: transform 0.1s; outline: none; }
+.px-color-swatch:hover { transform: scale(1.15); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.px-color-swatch.active { border-color: #8a5a2b; box-shadow: 0 0 0 2px #f9f3e3, 0 0 0 4px #8a5a2b; }
 
+/* 工具按钮 */
+.px-tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.px-tool-btn {
+  aspect-ratio: 1; font-size: 1.1rem; background: #fdf8ec; border: 1px solid #d5c7a8; border-radius: 6px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; padding: 0; outline: none;
+}
+.px-tool-btn:hover { background: #f5ecd5; }
+.px-tool-btn.active { background: #8a5a2b; border-color: #8a5a2b; color: #fff; box-shadow: inset 0 2px 4px rgba(0,0,0,.15); }
+
+.px-btn-group { display: flex; gap: 8px; }
+.px-btn-group .px-btn { flex: 1; }
+.px-btn { padding: 8px; border-radius: 6px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .85rem; transition: all .15s; text-align: center; font-weight: 600; outline: none; }
+.px-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.px-btn.danger { color: #a8452a; border-color: #e4b8a8; }
+.px-btn.danger:hover { background: #fbeee6; }
+.px-btn:hover:not(:disabled) { background: #f5ecd5; }
+.px-btn.primary:hover:not(:disabled) { background: #6b8c4e; }
+.px-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.upload-btn { display: flex; justify-content: center; align-items: center; gap: 4px; cursor: pointer; }
+
+.px-export-row { display: flex; gap: 8px; }
+
+/* 画板 */
 .px-main { flex: 1; background: #e5d9bd; border: 1px solid #ddcfb3; border-radius: 14px; display: flex; align-items: center; justify-content: center; padding: 20px; overflow: hidden; }
-.px-canvas-wrap { background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.1); }
-#px-canvas { display: block; cursor: crosshair; }
+.px-canvas-wrap { background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.1); position: relative; }
+#px-canvas { display: block; cursor: crosshair; image-rendering: pixelated; }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); background: rgba(61, 50, 38, 0.92); color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; z-index: 9999; max-width: 80vw; text-align: center; word-break: break-all; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }

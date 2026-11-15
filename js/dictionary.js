@@ -7,7 +7,6 @@
    *   1) js/libs/ecdict-cn/ecdict-cn.js  内容形如：
    *        window.ECDICT_CN = { "year":"n. 年, 年度, 年龄\n[经] 年度", ... };
    *   2) 也支持把字典对象直接挂到 window.ECDICT / window.DICT_DATA 等常见全局名
-   *   脚本会自动在多个路径 + 多个全局名里探测，无需手动改代码
    * ========================================================= */
 
   var DATA_SOURCES = [
@@ -28,8 +27,8 @@
     'ecdictCN', 'ecdict', 'dictCN', 'dictData', 'dictionary', 'DICT'
   ];
 
-  var LS_FAV = 'dict.fav.v1';
-  var LS_HIST = 'dict.hist.v1';
+  var LS_FAV = 'dict.fav.v2'; // 版本升级，防止老数据冲突
+  var LS_HIST = 'dict.hist.v2';
   var MAX_HIST = 60;
 
   /* ================= DOM ================= */
@@ -47,9 +46,10 @@
     histCount: document.getElementById('histCount'),
     btnClear: document.getElementById('btnClear'),
     btnRandom: document.getElementById('btnRandom'),
-    btnDaily: document.getElementById('btnDaily'),
+    btnImportFav: document.getElementById('btnImportFav'),
     btnExportFav: document.getElementById('btnExportFav'),
     btnClearFav: document.getElementById('btnClearFav'),
+    fileInput: document.getElementById('fileInput'),
     toast: document.getElementById('toast')
   };
 
@@ -85,12 +85,12 @@
     els.toast.textContent = msg;
     els.toast.hidden = false;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { els.toast.hidden = true; }, 1600);
+    toastTimer = setTimeout(function () { els.toast.hidden = true; }, 1800);
   }
   function copyText(txt) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(txt).then(
-        function () { toast('已复制'); },
+        function () { toast('✅ 已复制'); },
         function () { fallbackCopy(txt); }
       );
     } else {
@@ -108,7 +108,7 @@
     var ok = false;
     try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
     document.body.removeChild(ta);
-    toast(ok ? '已复制' : '复制失败');
+    toast(ok ? '✅ 已复制' : '❌ 复制失败');
   }
 
   /* ================= 词库加载 ================= */
@@ -154,7 +154,7 @@
     var total = keys.length;
     var arr = new Array(total);
     var i = 0;
-    var CHUNK = 4000;
+    var CHUNK = 3000;
 
     function step() {
       var end = Math.min(i + CHUNK, total);
@@ -164,7 +164,7 @@
       }
       if (onProgress) onProgress(i, total);
       if (i < total) {
-        setTimeout(step, 0);
+        requestAnimationFrame(step);
       } else {
         arr.sort(function (a, b) {
           return a.l < b.l ? -1 : (a.l > b.l ? 1 : 0);
@@ -404,6 +404,12 @@
       bStar.textContent = isFav(word) ? '⭐' : '☆';
     });
     tools.appendChild(bStar);
+    
+    // 复制原词
+    tools.appendChild(mkIconBtn('🔤', '复制单词', function () {
+      copyText(word);
+    }));
+    
     tools.appendChild(mkIconBtn('📋', '复制释义', function () {
       copyText(word + '\n' + def);
     }));
@@ -503,7 +509,7 @@
     box.appendChild(emo);
 
     var p = document.createElement('p');
-    p.textContent = '未找到「' + q + '」';
+    p.textContent = '本地词库中未找到「' + q + '」';
     box.appendChild(p);
 
     var near = [];
@@ -537,7 +543,7 @@
     } else {
       var tip2 = document.createElement('p');
       tip2.className = 'ph-tip';
-      tip2.textContent = '试试切换「包含」模式，或检查拼写';
+      tip2.textContent = '尝试切换「包含」模式，或检查拼写';
       box.appendChild(tip2);
     }
 
@@ -580,7 +586,7 @@
     var i = favs.indexOf(word);
     if (i === -1) {
       favs.unshift(word);
-      toast('已加入生词本');
+      toast('⭐ 已加入生词本');
     } else {
       favs.splice(i, 1);
       toast('已移出生词本');
@@ -645,7 +651,7 @@
     }
   }
 
-  /* ================= 每日一词 / 随机词 ================= */
+  /* ================= 随机词 ================= */
   function pickGoodWord(n) {
     var len = ENTRIES.length;
     if (!len) return null;
@@ -655,14 +661,6 @@
       n += 7919;
     }
     return ENTRIES[n % len].w;
-  }
-
-  function dailyWord() {
-    if (!ENTRIES.length) return;
-    var d = new Date();
-    var seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-    var w = pickGoodWord(seed);
-    if (w) { els.q.value = w; lookup(w); hideSuggest(); }
   }
 
   function randomWord() {
@@ -757,7 +755,6 @@
     });
 
     els.btnRandom.addEventListener('click', randomWord);
-    els.btnDaily.addEventListener('click', dailyWord);
 
     els.sideTabs.addEventListener('click', function (e) {
       var btn = e.target.closest ? e.target.closest('.side-tab') : null;
@@ -769,26 +766,44 @@
       renderSide();
     });
 
+    // 导出功能
     els.btnExportFav.addEventListener('click', function () {
       var list = sideTab === 'fav' ? favs : hists;
       if (!list.length) { toast('列表为空'); return; }
+      
+      var isMarkdown = confirm('点击【确定】导出为 Markdown 格式，点击【取消】导出为 TXT 格式。');
+      
       var lines = [];
-      for (var i = 0; i < list.length; i++) {
-        var d = String(DICT[list[i]] || '').replace(/\r?\n/g, ' ');
-        lines.push(list[i] + '\t' + d);
+      if (isMarkdown) {
+        lines.push('# ' + (sideTab === 'fav' ? '我的生词本' : '查询历史'));
+        lines.push('> 由工具站导出\n');
+        for (var i = 0; i < list.length; i++) {
+          var def = String(DICT[list[i]] || '').replace(/\r?\n/g, ' ');
+          lines.push('## ' + list[i]);
+          lines.push(def);
+          lines.push('');
+        }
+      } else {
+        for (var i = 0; i < list.length; i++) {
+          var d = String(DICT[list[i]] || '').replace(/\r?\n/g, ' ');
+          lines.push(list[i] + '\t' + d);
+        }
       }
-      var blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+      
+      var content = lines.join('\n');
+      var blob = new Blob([content], { type: isMarkdown ? 'text/markdown;charset=utf-8' : 'text/plain;charset=utf-8' });
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;
-      a.download = (sideTab === 'fav' ? '生词本' : '查询历史') + '.txt';
+      a.download = (sideTab === 'fav' ? '生词本' : '查询历史') + (isMarkdown ? '.md' : '.txt');
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
-      toast('已导出');
+      toast('导出成功');
     });
 
+    // 清空功能
     els.btnClearFav.addEventListener('click', function () {
       var isFavTab = sideTab === 'fav';
       var list = isFavTab ? favs : hists;
@@ -798,6 +813,43 @@
       else { hists = []; writeStore(LS_HIST, hists); }
       renderSide();
       toast('已清空');
+    });
+
+    // 导入功能
+    els.btnImportFav.addEventListener('click', function() {
+      els.fileInput.click();
+    });
+    
+    els.fileInput.addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(evt) {
+        var text = evt.target.result;
+        // 简单解析：按行分割，提取第一列英文单词
+        var lines = text.split(/\r?\n/);
+        var added = 0;
+        lines.forEach(function(line) {
+          // 兼容 Markdown 标题 ## word 和普通 TXT 格式 word\tdef
+          var match = line.match(/^(?:##\s*)?([a-zA-Z\-']+)/);
+          if (match) {
+            var word = match[1].trim();
+            if (word && DICT[word] !== undefined && favs.indexOf(word) === -1) {
+              favs.push(word);
+              added++;
+            }
+          }
+        });
+        if (added > 0) {
+          writeStore(LS_FAV, favs);
+          renderSide();
+          toast('成功导入 ' + added + ' 个生词');
+        } else {
+          toast('未找到有效生词或均已存在');
+        }
+      };
+      reader.readAsText(file);
+      this.value = '';
     });
 
     document.addEventListener('keydown', function (e) {
@@ -869,7 +921,8 @@
         if (m) {
           try { lookup(decodeURIComponent(m[1])); return; } catch (e) {}
         }
-        dailyWord();
+        
+        randomWord(); 
       });
     });
   }

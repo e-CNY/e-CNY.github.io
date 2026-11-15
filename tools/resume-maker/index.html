@@ -20,7 +20,8 @@
   <!-- 顶部操作栏 -->
   <div class="rm-toolbar">
     <div class="rm-toolbar-left">
-      <button id="btn-random" class="secondary-btn">🎲 一键随机生成</button>
+      <button id="btn-random" class="secondary-btn">🎲 一键随机</button>
+      <button id="btn-clear" class="secondary-btn">🗑️ 清空</button>
       
       <div class="rm-upload-avatar">
         <input type="file" id="avatar-input" accept="image/*" hidden>
@@ -57,8 +58,15 @@
     <!-- 左侧 Markdown 输入 -->
     <div class="rm-editor">
       <div class="rm-panel-header">
-        <span>✍️ Markdown 编辑</span>
-        <small>支持 # 标题、- 列表、**加粗**、[链接](url)、`代码`</small>
+        <span>✍️ Markdown 编辑 <small>(支持 Tab 缩进)</small></span>
+        <div class="rm-format-tools">
+          <button data-insert="**" title="加粗">B</button>
+          <button data-insert="*" title="斜体"><i>I</i></button>
+          <button data-insert="# " title="标题">H</button>
+          <button data-insert="- " title="无序列表">≡</button>
+          <button data-insert="> " title="引用">”</button>
+          <button data-insert="---\n" title="分割线">—</button>
+        </div>
       </div>
       <textarea id="md-input" spellcheck="false" placeholder="在此输入 Markdown 内容..."></textarea>
     </div>
@@ -75,7 +83,9 @@
   </div>
 </main>
 
-<script src="../../js/resume-maker.js"></script>
+<div id="toast" class="toast"></div>
+
+<script src="../../js/resume-maker.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
 </html>

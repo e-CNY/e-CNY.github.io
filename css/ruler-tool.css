@@ -1,41 +1,126 @@
-/* 核心：使用 CSS 变量控制网格 */
-:root {
-  --grid-size: 20px;
-  --grid-color: rgba(138, 90, 43, 0.1);
+/* 重置全局高度，适配顶部的居中 Header */
+.rl-body { margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #f5f5f5; }
+.rl-layout { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+/* 左侧控制面板 */
+.rl-sidebar {
+  width: 280px; background: #f9f3e3; border-right: 1px solid #ddcfb3;
+  display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0;
+  z-index: 10; box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+}
+.rl-panel-section { padding: 16px; border-bottom: 1px solid #e5d9bd; }
+.rl-panel-section:last-child { border-bottom: none; }
+.rl-panel-section h3 { font-size: 0.9rem; margin: 0 0 12px; color: #4b3f2f; font-weight: 600; }
+
+.rl-control-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 0.85rem; color: #3d3226; }
+.rl-control-row label:not(.rl-checkbox-label) { width: 60px; color: #6b5d47; flex-shrink: 0; font-weight: 600; }
+.rl-control-row input[type="number"] { flex: 1; padding: 6px; border: 1px solid #d5c7a8; border-radius: 6px; outline: none; width: 100%; }
+.rl-control-row input[type="number"]:focus { border-color: #8a5a2b; }
+.rl-control-row input[type="color"] { width: 30px; height: 30px; padding: 0; border: 1px solid #d5c7a8; border-radius: 6px; cursor: pointer; background: #fff; flex-shrink: 0; }
+.rl-control-row input[type="range"] { accent-color: #8a5a2b; cursor: pointer; }
+
+.rl-checkbox-label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600; }
+.rl-checkbox-label input { accent-color: #8a5a2b; width: 16px; height: 16px; cursor: pointer; }
+
+.rl-btn { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; font-size: .85rem; font-weight: bold; cursor: pointer; transition: all .15s; outline: none; display: flex; justify-content: center; align-items: center; gap: 4px; }
+.rl-btn:hover { background: #f5ecd5; }
+.rl-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.rl-btn.primary:hover { background: #6b8c4e; }
+.rl-btn.danger { color: #a8452a; border-color: #fecaca; background: #fef2f2; }
+.rl-btn.danger:hover { background: #fee2e2; }
+
+.rl-hint { font-size: 0.75rem; color: #8a7a5f; line-height: 1.4; margin: 0 0 8px 0; }
+.rl-stats { background: #fff; padding: 10px; border-radius: 6px; border: 1px solid #e5d9bd; font-family: monospace; font-size: 0.85rem; color: #6b5d47; margin-bottom: 10px; line-height: 1.6; }
+.rl-stats .highlight { color: #8a5a2b; font-weight: bold; font-size: 1rem; border-top: 1px dashed #e5d9bd; padding-top: 4px; margin-top: 4px; }
+
+.rl-upload-btn { display: block; text-align: center; padding: 8px; background: #fdf8ec; border: 1px dashed #d5c7a8; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: #3d3226; font-weight: 600; transition: all 0.15s; }
+.rl-upload-btn:hover { background: #f5ecd5; border-color: #8a5a2b; }
+
+.rl-color-preview { display: flex; align-items: center; gap: 12px; margin-top: 12px; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #e5d9bd; }
+.rl-color-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ddd; background: #fff; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1); }
+.rl-color-info { display: flex; flex-direction: column; gap: 2px; font-family: monospace; font-size: 0.8rem; color: #3d3226; font-weight: 600; }
+
+/* 右侧工作区 */
+.rl-workspace { flex: 1; position: relative; overflow: hidden; background: #fff; cursor: crosshair; }
+.rl-canvas-area { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; background: #fff; }
+
+/* 网格层 */
+.rl-grid-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; background-size: 20px 20px; background-position: 0 0; background-image: linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px); }
+
+/* 标尺 */
+.rl-ruler-top { position: absolute; top: 0; left: 24px; width: calc(100% - 24px); height: 24px; background: #fdf8ec; border-bottom: 1px solid #d5c7a8; z-index: 5; font-size: 9px; color: #6b5d47; font-family: monospace; user-select: none; overflow: hidden; }
+.rl-ruler-left { position: absolute; top: 24px; left: 0; width: 24px; height: calc(100% - 24px); background: #fdf8ec; border-right: 1px solid #d5c7a8; z-index: 5; font-size: 9px; color: #6b5d47; font-family: monospace; user-select: none; overflow: hidden; }
+.rl-ruler-top .tick, .rl-ruler-left .tick { position: absolute; background: #a8957c; }
+.rl-ruler-top .tick { bottom: 0; width: 1px; height: 4px; }
+.rl-ruler-top .tick.major { height: 8px; }
+.rl-ruler-top .tick-label { position: absolute; top: 2px; left: 2px; transform: translateX(-50%); }
+.rl-ruler-left .tick { right: 0; height: 1px; width: 4px; }
+.rl-ruler-left .tick.major { width: 8px; }
+.rl-ruler-left .tick-label { position: absolute; left: 2px; top: 2px; transform: translateY(-50%); writing-mode: vertical-lr; transform: rotate(180deg); }
+
+/* 工作区留白避开标尺 */
+.rl-canvas-area { top: 24px; left: 24px; }
+
+/* 十字辅助线 */
+.rl-crosshair { position: absolute; pointer-events: none; z-index: 10; }
+.rl-cross-x { top: 0; bottom: 0; width: 1px; background: rgba(168, 69, 42, 0.6); border-left: 1px dashed rgba(168, 69, 42, 0.8); }
+.rl-cross-y { left: 0; right: 0; height: 1px; background: rgba(168, 69, 42, 0.6); border-top: 1px dashed rgba(168, 69, 42, 0.8); }
+
+/* 测量框 */
+.rl-measure-box { position: absolute; border: 1px solid #8a5a2b; background: rgba(138, 90, 43, 0.1); pointer-events: none; z-index: 20; box-sizing: border-box; display: none; }
+.rl-measure-size { position: absolute; background: #8a5a2b; color: #fff; font-size: 11px; font-family: monospace; padding: 2px 6px; border-radius: 4px; white-space: nowrap; top: 100%; left: 100%; margin-top: 4px; margin-left: 4px; }
+
+/* 参考线 */
+.rl-guide { position: absolute; background: #4a90e2; z-index: 15; }
+.rl-guide.horizontal { left: 0; right: 0; height: 1px; cursor: ns-resize; }
+.rl-guide.vertical { top: 0; bottom: 0; width: 1px; cursor: ew-resize; }
+.rl-guide:hover { background: #a8452a; }
+
+/* ================= 全屏物理直尺样式 ================= */
+.fs-ruler-container {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: #fff; z-index: 99999; display: flex; flex-direction: column;
+}
+.fs-ruler-header {
+  background: #3d3226; color: #fff; padding: 10px 16px;
+  display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;
+}
+.fs-btn { padding: 6px 12px; background: #a8452a; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+.fs-ruler-body {
+  flex: 1; position: relative; overflow: hidden;
+  background: #f9f3e3;
+}
+.fs-ticks {
+  position: absolute; top: 50%; left: 0; width: 100%; height: 100px;
+  transform: translateY(-50%);
+}
+.fs-tick {
+  position: absolute; bottom: 0; width: 1px; background: #3d3226;
+}
+.fs-tick.mm { height: 20px; }
+.fs-tick.cm { height: 60px; width: 2px; background: #3d3226; }
+.fs-tick-label {
+  position: absolute; bottom: 65px; transform: translateX(-50%);
+  font-size: 20px; font-family: monospace; font-weight: bold; color: #a8452a;
 }
 
-body {
-  /* 全屏网格背景 */
-  background-image: 
-    linear-gradient(var(--grid-color) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
-  background-position: -1px -1px;
-  transition: background-size 0.1s;
+/* 校准弹窗 */
+.rl-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 999999; }
+.rl-modal-content { background: #fff; padding: 24px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.rl-modal-content h3 { margin: 0 0 12px; color: #4b3f2f; font-size: 1.1rem; }
+.calib-card-wrap { display: flex; justify-content: center; overflow-x: auto; padding: 20px 0; background: #fdf8ec; border-radius: 8px; border: 1px dashed #d5c7a8; margin-top: 16px; }
+.calib-card { width: 300px; height: 50px; background: #f1c40f; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #8a5a2b; font-size: 0.8rem; font-weight: bold; border: 2px solid #e67e22; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: width 0.1s; white-space: nowrap; overflow: hidden; }
+.rl-modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+.rl-modal-actions .rl-btn { flex: 1; }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); background: rgba(61, 50, 38, 0.92); color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; z-index: 9999; max-width: 80vw; text-align: center; word-break: break-all; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 800px) {
+  .rl-layout { flex-direction: column; }
+  .rl-sidebar { width: 100%; height: 40%; border-right: none; border-bottom: 1px solid #ddcfb3; flex-direction: row; flex-wrap: wrap; overflow-y: auto; }
+  .rl-panel-section { flex: 1; min-width: 200px; border-bottom: none; border-right: 1px solid #e5d9bd; }
+  .rl-ruler-top, .rl-ruler-left { display: none; }
+  .rl-canvas-area { top: 0; left: 0; }
 }
-
-body.no-grid {
-  background-image: none;
-}
-
-.rl-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
-.rl-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-.rl-card h2 { font-size: 1.1rem; margin: 0 0 16px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 8px; }
-
-.rl-controls { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-.rl-row { display: flex; align-items: center; gap: 10px; font-size: .9rem; color: #3d3226; }
-.rl-row label { width: 70px; }
-.rl-row input[type="number"] { width: 60px; padding: 6px; border: 1px solid #d5c7a8; border-radius: 6px; }
-
-.rl-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; transition: all .15s; width: fit-content; }
-.rl-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
-.rl-btn:hover { opacity: 0.9; }
-
-.rl-preview { background: #fff; border: 1px solid #d5c7a8; border-radius: 12px; height: 300px; padding: 20px; position: relative; cursor: crosshair; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #6b5d47; font-size: 1rem; line-height: 2; }
-
-/* 全屏标尺边线 (简易视觉模拟) */
-.rl-ruler-x, .rl-ruler-y { position: fixed; background: rgba(0,0,0,0.05); pointer-events: none; z-index: 9999; display: none; }
-.rl-ruler-x { top: 0; bottom: 0; width: 1px; border-left: 1px dashed #a8452a; }
-.rl-ruler-y { left: 0; right: 0; height: 1px; border-top: 1px dashed #a8452a; }
-
-body.show-ruler .rl-ruler-x, body.show-ruler .rl-ruler-y { display: block; }

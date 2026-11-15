@@ -14,7 +14,7 @@
 
   <header class="tool-page-header">
     <h1>📖 英汉词典</h1>
-    <p>离线词库 · 前缀/模糊/精确搜索 · 生词本</p>
+    <p>本地离线词库 · 前缀/模糊/精确搜索 · 生词本与历史记录</p>
     <a href="../../index.html">← 返回首页</a>
   </header>
 
@@ -41,7 +41,6 @@
         </div>
         <div class="quick-actions">
           <button id="btnRandom" class="mini-btn" type="button">🎲 随机词</button>
-          <button id="btnDaily" class="mini-btn" type="button">📅 每日一词</button>
         </div>
       </div>
 
@@ -68,8 +67,10 @@
       </div>
       <div class="side-body" id="sideBody"></div>
       <div class="side-foot">
-        <button id="btnExportFav" class="mini-btn" type="button">导出 TXT</button>
-        <button id="btnClearFav" class="mini-btn danger" type="button">清空当前</button>
+        <button id="btnImportFav" class="mini-btn" type="button">📥 导入</button>
+        <button id="btnExportFav" class="mini-btn" type="button">📤 导出</button>
+        <button id="btnClearFav" class="mini-btn danger" type="button">🗑️ 清空</button>
+        <input type="file" id="fileInput" accept=".txt,.md" hidden>
       </div>
     </aside>
 

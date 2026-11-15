@@ -1,8 +1,26 @@
 (function () {
-  // ========== 词库 ==========
+  'use strict';
+
+  // ================== 通用工具 ==================
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1600);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function randInt(min, max) { return min + Math.floor(Math.random() * (max - min + 1)); }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  // ================== 词库 ==================
   var LEXICON = {
     latin: {
-      name: '拉丁',
       classic: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       words: ('lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor ' +
         'incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud ' +
@@ -12,46 +30,54 @@
         'qui officia deserunt mollit anim id est laborum').split(' ')
     },
     zh: {
-      name: '中文',
       words: ['我们','你们','他们','这个','那个','什么','怎么','时间','工作','生活',
         '学习','朋友','世界','中国','今天','明天','昨天','喜欢','知道','觉得',
         '问题','事情','方法','地方','东西','看见','听见','开始','结束','发现',
         '认为','希望','感觉','需要','能够','可以','应该','必须','特别','非常',
         '一直','已经','正在','将要','曾经','经常','偶尔','突然','终于','总是',
         '自己','别人','大家','每个','所有','一些','很多','很少','没有','还有',
-        '因为','所以','但是','虽然','如果','然后','而且','或者','不过','只有',
-        '美丽','漂亮','干净','整齐','安静','热闹','快乐','幸福','悲伤','难过',
-        '城市','乡村','山岳','河流','天空','土地','森林','大海','阳光','风雨',
-        '读书','写字','吃饭','睡觉','行走','奔跑','跳跃','歌唱','舞蹈','微笑']
+        '因为','所以','但是','虽然','如果','然后','而且','或者','不过','只有']
     },
     ja: {
-      name: '日文',
       words: ['これ','それ','あれ','ここ','そこ','あそこ','わたし','あなた','かれ','かのじょ',
         'とき','いま','きょう','あした','きのう','いちにち','いちねん','あさ','ひる','よる',
         'いえ','まち','やま','かわ','うみ','そら','もり','はな','き','くさ',
         'みず','ひ','つき','ほし','かぜ','あめ','ゆき','くも','にじ','かみなり',
-        'たべる','のむ','あるく','はしる','よむ','かく','はなす','きく','みる','おもう',
-        'しごと','がくしゅう','せいかつ','ともだち','せかい','にほん','ことば','こころ','ゆめ','かぞく',
-        'しあわせ','かなしい','うれしい','たのしい','すき','きらい','おおきい','ちいさい','あかるい','くらい',
-        'あか','あお','しろ','くろ','きいろ','みどり','むらさき','ちゃいろ','ぎん','きん']
+        'たべる','のむ','あるく','はしる','よむ','かく','はなす','きく','みる','おもう']
     },
     ko: {
-      name: '韩文',
       words: ['우리','너희','그들','이것','저것','무엇','어떻게','시간','일','생활',
         '공부','친구','세계','한국','오늘','내일','어제','좋아하다','알다','생각하다',
         '문제','방법','장소','물건','보다','듣다','시작','끝','발견','여기다',
         '희망','느끼다','필요','할수있다','가능하다','마땅하다','반드시','특별히','매우','계속',
-        '이미','지금','곧','예전','자주','가끔','갑자기','드디어','항상','자기',
-        '남','모두','각','모든','약간','많이','적게','없다','있다','왜냐하면',
-        '그래서','그러나','비록','만약','그리고','또는','그런데','단지','오직','아름답다',
-        '예쁘다','깨끗하다','정돈되다','조용하다','번화하다','즐겁다','행복하다','슬프다','괴롭다','도시',
-        '시골','산','강','하늘','땅','숲','바다','햇빛','비바람','독서',
-        '쓰기','식사','잠','걷기','달리기','도약','노래','춤','미소','마음']
+        '이미','지금','곧','예전','자주','가끔','갑자기','드디어','항상','자기']
+    },
+    de: {
+      words: ['der','die','das','und','in','zu','den','von','nicht','mit',
+        'ist','es','sich','auch','auf','für','an','werden','aus','er',
+        'hat','dass','sie','nach','wird','bei','einer','um','am','sind',
+        'noch','wie','einem','über','einen','so','zum','war','haben','nur',
+        'oder','aber','vor','zur','bis','mehr','durch','man','sein','wurde']
+    },
+    fr: {
+      words: ['le','la','les','de','des','du','un','une','et','en',
+        'à','au','aux','ce','ces','cet','cette','dans','pour','par',
+        'sur','pas','plus','ne','se','qui','que','il','elle','ils',
+        'elles','nous','vous','je','tu','on','être','avoir','faire','dire',
+        'pouvoir','aller','voir','savoir','vouloir','venir','devoir','prendre','trouver','donner']
+    },
+    es: {
+      words: ['el','la','los','las','un','una','unos','unas','de','del',
+        'a','al','en','con','por','para','sin','sobre','entre','hasta',
+        'desde','cuando','donde','como','que','quien','cual','cuyo','cuanto','tanto',
+        'ser','estar','haber','tener','hacer','poder','decir','ir','ver','dar',
+        'saber','querer','llegar','pasar','deber','poner','parecer','quedar','creer','hablar']
     }
   };
 
-  // ========== DOM ==========
+  // ================== DOM 元素 ==================
   var langEl = document.getElementById('lang');
+  var formatEl = document.getElementById('format');
   var modeEl = document.getElementById('mode');
   var countEl = document.getElementById('count');
   var maxCharsEl = document.getElementById('maxChars');
@@ -59,31 +85,30 @@
   var useCustomEl = document.getElementById('useCustom');
   var customWrap = document.getElementById('customWrap');
   var customTextEl = document.getElementById('customText');
+  var blockTagEl = document.getElementById('blockTag');
+  var tagsPanel = document.getElementById('tagsPanel');
+  var inlineTagsWrap = document.getElementById('inlineTagsWrap');
+  var clearInlineBtn = document.getElementById('clearInlineTags');
+  
+  var generateBtn = document.getElementById('generate');
   var outputEl = document.getElementById('output');
   var previewEl = document.getElementById('preview');
-  var generateBtn = document.getElementById('generate');
+  var previewWrap = document.getElementById('previewWrap');
   var copyBtn = document.getElementById('copy');
   var copyTextBtn = document.getElementById('copyText');
-  var copyHint = document.getElementById('copyHint');
+  var downloadBtn = document.getElementById('download');
+  
+  var viewBtns = document.querySelectorAll('.view-btn');
+  
   var stWords = document.getElementById('stWords');
   var stChars = document.getElementById('stChars');
   var stSentences = document.getElementById('stSentences');
   var stParagraphs = document.getElementById('stParagraphs');
 
-  // ========== 工具函数 ==========
-  function escapeHtml(s) {
-    return String(s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-  function randInt(min, max) { return min + Math.floor(Math.random() * (max - min + 1)); }
-  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  // ================== 状态 ==================
+  var currentFormat = 'html';
 
-  function forEachNode(nodes, fn) {
-    Array.prototype.forEach.call(nodes, fn);
-  }
-
-  // 词源
+  // ================== 核心逻辑 ==================
   function getWordPool() {
     if (useCustomEl.checked) {
       var t = customTextEl.value.trim();
@@ -102,38 +127,29 @@
     return LEXICON[langEl.value].words;
   }
 
-  function getSegmenterLocale() {
-    var l = langEl.value;
-    return l === 'zh' ? 'zh' : l === 'ja' ? 'ja' : l === 'ko' ? 'ko' : 'en';
-  }
-
   function isLatin() { return langEl.value === 'latin'; }
+  function isCJK() { return ['zh', 'ja', 'ko'].includes(langEl.value); }
 
-  // 生成句子
   function makeSentence(pool) {
-    var n = randInt(5, 12);
+    var n = randInt(5, 15);
     var arr = [];
     for (var i = 0; i < n; i++) arr.push(pick(pool));
-    if (isLatin()) {
+    
+    if (isLatin() || langEl.value === 'de' || langEl.value === 'fr' || langEl.value === 'es') {
       var s = arr.join(' ');
       s = s.charAt(0).toUpperCase() + s.slice(1) + '.';
       return s;
     }
+    // CJK 处理
     var punct = langEl.value === 'ko' ? '.' : '。';
-    return arr.join('') + punct;
+    return arr.join(' ') + punct; // 韩文用空格分隔
   }
 
   function makeParagraph(pool) {
-    var n = randInt(3, 5);
+    var n = randInt(3, 6);
     var arr = [];
     for (var i = 0; i < n; i++) arr.push(makeSentence(pool));
-    return isLatin() ? arr.join(' ') : arr.join('');
-  }
-
-  function makeWords(pool, n) {
-    var arr = [];
-    for (var i = 0; i < n; i++) arr.push(pick(pool));
-    return isLatin() ? arr.join(' ') : arr.join('');
+    return arr.join(' ');
   }
 
   function generateUnits(n) {
@@ -146,7 +162,9 @@
     } else if (mode === 'sentences') {
       for (var j = 0; j < n; j++) units.push(makeSentence(pool));
     } else {
-      units.push(makeWords(pool, n));
+      var w = [];
+      for (var k = 0; k < n; k++) w.push(pick(pool));
+      units.push(w.join(' '));
     }
 
     if (startEl.checked && isLatin() && !useCustomEl.checked && units.length) {
@@ -155,7 +173,7 @@
     return units;
   }
 
-  // 字数限制（纯文本层面截断，HTML 包裹前执行）
+  // 截断逻辑
   function limitUnits(units, maxChars) {
     if (!maxChars || maxChars <= 0) return units;
     var out = [];
@@ -179,215 +197,179 @@
   }
 
   function truncateText(text, maxLen) {
-    if (maxLen <= 0) return '';
-    var sentences = text.match(/[^。.!?！？\n]+[。.!?！？]?/g) || [text];
-    var out = '';
-    var total = 0;
-    for (var i = 0; i < sentences.length; i++) {
-      var s = sentences[i];
-      var len = s.replace(/\s/g, '').length;
-      if (total + len <= maxLen) {
-        out += s;
-        total += len;
-      } else {
-        var remain = maxLen - total;
-        if (remain > 0) {
-          var count = 0;
-          var cut = '';
-          for (var k = 0; k < s.length; k++) {
-            if (/\s/.test(s[k])) { cut += s[k]; continue; }
-            if (count >= remain) break;
-            cut += s[k];
-            count++;
-          }
-          out += cut;
-        }
-        break;
-      }
+    var count = 0, cut = '';
+    for (var i = 0; i < text.length; i++) {
+      if (/\s/.test(text[i])) { cut += text[i]; continue; }
+      if (count >= maxLen) break;
+      cut += text[i];
+      count++;
     }
-    return out;
+    return cut + '...';
   }
 
-  // ========== HTML 包裹 ==========
-  var BLOCK_TAGS = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'blockquote', 'pre', 'ul', 'ol', 'dl'];
-  var HEADING_LIKE = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'blockquote'];
-
+  // ================== 格式化引擎 ==================
+  
   function getSelectedInlineTags() {
-    var boxes = document.querySelectorAll('.inline-fieldset input[type="checkbox"]');
+    if (currentFormat === 'text') return [];
+    var boxes = document.querySelectorAll('.inline-tags-grid input[type="checkbox"]');
     var arr = [];
-    forEachNode(boxes, function (b) { if (b.checked) arr.push(b.value); });
+    for (var i = 0; i < boxes.length; i++) if (boxes[i].checked) arr.push(boxes[i].value);
     return arr;
   }
 
-  function getSelectedBlockTag() {
-    var radios = document.querySelectorAll('.block-fieldset input[name="blockTag"]');
-    var v = 'none';
-    forEachNode(radios, function (r) { if (r.checked) v = r.value; });
-    return v;
-  }
-
-  // 行内包裹一个文本片段（text 需为已转义文本）
-  function wrapInline(text, inlineTags) {
-    if (!inlineTags.length) return text;
-    var t = pick(inlineTags);
-    switch (t) {
-      case 'a': return '<a href="#">' + text + '</a>';
-      case 'b': return '<b>' + text + '</b>';
-      case 'i': return '<i>' + text + '</i>';
-      case 'u': return '<u>' + text + '</u>';
-      case 'strong': return '<strong>' + text + '</strong>';
-      case 'em': return '<em>' + text + '</em>';
-      case 'mark': return '<mark>' + text + '</mark>';
-      case 'del': return '<del>' + text + '</del>';
-      case 'ins': return '<ins>' + text + '</ins>';
-      case 'sub': return '<sub>' + text + '</sub>';
-      case 'sup': return '<sup>' + text + '</sup>';
-      case 'q': return '<q>' + text + '</q>';
-      case 'cite': return '<cite>' + text + '</cite>';
-      case 'abbr': return '<abbr title="' + text + '">' + text + '</abbr>';
-      case 'kbd': return '<kbd>' + text + '</kbd>';
-      case 'samp': return '<samp>' + text + '</samp>';
-      case 'var': return '<var>' + text + '</var>';
-      case 'small': return '<small>' + text + '</small>';
-      case 'time': return '<time>' + text + '</time>';
-      default: return text;
+  function wrapInline(text, tags) {
+    if (!tags.length) return text;
+    var t = pick(tags);
+    
+    if (currentFormat === 'markdown') {
+      switch(t) {
+        case 'b': case 'strong': return '**' + text + '**';
+        case 'i': case 'em': return '*' + text + '*';
+        case 'del': return '~~' + text + '~~';
+        case 'code': case 'kbd': case 'samp': return '`' + text + '`';
+        case 'a': return '[' + text + '](#)';
+        default: return text;
+      }
+    } else {
+      switch(t) {
+        case 'a': return '<a href="#">' + text + '</a>';
+        case 'code': return '<code>' + text + '</code>';
+        default: return '<' + t + '>' + text + '</' + t + '>';
+      }
     }
   }
 
-  // 对一段文本按句子切分，每个句子随机包裹
-  function inlineWrapText(text, inlineTags) {
-    if (!inlineTags.length) return text;
+  function inlineWrapText(text, tags) {
+    if (!tags.length) return text;
+    // 按句子分段包裹，防止整段变粗
     var sentences = text.match(/[^。.!?！？\n]+[。.!?！？]?/g) || [text];
-    return sentences.map(function (s) { return wrapInline(s, inlineTags); }).join('');
+    return sentences.map(function(s) { return wrapInline(s, tags); }).join('');
   }
 
-  function wrapBlock(unit, tag) {
-    switch (tag) {
-      case 'p': return '<p>' + unit + '</p>';
-      case 'h1': return '<h1>' + unit + '</h1>';
-      case 'h2': return '<h2>' + unit + '</h2>';
-      case 'h3': return '<h3>' + unit + '</h3>';
-      case 'h4': return '<h4>' + unit + '</h4>';
-      case 'h5': return '<h5>' + unit + '</h5>';
-      case 'blockquote': return '<blockquote>' + unit + '</blockquote>';
-      case 'pre': return '<pre><code>' + unit + '</code></pre>';
-      case 'ul': return '<ul><li>' + unit + '</li></ul>';
-      case 'ol': return '<ol><li>' + unit + '</li></ol>';
-      case 'dl': return '<dl><dt>' + unit + '</dt><dd>' + unit + '</dd></dl>';
-      default: return unit;
-    }
-  }
+  function formatBlock(units, blockTag, inlineTags) {
+    if (currentFormat === 'text') return units.join('\n\n');
 
-  function assembleBlock(units, blockTag, inlineTags) {
+    var isHtml = currentFormat === 'html';
+    var isMd = currentFormat === 'markdown';
+
+    // 如果 blockTag 为 none
     if (blockTag === 'none') {
-      return units.map(function (u) {
-        return inlineWrapText(escapeHtml(u), inlineTags);
+      return units.map(function(u) {
+        return inlineWrapText(isHtml ? escapeHtml(u) : u, inlineTags);
       }).join('\n\n');
     }
 
-    if (blockTag === 'pre') {
-      var body = units.map(function (u) { return escapeHtml(u); }).join('\n\n');
-      return '<pre><code>' + body + '</code></pre>';
-    }
-
-    if (blockTag === 'ul' || blockTag === 'ol') {
-      var items = units.map(function (u) {
-        return '  <li>' + inlineWrapText(escapeHtml(u), inlineTags) + '</li>';
-      }).join('\n');
-      return '<' + blockTag + '>\n' + items + '\n</' + blockTag + '>';
-    }
-
-    if (blockTag === 'dl') {
-      var dlItems = units.map(function (u) {
-        var plain = escapeHtml(u);
-        var short = u.length > 20 ? escapeHtml(u.slice(0, 20) + '…') : plain;
-        return '  <dt>' + inlineWrapText(short, inlineTags) + '</dt>\n' +
-               '  <dd>' + inlineWrapText(plain, inlineTags) + '</dd>';
-      }).join('\n');
-      return '<dl>\n' + dlItems + '\n</dl>';
-    }
-
-    return units.map(function (u) {
-      var inner = escapeHtml(u);
-      if (HEADING_LIKE.indexOf(blockTag) !== -1) {
-        inner = inlineWrapText(inner, inlineTags);
-      }
-      return wrapBlock(inner, blockTag);
-    }).join('\n');
-  }
-
-  function assembleMixed(units, inlineTags) {
-    if (!units.length) return '';
-    var blocks = [];
-    units.forEach(function (u) {
-      var tag = pick(BLOCK_TAGS);
-      if (tag === 'pre') {
-        blocks.push({ type: 'pre', items: [u] });
-        return;
-      }
-      if (tag === 'ul' || tag === 'ol' || tag === 'dl') {
-        var last = blocks[blocks.length - 1];
-        if (last && last.type === tag) last.items.push(u);
-        else blocks.push({ type: tag, items: [u] });
-        return;
-      }
-      blocks.push({ type: tag, items: [u] });
-    });
-
-    return blocks.map(function (b) {
-      if (b.type === 'pre') {
-        return '<pre><code>' + escapeHtml(b.items[0]) + '</code></pre>';
-      }
-      if (b.type === 'ul' || b.type === 'ol') {
-        var items = b.items.map(function (u) {
+    // HTML 块
+    if (isHtml) {
+      if (blockTag === 'ul' || blockTag === 'ol') {
+        var items = units.map(function(u) {
           return '  <li>' + inlineWrapText(escapeHtml(u), inlineTags) + '</li>';
         }).join('\n');
-        return '<' + b.type + '>\n' + items + '\n</' + b.type + '>';
+        return '<' + blockTag + '>\n' + items + '\n</' + blockTag + '>';
       }
-      if (b.type === 'dl') {
-        var dlItems = b.items.map(function (u) {
-          var plain = escapeHtml(u);
-          var short = u.length > 20 ? escapeHtml(u.slice(0, 20) + '…') : plain;
-          return '  <dt>' + inlineWrapText(short, inlineTags) + '</dt>\n' +
-                 '  <dd>' + inlineWrapText(plain, inlineTags) + '</dd>';
+      if (blockTag === 'mixed') {
+        return units.map(function(u) {
+          var tags = ['p', 'h2', 'h3', 'blockquote', 'ul', 'ol'];
+          var t = pick(tags);
+          var inner = inlineWrapText(escapeHtml(u), inlineTags);
+          if (t === 'ul' || t === 'ol') return '<' + t + '><li>' + inner + '</li></' + t + '>';
+          return '<' + t + '>' + inner + '</' + t + '>';
         }).join('\n');
-        return '<dl>\n' + dlItems + '\n</dl>';
       }
-      var u = b.items[0];
-      var inner = escapeHtml(u);
-      if (HEADING_LIKE.indexOf(b.type) !== -1) {
-        inner = inlineWrapText(inner, inlineTags);
+      return units.map(function(u) {
+        var inner = inlineWrapText(escapeHtml(u), inlineTags);
+        return '<' + blockTag + '>' + inner + '</' + blockTag + '>';
+      }).join('\n');
+    }
+
+    // Markdown 块
+    if (isMd) {
+      if (blockTag === 'mixed') {
+        return units.map(function(u) {
+          var tags = ['p', 'md_h2', 'md_h3', 'md_bq', 'md_ul'];
+          var t = pick(tags);
+          var inner = inlineWrapText(u, inlineTags);
+          if (t === 'md_ul') return '- ' + inner;
+          if (t === 'md_bq') return '> ' + inner;
+          if (t === 'md_h2') return '## ' + inner;
+          if (t === 'md_h3') return '### ' + inner;
+          return inner;
+        }).join('\n\n');
       }
-      return wrapBlock(inner, b.type);
-    }).join('\n');
+      if (blockTag === 'md_ul') return units.map(function(u) { return '- ' + inlineWrapText(u, inlineTags); }).join('\n');
+      if (blockTag === 'md_ol') return units.map(function(u, i) { return (i+1) + '. ' + inlineWrapText(u, inlineTags); }).join('\n');
+      if (blockTag === 'md_bq') return units.map(function(u) { return '> ' + inlineWrapText(u, inlineTags); }).join('\n>\n');
+      if (blockTag === 'md_h1') return units.map(function(u) { return '# ' + inlineWrapText(u, inlineTags); }).join('\n\n');
+      if (blockTag === 'md_h2') return units.map(function(u) { return '## ' + inlineWrapText(u, inlineTags); }).join('\n\n');
+      if (blockTag === 'md_h3') return units.map(function(u) { return '### ' + inlineWrapText(u, inlineTags); }).join('\n\n');
+      // 默认普通段落
+      return units.map(function(u) { return inlineWrapText(u, inlineTags); }).join('\n\n');
+    }
+    return '';
   }
 
-  // ========== 主流程 ==========
+  // ================== 主流程 ==================
+  var debounceTimer;
   function generate() {
-    var n = Math.max(1, Math.min(200, parseInt(countEl.value, 10) || 3));
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(doGenerate, 100);
+  }
+
+  function doGenerate() {
+    var n = Math.max(1, Math.min(500, parseInt(countEl.value, 10) || 3));
     var maxChars = Math.max(0, parseInt(maxCharsEl.value, 10) || 0);
+    
     var units = generateUnits(n);
     units = limitUnits(units, maxChars).filter(function (u) { return u && u.trim(); });
 
-    var blockTag = getSelectedBlockTag();
+    var blockTag = blockTagEl.value;
     var inlineTags = getSelectedInlineTags();
-
-    var html = blockTag === 'mixed'
-      ? assembleMixed(units, inlineTags)
-      : assembleBlock(units, blockTag, inlineTags);
-
+    
+    var html = formatBlock(units, blockTag, inlineTags);
     outputEl.value = html;
+    
     updatePreview(html);
     updateStats(units);
+    saveSettings();
   }
 
   function updatePreview(html) {
-    previewEl.innerHTML = html || '';
-    forEachNode(previewEl.querySelectorAll('a'), function (a) {
-      a.addEventListener('click', function (e) {
-        e.preventDefault();
-      });
-    });
+    if (currentFormat === 'markdown') {
+      // 简单的 Markdown 转 HTML 预览
+      var text = escapeHtml(html);
+      // 标题
+      text = text.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+      text = text.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+      text = text.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+      // 引用
+      text = text.replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>');
+      // 列表
+      text = text.replace(/^\s*\- (.*$)/gim, '<ul><li>$1</li></ul>');
+      text = text.replace(/^\s*\d+\. (.*$)/gim, '<ol><li>$1</li></ol>');
+      // 行内样式
+      text = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+      text = text.replace(/\*(.*?)\*/g, '<i>$1</i>');
+      text = text.replace(/~~(.*?)~~/g, '<del>$1</del>');
+      text = text.replace(/`(.*?)`/g, '<code>$1</code>');
+      text = text.replace(/\[(.*?)\]\(#\)/g, '<a href="#">$1</a>');
+      // 换行
+      text = text.replace(/\n\n/g, '<br><br>');
+      text = text.replace(/\n/g, '<br>');
+      
+      // 修正被分开的列表
+      text = text.replace(/<\/ul>\s*<ul>/g, '');
+      text = text.replace(/<\/ol>\s*<ol>/g, '');
+      
+      previewEl.innerHTML = text;
+    } else if (currentFormat === 'html') {
+      previewEl.innerHTML = html || '';
+      var links = previewEl.querySelectorAll('a');
+      for(var i=0; i<links.length; i++) {
+        links[i].addEventListener('click', function(e){ e.preventDefault(); });
+      }
+    } else {
+      previewEl.innerHTML = '<pre style="white-space:pre-wrap; font-family:inherit;">' + escapeHtml(html) + '</pre>';
+    }
   }
 
   function updateStats(units) {
@@ -395,7 +377,14 @@
     var sentences = plain.split(/[。.!?！？]+/).filter(function (s) { return s.trim(); }).length;
     var paragraphs = units.filter(function (u) { return u.trim(); }).length;
     var chars = plain.replace(/\s/g, '').length;
-    var words = countWords(plain);
+    
+    var lang = langEl.value;
+    var words = 0;
+    if (['zh', 'ja', 'ko'].includes(lang)) {
+      words = chars; // CJK 以字数计算
+    } else {
+      words = plain.trim() ? plain.trim().split(/\s+/).length : 0;
+    }
 
     stWords.textContent = words;
     stChars.textContent = chars;
@@ -403,64 +392,174 @@
     stParagraphs.textContent = paragraphs;
   }
 
-  function countWords(text) {
-    if (!text.trim()) return 0;
-    var lang = getSegmenterLocale();
-    if (typeof Intl !== 'undefined' && Intl.Segmenter) {
-      try {
-        var seg = new Intl.Segmenter(lang, { granularity: 'word' });
-        var count = 0;
-        var iter = seg.segment(text);
-        for (var piece of iter) {
-          if (piece.isWordLike) count++;
-        }
-        return count;
-      } catch (e) { /* fallback */ }
+  // ================== 交互与事件 ==================
+  
+  // 切换格式
+  formatEl.addEventListener('change', function() {
+    currentFormat = this.value;
+    
+    // 显示/隐藏标签设置
+    if (currentFormat === 'text') {
+      tagsPanel.style.display = 'none';
+    } else {
+      tagsPanel.style.display = 'block';
     }
-    if (lang === 'en') return text.trim().split(/\s+/).length;
-    return text.replace(/\s/g, '').length;
-  }
 
-  // ========== 事件 ==========
-  generateBtn.addEventListener('click', generate);
-
-  copyBtn.addEventListener('click', function () {
-    if (!outputEl.value) return;
-    copyToClipboard(outputEl.value);
+    // 动态替换块级标签下拉菜单的选中项
+    var val = blockTagEl.value;
+    if (currentFormat === 'markdown') {
+      if (['p','h1','h2','h3','blockquote','ul','ol'].includes(val)) {
+        blockTagEl.value = 'none';
+      }
+    } else if (currentFormat === 'html') {
+      if (val.startsWith('md_')) {
+        blockTagEl.value = 'none';
+      }
+    }
+    
+    generate();
   });
 
-  copyTextBtn.addEventListener('click', function () {
-    var tmp = document.createElement('div');
-    tmp.innerHTML = outputEl.value;
-    var text = tmp.textContent || '';
-    if (!text.trim()) return;
-    copyToClipboard(text);
+  // 清空行内标签
+  clearInlineBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    var boxes = document.querySelectorAll('.inline-tags-grid input[type="checkbox"]');
+    for(var i=0; i<boxes.length; i++) boxes[i].checked = false;
+    generate();
   });
 
-  function copyToClipboard(text) {
+  // 自定义开关
+  useCustomEl.addEventListener('change', function() {
+    customWrap.style.display = this.checked ? 'block' : 'none';
+    generate();
+  });
+
+  // 视图切换
+  viewBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      viewBtns.forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      
+      if (this.dataset.view === 'code') {
+        outputEl.style.display = 'block';
+        previewWrap.style.display = 'none';
+      } else {
+        outputEl.style.display = 'none';
+        previewWrap.style.display = 'block';
+      }
+    });
+  });
+
+  // 复制
+  function copyText(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { showHint(); });
+      navigator.clipboard.writeText(text).then(function() {
+        showToast('已复制到剪贴板');
+      }).catch(function() {
+        showToast('复制失败');
+      });
     } else {
       var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); showHint(); } catch (e) {}
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
       document.body.removeChild(ta);
+      showToast('已复制到剪贴板');
     }
   }
 
-  function showHint() {
-    copyHint.hidden = false;
-    setTimeout(function () { copyHint.hidden = true; }, 1600);
-  }
-
-  useCustomEl.addEventListener('change', function () {
-    customWrap.hidden = !useCustomEl.checked;
+  copyBtn.addEventListener('click', function() {
+    if (outputEl.value) copyText(outputEl.value);
   });
 
-  // 首次自动生成
-  generate();
+  copyTextBtn.addEventListener('click', function() {
+    if (!outputEl.value) return;
+    var tmp = document.createElement('div');
+    tmp.innerHTML = outputEl.value;
+    copyText(tmp.textContent || tmp.innerText || '');
+  });
+
+  // 下载
+  downloadBtn.addEventListener('click', function() {
+    if (!outputEl.value) return;
+    
+    var ext = currentFormat === 'markdown' ? 'md' : (currentFormat === 'html' ? 'html' : 'txt');
+    var blob = new Blob([outputEl.value], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'lorem_ipsum_' + Date.now() + '.' + ext;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1500);
+    showToast('已下载文件');
+  });
+
+  // 防抖触发生成
+  var inputs = [langEl, modeEl, countEl, maxCharsEl, startEl, blockTagEl];
+  inputs.forEach(function(el) {
+    el.addEventListener('input', generate);
+    el.addEventListener('change', generate);
+  });
+  
+  document.querySelectorAll('.inline-tags-grid input').forEach(function(el) {
+    el.addEventListener('change', generate);
+  });
+
+  generateBtn.addEventListener('click', function() {
+    doGenerate();
+    showToast('生成成功');
+  });
+
+  // ================== 本地存储 ==================
+  function saveSettings() {
+    try {
+      var settings = {
+        lang: langEl.value,
+        format: formatEl.value,
+        mode: modeEl.value,
+        count: countEl.value,
+        maxChars: maxCharsEl.value,
+        startClassic: startEl.checked,
+        blockTag: blockTagEl.value,
+        inline: []
+      };
+      document.querySelectorAll('.inline-tags-grid input:checked').forEach(function(el) {
+        settings.inline.push(el.value);
+      });
+      localStorage.setItem('lorem_settings', JSON.stringify(settings));
+    } catch(e) {}
+  }
+
+  function loadSettings() {
+    try {
+      var s = JSON.parse(localStorage.getItem('lorem_settings'));
+      if (!s) return;
+      if (s.lang) langEl.value = s.lang;
+      if (s.format) {
+        formatEl.value = s.format;
+        currentFormat = s.format;
+      }
+      if (s.mode) modeEl.value = s.mode;
+      if (s.count) countEl.value = s.count;
+      if (s.maxChars !== undefined) maxCharsEl.value = s.maxChars;
+      if (s.startClassic !== undefined) startEl.checked = s.startClassic;
+      if (s.blockTag) blockTagEl.value = s.blockTag;
+      
+      if (s.inline && s.inline.length > 0) {
+        document.querySelectorAll('.inline-tags-grid input').forEach(function(el) {
+          if (s.inline.includes(el.value)) el.checked = true;
+        });
+      }
+      
+      if (currentFormat === 'text') tagsPanel.style.display = 'none';
+      
+    } catch(e) {}
+  }
+
+  // 初始化
+  loadSettings();
+  doGenerate();
+
 })();

@@ -12,15 +12,17 @@
 <body>
 <header class="tool-page-header">
   <h1>🖌️ 像素画 & 点阵生成器</h1>
-  <p>拖拽上色，网格吸附，一键导出高清像素画。</p>
+  <p>拖拽上色，网格吸附，支持图转像素、泛洪填充与高清导出。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="px-layout" style="padding-top: 0;">
   <div class="px-container">
+    <!-- 左侧控制栏 -->
     <aside class="px-sidebar">
+      <!-- 1. 画布设置 -->
       <div class="px-section">
-        <label>网格大小</label>
+        <label>画布尺寸</label>
         <select id="px-grid-size" class="px-select">
           <option value="8">8 x 8 (微型图标)</option>
           <option value="16">16 x 16</option>
@@ -28,23 +30,85 @@
           <option value="64">64 x 64</option>
           <option value="128">128 x 128 (超精细)</option>
         </select>
+        <label class="px-checkbox-label" style="margin-top: 4px;">
+          <input type="checkbox" id="px-show-grid" checked> 显示网格线
+        </label>
       </div>
-      
+
+      <!-- 2. 工具箱 -->
       <div class="px-section">
-        <label>画笔颜色</label>
+        <label>工具箱</label>
+        <div class="px-tools">
+          <button class="px-tool-btn active" data-tool="pen" title="画笔 (左键绘制, 右键擦除)">🖌️</button>
+          <button class="px-tool-btn" data-tool="eraser" title="橡皮擦">🧽</button>
+          <button class="px-tool-btn" data-tool="fill" title="油漆桶 (填充相同颜色区域)">🪣</button>
+          <button class="px-tool-btn" data-tool="picker" title="吸管 (提取画布颜色)">💉</button>
+        </div>
+        <label style="margin-top: 6px;">笔刷大小</label>
+        <select id="px-brush-size" class="px-select">
+          <option value="1" selected>1 x 1 px</option>
+          <option value="2">2 x 2 px</option>
+          <option value="3">3 x 3 px</option>
+          <option value="4">4 x 4 px</option>
+        </select>
+      </div>
+
+      <!-- 3. 颜色 -->
+      <div class="px-section">
+        <label>当前颜色</label>
         <div class="px-color-wrap">
           <input type="color" id="px-color" value="#7ba05b">
-          <button id="btn-eraser" class="px-btn active" title="透明橡皮擦">🧽 橡皮</button>
+          <span id="px-color-val">#7ba05b</span>
+        </div>
+        <div class="px-palette" id="px-palette">
+          <button class="px-color-swatch" style="background: #1a1a1a;" data-color="#1a1a1a" title="黑"></button>
+          <button class="px-color-swatch" style="background: #ffffff;" data-color="#ffffff" title="白"></button>
+          <button class="px-color-swatch" style="background: #7ba05b;" data-color="#7ba05b" title="绿"></button>
+          <button class="px-color-swatch" style="background: #a8452a;" data-color="#a8452a" title="红"></button>
+          <button class="px-color-swatch" style="background: #4a90e2;" data-color="#4a90e2" title="蓝"></button>
+          <button class="px-color-swatch" style="background: #f1c40f;" data-color="#f1c40f" title="黄"></button>
+          <button class="px-color-swatch" style="background: #8e44ad;" data-color="#8e44ad" title="紫"></button>
+          <button class="px-color-swatch" style="background: #e67e22;" data-color="#e67e22" title="橙"></button>
+          <button class="px-color-swatch" style="background: #e5d9bd;" data-color="#e5d9bd" title="肤色"></button>
+          <button class="px-color-swatch" style="background: #8a5a2b;" data-color="#8a5a2b" title="棕"></button>
         </div>
       </div>
 
+      <!-- 4. 操作与导入 -->
       <div class="px-section">
         <label>操作</label>
-        <button id="btn-clear" class="px-btn">🗑️ 清空画板</button>
-        <button id="btn-export" class="px-btn primary">⬇️ 导出 PNG</button>
+        <div class="px-btn-group">
+          <button id="btn-undo" class="px-btn" title="撤销 (Ctrl+Z)">↩️</button>
+          <button id="btn-redo" class="px-btn" title="重做 (Ctrl+Y)">↪️</button>
+          <button id="btn-clear" class="px-btn danger" title="清空画板">🗑️</button>
+        </div>
+        <label class="px-btn upload-btn" style="margin-top: 8px;">
+          🖼️ 导入底图转像素
+          <input type="file" id="px-import-img" accept="image/*" hidden>
+        </label>
+      </div>
+
+      <!-- 5. 导出 -->
+      <div class="px-section">
+        <label>导出设置</label>
+        <div class="px-export-row">
+          <select id="px-export-scale" class="px-select" style="flex: 1;">
+            <option value="1">1x 原始大小</option>
+            <option value="2">2x</option>
+            <option value="4">4x</option>
+            <option value="8" selected>8x 高清</option>
+            <option value="16">16x</option>
+          </select>
+          <select id="px-export-format" class="px-select" style="width: 70px;">
+            <option value="image/png">PNG</option>
+            <option value="image/jpeg">JPG</option>
+          </select>
+        </div>
+        <button id="btn-export" class="px-btn primary" style="margin-top: 8px;">⬇️ 导出图片</button>
       </div>
     </aside>
 
+    <!-- 右侧画板 -->
     <div class="px-main">
       <div class="px-canvas-wrap">
         <canvas id="px-canvas"></canvas>
@@ -52,6 +116,9 @@
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/pixel-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
