@@ -72,10 +72,6 @@
   // 【修复重点】：把 '../../js/ecdict-cn.js' 放在第一位。
   var ECDICT_SOURCES = [
     '../../js/ecdict-cn.js',
-    '../../js/libs/ecdict-cn/ecdict-cn.js',
-    '../../js/libs/ecdict-cn/dict.js',
-    '../../js/libs/ecdict-cn/data.js',
-    '../../js/libs/ecdict-cn/index.js'
   ];
   var ECDICT_GLOBALS = [
     'ECDICT_CN', 'ECDICT', 'ECDICT_DATA', 'DICT_CN', 'DICT_DATA',
