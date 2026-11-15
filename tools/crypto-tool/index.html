@@ -10,18 +10,18 @@
 <link rel="stylesheet" href="../../css/crypto-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🔐 加解密与编解码</h1>
-  <p>涵盖 Hash / AES / RSA / JWT / 编码转换 / 古典密码，全本地计算。</p>
+  <p>涵盖 Hash / AES / RSA / JWT / 编码转换 / 古典密码，全本地计算保护隐私。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="ct-layout" style="padding-top: 0;">
+<main class="ct-layout">
   <div class="ct-tabs">
     <button class="ct-tab active" data-target="panel-hash">🔤 哈希计算</button>
     <button class="ct-tab" data-target="panel-symmetric">🔐 对称加密</button>
     <button class="ct-tab" data-target="panel-rsa">🗝️ RSA 非对称</button>
-    <button class="ct-tab" data-target="panel-jwt">🎫 JWT</button>
+    <button class="ct-tab" data-target="panel-jwt">🎫 JWT 解析</button>
     <button class="ct-tab" data-target="panel-encode">🔠 编码转换</button>
     <button class="ct-tab" data-target="panel-classic">🏛️ 古典密码</button>
   </div>
@@ -32,7 +32,7 @@
     <div id="panel-hash" class="ct-panel active">
       <div class="ct-row">
         <label>输入文本</label>
-        <textarea id="hash-input" class="ct-textarea" rows="4">Hello World</textarea>
+        <textarea id="hash-input" class="ct-textarea" rows="4" placeholder="输入需要计算哈希的文本...">Hello World</textarea>
       </div>
       <div class="ct-row">
         <label>哈希算法</label>
@@ -43,13 +43,16 @@
           <option value="SHA512">SHA-512</option>
           <option value="RIPEMD160">RIPEMD-160</option>
         </select>
-        <button id="btn-hash" class="ct-btn primary">计算哈希</button>
+        <button id="btn-hash" class="ct-btn primary">🔢 计算哈希</button>
       </div>
-      <label>计算结果 (Hex)</label>
-      <textarea id="hash-output" class="ct-textarea" rows="3" readonly style="font-family: monospace; word-break: break-all; background: #fdf8ec;"></textarea>
+      <div class="ct-row" style="margin-bottom:0;">
+        <label>计算结果 (Hex)</label>
+        <button class="ct-mini-btn" onclick="copyText('hash-output')">📋 复制</button>
+      </div>
+      <textarea id="hash-output" class="ct-textarea" rows="3" readonly style="font-family: monospace; word-break: break-all; background: #fdf8ec; margin-top:6px;"></textarea>
     </div>
 
-    <!-- 2. 对称加密 (AES/DES) -->
+    <!-- 2. 对称加密 -->
     <div id="panel-symmetric" class="ct-panel">
       <div class="ct-row">
         <label>算法模式</label>
@@ -65,22 +68,27 @@
       </div>
       <div class="ct-row">
         <label>密钥 (Key)</label>
-        <input type="text" id="sym-key" class="ct-input" placeholder="自定义密钥" value="1234567890123456">
+        <input type="text" id="sym-key" class="ct-input" placeholder="AES 建议 16/24/32 字符" value="1234567890123456">
+        <button id="btn-sym-randkey" class="ct-btn" title="生成随机16位密钥">🎲 随机</button>
       </div>
       <div class="ct-row" id="row-iv">
         <label>偏移量 (IV)</label>
         <input type="text" id="sym-iv" class="ct-input" placeholder="16位向量" value="abcdefghijklmnop">
+        <button id="btn-sym-randiv" class="ct-btn" title="生成随机16位IV">🎲 随机</button>
       </div>
       <div class="ct-row">
         <label>输入内容</label>
-        <textarea id="sym-input" class="ct-textarea" rows="4" placeholder="要加密的文本或要解密的Base64..."></textarea>
+        <textarea id="sym-input" class="ct-textarea" rows="4" placeholder="要加密的文本或要解密的 Base64..."></textarea>
       </div>
       <div class="ct-row">
-        <button id="btn-sym-encrypt" class="ct-btn primary">加密 Encrypt</button>
-        <button id="btn-sym-decrypt" class="ct-btn">解密 Decrypt</button>
+        <button id="btn-sym-encrypt" class="ct-btn primary">🔒 加密</button>
+        <button id="btn-sym-decrypt" class="ct-btn">🔓 解密</button>
       </div>
-      <label>输出结果</label>
-      <textarea id="sym-output" class="ct-textarea" rows="4" readonly></textarea>
+      <div class="ct-row" style="margin-bottom:0;">
+        <label>输出结果</label>
+        <button class="ct-mini-btn" onclick="copyText('sym-output')">📋 复制</button>
+      </div>
+      <textarea id="sym-output" class="ct-textarea" rows="4" readonly style="margin-top:6px;"></textarea>
     </div>
 
     <!-- 3. RSA 非对称 -->
@@ -91,23 +99,26 @@
           <option value="1024">1024 位</option>
           <option value="2048" selected>2048 位</option>
         </select>
-        <button id="btn-rsa-gen" class="ct-btn primary">生成密钥对</button>
-        <span id="rsa-loading" style="display:none; color:#a8452a; font-size:.85rem;">生成中，请稍候...</span>
+        <button id="btn-rsa-gen" class="ct-btn primary">⚙️ 生成新密钥对</button>
+        <button id="btn-rsa-example" class="ct-btn">📥 填入示例密钥</button>
+        <span id="rsa-loading" style="display:none; color:#a8452a; font-size:.85rem; font-weight:bold;">生成中，请稍候...</span>
       </div>
       <div class="ct-grid-2">
         <div>
-          <label>公钥 (Public Key)</label>
+          <label>公钥 (Public Key) <button class="ct-mini-btn" onclick="copyText('rsa-pub')">📋 复制</button></label>
           <textarea id="rsa-pub" class="ct-textarea" rows="4" placeholder="-----BEGIN PUBLIC KEY-----"></textarea>
         </div>
         <div>
-          <label>私钥 (Private Key)</label>
+          <label>私钥 (Private Key) <button class="ct-mini-btn" onclick="copyText('rsa-priv')">📋 复制</button></label>
           <textarea id="rsa-priv" class="ct-textarea" rows="4" placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
         </div>
       </div>
       <div class="ct-tabs-inner">
-        <button class="ct-inner-tab active" data-target="rsa-enc">加解密</button>
-        <button class="ct-inner-tab" data-target="rsa-sign">签名/验签</button>
+        <button class="ct-inner-tab active" data-target="rsa-enc">🔒 加解密</button>
+        <button class="ct-inner-tab" data-target="rsa-sign">✍️ 签名/验签</button>
       </div>
+      
+      <!-- RSA 加解密 -->
       <div id="rsa-enc" class="ct-inner-panel active">
         <label>输入明文或密文 (Base64)</label>
         <textarea id="rsa-text" class="ct-textarea" rows="3"></textarea>
@@ -115,9 +126,14 @@
           <button id="btn-rsa-encrypt" class="ct-btn primary">公钥加密</button>
           <button id="btn-rsa-decrypt" class="ct-btn">私钥解密</button>
         </div>
-        <label>输出结果</label>
-        <textarea id="rsa-out" class="ct-textarea" rows="3" readonly></textarea>
+        <div class="ct-row" style="margin-bottom:0;">
+          <label>输出结果</label>
+          <button class="ct-mini-btn" onclick="copyText('rsa-out')">📋 复制</button>
+        </div>
+        <textarea id="rsa-out" class="ct-textarea" rows="3" readonly style="margin-top:6px;"></textarea>
       </div>
+      
+      <!-- RSA 签名验签 -->
       <div id="rsa-sign" class="ct-inner-panel">
         <label>输入需签名的文本</label>
         <textarea id="rsa-sign-text" class="ct-textarea" rows="2"></textarea>
@@ -125,26 +141,32 @@
           <button id="btn-rsa-sign" class="ct-btn primary">私钥签名 (SHA256)</button>
           <button id="btn-rsa-verify" class="ct-btn">公钥验签</button>
         </div>
-        <label>签名结果 / 粘贴待验证签名</label>
-        <textarea id="rsa-sign-out" class="ct-textarea" rows="3"></textarea>
+        <div class="ct-row" style="margin-bottom:0;">
+          <label>签名结果 / 粘贴待验证签名 (Base64)</label>
+          <button class="ct-mini-btn" onclick="copyText('rsa-sign-out')">📋 复制</button>
+        </div>
+        <textarea id="rsa-sign-out" class="ct-textarea" rows="3" style="margin-top:6px;"></textarea>
       </div>
     </div>
 
     <!-- 4. JWT 解析 -->
     <div id="panel-jwt" class="ct-panel">
       <label>JWT Token</label>
-      <textarea id="jwt-input" class="ct-textarea" rows="3" placeholder="eyJhbGciOi..."></textarea>
+      <textarea id="jwt-input" class="ct-textarea" rows="3" placeholder="粘贴 eyJhbGciOi..."></textarea>
       <div class="ct-row">
-        <input type="text" id="jwt-secret" class="ct-input" placeholder="密钥 Secret (验证 HS256 签名)">
-        <button id="btn-jwt-parse" class="ct-btn primary">解析</button>
+        <input type="text" id="jwt-secret" class="ct-input" placeholder="密钥 Secret (可选，用于验证 HS256/384/512 签名)">
+        <button id="btn-jwt-parse" class="ct-btn primary">🔍 解析 JWT</button>
       </div>
+      
+      <div id="jwt-expiry-alert" style="display:none; margin-bottom:12px; padding:10px; border-radius:6px; font-weight:bold; font-size:0.9rem;"></div>
+
       <div class="ct-grid-2">
         <div>
-          <label>Header (头部)</label>
+          <label>Header (头部) <button class="ct-mini-btn" onclick="copyText('jwt-header')">📋</button></label>
           <pre id="jwt-header" class="ct-code-block"></pre>
         </div>
         <div>
-          <label>Payload (载荷)</label>
+          <label>Payload (载荷) <button class="ct-mini-btn" onclick="copyText('jwt-payload')">📋</button></label>
           <pre id="jwt-payload" class="ct-code-block"></pre>
         </div>
       </div>
@@ -158,7 +180,7 @@
           <option value="base64">Base64</option>
           <option value="base32">Base32</option>
           <option value="base58">Base58</option>
-          <option value="url">URL 编码 (encodeURIComponent)</option>
+          <option value="url">URL 编码</option>
           <option value="html">HTML 转义</option>
           <option value="unicode">Unicode 转义 (\uXXXX)</option>
         </select>
@@ -170,9 +192,13 @@
       <div class="ct-row">
         <button id="btn-encode" class="ct-btn primary">编码 Encode</button>
         <button id="btn-decode" class="ct-btn">解码 Decode</button>
+        <button id="btn-swap-encode" class="ct-btn" title="将结果放到输入框">↕️ 交换</button>
       </div>
-      <label>结果</label>
-      <textarea id="encode-output" class="ct-textarea" rows="4" readonly></textarea>
+      <div class="ct-row" style="margin-bottom:0;">
+        <label>结果</label>
+        <button class="ct-mini-btn" onclick="copyText('encode-output')">📋 复制</button>
+      </div>
+      <textarea id="encode-output" class="ct-textarea" rows="4" readonly style="margin-top:6px;"></textarea>
     </div>
 
     <!-- 6. 古典密码 -->
@@ -186,7 +212,7 @@
         </select>
         <span id="caesar-shift-wrap" style="display:none;">
           <label>偏移量</label>
-          <input type="number" id="caesar-shift" value="3" style="width:60px; padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <input type="number" id="caesar-shift" value="3" min="1" max="25" style="width:60px; padding:6px; border:1px solid #ccc; border-radius:6px;">
         </span>
       </div>
       <div class="ct-row">
@@ -196,13 +222,20 @@
       <div class="ct-row">
         <button id="btn-classic-encode" class="ct-btn primary">加密 / 转换</button>
         <button id="btn-classic-decode" class="ct-btn">解密 / 还原</button>
+        <button id="btn-classic-brute" class="ct-btn" style="display:none; background:#fef2f2; border-color:#fecaca; color:#a8452a;">💥 暴力破解</button>
       </div>
-      <label>结果</label>
-      <textarea id="classic-output" class="ct-textarea" rows="4" readonly></textarea>
+      <div class="ct-row" style="margin-bottom:0;">
+        <label id="classic-out-label">结果</label>
+        <button class="ct-mini-btn" onclick="copyText('classic-output')">📋 复制</button>
+      </div>
+      <textarea id="classic-output" class="ct-textarea" rows="4" readonly style="margin-top:6px;"></textarea>
     </div>
 
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/crypto-js.min.js"></script>
 <script src="../../js/libs/forge.min.js"></script>
 <script src="../../js/crypto-tool.js" defer></script>

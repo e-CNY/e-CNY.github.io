@@ -10,28 +10,64 @@
 <link rel="stylesheet" href="../../css/template-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>📝 模板渲染测试</h1>
-  <p>支持基础 Mustache 语法（变量替换、条件判断、数组循环）。</p>
+  <p>支持 Mustache 语法（变量、条件、循环嵌套），兼容 JSON / YAML 数据。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="tm-layout" style="padding-top: 0;">
+<main class="tm-layout">
+  <div class="tm-topbar">
+    <div class="tm-examples">
+      <span>填入示例：</span>
+      <button class="tm-btn-sm" onclick="loadExample('user')">👤 个人信息</button>
+      <button class="tm-btn-sm" onclick="loadExample('product')">📦 商品列表</button>
+      <button class="tm-btn-sm" onclick="loadExample('nested')">🧩 复杂嵌套</button>
+    </div>
+    <div class="tm-actions">
+      <button class="tm-btn primary" onclick="renderTemplate()">⚡ 渲染</button>
+      <button class="tm-btn" onclick="copyResult()">📋 复制结果</button>
+      <button class="tm-btn" onclick="downloadHtml()">💾 下载 HTML</button>
+    </div>
+  </div>
+
   <div class="tm-container">
+    <!-- 模板输入 -->
     <div class="tm-col">
-      <label>模板 (HTML / Mustache)</label>
-      <textarea id="tm-template" class="tm-textarea" spellcheck="false"></textarea>
+      <div class="tm-col-header">
+        <label>📝 模板 (HTML / Mustache)</label>
+        <label class="tm-upload-btn">📂 导入模板<input type="file" id="tmpl-file" accept=".html,.txt,.mustache" hidden></label>
+      </div>
+      <textarea id="tm-template" class="tm-textarea" spellcheck="false" placeholder="在此输入 Mustache 模板..."></textarea>
     </div>
+    
+    <!-- 数据输入 -->
     <div class="tm-col">
-      <label>数据上下文 (JSON)</label>
-      <textarea id="tm-data" class="tm-textarea" spellcheck="false"></textarea>
+      <div class="tm-col-header">
+        <label>🗂️ 数据上下文 (JSON / YAML)</label>
+        <label class="tm-upload-btn">📂 导入数据<input type="file" id="data-file" accept=".json,.yaml,.yml" hidden></label>
+      </div>
+      <textarea id="tm-data" class="tm-textarea" spellcheck="false" placeholder="在此输入 JSON 或 YAML 数据..."></textarea>
     </div>
+    
+    <!-- 预览输出 -->
     <div class="tm-col">
-      <label>实时预览</label>
-      <div id="tm-output" class="tm-preview"></div>
+      <div class="tm-col-header">
+        <label>👁️ 实时预览</label>
+        <div class="tm-tabs">
+          <button class="tm-tab active" data-view="preview">渲染视图</button>
+          <button class="tm-tab" data-view="code">HTML 源码</button>
+        </div>
+      </div>
+      <div class="tm-preview" id="tm-output"></div>
+      <textarea id="tm-code-output" class="tm-textarea" spellcheck="false" readonly style="display:none;"></textarea>
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
+<script src="../../js/libs/js-yaml.min.js"></script>
 <script src="../../js/template-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

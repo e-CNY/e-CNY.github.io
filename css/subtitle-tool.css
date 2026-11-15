@@ -1,16 +1,68 @@
-.sb-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
-.sb-container { display: flex; gap: 24px; height: calc(100vh - 150px); }
-@media (max-width: 768px) { .sb-container { flex-direction: column; height: auto; } }
+.sb-layout { max-width: 1200px; margin: 0 auto; padding: 0 16px 32px; height: calc(100vh - 130px); min-height: 600px; }
+.sb-container { display: flex; gap: 20px; height: 100%; }
+@media (max-width: 800px) { 
+  .sb-layout { height: auto; }
+  .sb-container { flex-direction: column; } 
+}
 
-.sb-sidebar { width: 260px; flex-shrink: 0; background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 20px; }
-.sb-section h3 { font-size: .9rem; margin: 0 0 10px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 4px; }
+/* 左侧控制栏 */
+.sb-sidebar { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+.sb-section { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 12px; padding: 16px; }
+.sb-section h3 { font-size: .9rem; margin: 0 0 12px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 6px; font-weight: 600; }
 .sb-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.sb-row input { padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fff; font-size: .85rem; flex: 1; width: 100%; box-sizing: border-box; }
+.sb-row input[type="text"], .sb-row input[type="number"] { width: 100%; padding: 8px 12px; border: 1px solid #d5c7a8; border-radius: 6px; font-size: .85rem; outline: none; box-sizing: border-box; background: #fff; }
+.sb-row input:focus { border-color: #8a5a2b; }
 
-.sb-btn { padding: 8px 12px; border-radius: 6px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .8rem; flex: 1; }
-.sb-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+.sb-checkbox { display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: #6b5d47; cursor: pointer; }
+.sb-checkbox input { accent-color: #8a5a2b; width: 14px; height: 14px; cursor: pointer; }
 
-.sb-main { flex: 1; display: flex; gap: 16px; }
-.sb-textarea { flex: 1; padding: 16px; border: 1px solid #d5c7a8; border-radius: 12px; background: #fff; font-family: monospace; font-size: .9rem; resize: none; line-height: 1.5; white-space: pre; }
-.sb-textarea:focus { outline: none; border-color: #8a5a2b; }
-@media (max-width: 600px) { .sb-main { flex-direction: column; height: 600px; } }
+.sb-btn { padding: 8px 12px; border-radius: 6px; border: 1px solid #d5c7a8; background: #fff; color: #3d3226; cursor: pointer; font-size: .85rem; font-weight: 600; transition: all .15s; outline: none; text-align: center; flex: 1; white-space: nowrap; }
+.sb-btn:hover { background: #f5ecd5; border-color: #b08a5a; }
+.sb-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.sb-btn.primary:hover { background: #6b8c4e; }
+.sb-btn.danger { color: #a8452a; border-color: #fecaca; background: #fef2f2; }
+.sb-btn.danger:hover { background: #fee2e2; }
+
+/* 右侧工作区 */
+.sb-main { flex: 1; display: flex; flex-direction: column; background: #fff; border: 1px solid #d5c7a8; border-radius: 12px; overflow: hidden; min-width: 0; }
+
+/* 顶部工具栏 */
+.sb-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #f9f3e3; border-bottom: 1px solid #d5c7a8; flex-wrap: wrap; gap: 10px; }
+.sb-stats { font-size: .85rem; color: #6b5d47; font-weight: bold; }
+.sb-stats b { color: #8a5a2b; font-family: monospace; font-size: 0.95rem; }
+.sb-actions { display: flex; gap: 8px; align-items: center; }
+.sb-tab { padding: 6px 12px; border: 1px solid transparent; background: transparent; color: #8a7a5f; font-size: 0.85rem; cursor: pointer; border-radius: 6px; font-weight: bold; outline: none; transition: all 0.15s; }
+.sb-tab:hover { background: #efe6d0; }
+.sb-tab.active { background: #fff; color: #8a5a2b; border-color: #d5c7a8; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+/* 视图切换 */
+.sb-view { display: none; flex: 1; overflow: hidden; }
+.sb-view.active { display: flex; }
+#view-text { gap: 1px; background: #d5c7a8; } /* 用背景色做分割线 */
+
+/* 源码对比模式 */
+.sb-editor-col { flex: 1; display: flex; flex-direction: column; background: #fff; min-width: 0; }
+.sb-editor-col > label { padding: 8px 16px; background: #fdf8ec; font-size: .85rem; color: #6b5d47; font-weight: bold; border-bottom: 1px solid #e5d9bd; display: flex; justify-content: space-between; align-items: center; }
+.sb-textarea { flex: 1; padding: 16px; border: none; background: #fff; font-family: "SFMono-Regular", Consolas, Menlo, monospace; font-size: .9rem; resize: none; line-height: 1.6; outline: none; white-space: pre; color: #3d3226; }
+.sb-textarea:focus { background: #fafbfc; }
+.sb-mini-btn { padding: 2px 8px; font-size: 0.75rem; background: #fff; border: 1px solid #d5c7a8; border-radius: 4px; cursor: pointer; color: #8a5a2b; font-weight: 600; transition: all 0.15s; }
+.sb-mini-btn:hover { background: #f5ecd5; }
+.sb-msg { color: #a8452a; font-size: 0.75rem; font-weight: normal; }
+
+/* 拖拽高亮 */
+.sb-editor-col.dragover { background: #fffbf0; }
+
+/* 可视化列表模式 */
+#view-visual { flex-direction: column; background: #e5d9bd; padding: 16px; overflow-y: auto; }
+.sb-visual-list { display: flex; flex-direction: column; gap: 8px; }
+.sb-empty { text-align: center; color: #8a7a5f; font-size: 0.95rem; margin-top: 40px; }
+.sb-visual-item { display: flex; background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid #ddcfb3; }
+.sb-visual-info { width: 180px; flex-shrink: 0; background: #f9f3e3; padding: 10px; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid #e5d9bd; }
+.sb-visual-index { font-size: 0.75rem; color: #8a7a5f; font-weight: bold; margin-bottom: 4px; }
+.sb-visual-time { font-family: monospace; font-size: 0.8rem; color: #3d3226; line-height: 1.4; }
+.sb-visual-text { flex: 1; padding: 12px 16px; font-size: 0.95rem; color: #3d3226; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+.sb-visual-error { color: #a8452a; font-weight: bold; font-size: 0.85rem; }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); background: rgba(61, 50, 38, 0.92); color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; z-index: 9999; max-width: 80vw; text-align: center; word-break: break-all; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
