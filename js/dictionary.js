@@ -3,23 +3,17 @@
   'use strict';
 
   /* =========================================================
-   * 词库文件约定（二选一即可）：
-   *   1) js/libs/ecdict-cn/ecdict-cn.js  内容形如：
-   *        window.ECDICT_CN = { "year":"n. 年, 年度, 年龄\n[经] 年度", ... };
-   *   2) 也支持把字典对象直接挂到 window.ECDICT / window.DICT_DATA 等常见全局名
+   * 词库文件加载路径（按顺序尝试，直到成功为止）：
+   *   1. 本地路径：'../../js/ecdict-cn.js'
+   *   2. 如果想使用网络词库，直接加到数组里，例如：
+   *      'https://1.com/ecdict-cn.js',
+   *   词库文件内容需形如：
+   *      window.ECDICT_CN = { "year":"n. 年...", ... };
    * ========================================================= */
 
   var DATA_SOURCES = [
-    '../../js/libs/ecdict-cn/ecdict-cn.js',
-    '../../js/libs/ecdict-cn/dict.js',
-    '../../js/libs/ecdict-cn/data.js',
-    '../../js/libs/ecdict-cn/index.js',
-    '../../js/libs/ecdict-cn.js',
-    '../../js/ecdict-cn/ecdict-cn.js',
-    '../../js/ecdict-cn/dict.js',
-    '../../js/ecdict-cn/data.js',
-    '../../js/ecdict-cn/index.js',
-    '../../js/ecdict-cn.js'
+    '../../js/ecdict-cn.js' 
+    // , 'https://1.com/ecdict-cn.js'  <-- 如果要调用网络词典，去掉开头的逗号并修改网址即可
   ];
 
   var GLOBAL_NAMES = [
@@ -27,7 +21,7 @@
     'ecdictCN', 'ecdict', 'dictCN', 'dictData', 'dictionary', 'DICT'
   ];
 
-  var LS_FAV = 'dict.fav.v2'; // 版本升级，防止老数据冲突
+  var LS_FAV = 'dict.fav.v2';
   var LS_HIST = 'dict.hist.v2';
   var MAX_HIST = 60;
 
@@ -898,12 +892,14 @@
 
     loadFirst(function (dict) {
       if (!dict) {
-        setStatus('⚠️ 未找到词库文件，请检查 js/libs/ecdict-cn/ 目录', 'error');
+        setStatus('⚠️ 未找到词库文件，请检查路径', 'error');
         els.placeholder.innerHTML =
           '<div class="ph-emoji">📂</div>' +
-          '<p>未找到词库数据</p>' +
-          '<p class="ph-tip">请确认存在 js/libs/ecdict-cn/ecdict-cn.js，<br>' +
-          '内容形如：<code>window.ECDICT_CN = { "year": "n. 年…" };</code></p>';
+          '<p>未找到离线词库数据</p>' +
+          '<p class="ph-tip">请将词库文件（如 <code>ecdict-cn.js</code>）放置于：<br>' +
+          '<b>js/ecdict-cn.js</b><br><br>' +
+          '词库文件内容应形如：<br>' +
+          '<code>window.ECDICT_CN = { "year": "n. 年…" };</code></p>';
         return;
       }
 
