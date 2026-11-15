@@ -12,74 +12,120 @@
 <body>
 <header class="tool-page-header">
   <h1>📝 文本处理工具箱</h1>
-  <p>涵盖 20+ 种批量文本处理功能，全本地处理。</p>
+  <p>涵盖 35+ 种批量文本处理功能，全程本地隐私保护。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="tt-layout" style="padding-top: 0;">
   <div class="tt-container">
     
-    <!-- 工具栏分组 -->
+    <!-- 顶部工具栏 -->
     <div class="tt-toolbar">
+      
+      <!-- 行处理 -->
       <div class="tt-group">
-        <span class="tt-group-title">基础处理</span>
+        <span class="tt-group-title">行处理</span>
         <button type="button" class="tt-btn" onclick="txtDedupe()">去重</button>
         <button type="button" class="tt-btn" onclick="txtSort('asc')">正序</button>
         <button type="button" class="tt-btn" onclick="txtSort('desc')">倒序</button>
-        <button type="button" class="tt-btn" onclick="txtSort('len')">按长度排序</button>
-        <button type="button" class="tt-btn" onclick="txtShuffle()">随机打乱</button>
-        <button type="button" class="tt-btn" onclick="txtReverse()">反转字符</button>
-      </div>
-      
-      <div class="tt-group">
-        <span class="tt-group-title">空格与大小写</span>
-        <button type="button" class="tt-btn" onclick="txtCase('upper')">转大写</button>
-        <button type="button" class="tt-btn" onclick="txtCase('lower')">转小写</button>
-        <button type="button" class="tt-btn" onclick="txtTrim()">去首尾空格</button>
+        <button type="button" class="tt-btn" onclick="txtSort('len')">按长度</button>
+        <button type="button" class="tt-btn" onclick="txtShuffle()">打乱</button>
+        <button type="button" class="tt-btn" onclick="txtLineNumber()">加行号</button>
         <button type="button" class="tt-btn" onclick="txtRemoveEmpty()">去空行</button>
-        <button type="button" class="tt-btn" onclick="txtRemoveAllSpaces()">去所有空格</button>
+        <button type="button" class="tt-btn" onclick="txtMergeLines()">合并为一行</button>
+      </div>
+
+      <!-- 文本转换 -->
+      <div class="tt-group">
+        <span class="tt-group-title">文本转换</span>
+        <button type="button" class="tt-btn" onclick="txtCase('upper')">全大写</button>
+        <button type="button" class="tt-btn" onclick="txtCase('lower')">全小写</button>
+        <button type="button" class="tt-btn" onclick="txtCase('title')">首字母大写</button>
+        <button type="button" class="tt-btn" onclick="txtCase('toggle')">大小写反转</button>
+        <button type="button" class="tt-btn" onclick="txtReverse()">字符反转</button>
         <button type="button" class="tt-btn" onclick="txtFullHalf('half')">全转半</button>
         <button type="button" class="tt-btn" onclick="txtFullHalf('full')">半转全</button>
       </div>
 
+      <!-- 清理与过滤 -->
       <div class="tt-group">
-        <span class="tt-group-title">行操作与提取</span>
-        <button type="button" class="tt-btn" onclick="txtLineNumber()">加行号</button>
-        <button type="button" class="tt-btn" onclick="txtWrap()">包裹引号</button>
-        <button type="button" class="tt-btn" onclick="txtAddPrefix()">加前缀</button>
+        <span class="tt-group-title">清理与过滤</span>
+        <button type="button" class="tt-btn" onclick="txtTrim()">去首尾空格</button>
+        <button type="button" class="tt-btn" onclick="txtRemoveAllSpaces()">去所有空格</button>
+        <button type="button" class="tt-btn" onclick="txtMergeSpaces()">合并连续空格</button>
         <button type="button" class="tt-btn" onclick="txtRemoveHtml()">去HTML标签</button>
-        <button type="button" class="tt-btn" onclick="txtExtractEmails()">提取邮箱</button>
-        <button type="button" class="tt-btn" onclick="txtExtractUrls()">提取网址</button>
+        <button type="button" class="tt-btn" onclick="txtRemovePunctuation()">去标点符号</button>
+        <button type="button" class="tt-btn" onclick="txtFilterLines()">按关键词过滤</button>
       </div>
 
+      <!-- 提取与前后缀 -->
+      <div class="tt-group">
+        <span class="tt-group-title">提取与修饰</span>
+        <button type="button" class="tt-btn" onclick="txtExtractEmails()">提取邮箱</button>
+        <button type="button" class="tt-btn" onclick="txtExtractUrls()">提取网址</button>
+        <button type="button" class="tt-btn" onclick="txtExtractPhone()">提取手机号</button>
+        <button type="button" class="tt-btn" onclick="txtExtractIP()">提取IP</button>
+        <button type="button" class="tt-btn" onclick="txtWrap()">加双引号</button>
+        <button type="button" class="tt-btn" onclick="txtAddPrefixSuffix('prefix')">加前缀</button>
+        <button type="button" class="tt-btn" onclick="txtAddPrefixSuffix('suffix')">加后缀</button>
+      </div>
+
+      <!-- 编码与导出 -->
       <div class="tt-group">
         <span class="tt-group-title">编码与导出</span>
-        <button type="button" class="tt-btn" onclick="txtBase64('encode')">B64加密</button>
-        <button type="button" class="tt-btn" onclick="txtBase64('decode')">B64解密</button>
-        <button type="button" class="tt-btn primary" onclick="txtDownload()">⬇️ 保存为 TXT</button>
+        <button type="button" class="tt-btn" onclick="txtBase64('encode')">B64 编码</button>
+        <button type="button" class="tt-btn" onclick="txtBase64('decode')">B64 解码</button>
+        <button type="button" class="tt-btn" onclick="txtUrlEncode()">URL 编码</button>
+        <button type="button" class="tt-btn" onclick="txtUrlDecode()">URL 解码</button>
+        <button type="button" class="tt-btn" onclick="txtUnicode('encode')">Unicode 转义</button>
+        <button type="button" class="tt-btn" onclick="txtUnicode('decode')">Unicode 反转义</button>
+        
+        <div style="flex:1;"></div>
+        <button type="button" class="tt-btn" onclick="txtImport()">📂 导入文件</button>
+        <button type="button" class="tt-btn primary" onclick="txtDownload()">⬇️ 导出 TXT</button>
         <button type="button" class="tt-btn danger" onclick="txtClear()">🗑️ 清空</button>
       </div>
     </div>
 
     <!-- 编辑器区域 -->
     <div class="tt-editor-group">
-      <div class="tt-col">
+      <div class="tt-col" id="tt-in-box">
         <div class="tt-col-header">
-          <label>输入文本</label>
+          <label>📝 输入文本</label>
           <span id="stat-in" class="tt-stat">0 字 / 0 行</span>
         </div>
-        <textarea id="txt-in" spellcheck="false" placeholder="在此输入或粘贴文本..."></textarea>
+        <textarea id="txt-in" spellcheck="false" placeholder="在此输入或粘贴文本，或直接拖拽 TXT / MD 文件到这里..."></textarea>
+        <div class="tt-char-stats" id="char-stats-in">
+          <span>中文字符: <b>0</b></span>
+          <span>英文字母: <b>0</b></span>
+          <span>数字: <b>0</b></span>
+          <span>空格: <b>0</b></span>
+        </div>
       </div>
+      
       <div class="tt-col">
         <div class="tt-col-header">
-          <label>输出结果</label>
-          <span id="stat-out" class="tt-stat">0 字 / 0 行</span>
+          <label>✨ 输出结果</label>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <span id="stat-out" class="tt-stat">0 字 / 0 行</span>
+            <button class="tt-mini-btn" onclick="copyResult()">📋 复制</button>
+          </div>
         </div>
-        <textarea id="txt-out" spellcheck="false" readonly placeholder="处理结果..."></textarea>
+        <textarea id="txt-out" spellcheck="false" readonly placeholder="处理结果将显示在这里..."></textarea>
+        <div class="tt-char-stats" id="char-stats-out">
+          <span>中文字符: <b>0</b></span>
+          <span>英文字母: <b>0</b></span>
+          <span>数字: <b>0</b></span>
+          <span>空格: <b>0</b></span>
+        </div>
       </div>
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+<input type="file" id="file-input" accept=".txt,.md,.csv" hidden>
+
 <script src="../../js/text-toolbox.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

@@ -1,98 +1,110 @@
-.pdf-tool { max-width: 960px; margin: 0 auto; padding: 28px 16px 56px; }
-.pdf-header { text-align: center; margin-bottom: 28px; }
-.pdf-header h1 { font-size: 1.6rem; margin: 0 0 8px; color: #3d3226; }
-.pdf-header p { margin: 0; color: #6b5d47; font-size: 0.9rem; }
-.pdf-header a { color: #8a5a2b; text-decoration: none; font-size: .85rem; display: inline-block; margin-top: 8px; }
-.pdf-header a:hover { text-decoration: underline; }
+.pdf-tool { max-width: 1100px; margin: 0 auto; padding: 0 16px 48px; height: calc(100vh - 130px); min-height: 600px; }
+.pdf-layout { display: flex; gap: 20px; height: 100%; }
 
-.pdf-section { margin-bottom: 28px; }
-.pdf-section h2 {
-  font-size: .95rem; margin: 0 0 12px; color: #4b3f2f;
-  border-bottom: 1px solid #e5d9bd; padding-bottom: 6px;
-}
+/* 左侧控制栏 */
+.pdf-sidebar { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+.pdf-section { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 12px; padding: 16px; }
+.pdf-section h2 { font-size: .95rem; margin: 0 0 12px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 8px; }
 
 /* 上传区 */
 .pdf-drop-zone {
-  border: 2px dashed #c4b48f; border-radius: 12px; padding: 36px 16px;
+  border: 2px dashed #c4b48f; border-radius: 10px; padding: 24px 12px;
   text-align: center; cursor: pointer; background: #fdf8ec;
-  transition: all .2s; display: flex; flex-direction: column; gap: 6px;
+  transition: all .2s; display: flex; flex-direction: column; align-items: center; gap: 6px;
 }
 .pdf-drop-zone:hover, .pdf-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
-.pdf-hint { font-size: .75rem; color: #8a7a5f; }
+.pdf-icon { font-size: 2rem; }
+.pdf-drop-zone span { font-size: .9rem; color: #3d3226; font-weight: 600; }
+.pdf-hint { font-size: .75rem; color: #8a7a5f !important; font-weight: normal !important; }
 
+/* 文件列表 */
 .pdf-file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
 .pdf-file-item {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 14px; background: #f9f3e3; border: 1px solid #ddcfb3;
-  border-radius: 8px; font-size: .85rem; color: #3d3226;
+  padding: 8px 12px; background: #fff; border: 1px solid #ddcfb3;
+  border-radius: 8px; font-size: .85rem; color: #3d3226; gap: 8px;
 }
-.pdf-file-item .size { color: #8a7a5f; font-size: .75rem; }
-.pdf-remove-file {
-  background: none; border: none; color: #a8452a; cursor: pointer; font-size: 1rem;
-}
+.pdf-file-item .fname { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.pdf-file-item .fsize { color: #8a7a5f; font-size: .75rem; font-family: monospace; }
+.pdf-file-item .fops { display: flex; gap: 4px; flex-shrink: 0; }
+.pdf-file-item button { background: none; border: none; cursor: pointer; padding: 2px; font-size: 0.9rem; opacity: 0.6; transition: opacity 0.15s; }
+.pdf-file-item button:hover { opacity: 1; }
+.pdf-file-item .up:hover { color: #8a5a2b; }
+.pdf-file-item .down:hover { color: #8a5a2b; }
+.pdf-file-item .del:hover { color: #a8452a; }
 
 /* 操作按钮 */
-.pdf-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.pdf-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .pdf-action-btn {
-  padding: 8px 12px; border-radius: 8px; border: 1px solid #d5c7a8;
-  background: #fdf8ec; color: #3d3226; font-size: .85rem; cursor: pointer;
-  transition: all .15s; white-space: nowrap;
+  padding: 8px 4px; border-radius: 8px; border: 1px solid #d5c7a8;
+  background: #fff; color: #3d3226; font-size: .85rem; font-weight: 600;
+  cursor: pointer; transition: all .15s; outline: none; text-align: center;
 }
 .pdf-action-btn:hover { background: #f5ecd5; border-color: #b08a5a; }
-.pdf-action-btn.active {
-  background: #8a5a2b; border-color: #8a5a2b; color: #fdf8ec;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,.15);
-}
+.pdf-action-btn.active { background: #8a5a2b; border-color: #8a5a2b; color: #fff; box-shadow: inset 0 2px 4px rgba(0,0,0,.15); }
 
 /* 参数面板 */
-.pdf-params { margin-top: 16px; display: none; background: #f9f3e3; padding: 16px; border-radius: 10px; border: 1px solid #ddcfb3; }
-.pdf-params.active { display: block; }
-.pdf-param-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.pdf-params { display: none; margin-top: 16px; background: #fff; padding: 16px; border-radius: 10px; border: 1px dashed #d5c7a8; }
+.pdf-params.active { display: block; animation: fadeIn .2s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+.pdf-param-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; font-size: .85rem; }
 .pdf-param-row:last-child { margin-bottom: 0; }
-.pdf-param-row label { font-size: .85rem; color: #6b5d47; min-width: 80px; }
+.pdf-param-row label { color: #6b5d47; min-width: 70px; font-weight: 600; }
 .pdf-param-row input[type="text"], .pdf-param-row input[type="number"] {
-  padding: 8px 12px; border: 1px solid #d5c7a8; border-radius: 8px;
-  background: #fff; color: #3d3226; font-size: .9rem; width: 160px;
+  flex: 1; padding: 6px 10px; border: 1px solid #d5c7a8; border-radius: 6px;
+  background: #fdf8ec; color: #3d3226; outline: none; min-width: 0;
 }
 .pdf-param-row select {
-  padding: 8px 12px; border: 1px solid #d5c7a8; border-radius: 8px;
-  background: #fff; color: #3d3226; font-size: .9rem;
+  flex: 1; padding: 6px 10px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fdf8ec; outline: none; cursor: pointer;
 }
-.pdf-param-row input[type="range"] { width: 160px; accent-color: #8a5a2b; }
+.pdf-param-row input[type="range"] { flex: 1; accent-color: #8a5a2b; }
 .pdf-param-row input[type="color"] {
-  width: 36px; height: 36px; padding: 0; border: 2px solid #d5c7a8;
-  border-radius: 50%; cursor: pointer; background: #fff;
+  width: 32px; height: 32px; padding: 2px; border: 1px solid #d5c7a8;
+  border-radius: 6px; cursor: pointer; background: #fff;
 }
+.pdf-param-row span { font-family: monospace; color: #8a5a2b; width: 36px; text-align: right; }
 
-/* 预览/信息区 (缩小高度，居中显示) */
-.pdf-preview {
-  background: #e5d9bd; border-radius: 12px; border: 1px solid #ddcfb3;
-  min-height: 80px; /* 修改为更紧凑的高度 */
-  padding: 16px; overflow: hidden;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-}
-.pdf-placeholder { color: #8a7a5f; font-size: .9rem; margin: 0; text-align: center; }
-
-/* 图片转 PDF 模式下的图片预览限制 */
-.pdf-preview img {
-  max-width: 100%; max-height: 300px; object-fit: contain;
-  box-shadow: 0 4px 16px rgba(0,0,0,.1); border-radius: 6px;
-}
-
-/* 执行按钮 */
+/* 执行按钮与状态 */
 .pdf-execute-btn {
-  width: 100%; margin-top: 20px; padding: 14px; border: none; border-radius: 10px;
-  background: #7ba05b; color: #fff; font-size: 1.05rem; font-weight: 600;
-  cursor: pointer; transition: background .15s;
+  width: 100%; margin-top: 16px; padding: 12px; border: none; border-radius: 8px;
+  background: #7ba05b; color: #fff; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: background .15s; outline: none;
 }
 .pdf-execute-btn:hover:not(:disabled) { background: #6b8c4e; }
 .pdf-execute-btn:disabled { background: #c4b48f; cursor: not-allowed; }
 
-.pdf-status {
-  margin-top: 12px; text-align: center; font-size: .85rem; color: #6b5d47; min-height: 1.4em;
-}
+.pdf-status { margin-top: 10px; text-align: center; font-size: .85rem; color: #7ba05b; font-weight: bold; min-height: 1.2em; }
 .pdf-status.warn { color: #a8452a; }
 
-@media (max-width: 768px) {
-  .pdf-action-btn { flex: 1 1 calc(50% - 8px); text-align: center; }
+/* 右侧预览区 */
+.pdf-main { flex: 1; background: #fff; border: 1px solid #ddcfb3; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+.pdf-preview-card { flex: 1; display: flex; flex-direction: column; background: #fdf8ec; padding: 20px; overflow-y: auto; }
+.pdf-preview { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+.pdf-placeholder { color: #8a7a5f; font-size: .95rem; text-align: center; }
+
+/* 预览缩略图与信息 */
+.pdf-preview img.pdf-thumbnail {
+  max-width: 100%; max-height: 400px; object-fit: contain;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12); border-radius: 4px; border: 1px solid #ddd;
+}
+.pdf-preview img.img-thumbnail {
+  max-width: 100%; max-height: 400px; object-fit: contain;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12); border-radius: 4px;
+}
+
+/* Toast */
+.toast {
+  position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px);
+  background: rgba(61, 50, 38, 0.92); color: #fff; padding: 8px 16px; border-radius: 6px;
+  font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+  z-index: 9999; max-width: 80vw; text-align: center; word-break: break-all;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 800px) {
+  .pdf-tool { height: auto; }
+  .pdf-layout { flex-direction: column; }
+  .pdf-sidebar { width: 100%; overflow-y: visible; }
+  .pdf-main { height: 400px; }
 }

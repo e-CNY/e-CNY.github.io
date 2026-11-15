@@ -1,16 +1,5 @@
 (function () {
-  // ================= Tab 切换 =================
-  var navBtns = document.querySelectorAll('.jt-nav-btn');
-  var panels = document.querySelectorAll('.jt-panel');
-
-  navBtns.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      navBtns.forEach(function (b) { b.classList.remove('active'); });
-      panels.forEach(function (p) { p.classList.remove('active'); });
-      btn.classList.add('active');
-      document.getElementById(btn.dataset.target).classList.add('active');
-    });
-  });
+  'use strict';
 
   // ================= 0. 全局工具函数 =================
   function getEl(id) { return document.getElementById(id); }
@@ -19,7 +8,69 @@
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  // ================= 1. JSON 格式化与校验 =================
+  var toastEl = getEl('toast');
+  var toastTimer = null;
+  window.showToast = function (msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1600);
+  };
+
+  window.copyText = function (id) {
+    var el = getEl(id);
+    if (!el || !el.value) return showToast('没有可复制的内容');
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(el.value).then(function () {
+        showToast('✅ 已复制到剪贴板');
+      }).catch(function () {
+        fallbackCopy(el);
+      });
+    } else {
+      fallbackCopy(el);
+    }
+    
+    function fallbackCopy(el) {
+      el.select();
+      document.execCommand('copy');
+      showToast('✅ 已复制到剪贴板');
+    }
+  };
+
+  window.clearInput = function (id) {
+    var el = getEl(id);
+    if (el) el.value = '';
+    showToast('已清空');
+  };
+
+  window.downloadText = function (id, filename) {
+    var el = getEl(id);
+    if (!el || !el.value) return showToast('没有可下载的内容');
+    var blob = new Blob([el.value], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename || 'output.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+    showToast('已下载文件');
+  };
+
+  // ================= 1. Tab 切换 =================
+  var navBtns = document.querySelectorAll('.jt-nav-btn');
+  var panels = document.querySelectorAll('.jt-panel');
+
+  navBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      navBtns.forEach(function (b) { b.classList.remove('active'); });
+      panels.forEach(function (p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      getEl(btn.dataset.target).classList.add('active');
+    });
+  });
+
+  // ================= 2. JSON 格式化与校验 =================
   window.jsonFormat = function (space) {
     var input = getEl('json-input').value.trim();
     var errorMsg = getEl('json-error-msg');
@@ -46,6 +97,34 @@
     }
   };
 
+  // 新增：按键名排序
+  window.jsonSortKeys = function () {
+    var input = getEl('json-input').value.trim();
+    var errorMsg = getEl('json-error-msg');
+    errorMsg.textContent = '';
+    if (!input) return;
+    
+    function sortObject(obj) {
+      if (obj === null || typeof obj !== 'object') return obj;
+      if (Array.isArray(obj)) return obj.map(sortObject);
+      
+      var sortedObj = {};
+      Object.keys(obj).sort().forEach(function (key) {
+        sortedObj[key] = sortObject(obj[key]);
+      });
+      return sortedObj;
+    }
+
+    try {
+      var parsed = JSON.parse(input);
+      var sorted = sortObject(parsed);
+      getEl('json-output').value = JSON.stringify(sorted, null, 2);
+      showToast('键名已按字母排序');
+    } catch (e) {
+      errorMsg.textContent = '❌ 错误: ' + e.message;
+    }
+  };
+
   window.jsonEscape = function () {
     var input = getEl('json-input').value;
     getEl('json-output').value = JSON.stringify(input);
@@ -62,13 +141,14 @@
     }
   };
 
-  // ================= 2. YAML <-> JSON =================
+  // ================= 3. YAML <-> JSON =================
   window.yamlToJson = function () {
     var input = getEl('yaml-input').value.trim();
     if (!input) return;
     try {
       var obj = jsyaml.load(input);
       getEl('yaml-output').value = JSON.stringify(obj, null, 2);
+      showToast('YAML 转 JSON 成功');
     } catch (e) {
       getEl('yaml-output').value = '❌ YAML 解析错误: ' + e.message;
     }
@@ -80,12 +160,13 @@
     try {
       var obj = JSON.parse(input);
       getEl('yaml-output').value = jsyaml.dump(obj);
+      showToast('JSON 转 YAML 成功');
     } catch (e) {
       getEl('yaml-output').value = '❌ JSON 解析错误: ' + e.message;
     }
   };
 
-  // ================= 3. XML <-> JSON =================
+  // ================= 4. XML <-> JSON =================
   window.xmlToJson = function () {
     var input = getEl('xml-input').value.trim();
     if (!input) return;
@@ -94,6 +175,7 @@
       var xmlDoc = parser.parseFromString(input, 'text/xml');
       var obj = xmlToJsonNode(xmlDoc.documentElement);
       getEl('xml-output').value = JSON.stringify(obj, null, 2);
+      showToast('XML 转 JSON 成功');
     } catch (e) {
       getEl('xml-output').value = '❌ XML 解析错误: ' + e.message;
     }
@@ -134,6 +216,7 @@
       var obj = JSON.parse(input);
       var xmlStr = '<?xml version="1.0" encoding="UTF-8"?>\n' + jsonToXmlNode('root', obj);
       getEl('xml-output').value = xmlStr;
+      showToast('JSON 转 XML 成功');
     } catch (e) {
       getEl('xml-output').value = '❌ JSON 解析错误: ' + e.message;
     }
@@ -161,7 +244,7 @@
     return xml;
   }
 
-  // ================= 4. TOML <-> JSON (内置纯原生) =================
+  // ================= 5. TOML <-> JSON =================
   function nativeTomlParse(str) {
     var result = {};
     var current = result;
@@ -288,6 +371,7 @@
     try {
       var obj = nativeTomlParse(input);
       getEl('toml-output').value = JSON.stringify(obj, null, 2);
+      showToast('TOML 转 JSON 成功');
     } catch (e) {
       getEl('toml-output').value = '❌ TOML 解析错误: ' + e.message;
     }
@@ -308,6 +392,7 @@
       } else {
         getEl('toml-output').value = outStr;
       }
+      showToast('JSON 转 TOML 成功');
     } catch (e) {
       var err = '❌ JSON 解析错误: ' + e.message;
       if (isJsonPanel) {
@@ -318,7 +403,155 @@
     }
   };
 
-  // ================= 5. BSON / Base64 =================
+  // ================= 6. JSON <-> CSV (新增) =================
+  window.jsonToCsv = function () {
+    var input = getEl('csv-input').value.trim();
+    if (!input) return;
+    try {
+      var data = JSON.parse(input);
+      if (!Array.isArray(data)) {
+        throw new Error('JSON 根节点必须是数组 (Array) 才能转为 CSV');
+      }
+      if (data.length === 0) return showToast('数组为空');
+      
+      // 提取所有键去重
+      var headers = new Set();
+      data.forEach(function (obj) {
+        if (typeof obj === 'object' && obj !== null) {
+          Object.keys(obj).forEach(function (k) { headers.add(k); });
+        }
+      });
+      var headerArr = Array.from(headers);
+      
+      // 辅助函数：转义 CSV 值
+      function escapeCsv(val) {
+        if (val === null || val === undefined) return '';
+        var str = typeof val === 'object' ? JSON.stringify(val) : String(val);
+        if (str.includes('"') || str.includes(',') || str.includes('\n')) {
+          return '"' + str.replace(/"/g, '""') + '"';
+        }
+        return str;
+      }
+
+      var csvLines = [];
+      csvLines.push(headerArr.map(escapeCsv).join(','));
+      
+      data.forEach(function (obj) {
+        var row = headerArr.map(function (key) {
+          return escapeCsv(obj[key]);
+        });
+        csvLines.push(row.join(','));
+      });
+
+      getEl('csv-output').value = csvLines.join('\n');
+      showToast('JSON 转 CSV 成功');
+    } catch (e) {
+      getEl('csv-output').value = '❌ 转换失败: ' + e.message;
+    }
+  };
+
+  window.csvToJson = function () {
+    var input = getEl('csv-input').value.trim();
+    if (!input) return;
+    try {
+      // 简单的 CSV 解析（支持引号转义）
+      var lines = input.split(/\r?\n/).filter(function(line) { return line.trim() !== ''; });
+      if (lines.length < 2) throw new Error('CSV 至少需要包含表头和一行数据');
+      
+      function parseCsvLine(line) {
+        var result = [];
+        var current = '';
+        var inQuotes = false;
+        for (var i = 0; i < line.length; i++) {
+          var char = line[i];
+          if (char === '"') {
+            if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
+            else { inQuotes = !inQuotes; }
+          } else if (char === ',' && !inQuotes) {
+            result.push(current);
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+        result.push(current);
+        return result;
+      }
+
+      var headers = parseCsvLine(lines[0]);
+      var result = [];
+      
+      for (var i = 1; i < lines.length; i++) {
+        var vals = parseCsvLine(lines[i]);
+        var obj = {};
+        for (var j = 0; j < headers.length; j++) {
+          var val = vals[j] || '';
+          // 尝试智能转换数字
+          if (val !== '' && !isNaN(val) && val.indexOf(',') === -1) {
+            obj[headers[j]] = Number(val);
+          } else if (val.toLowerCase() === 'true') {
+            obj[headers[j]] = true;
+          } else if (val.toLowerCase() === 'false') {
+            obj[headers[j]] = false;
+          } else {
+            obj[headers[j]] = val;
+          }
+        }
+        result.push(obj);
+      }
+
+      getEl('csv-output').value = JSON.stringify(result, null, 2);
+      showToast('CSV 转 JSON 成功');
+    } catch (e) {
+      getEl('csv-output').value = '❌ 转换失败: ' + e.message;
+    }
+  };
+
+  // ================= 7. JSON 转 SQL (新增) =================
+  window.jsonToSql = function () {
+    var input = getEl('sql-input').value.trim();
+    var tableName = getEl('sql-table-name').value.trim() || 'my_table';
+    var dialect = getEl('sql-dialect').value;
+    
+    if (!input) return;
+    try {
+      var data = JSON.parse(input);
+      if (!Array.isArray(data)) throw new Error('需要数组格式的 JSON 才能生成 SQL');
+      if (data.length === 0) return showToast('数组为空');
+
+      var headers = Object.keys(data[0]);
+      
+      // 辅助函数：转义 SQL 值
+      function escapeSql(val) {
+        if (val === null || val === undefined) return 'NULL';
+        if (typeof val === 'number' || typeof val === 'boolean') return val;
+        var str = String(val);
+        // 转义单引号
+        return "'" + str.replace(/'/g, "''") + "'";
+      }
+
+      // 生成 INSERT 语句
+      var columns = headers.map(function(h) {
+        return dialect === 'mysql' ? '`' + h + '`' : '"' + h + '"';
+      }).join(', ');
+
+      var sql = 'INSERT INTO ' + tableName + ' (' + columns + ') VALUES\n';
+      
+      var rows = data.map(function (obj) {
+        var vals = headers.map(function (h) { return escapeSql(obj[h]); });
+        return '(' + vals.join(', ') + ')';
+      });
+
+      sql += rows.join(',\n') + ';\n';
+      
+      getEl('sql-output').value = sql;
+      showToast('SQL INSERT 生成成功');
+    } catch (e) {
+      getEl('sql-output').value = '❌ 生成失败: ' + e.message;
+    }
+  };
+
+  // ================= 8. BSON / Base64 =================
   window.jsonToBase64 = function () {
     var input = getEl('bson-input').value.trim();
     if (!input) return;
@@ -327,6 +560,7 @@
       var str = JSON.stringify(obj);
       var b64 = btoa(unescape(encodeURIComponent(str)));
       getEl('bson-output').value = b64;
+      showToast('转 Base64 成功');
     } catch (e) {
       getEl('bson-output').value = '❌ JSON 解析错误: ' + e.message;
     }
@@ -339,12 +573,13 @@
       var str = decodeURIComponent(escape(atob(input)));
       var obj = JSON.parse(str);
       getEl('bson-output').value = JSON.stringify(obj, null, 2);
+      showToast('转 JSON 成功');
     } catch (e) {
       getEl('bson-output').value = '❌ Base64 解析错误: ' + e.message;
     }
   };
 
-  // ================= 6. JSONPath =================
+  // ================= 9. JSONPath =================
   window.runJsonPath = function () {
     var jsonStr = getEl('jsonpath-input').value.trim();
     var path = getEl('jsonpath-query').value.trim();
@@ -353,12 +588,13 @@
       var obj = JSON.parse(jsonStr);
       var result = jsonpath.query(obj, path);
       getEl('jsonpath-output').value = JSON.stringify(result, null, 2);
+      showToast('查询成功');
     } catch (e) {
       getEl('jsonpath-output').value = '❌ 执行错误: ' + e.message;
     }
   };
 
-  // ================= 7. JMESPath =================
+  // ================= 10. JMESPath =================
   window.runJmesPath = function () {
     var jsonStr = getEl('jmespath-input').value.trim();
     var path = getEl('jmespath-query').value.trim();
@@ -367,12 +603,13 @@
       var obj = JSON.parse(jsonStr);
       var result = jmespath.search(obj, path);
       getEl('jmespath-output').value = JSON.stringify(result, null, 2);
+      showToast('查询成功');
     } catch (e) {
       getEl('jmespath-output').value = '❌ 执行错误: ' + e.message;
     }
   };
 
-  // ================= 8. JSON Pointer =================
+  // ================= 11. JSON Pointer =================
   window.runJsonPointer = function () {
     var jsonStr = getEl('pointer-input').value.trim();
     var pointer = getEl('pointer-query').value.trim();
@@ -391,12 +628,13 @@
         if (current === undefined) throw new Error('路径不存在: ' + part);
       }
       getEl('pointer-output').value = JSON.stringify(current, null, 2);
+      showToast('定位成功');
     } catch (e) {
       getEl('pointer-output').value = '❌ 定位失败: ' + e.message;
     }
   };
 
-  // ================= 9. JSON Schema =================
+  // ================= 12. JSON Schema =================
   window.validateSchema = function () {
     var jsonStr = getEl('schema-json').value.trim();
     var schemaStr = getEl('schema-input').value.trim();
@@ -413,18 +651,20 @@
       
       if (valid) {
         outEl.innerHTML = '<span style="color:#7ba05b; font-weight:bold;">✅ 校验通过：数据符合 Schema 规范。</span>';
+        showToast('校验通过');
       } else {
         outEl.innerHTML = '<span style="color:#a8452a; font-weight:bold;">❌ 校验失败：</span><br>' + 
           validate.errors.map(function(err) { 
             return '- 路径 <b>' + err.instancePath + '</b>: ' + err.message; 
           }).join('<br>');
+        showToast('校验失败');
       }
     } catch (e) {
       outEl.innerHTML = '<span style="color:#a8452a;">❌ 处理失败: ' + e.message + '</span>';
     }
   };
 
-  // ================= 10. JSON 结构 Diff =================
+  // ================= 13. JSON 结构 Diff =================
   window.runJsonDiff = function () {
     var aStr = getEl('diff-input-a').value.trim();
     var bStr = getEl('diff-input-b').value.trim();
@@ -434,10 +674,12 @@
       var objA = JSON.parse(aStr);
       var objB = JSON.parse(bStr);
       outEl.innerHTML = '';
+      var diffCount = 0;
       
       function renderDiff(a, b, path) {
         if (a === b) return '';
         if (typeof a !== typeof b || a === null || b === null || typeof a !== 'object') {
+          diffCount++;
           if (a === undefined) return '<div>➕ <b>' + path + '</b>: <span class="diff-add">' + JSON.stringify(b) + '</span></div>';
           if (b === undefined) return '<div>➖ <b>' + path + '</b>: <span class="diff-remove">' + JSON.stringify(a) + '</span></div>';
           return '<div>🔄 <b>' + path + '</b>: <span class="diff-remove">' + JSON.stringify(a) + '</span> → <span class="diff-add">' + JSON.stringify(b) + '</span></div>';
@@ -457,13 +699,19 @@
       }
 
       var diffHtml = renderDiff(objA, objB, '');
-      outEl.innerHTML = diffHtml || '<span style="color:#7ba05b;">✅ 两个 JSON 完全一致。</span>';
+      if (diffHtml) {
+        outEl.innerHTML = '<div style="margin-bottom:10px; color:#6b5d47; font-weight:bold;">共发现 ' + diffCount + ' 处差异：</div>' + diffHtml;
+        showToast('对比完成，发现差异');
+      } else {
+        outEl.innerHTML = '<span style="color:#7ba05b;">✅ 两个 JSON 完全一致。</span>';
+        showToast('完全一致');
+      }
     } catch (e) {
       outEl.innerHTML = '<span style="color:#a8452a;">❌ 解析错误: ' + e.message + '</span>';
     }
   };
 
-  // ================= 11. 文本 Diff (支持行号) =================
+  // ================= 14. 文本 Diff (支持行号) =================
   function initLineNumbers(textareaId, linesId) {
     var ta = document.getElementById(textareaId);
     var linesEl = document.getElementById(linesId);
@@ -513,6 +761,7 @@
     var html = '';
     var oldLineNum = 1;
     var newLineNum = 1;
+    var addCount = 0, delCount = 0;
 
     diffLines.forEach(function (part) {
       var lines = part.value.split('\n');
@@ -527,8 +776,10 @@
         
         if (part.added) {
             newNumStr = newLineNum++;
+            addCount++;
         } else if (part.removed) {
             oldNumStr = oldLineNum++;
+            delCount++;
         } else {
             oldNumStr = oldLineNum++;
             newNumStr = newLineNum++;
@@ -543,7 +794,18 @@
       });
     });
 
-    outEl.innerHTML = html || '<p style="color:#7ba05b; padding: 12px; margin: 0;">✅ 两边文本完全一致。</p>';
+    var stats = '<div style="padding: 10px 16px; background: #f9f3e3; border-bottom: 1px solid #d5c7a8; font-size: 0.85rem; font-weight: bold; color: #6b5d47;">';
+    stats += '新增: <span style="color:#166534;">+' + addCount + '</span> | ';
+    stats += '删除: <span style="color:#991b1b;">-' + delCount + '</span>';
+    stats += '</div>';
+
+    if (addCount > 0 || delCount > 0) {
+      outEl.innerHTML = stats + (html || '<p style="padding: 12px; margin: 0;">无差异</p>');
+      showToast('对比完成');
+    } else {
+      outEl.innerHTML = '<p style="color:#7ba05b; padding: 12px; margin: 0;">✅ 两边文本完全一致。</p>';
+      showToast('完全一致');
+    }
   };
 
   window.clearTextDiff = function () {
@@ -554,7 +816,7 @@
     getEl('lines-new').innerHTML = '1';
   };
 
-  // ================= 12. JSON 树形视图 =================
+  // ================= 15. JSON 树形视图 =================
   window.renderTree = function () {
     var input = getEl('tree-input').value.trim();
     var outEl = getEl('tree-output');
@@ -562,8 +824,16 @@
     try {
       var obj = JSON.parse(input);
       outEl.innerHTML = buildTree(obj, null);
+      showToast('生成成功');
     } catch (e) {
       outEl.innerHTML = '<span style="color:#a8452a;">❌ JSON 解析错误: ' + e.message + '</span>';
+    }
+  };
+
+  window.expandTree = function (expand) {
+    var details = getEl('tree-output').querySelectorAll('details');
+    for (var i = 0; i < details.length; i++) {
+      details[i].open = expand;
     }
   };
 
@@ -576,17 +846,17 @@
       return '<div>' + keyStr + '<span class="' + cls + '">' + val + '</span></div>';
     }
     if (Array.isArray(data)) {
-      var html = '<details><summary>' + keyStr + 'Array(' + data.length + ')</summary><ul>';
+      var html = '<details open><summary>' + keyStr + 'Array(' + data.length + ')</summary><ul>';
       data.forEach(function (item, i) { html += '<li>' + buildTree(item, i) + '</li>'; });
       return html + '</ul></details>';
     }
     var keys = Object.keys(data);
-    var html = '<details><summary>' + keyStr + 'Object</summary><ul>';
+    var html = '<details open><summary>' + keyStr + 'Object</summary><ul>';
     keys.forEach(function (k) { html += '<li>' + buildTree(data[k], k) + '</li>'; });
     return html + '</ul></details>';
   }
 
-  // ================= 13. JSON 生成表单 =================
+  // ================= 16. JSON 表单 =================
   window.generateForm = function () {
     var input = getEl('form-json').value.trim();
     var outEl = getEl('form-container');
@@ -595,6 +865,7 @@
       var obj = JSON.parse(input);
       outEl.innerHTML = '';
       generateFormFields(obj, '', outEl);
+      showToast('表单生成成功');
     } catch (e) {
       outEl.innerHTML = '<span style="color:#a8452a;">❌ JSON 解析错误: ' + e.message + '</span>';
     }
@@ -662,9 +933,10 @@
     });
 
     outEl.value = JSON.stringify(result, null, 2);
+    showToast('已转为 JSON');
   };
 
-  // ================= 14. JSON 转 TS 接口 =================
+  // ================= 17. JSON 转 TS 接口 =================
   window.generateTS = function () {
     var jsonInputEl = getEl('ts-json-input');
     var tsOutputEl = getEl('ts-code-output');
@@ -687,6 +959,9 @@
       var useType = styleSelectEl.value === 'type';
       var useSemicolon = optSemicolonEl.checked;
       var useOptional = optOptionalEl.checked;
+
+      // TS 保留字列表
+      var RESERVED_WORDS = ['break', 'case', 'catch', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do', 'else', 'enum', 'export', 'extends', 'false', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof', 'new', 'null', 'return', 'super', 'switch', 'this', 'throw', 'true', 'try', 'typeof', 'var', 'void', 'while', 'with', 'as', 'implements', 'interface', 'let', 'package', 'private', 'protected', 'public', 'static', 'yield', 'any', 'boolean', 'constructor', 'declare', 'get', 'module', 'require', 'number', 'set', 'string', 'symbol', 'type', 'from', 'of'];
 
       function capitalizeFirstLetter(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -726,14 +1001,16 @@
         if (existing) return interfaceName;
 
         var lines = [];
-        lines.push((useType ? 'type ' : 'interface ') + interfaceName + ' {');
+        lines.push((useType ? 'export type ' : 'export interface ') + interfaceName + ' {');
         var keys = Object.keys(obj);
         
         keys.forEach(function(key) {
           var val = obj[key];
           var propName = key;
-          if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(propName)) {
-            propName = '"' + propName + '"';
+          
+          // 处理非法属性名和保留字
+          if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(propName) || RESERVED_WORDS.indexOf(propName) !== -1) {
+            propName = "'" + propName + "'";
           }
           
           var isOptional = useOptional && (val === undefined || val === null);
@@ -754,12 +1031,12 @@
       var rootType = parseValue(parsed, rootName);
 
       if (rootType === cleanName(rootName)) {
-        // 普通对象
+        // 正常对象处理完毕
       } else if (rootType !== cleanName(rootName) && rootType !== cleanName(rootName) + '[]' && !rootType.startsWith('(')) {
-        // 略
+        // 基础类型，直接返回
       } else {
          // 根节点是基础类型或数组
-         tsOutputEl.value = 'type ' + cleanName(rootName) + ' = ' + rootType + (useSemicolon ? ';' : '');
+         tsOutputEl.value = 'export type ' + cleanName(rootName) + ' = ' + rootType + (useSemicolon ? ';' : '');
          return;
       }
 
@@ -769,18 +1046,10 @@
       }
       
       tsOutputEl.value = result.join('\n\n');
-
+      showToast('TypeScript 接口生成成功');
     } catch (e) {
       tsOutputEl.value = '// 解析失败，请检查 JSON 格式是否正确。\n// ' + e.message;
     }
-  };
-
-  window.copyTSCode = function () {
-    var tsOutputEl = getEl('ts-code-output');
-    if (!tsOutputEl.value) return;
-    navigator.clipboard.writeText(tsOutputEl.value).then(function() {
-      alert('✅ TS 代码已复制到剪贴板');
-    });
   };
 
   window.fillTSSample = function () {
@@ -789,6 +1058,7 @@
       "name": "John Doe",
       "isActive": true,
       "roles": ["admin", "editor"],
+      "class": "VIP", // 测试保留字
       "profile": {
         "age": 30,
         "address": {

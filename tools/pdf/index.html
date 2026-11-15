@@ -5,56 +5,74 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PDF 工具 · 工具站</title>
+<title>PDF 全能工具 · 工具站</title>
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="../../css/pdf.css">
 </head>
 <body>
 <header class="tool-page-header">
   <h1>📄 PDF 全能工具</h1>
-  <p>合并、拆分、旋转、加水印、图片与 PDF 互转，全程本地处理。</p>
+  <p>合并、拆分、旋转、加水印、图片与 PDF 互转，100% 本地处理保护隐私。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="pdf-tool" style="padding-top: 0;">
-  <section class="pdf-section">
-    <h2>1. 选择文件</h2>
-    <div id="pdf-drop-zone" class="pdf-drop-zone">
-      <span id="pdf-drop-text">📁 点击选择或拖拽 PDF 文件到这里</span>
-      <span id="pdf-drop-hint" class="pdf-hint">支持多选，单个文件最大 50MB</span>
-      <input id="pdf-input" type="file" accept=".pdf,application/pdf" multiple hidden>
-    </div>
-    <div id="pdf-file-list" class="pdf-file-list"></div>
-  </section>
+<main class="pdf-tool">
+  <div class="pdf-layout">
+    
+    <!-- 左侧控制台 -->
+    <aside class="pdf-sidebar">
+      
+      <!-- 1. 文件上传 -->
+      <div class="pdf-section">
+        <h2>1. 添加文件</h2>
+        <div id="pdf-drop-zone" class="pdf-drop-zone">
+          <div class="pdf-icon">📁</div>
+          <span id="pdf-drop-text">点击 / 拖拽 PDF 文件</span>
+          <span id="pdf-drop-hint" class="pdf-hint">支持多选，单个最大 50MB</span>
+          <input id="pdf-input" type="file" accept=".pdf,application/pdf" multiple hidden>
+        </div>
+        <div id="pdf-file-list" class="pdf-file-list"></div>
+      </div>
 
-  <section class="pdf-section">
-    <h2>2. 选择操作</h2>
-    <div class="pdf-actions">
-      <button class="pdf-action-btn" data-action="merge">🔗 合并</button>
-      <button class="pdf-action-btn" data-action="split">✂️ 拆分</button>
-      <button class="pdf-action-btn" data-action="rotate">🔄 旋转</button>
-      <button class="pdf-action-btn" data-action="page-number">🔢 加页码</button>
-      <button class="pdf-action-btn" data-action="delete">🗑️ 删页面</button>
-      <button class="pdf-action-btn" data-action="watermark">💧 加水印</button>
-      <button class="pdf-action-btn" data-action="pdf-to-img">🖼️ PDF转图</button>
-      <button class="pdf-action-btn" data-action="img-to-pdf">📄 图转PDF</button>
-    </div>
-    <div id="pdf-params" class="pdf-params"></div>
-  </section>
+      <!-- 2. 功能操作 -->
+      <div class="pdf-section">
+        <h2>2. 选择操作</h2>
+        <div class="pdf-actions">
+          <button class="pdf-action-btn active" data-action="merge">🔗 合并 PDF</button>
+          <button class="pdf-action-btn" data-action="split">✂️ 拆分提取</button>
+          <button class="pdf-action-btn" data-action="rotate">🔄 旋转页面</button>
+          <button class="pdf-action-btn" data-action="delete">🗑️ 删除页面</button>
+          <button class="pdf-action-btn" data-action="page-number">🔢 添加页码</button>
+          <button class="pdf-action-btn" data-action="watermark">💧 添加水印</button>
+          <button class="pdf-action-btn" data-action="pdf-to-img">🖼️ PDF 转图片</button>
+          <button class="pdf-action-btn" data-action="img-to-pdf">📄 图片转 PDF</button>
+        </div>
+        
+        <!-- 动态参数面板 -->
+        <div id="pdf-params" class="pdf-params"></div>
+        
+        <button id="pdf-execute" class="pdf-execute-btn" disabled>▶️ 开始处理并下载</button>
+        <p id="pdf-status" class="pdf-status"></p>
+      </div>
+    </aside>
 
-  <section class="pdf-section">
-    <h2>3. 预览与执行</h2>
-    <div id="pdf-preview" class="pdf-preview">
-      <p class="pdf-placeholder">上传文件并选择操作后，这里会显示预览</p>
+    <!-- 右侧预览区 -->
+    <div class="pdf-main">
+      <div class="pdf-preview-card">
+        <div id="pdf-preview" class="pdf-preview">
+          <p class="pdf-placeholder">上传文件并选择操作后，这里会显示预览信息</p>
+        </div>
+      </div>
     </div>
-    <button id="pdf-execute" class="pdf-execute-btn" disabled>▶️ 执行并下载</button>
-    <p id="pdf-status" class="pdf-status"></p>
-  </section>
+    
+  </div>
 </main>
 
+<div id="toast" class="toast"></div>
+
+<!-- 外部依赖库 -->
 <script src="../../js/libs/pdf-lib.min.js"></script>
 <script src="../../js/libs/pdf.min.js"></script>
-<script src="../../js/libs/pdf.worker.min.js"></script>
 <script src="../../js/libs/jszip.min.js"></script>
 <script src="../../js/pdf.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
