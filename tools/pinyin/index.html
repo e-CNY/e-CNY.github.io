@@ -15,40 +15,74 @@
   <p>汉字转拼音、首字母提取，内置高频易错词词典，多音字智能识别</p>
   <a href="../../index.html">← 返回首页</a>
 </div>
+
 <main class="pinyin-wrap">
+  
+  <!-- 顶部工具栏 -->
   <div class="control-bar">
-    <div class="option-group">
-      <label>声调模式：</label>
-      <select id="tone-type">
-        <option value="symbol">带声调 (wǒ)</option>
-        <option value="num">数字声调 (wo3)</option>
-        <option value="none">无声调 (wo)</option>
-        <option value="first">首字母 (w)</option>
-      </select>
+    <div class="left-tools">
+      <div class="option-group">
+        <label>声调模式</label>
+        <select id="tone-type">
+          <option value="symbol">带声调 (wǒ)</option>
+          <option value="num">数字声调 (wo3)</option>
+          <option value="none">无声调 (wo)</option>
+          <option value="first">仅首字母 (w)</option>
+        </select>
+      </div>
+      
+      <label class="switch-label">
+        <input type="checkbox" id="realtime" checked> 实时转换
+      </label>
+      
+      <button id="btn-convert" class="primary-btn">⚡ 立即转换</button>
+      <button id="btn-clear" class="secondary-btn">🗑️ 清空</button>
     </div>
-    <div class="option-group">
-      <label>实时转换：</label>
-      <input type="checkbox" id="realtime" checked>
+    
+    <div class="right-tools">
+      <input type="file" id="file-upload" accept=".txt,.md" hidden>
+      <button id="btn-upload" class="secondary-btn">📁 导入文件</button>
+      <button id="btn-download" class="secondary-btn">💾 导出结果</button>
     </div>
-    <button id="btn-convert" class="primary-btn">立即转换</button>
   </div>
 
+  <!-- 文本编辑区 -->
   <div class="text-container">
-    <div class="textarea-box">
-      <textarea id="input-text" placeholder="在此输入需要转换的中文文本..."></textarea>
-      <div class="status-bar">字符数: <span id="input-count">0</span></div>
-    </div>
-    <div class="textarea-box">
-      <textarea id="output-text" placeholder="转换结果..." readonly></textarea>
+    
+    <!-- 左侧输入 -->
+    <div class="textarea-box" id="input-box">
+      <div class="box-header">
+        <span>📝 原始中文文本</span>
+        <div class="box-actions">
+          <button class="text-btn" id="btn-trim" title="去除首尾空格">✂️ 去首尾空格</button>
+          <button class="text-btn" id="btn-remove-empty" title="删除所有空行">🪣 删空行</button>
+        </div>
+      </div>
+      <textarea id="input-text" placeholder="在此输入或粘贴需要转换的中文文本，或直接拖拽 TXT 文件到这里..."></textarea>
       <div class="status-bar">
-        <span>字符数: <span id="output-count">0</span></span>
+        <span>字符: <b id="input-count">0</b> | 段落: <b id="input-paragraphs">0</b></span>
+      </div>
+    </div>
+
+    <!-- 右侧输出 -->
+    <div class="textarea-box" id="output-box">
+      <div class="box-header">
+        <span>✨ 拼音转换结果</span>
+      </div>
+      <textarea id="output-text" placeholder="转换结果会自动显示在这里..." readonly></textarea>
+      <div class="status-bar">
+        <span>字符: <b id="output-count">0</b> | 段落: <b id="output-paragraphs">0</b></span>
         <button id="btn-copy" class="text-btn">📋 复制结果</button>
       </div>
     </div>
+
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/pinyin-pro.min.js"></script>
-<script src="../../js/pinyin.js"></script>
+<script src="../../js/pinyin.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
 </html>
