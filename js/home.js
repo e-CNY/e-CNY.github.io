@@ -27,7 +27,7 @@
     { name: 'Lorem Ipsum 生成器', emoji: '🗒️', desc: '中英日韩占位文本 / HTML 元素包裹 / 字数限制与统计', href: 'tools/lorem-ipsum/index.html', category: '文档' },
     { name: 'Markdown 简历生成器', emoji: '📋', desc: '一键随机生成 / 导出高清PDF/HTML', href: 'tools/resume-maker/index.html', category: '文档' },
     { name: '简繁体转换', emoji: '🔄', desc: '中文简繁体互相转换 / 词组精准转换', href: 'tools/zh-convert/index.html', category: '文档' },
-    { name: '英汉词典', emoji: '📖', desc: '离线词库 / 前缀模糊搜索 / 生词本 / 发音', href: 'tools/dictionary/index.html', category: '文档' },
+    { name: '英汉词典', emoji: '📖', desc: '离线词库 / 前缀模糊搜索 / 生词本 / 随机', href: 'tools/dictionary/index.html', category: '文档' },
     { name: '拼音转换器', emoji: '🗣️', desc: '汉字转拼音 / 首字母缩写 / 带声调', href: 'tools/pinyin/index.html', category: '文档' },
     { name: 'PDF 工具', emoji: '📄', desc: '合并 / 拆分 / 水印 / 转图', href: 'tools/pdf/index.html', category: '文档' },
     { name: '结构化数据工具', emoji: '📦', desc: 'JSON/YAML/XML/TOML 转换/查询与 TS 生成', href: 'tools/json-toolbox/index.html', category: '文档' },
