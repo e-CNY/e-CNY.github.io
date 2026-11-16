@@ -12,85 +12,189 @@
 <body>
 <header class="tool-page-header">
   <h1>🕒 时间日期工具箱</h1>
-  <p>时间戳、格式化、时区转换、农历节气计算。</p>
+  <p>时间戳 · 日期计算 · 多时区 · 农历 · 年龄 · 计时器 · Cron</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="td-layout" style="padding-top: 0;">
-  <div class="td-tabs">
-    <button class="td-tab active" data-target="panel-ts">时间戳转换</button>
-    <button class="td-tab" data-target="panel-calc">日期加减与时差</button>
-    <button class="td-tab" data-target="panel-timezone">多时区换算</button>
-    <button class="td-tab" data-target="panel-lunar">农历与生肖</button>
+<main class="td-layout">
+  <div class="td-topbar">
+    <div class="td-tabs" id="td-tabs">
+      <button class="td-tab active" data-target="panel-ts" type="button">🕐 时间戳</button>
+      <button class="td-tab" data-target="panel-calc" type="button">📅 日期计算</button>
+      <button class="td-tab" data-target="panel-timezone" type="button">🌍 时区</button>
+      <button class="td-tab" data-target="panel-lunar" type="button">🎋 农历</button>
+      <button class="td-tab" data-target="panel-age" type="button">🎂 年龄</button>
+      <button class="td-tab" data-target="panel-timer" type="button">⏱ 计时器</button>
+      <button class="td-tab" data-target="panel-cron" type="button">⏰ Cron</button>
+    </div>
+    <button class="td-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
   </div>
 
   <div class="td-content">
-    <!-- 1. 时间戳转换 -->
+    <!-- ============ 1. 时间戳转换 ============ -->
     <div id="panel-ts" class="td-panel active">
-      <div class="td-card">
-        <div class="td-row">
-          <label>当前时间戳 (秒/毫秒)</label>
-          <div style="display:flex; gap:10px; flex:1;">
-            <input type="text" id="ts-now" class="td-input" readonly>
-            <button id="btn-ts-now" class="td-btn primary">获取当前</button>
+      <div class="td-section">
+        <div class="td-section-title">⏱ 当前时间戳（每秒自动刷新）</div>
+        <div class="td-now-grid">
+          <div class="td-now-item">
+            <span class="td-now-label">秒</span>
+            <span class="td-now-value" id="ts-now-sec">-</span>
+            <button class="td-mini-btn" data-copy="ts-now-sec" type="button" title="复制">📋</button>
+          </div>
+          <div class="td-now-item">
+            <span class="td-now-label">毫秒</span>
+            <span class="td-now-value" id="ts-now-ms">-</span>
+            <button class="td-mini-btn" data-copy="ts-now-ms" type="button" title="复制">📋</button>
           </div>
         </div>
-        <div class="td-row">
-          <label>时间戳 → 日期</label>
-          <input type="text" id="ts-input" class="td-input" placeholder="输入10或13位数字">
-          <button id="btn-ts-to-date" class="td-btn">转换</button>
-        </div>
-        <div class="td-result" id="ts-out-date"></div>
+      </div>
 
-        <div class="td-row" style="margin-top: 20px;">
-          <label>日期 → 时间戳</label>
-          <input type="datetime-local" id="date-input" step="1" class="td-input">
-          <button id="btn-date-to-ts" class="td-btn">转换</button>
+      <div class="td-section">
+        <div class="td-section-title">🔄 时间戳 / 日期互转</div>
+        <div class="td-row">
+          <input type="text" id="ts-input" class="td-input" placeholder="输入时间戳（10/13 位）或日期字符串（2024-01-01 12:00:00）" style="min-width:0;">
+          <button class="td-btn primary" id="btn-convert-ts" type="button">转换</button>
         </div>
-        <div class="td-result" id="ts-out-ts"></div>
+        <div class="td-hint">支持 10 位秒级时间戳、13 位毫秒级时间戳、任意可被 Date 解析的日期字符串</div>
+        <div class="td-results" id="ts-results"></div>
       </div>
     </div>
 
-    <!-- 2. 日期加减 -->
+    <!-- ============ 2. 日期计算 ============ -->
     <div id="panel-calc" class="td-panel">
-      <div class="td-card">
+      <div class="td-section">
+        <div class="td-section-title">➕ 日期加减</div>
         <div class="td-row">
-          <label>选择日期</label>
+          <label>基准日期</label>
           <input type="date" id="calc-date" class="td-input">
         </div>
-        <div class="td-row">
-          <label>加减天数</label>
-          <input type="number" id="calc-days" class="td-input" value="1">
-          <button id="btn-calc-date" class="td-btn primary">计算</button>
+        <div class="td-row td-row-multi">
+          <label>操作</label>
+          <select id="calc-dir" class="td-input td-input-sm">
+            <option value="1">加</option>
+            <option value="-1">减</option>
+          </select>
+          <input type="number" id="calc-num" class="td-input td-input-sm" value="30" min="0" step="1">
+          <select id="calc-unit" class="td-input td-input-sm">
+            <option value="d">天</option>
+            <option value="w">周</option>
+            <option value="M">月</option>
+            <option value="y">年</option>
+            <option value="h">小时</option>
+            <option value="m">分钟</option>
+            <option value="s">秒</option>
+          </select>
+          <button class="td-btn primary" id="btn-calc-date" type="button">计算</button>
         </div>
         <div class="td-result" id="calc-out"></div>
       </div>
+
+      <div class="td-section">
+        <div class="td-section-title">📏 日期差值</div>
+        <div class="td-row">
+          <label>开始日期</label>
+          <input type="date" id="diff-from" class="td-input">
+        </div>
+        <div class="td-row">
+          <label>结束日期</label>
+          <input type="date" id="diff-to" class="td-input">
+        </div>
+        <div class="td-row">
+          <button class="td-btn primary" id="btn-diff" type="button">计算差值</button>
+        </div>
+        <div class="td-result" id="diff-out"></div>
+      </div>
     </div>
 
-    <!-- 3. 多时区 -->
+    <!-- ============ 3. 多时区 ============ -->
     <div id="panel-timezone" class="td-panel">
-      <div class="td-card">
-        <div class="td-row">
-          <label>选择当前基准时间</label>
-          <input type="datetime-local" id="tz-base" step="1" class="td-input">
+      <div class="td-section">
+        <div class="td-section-title">🌍 时区换算</div>
+        <div class="td-row td-row-multi">
+          <label>基准时间</label>
+          <input type="datetime-local" id="tz-base" class="td-input" step="1">
+          <button class="td-btn" id="btn-tz-now" type="button">使用现在</button>
+          <button class="td-btn primary" id="btn-tz-add" type="button">+ 添加城市</button>
         </div>
+        <div class="td-hint">点击城市卡片右上角 ✕ 可移除</div>
         <div class="td-grid" id="tz-grid"></div>
       </div>
     </div>
 
-    <!-- 4. 农历与生肖 (黄历增强版) -->
+    <!-- ============ 4. 农历 ============ -->
     <div id="panel-lunar" class="td-panel">
-      <div class="td-card">
+      <div class="td-section">
+        <div class="td-section-title">🎋 农历与干支</div>
         <div class="td-row">
           <label>公历日期</label>
           <input type="date" id="lunar-date" class="td-input">
-          <button id="btn-lunar" class="td-btn primary">查农历</button>
+          <button class="td-btn primary" id="btn-lunar" type="button">查农历</button>
         </div>
         <div class="lunar-info-grid" id="lunar-out"></div>
       </div>
     </div>
+
+    <!-- ============ 5. 年龄 ============ -->
+    <div id="panel-age" class="td-panel">
+      <div class="td-section">
+        <div class="td-section-title">🎂 年龄计算</div>
+        <div class="td-row">
+          <label>出生日期</label>
+          <input type="date" id="age-birth" class="td-input">
+          <button class="td-btn primary" id="btn-age" type="button">计算年龄</button>
+        </div>
+        <div class="td-result-box" id="age-out"></div>
+      </div>
+    </div>
+
+    <!-- ============ 6. 计时器 ============ -->
+    <div id="panel-timer" class="td-panel">
+      <div class="td-section">
+        <div class="td-section-title">⏳ 倒计时</div>
+        <div class="td-row td-row-multi">
+          <label>设置</label>
+          <input type="number" id="cd-h" class="td-input td-input-sm" value="0" min="0" max="99" placeholder="时">
+          <span class="td-unit">时</span>
+          <input type="number" id="cd-m" class="td-input td-input-sm" value="5" min="0" max="59" placeholder="分">
+          <span class="td-unit">分</span>
+          <input type="number" id="cd-s" class="td-input td-input-sm" value="0" min="0" max="59" placeholder="秒">
+          <span class="td-unit">秒</span>
+          <button class="td-btn primary" id="btn-cd-start" type="button">开始</button>
+          <button class="td-btn" id="btn-cd-reset" type="button">重置</button>
+        </div>
+        <div class="td-timer-display" id="cd-display">00:05:00</div>
+      </div>
+
+      <div class="td-section">
+        <div class="td-section-title">⏱ 秒表</div>
+        <div class="td-row">
+          <button class="td-btn primary" id="btn-sw-start" type="button">开始</button>
+          <button class="td-btn" id="btn-sw-record" type="button">记录</button>
+          <button class="td-btn" id="btn-sw-reset" type="button">重置</button>
+        </div>
+        <div class="td-timer-display" id="sw-display">00:00.00</div>
+        <div class="td-laps" id="sw-laps"></div>
+      </div>
+    </div>
+
+    <!-- ============ 7. Cron ============ -->
+    <div id="panel-cron" class="td-panel">
+      <div class="td-section">
+        <div class="td-section-title">⏰ Cron 表达式解析</div>
+        <div class="td-row">
+          <label>Cron</label>
+          <input type="text" id="cron-input" class="td-input" placeholder="例：0 9 * * 1-5" style="font-family:monospace;">
+          <button class="td-btn primary" id="btn-cron" type="button">解析</button>
+        </div>
+        <div class="td-hint">格式：分 时 日 月 周（5 字段），支持 * , - / 及英文月份/星期名</div>
+        <div class="td-result-box" id="cron-out"></div>
+      </div>
+    </div>
   </div>
 </main>
+
+<div class="td-toast" id="td-toast"></div>
+
 <script src="../../js/libs/solarlunar.min.js"></script>
 <script src="../../js/time-date-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

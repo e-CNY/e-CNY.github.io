@@ -14,11 +14,21 @@
 <main class="wc-page">
   <header class="tool-page-header">
     <h1>🌍 世界时钟 · 时区转换</h1>
-    <p>多城市实时时钟 / 日期时间转换 / 会议规划器 / 夏令时自动处理</p>
+    <p>多城市实时时钟 / 时区转换 / 会议规划 / 夏令时自动处理 / 拖拽排序 / ICS 导出</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
 
   <div class="wc-app">
+    <!-- 顶部工具栏 -->
+    <div class="app-toolbar">
+      <button class="tool-btn" id="hour12Toggle" type="button" title="切换 12/24 小时制">🕐 24h</button>
+      <button class="tool-btn" id="secondsToggle" type="button" title="显示秒">⏱ 显示秒</button>
+      <button class="tool-btn" id="compactToggle" type="button" title="紧凑模式">📐 舒适</button>
+      <button class="tool-btn" id="copyAllBtn" type="button" title="复制所有城市时间">📋 复制全部</button>
+      <button class="tool-btn" id="historyBtn" type="button" title="历史记录">📜 历史 <span id="historyCount">(0)</span></button>
+      <button class="tool-btn" id="shareBtn" type="button" title="分享当前状态">🔗 分享</button>
+    </div>
+
     <!-- 模式切换 -->
     <div class="mode-bar">
       <div class="seg" id="modeSeg">
@@ -34,7 +44,7 @@
       <div class="add-city-bar">
         <button class="add-city-btn" id="addCityBtn" type="button">＋ 添加城市</button>
       </div>
-      <p class="clock-tip">💡 点击城市卡片右上角 × 移除；时间每秒自动刷新，夏令时由浏览器 IANA tzdata 自动处理。</p>
+      <p class="clock-tip">💡 拖拽城市卡片可调整顺序；点击时间即可复制；时间每秒自动刷新，夏令时由浏览器 IANA tzdata 自动处理。</p>
     </section>
 
     <!-- ========== 时区转换模式 ========== -->
@@ -60,12 +70,24 @@
             <input type="time" id="convertTime" step="60">
           </div>
         </div>
+        <div class="quick-time-bar">
+          <span class="quick-label">快捷：</span>
+          <button class="quick-btn" data-qtime="now" type="button">现在</button>
+          <button class="quick-btn" data-qtime="+1h" type="button">+1 小时</button>
+          <button class="quick-btn" data-qtime="+4h" type="button">+4 小时</button>
+          <button class="quick-btn" data-qtime="tomorrow" type="button">明天</button>
+          <button class="quick-btn" data-qtime="next-week" type="button">下周</button>
+        </div>
         <div class="convert-actions">
           <button class="primary-btn" id="convertBtn" type="button">🔄 转换</button>
           <button class="ghost-btn" id="convertNowBtn" type="button">⏱️ 使用当前时间</button>
         </div>
       </div>
       <div class="convert-result" id="convertResult" hidden></div>
+      <div class="convert-result-actions" id="convertResultActions" hidden>
+        <button class="ghost-btn sm" id="convertCopyBtn" type="button">📋 复制结果</button>
+        <button class="ghost-btn sm" id="convertSaveBtn" type="button">💾 存历史</button>
+      </div>
     </section>
 
     <!-- ========== 会议规划器模式 ========== -->
@@ -95,6 +117,16 @@
             </div>
           </div>
         </div>
+        <div class="planner-controls one-col">
+          <div class="field">
+            <label>时间粒度</label>
+            <div class="seg sm" id="granularitySeg">
+              <button data-value="15" type="button">15 分</button>
+              <button data-value="30" class="active" type="button">30 分</button>
+              <button data-value="60" type="button">60 分</button>
+            </div>
+          </div>
+        </div>
         <button class="primary-btn" id="plannerCalcBtn" type="button">📊 查找最佳时间</button>
       </div>
       <div class="planner-result" id="plannerResult" hidden>
@@ -102,7 +134,12 @@
           <canvas id="plannerChart"></canvas>
         </div>
         <div class="planner-overlaps" id="plannerOverlaps"></div>
-        <p class="planner-tip">💡 绿色 = 所有人都在工作时段；黄色 = 部分人非工作时段；灰色 = 所有人非工作时段。点击绿色区块可选中该时段。</p>
+        <div class="planner-result-actions">
+          <button class="ghost-btn sm" id="plannerExportICS" type="button">📅 导出 ICS</button>
+          <button class="ghost-btn sm" id="plannerCopyBtn" type="button">📋 复制最佳时段</button>
+          <button class="ghost-btn sm" id="plannerSaveBtn" type="button">💾 存历史</button>
+        </div>
+        <p class="planner-tip">💡 绿色 = 所有人都在工作时段；黄色 = 部分人非工作时段；灰色 = 深夜时段。点击卡片可复制该时段。</p>
       </div>
     </section>
 
@@ -118,6 +155,22 @@
       </div>
     </div>
   </div>
+
+  <!-- 历史抽屉 -->
+  <div class="history-backdrop" id="historyBackdrop" hidden></div>
+  <aside class="history-drawer" id="historyDrawer">
+    <div class="history-head">
+      <h3>📜 历史记录</h3>
+      <button class="tool-btn" id="historyClose" type="button">✕</button>
+    </div>
+    <div class="history-list" id="historyList"></div>
+    <div class="history-actions">
+      <button class="tool-btn danger" id="historyClear" type="button">🗑 清空历史</button>
+    </div>
+  </aside>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 </main>
 <script src="../../js/world-clock.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

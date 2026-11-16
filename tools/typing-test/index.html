@@ -12,12 +12,23 @@
 <body>
 <div class="tool-page-header">
   <h1>🏎️ 打字速度测试</h1>
-  <p>测试你的指尖极限：支持中英文，实时统计 WPM 与正确率</p>
+  <p>支持中英文 · 实时 WPM 曲线 · 虚拟键盘 · 历史记录 · 音效 · 分享卡片</p>
   <a href="../../index.html">← 返回首页</a>
 </div>
 
 <main class="tt-wrap">
-  <!-- 顶部控制与统计 -->
+  <!-- 顶部工具栏 -->
+  <div class="tt-topbar">
+    <div class="tt-top-actions">
+      <button class="tt-icon-btn" id="btn-theme" type="button" title="切换深色/浅色">🌙</button>
+      <button class="tt-icon-btn" id="btn-sound" type="button" title="开关音效">🔊</button>
+      <button class="tt-icon-btn" id="btn-countdown" type="button" title="开关倒计时">⏱</button>
+      <button class="tt-icon-btn" id="btn-keyboard" type="button" title="开关虚拟键盘">⌨️</button>
+      <button class="tt-icon-btn" id="btn-history" type="button" title="历史记录">📜</button>
+    </div>
+  </div>
+
+  <!-- 顶部仪表盘 -->
   <div class="tt-dashboard">
     <div class="tt-controls">
       <div class="tt-mode-group">
@@ -28,6 +39,19 @@
         <select id="tt-lang">
           <option value="en">English</option>
           <option value="zh">中文 (支持拼音输入)</option>
+        </select>
+        <select id="tt-source">
+          <option value="common">常用词</option>
+          <option value="classic">经典文学</option>
+          <option value="news">新闻</option>
+          <option value="code">编程代码</option>
+          <option value="numbers">数字符号</option>
+          <option value="custom">自定义文本</option>
+        </select>
+        <select id="tt-difficulty">
+          <option value="easy">初级</option>
+          <option value="normal" selected>中级</option>
+          <option value="hard">高级</option>
         </select>
         <select id="tt-limit">
           <option value="15">15秒</option>
@@ -52,47 +76,121 @@
         <span class="tt-stat-val" id="tt-acc">100%</span>
         <span class="tt-stat-label">正确率</span>
       </div>
+      <div class="tt-stat-box">
+        <span class="tt-stat-val" id="tt-combo">0</span>
+        <span class="tt-stat-label">连击</span>
+      </div>
       <div class="tt-stat-box highlight">
         <span class="tt-stat-val" id="tt-time">60</span>
         <span class="tt-stat-label">秒</span>
       </div>
     </div>
+
+    <!-- 实时 WPM 曲线 -->
+    <div class="tt-chart-wrap">
+      <canvas id="tt-chart" width="800" height="70"></canvas>
+    </div>
+  </div>
+
+  <!-- 自定义文本输入 -->
+  <div class="tt-custom-wrap" id="tt-custom-wrap" hidden>
+    <textarea id="tt-custom-text" placeholder="粘贴你想练习的文本（至少 20 个字符）…" rows="4"></textarea>
+    <div class="tt-custom-actions">
+      <button class="tt-secondary-btn" id="tt-custom-apply" type="button">应用</button>
+      <button class="tt-secondary-btn" id="tt-custom-clear" type="button">清除</button>
+    </div>
   </div>
 
   <!-- 打字区域 -->
   <div class="tt-typing-area">
-    <div class="tt-text-display" id="tt-text-display">
-      <!-- 目标文字渲染在此 -->
-    </div>
-    <!-- 隐藏的输入框 -->
+    <div class="tt-text-display" id="tt-text-display"></div>
     <textarea id="tt-input" class="tt-hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-    
-    <!-- 点击遮罩层开始 -->
+
     <div class="tt-overlay" id="tt-overlay">
       <button class="tt-start-btn" id="tt-start-btn">点击开始测试</button>
     </div>
+
+    <div class="tt-countdown" id="tt-countdown" hidden>3</div>
   </div>
+
+  <!-- 虚拟键盘 -->
+  <div class="tt-keyboard" id="tt-keyboard"></div>
 
   <!-- 结果面板 -->
   <div class="tt-result" id="tt-result" style="display: none;">
-    <h2>测试完成！</h2>
+    <h2>🎉 测试完成！</h2>
     <div class="tt-result-grid">
       <div class="tt-res-item">
         <span class="tt-res-val" id="res-wpm">0</span>
-        <span class="tt-res-lbl">WPM (每分钟单词)</span>
+        <span class="tt-res-lbl">WPM</span>
       </div>
       <div class="tt-res-item">
         <span class="tt-res-val" id="res-cpm">0</span>
-        <span class="tt-res-lbl">CPM (每分钟字符)</span>
+        <span class="tt-res-lbl">字符/分</span>
       </div>
       <div class="tt-res-item">
         <span class="tt-res-val" id="res-acc">0%</span>
         <span class="tt-res-lbl">正确率</span>
       </div>
+      <div class="tt-res-item">
+        <span class="tt-res-val" id="res-combo">0</span>
+        <span class="tt-res-lbl">最长连击</span>
+      </div>
     </div>
-    <p class="tt-best-record">🏆 历史最佳 WPM: <span id="res-best">0</span></p>
-    <button id="tt-again-btn" class="tt-primary-btn">再测一次</button>
+    <p class="tt-best-record">🏆 历史最佳 WPM: <span id="res-best">0</span> <span id="res-new-record" class="tt-new-record" hidden>新纪录！</span></p>
+
+    <!-- 错误字符热力图 -->
+    <div class="tt-error-chars" id="tt-error-chars" hidden>
+      <div class="tt-error-chars-title">🔍 容易出错的字符</div>
+      <div class="tt-error-chars-list" id="tt-error-chars-list"></div>
+    </div>
+
+    <div class="tt-result-actions">
+      <button id="tt-again-btn" class="tt-primary-btn">再测一次</button>
+      <button id="tt-share-btn" class="tt-secondary-btn">🎨 分享成绩</button>
+      <button id="tt-export-btn" class="tt-secondary-btn">📤 导出 CSV</button>
+      <button id="tt-history-btn" class="tt-secondary-btn">📜 历史记录</button>
+    </div>
   </div>
+
+  <!-- 分享卡片弹窗 -->
+  <div class="tt-modal" id="tt-share-modal" hidden>
+    <div class="tt-modal-body">
+      <div class="tt-modal-head">
+        <span>成绩卡片预览</span>
+        <button class="tt-icon-btn" id="tt-share-close" type="button">✕</button>
+      </div>
+      <div class="tt-modal-canvas-wrap">
+        <canvas id="tt-share-canvas" width="900" height="1200"></canvas>
+      </div>
+      <div class="tt-modal-actions">
+        <button class="tt-icon-btn" id="tt-share-style" type="button" title="切换样式">🔁</button>
+        <button class="tt-primary-btn" id="tt-share-download" type="button">⬇️ 下载 PNG</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 历史记录抽屉 -->
+  <div class="tt-history-backdrop" id="tt-history-backdrop" hidden></div>
+  <aside class="tt-history-drawer" id="tt-history-drawer">
+    <div class="tt-history-head">
+      <h3>📜 历史记录</h3>
+      <button class="tt-icon-btn" id="tt-history-close" type="button">✕</button>
+    </div>
+    <div class="tt-history-chart-wrap">
+      <canvas id="tt-history-chart" width="320" height="100"></canvas>
+    </div>
+    <div class="tt-history-list" id="tt-history-list"></div>
+    <div class="tt-history-actions">
+      <button class="tt-secondary-btn tt-danger" id="tt-history-clear" type="button">🗑 清空历史</button>
+    </div>
+  </aside>
+
+  <!-- 彩带层 -->
+  <canvas class="tt-confetti" id="tt-confetti"></canvas>
+
+  <!-- Toast -->
+  <div class="tt-toast" id="tt-toast"></div>
 </main>
 
 <script src="../../js/typing-test.js"></script>

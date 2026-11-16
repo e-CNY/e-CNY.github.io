@@ -2,29 +2,53 @@
 (function () {
   'use strict';
 
+  var STORAGE_KEY = 'tool.health.v2';
+  var HISTORY_KEY = 'tool.health.history.v1';
+  var MAX_HISTORY = 30;
+
   /* ============ DOM ============ */
-  var genderSeg    = document.getElementById('genderSeg');
-  var goalSeg      = document.getElementById('goalSeg');
-  var ageEl        = document.getElementById('age');
-  var heightEl     = document.getElementById('height');
-  var weightEl     = document.getElementById('weight');
-  var waistEl      = document.getElementById('waist');
-  var activityEl   = document.getElementById('activity');
-  var neckEl       = document.getElementById('neck');
-  var hipEl        = document.getElementById('hip');
-  var restHREl     = document.getElementById('restHR');
-  var bpSysEl      = document.getElementById('bpSys');
-  var bpDiaEl      = document.getElementById('bpDia');
-  var glucoseEl    = document.getElementById('glucose');
-  var calcBtn      = document.getElementById('calcBtn');
-  var resultSection= document.getElementById('resultSection');
+  var genderSeg      = document.getElementById('genderSeg');
+  var goalSeg        = document.getElementById('goalSeg');
+  var ageEl          = document.getElementById('age');
+  var heightEl       = document.getElementById('height');
+  var weightEl       = document.getElementById('weight');
+  var waistEl        = document.getElementById('waist');
+  var activityEl     = document.getElementById('activity');
+  var neckEl         = document.getElementById('neck');
+  var hipEl          = document.getElementById('hip');
+  var restHREl       = document.getElementById('restHR');
+  var bpSysEl        = document.getElementById('bpSys');
+  var bpDiaEl        = document.getElementById('bpDia');
+  var glucoseEl      = document.getElementById('glucose');
+  var calcBtn        = document.getElementById('calcBtn');
+  var resultSection  = document.getElementById('resultSection');
   var resultContainer = document.getElementById('resultContainer');
+
+  /* 工具栏 */
+  var presetExample  = document.getElementById('presetExample');
+  var clearBtn       = document.getElementById('clearBtn');
+  var copyAllBtn     = document.getElementById('copyAllBtn');
+  var exportCsvBtn   = document.getElementById('exportCsvBtn');
+  var shareBtn       = document.getElementById('shareBtn');
+  var historyBtn     = document.getElementById('historyBtn');
+  var printBtn       = document.getElementById('printBtn');
+  var historyCountEl = document.getElementById('historyCount');
+  var historyDrawer  = document.getElementById('historyDrawer');
+  var historyBackdrop = document.getElementById('historyBackdrop');
+  var historyListEl  = document.getElementById('historyList');
+  var historyCloseEl = document.getElementById('historyClose');
+  var historyClearEl = document.getElementById('historyClear');
+  var toastEl        = document.getElementById('toast');
 
   /* ============ 状态 ============ */
   var state = {
     gender: 'male',
-    goal: 'maintain'
+    goal: 'maintain',
+    lastResult: null
   };
+
+  var history = [];
+  var toastTimer = null;
 
   /* ============ 工具 ============ */
   function clamp(v, min, max) {
@@ -38,19 +62,66 @@
   function fmt1(v) { return (Math.round(v * 10) / 10).toFixed(1); }
   function fmt0(v) { return Math.round(v).toString(); }
 
-  /* ============ 计算 ============ */
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1600);
+  }
+
+  function truncate(s, n) {
+    s = String(s);
+    return s.length > n ? s.slice(0, n) + '…' : s;
+  }
+
+  function fallbackCopy(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('✅ 已复制：' + truncate(text, 24));
+    } catch (e) { showToast('❌ 复制失败'); }
+  }
+  function copyText(text) {
+    if (!text) { showToast('没有可复制内容'); return; }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () {
+        showToast('✅ 已复制：' + truncate(text, 24));
+      }).catch(function () { fallbackCopy(text); });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  /* ============ 计算核心 ============ */
   function calcBMI(w, h) { var m = h / 100; return w / (m * m); }
   function bmiCategory(bmi) {
-    if (bmi < 18.5) return { tag: '偏瘦', color: 'c-blue', seg: 0 };
-    if (bmi < 24)   return { tag: '正常', color: 'c-green', seg: 1 };
-    if (bmi < 28)   return { tag: '超重', color: 'c-orange', seg: 2 };
-    return { tag: '肥胖', color: 'c-red', seg: 3 };
+    if (bmi < 18.5) return { tag: '偏瘦', color: 'c-blue' };
+    if (bmi < 24)   return { tag: '正常', color: 'c-green' };
+    if (bmi < 28)   return { tag: '超重', color: 'c-orange' };
+    return { tag: '肥胖', color: 'c-red' };
   }
 
   function calcBMR(gender, w, h, age) {
     var base = 10 * w + 6.25 * h - 5 * age;
     return gender === 'male' ? base + 5 : base - 161;
   }
+  function calcBMRHarrisBenedict(gender, w, h, age) {
+    if (gender === 'male') return 88.362 + 13.397 * w + 4.799 * h - 5.677 * age;
+    return 447.593 + 9.247 * w + 3.098 * h - 4.330 * age;
+  }
+  function calcBMRKatch(lbm) { return 370 + 21.6 * lbm; }
 
   function calcBodyFatNavy(gender, h, waist, neck, hip) {
     try {
@@ -118,7 +189,7 @@
     var fatG       = fatCal / 9;
     var carbCal    = Math.max(0, targetCal - proteinCal - fatCal);
     var carbG      = carbCal / 4;
-    return { cal: targetCal, proteinG: proteinG, fatG: fatG, carbG: carbG };
+    return { cal: targetCal, proteinG: proteinG, fatG: fatG, carbG: carbG, factor: factor };
   }
 
   function calcLBM(weight, bfPct) { return weight * (1 - bfPct / 100); }
@@ -252,7 +323,90 @@
              avg: (devine + robinson + miller + hamwi) / 4 };
   }
 
-  /* MET 表 */
+  /* 新增：健康综合评分 */
+  function calcHealthScore(gender, bmi, bf, restHR, bpSys, bpDia, glucose) {
+    var scores = [];
+    if (bmi != null) {
+      if (bmi >= 18.5 && bmi < 24) scores.push(100);
+      else if (bmi >= 17 && bmi < 18.5) scores.push(78);
+      else if (bmi >= 24 && bmi < 28) scores.push(72);
+      else if (bmi >= 15 && bmi < 17) scores.push(55);
+      else if (bmi >= 28 && bmi < 32) scores.push(52);
+      else scores.push(30);
+    }
+    if (bf != null) {
+      var lo = gender === 'male' ? 10 : 18;
+      var hi = gender === 'male' ? 18 : 25;
+      if (bf >= lo && bf <= hi) scores.push(100);
+      else if (bf < lo) scores.push(Math.max(50, 100 - (lo - bf) * 8));
+      else scores.push(Math.max(30, 100 - (bf - hi) * 6));
+    }
+    if (restHR != null) {
+      if (restHR >= 50 && restHR <= 70) scores.push(100);
+      else if (restHR > 70 && restHR <= 80) scores.push(82);
+      else if (restHR > 80 && restHR <= 90) scores.push(62);
+      else if (restHR > 90) scores.push(42);
+      else if (restHR >= 40 && restHR < 50) scores.push(95);
+      else scores.push(50);
+    }
+    if (bpSys != null && bpDia != null) {
+      if (bpSys < 120 && bpDia < 80 && bpSys >= 90 && bpDia >= 60) scores.push(100);
+      else if (bpSys < 140 && bpDia < 90) scores.push(72);
+      else if (bpSys < 160 && bpDia < 100) scores.push(50);
+      else scores.push(30);
+    }
+    if (glucose != null) {
+      if (glucose >= 3.9 && glucose < 6.1) scores.push(100);
+      else if ((glucose >= 6.1 && glucose < 7) || glucose < 3.9) scores.push(60);
+      else scores.push(30);
+    }
+    if (scores.length === 0) return null;
+    var sum = 0;
+    for (var i = 0; i < scores.length; i++) sum += scores[i];
+    return Math.round(sum / scores.length);
+  }
+
+  function scoreCategory(s) {
+    if (s == null) return { tag: '—', color: 'c-blue' };
+    if (s >= 85) return { tag: '优秀', color: 'c-green' };
+    if (s >= 70) return { tag: '良好', color: 'c-teal' };
+    if (s >= 55) return { tag: '一般', color: 'c-orange' };
+    return { tag: '偏低', color: 'c-red' };
+  }
+
+  /* 新增：生理年龄 */
+  function calcBioAge(age, restHR, bmi) {
+    if (restHR == null) return null;
+    var delta = (restHR - 65) * 0.35;
+    if (bmi != null) {
+      if (bmi >= 30) delta += 3;
+      else if (bmi >= 28) delta += 2;
+      else if (bmi >= 24) delta += 1;
+      else if (bmi < 18.5) delta += 1;
+    }
+    var bio = age + delta;
+    return Math.max(10, Math.round(bio * 10) / 10);
+  }
+
+  /* 新增：睡眠需求 */
+  function sleepNeed(age) {
+    if (age < 6) return { h: '10-13', note: '学龄前儿童' };
+    if (age < 14) return { h: '9-11', note: '学龄儿童' };
+    if (age < 18) return { h: '8-10', note: '青少年' };
+    if (age < 65) return { h: '7-9', note: '成年' };
+    return { h: '7-8', note: '老年' };
+  }
+
+  /* 新增：每日步数建议 */
+  function stepNeed(activity) {
+    if (activity >= 1.9) return '12,500–15,000+';
+    if (activity >= 1.725) return '10,000–12,500';
+    if (activity >= 1.55) return '8,000–10,000';
+    if (activity >= 1.375) return '7,000–8,000';
+    return '5,000–7,000';
+  }
+
+  /* 扩展 MET 表 */
   var MET_TABLE = [
     { name: '走路 · 4 km/h 慢走',   met: 3.0 },
     { name: '走路 · 6 km/h 快走',   met: 4.3 },
@@ -262,19 +416,89 @@
     { name: '骑行 · 16 km/h',       met: 5.8 },
     { name: '骑行 · 20 km/h',       met: 8.0 },
     { name: '游泳（自由泳中等）',    met: 5.8 },
+    { name: '游泳（蛙泳）',          met: 5.3 },
     { name: '跳绳',                  met: 11.0 },
     { name: 'HIIT 高强度间歇',       met: 8.0 },
     { name: '力量训练（中等强度）',  met: 3.5 },
+    { name: '力量训练（大重量）',    met: 6.0 },
     { name: '瑜伽',                  met: 2.5 },
     { name: '太极',                  met: 3.0 },
     { name: '羽毛球',                met: 5.5 },
     { name: '篮球',                  met: 6.5 },
+    { name: '足球',                  met: 7.0 },
+    { name: '网球',                  met: 7.3 },
     { name: '乒乓球',                met: 4.0 },
     { name: '广场舞',                met: 4.5 },
+    { name: '爬山（坡度适中）',      met: 6.5 },
+    { name: '划船机（中等）',        met: 7.0 },
     { name: '家务 · 拖地',           met: 3.0 }
   ];
 
   /* ============ 卡片构造 ============ */
+  function cardHealthScore(score) {
+    if (score == null) return '';
+    var cat = scoreCategory(score);
+    var circumference = 2 * Math.PI * 38;
+    var offset = circumference * (1 - score / 100);
+    return [
+      '<div class="result-card">',
+        '<div class="card-head">',
+          '<div class="card-title">🏆 健康综合评分</div>',
+          '<span class="card-tag ' + cat.color + '">' + cat.tag + '</span>',
+        '</div>',
+        '<div style="display:flex;align-items:center;gap:16px;">',
+          '<svg viewBox="0 0 100 100" style="width:90px;height:90px;flex-shrink:0;">',
+            '<circle cx="50" cy="50" r="38" fill="none" stroke="#ecdfc4" stroke-width="10"/>',
+            '<circle cx="50" cy="50" r="38" fill="none" stroke="#8a5a2b" stroke-width="10" ',
+              'stroke-dasharray="' + circumference + '" ',
+              'stroke-dashoffset="' + offset + '" ',
+              'stroke-linecap="round" transform="rotate(-90 50 50)"/>',
+          '</svg>',
+          '<div style="flex:1;">',
+            '<div class="card-value">' + score + '<span class="unit">/ 100</span></div>',
+            '<p class="card-note">综合 BMI、体脂、静息心率、血压、血糖等指标。缺失项自动跳过，评分按实际参与项归一。</p>',
+          '</div>',
+        '</div>',
+      '</div>'
+    ].join('');
+  }
+
+  function cardBioAge(age, bioAge) {
+    if (bioAge == null) return '';
+    var diff = bioAge - age;
+    var tag, cls;
+    if (diff <= -5) { tag = '明显更年轻'; cls = 'c-green'; }
+    else if (diff <= -1) { tag = '略年轻'; cls = 'c-teal'; }
+    else if (diff < 1) { tag = '与实际相同'; cls = 'c-green'; }
+    else if (diff < 5) { tag = '略老'; cls = 'c-orange'; }
+    else { tag = '偏老'; cls = 'c-red'; }
+    var hint = diff < 0
+      ? '身体状态比同龄人年轻 ' + Math.abs(diff).toFixed(1) + ' 岁'
+      : diff > 0
+        ? '身体状态比同龄人老 ' + diff.toFixed(1) + ' 岁'
+        : '与实际年龄一致';
+    return [
+      '<div class="result-card">',
+        '<div class="card-head">',
+          '<div class="card-title">⏳ 生理年龄估算</div>',
+          '<span class="card-tag ' + cls + '">' + tag + '</span>',
+        '</div>',
+        '<div class="card-value">' + bioAge.toFixed(1) + '<span class="unit">岁</span></div>',
+        '<div class="dual">',
+          '<div class="dual-item">',
+            '<div class="dual-label">实际年龄</div>',
+            '<div class="dual-value">' + age + '<span class="u">岁</span></div>',
+          '</div>',
+          '<div class="dual-item">',
+            '<div class="dual-label">差值</div>',
+            '<div class="dual-value">' + (diff >= 0 ? '+' : '') + diff.toFixed(1) + '<span class="u">岁</span></div>',
+          '</div>',
+        '</div>',
+        '<p class="card-note">' + hint + '。基于静息心率 + BMI 启发式估算，仅供参考。</p>',
+      '</div>'
+    ].join('');
+  }
+
   function cardBMI(bmi) {
     var cat = bmiCategory(bmi);
     var pct = clamp(((bmi - 15) / 25) * 100, 0, 100);
@@ -303,15 +527,23 @@
     ].join('');
   }
 
-  function cardBMR(bmr) {
+  function cardBMRCompare(bmrMifflin, bmrHB, bmrKatch) {
+    var rows = [
+      '<tr><td>Mifflin-St Jeor</td><td>' + fmt0(bmrMifflin) + ' kcal</td></tr>',
+      '<tr><td>Harris-Benedict</td><td>' + fmt0(bmrHB) + ' kcal</td></tr>'
+    ];
+    if (bmrKatch != null) {
+      rows.push('<tr><td>Katch-McArdle（按瘦体重）</td><td>' + fmt0(bmrKatch) + ' kcal</td></tr>');
+    }
     return [
       '<div class="result-card">',
         '<div class="card-head">',
-          '<div class="card-title">🔥 基础代谢 BMR</div>',
+          '<div class="card-title">🔥 基础代谢 BMR（多公式对比）</div>',
           '<span class="card-tag c-orange">静息消耗</span>',
         '</div>',
-        '<div class="card-value">' + fmt0(bmr) + '<span class="unit">kcal/天</span></div>',
-        '<p class="card-note">躺平一天身体消耗的热量，采用 Mifflin-St Jeor 公式（公认最准估算）。</p>',
+        '<div class="card-value">' + fmt0(bmrMifflin) + '<span class="unit">kcal/天 · 推荐</span></div>',
+        '<table class="compare-table"><tbody>' + rows.join('') + '</tbody></table>',
+        '<p class="card-note">Mifflin-St Jeor 是当前公认最准的估算公式。Katch-McArdle 需要体脂率，对肌肉量较大的人更准确。</p>',
       '</div>'
     ].join('');
   }
@@ -486,6 +718,28 @@
     ].join('');
   }
 
+  function cardIdealWeightFormulas(gender, heightCm) {
+    var w = calcIdealWeights(gender, heightCm);
+    return [
+      '<div class="result-card">',
+        '<div class="card-head">',
+          '<div class="card-title">📊 理想体重（多公式）</div>',
+          '<span class="card-tag c-teal">均值 ' + fmt1(w.avg) + ' kg</span>',
+        '</div>',
+        '<table class="compare-table">',
+          '<thead><tr><th>公式</th><th style="text-align:right">结果</th></tr></thead>',
+          '<tbody>',
+            '<tr><td>Devine（1974）</td><td>' + fmt1(w.devine) + ' kg</td></tr>',
+            '<tr><td>Robinson（1983）</td><td>' + fmt1(w.robinson) + ' kg</td></tr>',
+            '<tr><td>Miller（1983）</td><td>' + fmt1(w.miller) + ' kg</td></tr>',
+            '<tr><td>Hamwi（1964）</td><td>' + fmt1(w.hamwi) + ' kg</td></tr>',
+          '</tbody>',
+        '</table>',
+        '<p class="card-note">理想体重公式源于医学剂量计算，更偏向"标准体重"而非"最好看的体重"。实际目标建议结合体脂率与肌肉量。</p>',
+      '</div>'
+    ].join('');
+  }
+
   function cardTargetTime(weight, minW, maxW) {
     var html = [
       '<div class="result-card">',
@@ -517,6 +771,7 @@
 
   function cardMacros(macros, goal) {
     var goalLabel = goal === 'cut' ? '减脂期' : goal === 'bulk' ? '增肌期' : '维持期';
+    var perMeal = fmt0(macros.proteinG / 3);
     return [
       '<div class="result-card">',
         '<div class="card-head">',
@@ -537,7 +792,7 @@
             '<div class="macro-label">脂肪</div>',
           '</div>',
         '</div>',
-        '<p class="card-note">蛋白质优先瘦肉 / 鸡胸 / 鱼虾 / 蛋 / 豆制品；碳水优先全谷物、薯类；脂肪优先坚果、橄榄油、牛油果。</p>',
+        '<p class="card-note">蛋白质每日约 <strong>' + fmt0(macros.proteinG) + ' g</strong>，分 3 餐每餐约 <strong>' + perMeal + ' g</strong>。优先瘦肉 / 鸡胸 / 鱼虾 / 蛋 / 豆制品；碳水优先全谷物、薯类；脂肪优先坚果、橄榄油、牛油果。</p>',
       '</div>'
     ].join('');
   }
@@ -563,6 +818,34 @@
           '</div>',
         '</div>',
         '<p class="card-note">按体重 + 活动水平估算。运动出汗、天热时额外补充，少量多次效果最佳。</p>',
+      '</div>'
+    ].join('');
+  }
+
+  function cardSleep(age) {
+    var s = sleepNeed(age);
+    return [
+      '<div class="result-card">',
+        '<div class="card-head">',
+          '<div class="card-title">😴 推荐睡眠时长</div>',
+          '<span class="card-tag c-purple">' + s.note + '</span>',
+        '</div>',
+        '<div class="card-value sm">' + s.h + '<span class="unit">小时 / 天</span></div>',
+        '<p class="card-note">美国国家睡眠基金会建议：成年人 7-9 小时，老年人 7-8 小时。长期睡眠不足会升高肥胖、心血管风险。</p>',
+      '</div>'
+    ].join('');
+  }
+
+  function cardSteps(activity) {
+    var s = stepNeed(activity);
+    return [
+      '<div class="result-card">',
+        '<div class="card-head">',
+          '<div class="card-title">👟 每日步数建议</div>',
+          '<span class="card-tag c-teal">按活动水平</span>',
+        '</div>',
+        '<div class="card-value sm">' + s + '<span class="unit">步 / 天</span></div>',
+        '<p class="card-note">WHO 建议每周 150-300 分钟中等强度运动。步数是最容易量化的日常活动指标，目标可循序渐进。</p>',
       '</div>'
     ].join('');
   }
@@ -709,7 +992,6 @@
 
   /* ============ 主计算 ============ */
   function calculate() {
-    /* 校验必填 */
     if (!ageEl.value || !heightEl.value || !weightEl.value) {
       alert('请填写年龄、身高和体重');
       return;
@@ -727,16 +1009,16 @@
     var glucose = num(glucoseEl, 0);
     var activity= parseFloat(activityEl.value) || 1.55;
 
-    /* 计算 */
     var bmi     = calcBMI(weight, height);
     var bmr     = calcBMR(state.gender, weight, height, age);
+    var bmrHB   = calcBMRHarrisBenedict(state.gender, weight, height, age);
     var tdee    = bmr * activity;
     var bodyFat = calcBodyFatNavy(state.gender, height, waist, neck, hip);
     var lbm     = bodyFat != null ? calcLBM(weight, bodyFat) : null;
+    var bmrKatch = lbm != null ? calcBMRKatch(lbm) : null;
     var ffmi    = lbm != null ? calcFFMI(lbm, height) : null;
     var whtr    = waist > 0 ? calcWHtR(waist, height) : null;
     var whr     = (waist > 0 && hip > 0) ? calcWHR(waist, hip) : null;
-    var ideal   = calcIdealWeights(state.gender, height);
     var waterMl = calcWater(weight, activity);
     var hr      = calcHeartRate(age);
     var macros  = calcMacros(weight, tdee, state.goal);
@@ -745,14 +1027,46 @@
     var h       = height / 100;
     var minW    = 18.5 * h * h;
     var maxW    = 24 * h * h;
+    var score   = calcHealthScore(state.gender, bmi, bodyFat, restHR || null, bpSys || null, bpDia || null, glucose || null);
+    var bioAge  = calcBioAge(age, restHR || null, bmi);
 
-    /* 构建分组 */
+    state.lastResult = {
+      gender: state.gender, age: age, height: height, weight: weight,
+      bmi: bmi, bmr: bmr, tdee: tdee, bodyFat: bodyFat, lbm: lbm,
+      restHR: restHR, bpSys: bpSys, bpDia: bpDia, glucose: glucose,
+      waterMl: waterMl, macros: macros, score: score, bioAge: bioAge,
+      activity: activity, goal: state.goal
+    };
+
+    /* 顶部摘要条 */
+    var summaryHtml = '<div class="summary-strip">';
+    if (score != null) {
+      var sc = scoreCategory(score);
+      summaryHtml += '<div class="summary-tile score">' +
+        '<div class="summary-tile-label">🏆 健康综合评分</div>' +
+        '<div class="summary-tile-value">' + score + '<span class="unit">/ 100</span></div>' +
+        '<div class="summary-tile-sub">' + sc.tag + ' · 综合 BMI / 体脂 / 心率 / 血压 / 血糖</div>' +
+      '</div>';
+    }
+    if (bioAge != null) {
+      var diff = bioAge - age;
+      summaryHtml += '<div class="summary-tile age">' +
+        '<div class="summary-tile-label">⏳ 生理年龄估算</div>' +
+        '<div class="summary-tile-value">' + bioAge.toFixed(1) + '<span class="unit">岁</span></div>' +
+        '<div class="summary-tile-sub">实际 ' + age + ' 岁 · ' +
+          (diff < 0 ? '年轻 ' + Math.abs(diff).toFixed(1) + ' 岁' :
+           diff > 0 ? '偏老 ' + diff.toFixed(1) + ' 岁' : '与实际一致') + '</div>' +
+      '</div>';
+    }
+    summaryHtml += '</div>';
+
+    /* 分组 */
     var groups = [
       {
         title: '📊 身体基础',
         cards: [
           cardBMI(bmi),
-          cardBMR(bmr),
+          cardBMRCompare(bmr, bmrHB, bmrKatch),
           cardTDEE(tdee),
           cardBSA(bsa)
         ]
@@ -771,9 +1085,17 @@
         title: '🎯 目标与营养',
         cards: [
           cardIdealWeight(height, weight),
+          cardIdealWeightFormulas(state.gender, height),
           cardTargetTime(weight, minW, maxW),
           cardMacros(macros, state.goal),
           cardWater(waterMl)
+        ]
+      },
+      {
+        title: '💤 生活方式',
+        cards: [
+          cardSleep(age),
+          cardSteps(activity)
         ]
       },
       {
@@ -796,14 +1118,13 @@
       }
     ];
 
-    /* 渲染 */
-    var html = '';
+    var html = summaryHtml;
     groups.forEach(function (g) {
       var visibleCards = g.cards.filter(function (c) { return c && c.length > 0; });
       if (visibleCards.length === 0) return;
       html += '<div class="group-block">';
       html += '<h2 class="group-title">' + g.title + '</h2>';
-      html += '<div class="card-grid' + (g.wide ? ' wide' : '') + '">';
+      html += '<div class="card-grid' + (g.wide ? ' wide' : '') + '>';
       html += visibleCards.join('');
       html += '</div></div>';
     });
@@ -819,6 +1140,9 @@
     setTimeout(function () {
       resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 60);
+
+    saveInputs();
+    updateURL();
   }
 
   /* ============ 事件 ============ */
@@ -830,6 +1154,7 @@
     });
     state.gender = btn.dataset.value;
     document.body.classList.toggle('gender-female', state.gender === 'female');
+    saveInputs();
   });
 
   goalSeg.addEventListener('click', function (e) {
@@ -839,11 +1164,11 @@
       b.classList.toggle('active', b === btn);
     });
     state.goal = btn.dataset.value;
+    saveInputs();
   });
 
   calcBtn.addEventListener('click', calculate);
 
-  /* Enter 快捷 */
   [ageEl, heightEl, weightEl, waistEl, neckEl, hipEl, restHREl, bpSysEl, bpDiaEl, glucoseEl].forEach(function (el) {
     el.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
@@ -853,6 +1178,449 @@
     });
   });
 
-  /* 初始化 */
+  /* ============ 快捷预设 ============ */
+  var PRESETS = {
+    adult_male: {
+      gender: 'male', age: 30, height: 175, weight: 72,
+      waist: 82, neck: 38, hip: '', activity: '1.55', goal: 'maintain',
+      restHR: 65, bpSys: 120, bpDia: 78, glucose: 5.2
+    },
+    adult_female: {
+      gender: 'female', age: 28, height: 162, weight: 58,
+      waist: 72, neck: 32, hip: 92, activity: '1.375', goal: 'maintain',
+      restHR: 70, bpSys: 115, bpDia: 75, glucose: 4.9
+    },
+    athlete_male: {
+      gender: 'male', age: 26, height: 178, weight: 75,
+      waist: 78, neck: 40, hip: '', activity: '1.725', goal: 'bulk',
+      restHR: 52, bpSys: 118, bpDia: 72, glucose: 4.8
+    },
+    obese_male: {
+      gender: 'male', age: 45, height: 172, weight: 95,
+      waist: 105, neck: 42, hip: '', activity: '1.2', goal: 'cut',
+      restHR: 88, bpSys: 145, bpDia: 95, glucose: 6.8
+    }
+  };
+
+  function applyPreset(preset) {
+    var p = PRESETS[preset];
+    if (!p) return;
+    state.gender = p.gender;
+    Array.prototype.forEach.call(genderSeg.children, function (b) {
+      b.classList.toggle('active', b.dataset.value === p.gender);
+    });
+    document.body.classList.toggle('gender-female', p.gender === 'female');
+    ageEl.value = p.age;
+    heightEl.value = p.height;
+    weightEl.value = p.weight;
+    waistEl.value = p.waist;
+    neckEl.value = p.neck;
+    hipEl.value = p.hip;
+    activityEl.value = p.activity;
+    state.goal = p.goal;
+    Array.prototype.forEach.call(goalSeg.children, function (b) {
+      b.classList.toggle('active', b.dataset.value === p.goal);
+    });
+    restHREl.value = p.restHR;
+    bpSysEl.value = p.bpSys;
+    bpDiaEl.value = p.bpDia;
+    glucoseEl.value = p.glucose;
+    saveInputs();
+    calculate();
+  }
+
+  document.querySelectorAll('.preset-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      applyPreset(btn.dataset.preset);
+      showToast('已应用预设：' + btn.textContent.trim());
+    });
+  });
+
+  presetExample.addEventListener('click', function () {
+    applyPreset('adult_male');
+    showToast('💡 已填入典型男性示例');
+  });
+
+  /* ============ 清空 ============ */
+  clearBtn.addEventListener('click', function () {
+    if (!confirm('清空所有输入？')) return;
+    ageEl.value = '25';
+    heightEl.value = '170';
+    weightEl.value = '65';
+    waistEl.value = '';
+    neckEl.value = '';
+    hipEl.value = '';
+    restHREl.value = '';
+    bpSysEl.value = '';
+    bpDiaEl.value = '';
+    glucoseEl.value = '';
+    activityEl.value = '1.375';
+    state.gender = 'male';
+    state.goal = 'maintain';
+    Array.prototype.forEach.call(genderSeg.children, function (b) {
+      b.classList.toggle('active', b.dataset.value === 'male');
+    });
+    Array.prototype.forEach.call(goalSeg.children, function (b) {
+      b.classList.toggle('active', b.dataset.value === 'maintain');
+    });
+    document.body.classList.remove('gender-female');
+    resultSection.hidden = true;
+    state.lastResult = null;
+    clearURL();
+    saveInputs();
+    showToast('🧹 已清空');
+  });
+
+  /* ============ 复制全部 ============ */
+  copyAllBtn.addEventListener('click', function () {
+    var r = state.lastResult;
+    if (!r) { showToast('请先计算'); return; }
+    var lines = [
+      '💪 健康计算器报告',
+      '─────────────────',
+      '性别：' + (r.gender === 'male' ? '男' : '女') + ' · 年龄：' + r.age + ' 岁 · 身高：' + r.height + ' cm · 体重：' + r.weight + ' kg',
+      '活动水平系数：' + r.activity + ' · 目标：' + ({ cut: '减脂', maintain: '保持', bulk: '增肌' }[r.goal] || r.goal),
+      ''
+    ];
+    if (r.score != null) lines.push('🏆 健康综合评分：' + r.score + ' / 100');
+    if (r.bioAge != null) lines.push('⏳ 生理年龄估算：' + r.bioAge.toFixed(1) + ' 岁（实际 ' + r.age + ' 岁）');
+    lines.push('📏 BMI：' + fmt1(r.bmi) + ' kg/m²');
+    lines.push('🔥 BMR：' + fmt0(r.bmr) + ' kcal/天');
+    lines.push('⚡ TDEE：' + fmt0(r.tdee) + ' kcal/天');
+    if (r.bodyFat != null) lines.push('💧 体脂率：' + fmt1(r.bodyFat) + '%');
+    if (r.lbm != null) lines.push('🏋️ 瘦体重：' + fmt1(r.lbm) + ' kg');
+    lines.push('🚰 每日饮水：' + fmt1(r.waterMl / 1000) + ' L');
+    lines.push('🍽️ 三大营养素：蛋白 ' + fmt0(r.macros.proteinG) + 'g / 碳水 ' + fmt0(r.macros.carbG) + 'g / 脂肪 ' + fmt0(r.macros.fatG) + 'g（' + fmt0(r.macros.cal) + ' kcal）');
+    if (r.restHR) lines.push('💓 静息心率：' + r.restHR + ' 次/分');
+    if (r.bpSys && r.bpDia) lines.push('🩺 血压：' + r.bpSys + '/' + r.bpDia + ' mmHg');
+    if (r.glucose) lines.push('🩸 空腹血糖：' + fmt1(r.glucose) + ' mmol/L');
+    lines.push('');
+    lines.push('⚠️ 仅供参考，不构成医疗建议。');
+    copyText(lines.join('\n'));
+  });
+
+  /* ============ 导出 CSV ============ */
+  exportCsvBtn.addEventListener('click', function () {
+    var r = state.lastResult;
+    if (!r) { showToast('请先计算'); return; }
+    var lines = [];
+    lines.push('项目,数值,单位');
+    lines.push('性别,' + (r.gender === 'male' ? '男' : '女') + ',');
+    lines.push('年龄,' + r.age + ',岁');
+    lines.push('身高,' + r.height + ',cm');
+    lines.push('体重,' + r.weight + ',kg');
+    lines.push('活动系数,' + r.activity + ',');
+    lines.push('目标,' + ({ cut: '减脂', maintain: '保持', bulk: '增肌' }[r.goal] || r.goal) + ',');
+    if (r.score != null) lines.push('健康评分,' + r.score + ',/100');
+    if (r.bioAge != null) lines.push('生理年龄,' + r.bioAge.toFixed(1) + ',岁');
+    lines.push('BMI,' + fmt1(r.bmi) + ',kg/m²');
+    lines.push('BMR,' + fmt0(r.bmr) + ',kcal/天');
+    lines.push('TDEE,' + fmt0(r.tdee) + ',kcal/天');
+    if (r.bodyFat != null) lines.push('体脂率,' + fmt1(r.bodyFat) + ',%');
+    if (r.lbm != null) lines.push('瘦体重,' + fmt1(r.lbm) + ',kg');
+    lines.push('每日饮水,' + fmt1(r.waterMl / 1000) + ',L');
+    lines.push('目标热量,' + fmt0(r.macros.cal) + ',kcal');
+    lines.push('蛋白质,' + fmt0(r.macros.proteinG) + ',g');
+    lines.push('碳水化合物,' + fmt0(r.macros.carbG) + ',g');
+    lines.push('脂肪,' + fmt0(r.macros.fatG) + ',g');
+    if (r.restHR) lines.push('静息心率,' + r.restHR + ',次/分');
+    if (r.bpSys && r.bpDia) lines.push('血压,' + r.bpSys + '/' + r.bpDia + ',mmHg');
+    if (r.glucose) lines.push('空腹血糖,' + fmt1(r.glucose) + ',mmol/L');
+
+    var csv = lines.join('\r\n');
+    var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    var d = new Date();
+    var ts = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'health-' + ts + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+    showToast('📤 已导出 CSV');
+  });
+
+  /* ============ 分享 ============ */
+  shareBtn.addEventListener('click', function () {
+    var sp = new URLSearchParams();
+    sp.set('g', state.gender);
+    sp.set('a', ageEl.value);
+    sp.set('h', heightEl.value);
+    sp.set('w', weightEl.value);
+    if (waistEl.value) sp.set('wa', waistEl.value);
+    if (neckEl.value) sp.set('ne', neckEl.value);
+    if (hipEl.value) sp.set('hi', hipEl.value);
+    sp.set('ac', activityEl.value);
+    sp.set('go', state.goal);
+    if (restHREl.value) sp.set('hr', restHREl.value);
+    if (bpSysEl.value) sp.set('bs', bpSysEl.value);
+    if (bpDiaEl.value) sp.set('bd', bpDiaEl.value);
+    if (glucoseEl.value) sp.set('gl', glucoseEl.value);
+    var url = location.origin + location.pathname + '#' + sp.toString();
+    copyText(url);
+  });
+
+  function updateURL() {
+    try {
+      var sp = new URLSearchParams();
+      sp.set('g', state.gender);
+      sp.set('a', ageEl.value);
+      sp.set('h', heightEl.value);
+      sp.set('w', weightEl.value);
+      if (waistEl.value) sp.set('wa', waistEl.value);
+      if (neckEl.value) sp.set('ne', neckEl.value);
+      if (hipEl.value) sp.set('hi', hipEl.value);
+      sp.set('ac', activityEl.value);
+      sp.set('go', state.goal);
+      if (restHREl.value) sp.set('hr', restHREl.value);
+      if (bpSysEl.value) sp.set('bs', bpSysEl.value);
+      if (bpDiaEl.value) sp.set('bd', bpDiaEl.value);
+      if (glucoseEl.value) sp.set('gl', glucoseEl.value);
+      var url = location.pathname + '#' + sp.toString();
+      history.replaceState(null, '', url);
+    } catch (e) { /* ignore */ }
+  }
+  function clearURL() {
+    try { history.replaceState(null, '', location.pathname); } catch (e) { /* ignore */ }
+  }
+
+  function loadFromURL() {
+    try {
+      var hash = location.hash.replace(/^#/, '');
+      if (!hash) return false;
+      var sp = new URLSearchParams(hash);
+      if (sp.get('g') === 'female') {
+        state.gender = 'female';
+        Array.prototype.forEach.call(genderSeg.children, function (b) {
+          b.classList.toggle('active', b.dataset.value === 'female');
+        });
+        document.body.classList.add('gender-female');
+      }
+      if (sp.get('a')) ageEl.value = sp.get('a');
+      if (sp.get('h')) heightEl.value = sp.get('h');
+      if (sp.get('w')) weightEl.value = sp.get('w');
+      if (sp.get('wa')) waistEl.value = sp.get('wa');
+      if (sp.get('ne')) neckEl.value = sp.get('ne');
+      if (sp.get('hi')) hipEl.value = sp.get('hi');
+      if (sp.get('ac')) activityEl.value = sp.get('ac');
+      if (sp.get('go')) {
+        state.goal = sp.get('go');
+        Array.prototype.forEach.call(goalSeg.children, function (b) {
+          b.classList.toggle('active', b.dataset.value === state.goal);
+        });
+      }
+      if (sp.get('hr')) restHREl.value = sp.get('hr');
+      if (sp.get('bs')) bpSysEl.value = sp.get('bs');
+      if (sp.get('bd')) bpDiaEl.value = sp.get('bd');
+      if (sp.get('gl')) glucoseEl.value = sp.get('gl');
+      return true;
+    } catch (e) { return false; }
+  }
+
+  /* ============ 持久化 ============ */
+  function saveInputs() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        gender: state.gender,
+        goal: state.goal,
+        age: ageEl.value,
+        height: heightEl.value,
+        weight: weightEl.value,
+        waist: waistEl.value,
+        neck: neckEl.value,
+        hip: hipEl.value,
+        activity: activityEl.value,
+        restHR: restHREl.value,
+        bpSys: bpSysEl.value,
+        bpDia: bpDiaEl.value,
+        glucose: glucoseEl.value
+      }));
+    } catch (e) { /* ignore */ }
+  }
+
+  function loadInputs() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+      var d = JSON.parse(raw);
+      if (!d) return false;
+      if (d.gender === 'female') {
+        state.gender = 'female';
+        Array.prototype.forEach.call(genderSeg.children, function (b) {
+          b.classList.toggle('active', b.dataset.value === 'female');
+        });
+        document.body.classList.add('gender-female');
+      }
+      if (d.goal) {
+        state.goal = d.goal;
+        Array.prototype.forEach.call(goalSeg.children, function (b) {
+          b.classList.toggle('active', b.dataset.value === d.goal);
+        });
+      }
+      if (d.age != null) ageEl.value = d.age;
+      if (d.height != null) heightEl.value = d.height;
+      if (d.weight != null) weightEl.value = d.weight;
+      if (d.waist != null) waistEl.value = d.waist;
+      if (d.neck != null) neckEl.value = d.neck;
+      if (d.hip != null) hipEl.value = d.hip;
+      if (d.activity != null) activityEl.value = d.activity;
+      if (d.restHR != null) restHREl.value = d.restHR;
+      if (d.bpSys != null) bpSysEl.value = d.bpSys;
+      if (d.bpDia != null) bpDiaEl.value = d.bpDia;
+      if (d.glucose != null) glucoseEl.value = d.glucose;
+      return true;
+    } catch (e) { return false; }
+  }
+
+  /* ============ 历史记录 ============ */
+  function loadHistory() {
+    try {
+      var raw = localStorage.getItem(HISTORY_KEY);
+      if (!raw) return;
+      var arr = JSON.parse(raw);
+      if (Array.isArray(arr)) history = arr;
+    } catch (e) { history = []; }
+  }
+  function saveHistory() {
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); } catch (e) { /* ignore */ }
+  }
+
+  function renderHistory() {
+    if (history.length === 0) {
+      historyListEl.innerHTML = '<p class="history-empty">暂无记录</p>';
+    } else {
+      historyListEl.innerHTML = history.map(function (item, idx) {
+        var d = new Date(item.ts);
+        var time = String(d.getMonth() + 1).padStart(2, '0') + '/' +
+                   String(d.getDate()).padStart(2, '0') + ' ' +
+                   String(d.getHours()).padStart(2, '0') + ':' +
+                   String(d.getMinutes()).padStart(2, '0');
+        return '<div class="history-item" data-idx="' + idx + '">' +
+          '<div class="history-meta">' +
+            '<span class="history-title">' + escHtml(item.title) + '</span>' +
+            '<span>' + time + '</span>' +
+          '</div>' +
+          '<div class="history-summary">' + escHtml(item.summary) + '</div>' +
+          '<button class="history-del" data-del="' + idx + '" title="删除">✕</button>' +
+        '</div>';
+      }).join('');
+    }
+    historyCountEl.textContent = '(' + history.length + ')';
+  }
+
+  historyBtn.addEventListener('click', function () {
+    historyBackdrop.hidden = false;
+    historyDrawer.classList.add('open');
+    renderHistory();
+  });
+  function closeHistory() {
+    historyBackdrop.hidden = true;
+    historyDrawer.classList.remove('open');
+  }
+  historyCloseEl.addEventListener('click', closeHistory);
+  historyBackdrop.addEventListener('click', closeHistory);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && historyDrawer.classList.contains('open')) closeHistory();
+  });
+  historyClearEl.addEventListener('click', function () {
+    if (!confirm('清空全部历史记录？')) return;
+    history = [];
+    saveHistory();
+    renderHistory();
+    showToast('🗑 历史已清空');
+  });
+
+  historyListEl.addEventListener('click', function (e) {
+    var delBtn = e.target.closest('[data-del]');
+    if (delBtn) {
+      var di = parseInt(delBtn.dataset.del, 10);
+      if (!isNaN(di)) { history.splice(di, 1); saveHistory(); renderHistory(); }
+      e.stopPropagation();
+      return;
+    }
+    var item = e.target.closest('.history-item');
+    if (!item) return;
+    var idx = parseInt(item.dataset.idx, 10);
+    var rec = history[idx];
+    if (!rec || !rec.data) return;
+    var d = rec.data;
+    state.gender = d.gender || 'male';
+    state.goal = d.goal || 'maintain';
+    Array.prototype.forEach.call(genderSeg.children, function (b) {
+      b.classList.toggle('active', b.dataset.value === state.gender);
+    });
+    Array.prototype.forEach.call(goalSeg.children, function (b) {
+      b.classList.toggle('active', b.dataset.value === state.goal);
+    });
+    document.body.classList.toggle('gender-female', state.gender === 'female');
+    ageEl.value = d.age;
+    heightEl.value = d.height;
+    weightEl.value = d.weight;
+    waistEl.value = d.waist || '';
+    neckEl.value = d.neck || '';
+    hipEl.value = d.hip || '';
+    activityEl.value = d.activity;
+    restHREl.value = d.restHR || '';
+    bpSysEl.value = d.bpSys || '';
+    bpDiaEl.value = d.bpDia || '';
+    glucoseEl.value = d.glucose || '';
+    closeHistory();
+    calculate();
+    showToast('↩️ 已恢复记录');
+  });
+
+  /* 每次计算后自动存历史（去重：同输入 60 秒内不重复） */
+  var lastHistKey = '';
+  var lastHistTs = 0;
+  function autoSaveHistory(r) {
+    var key = [r.gender, r.age, r.height, r.weight, r.bodyFat, r.restHR, r.bpSys, r.bpDia, r.glucose].join('|');
+    var now = Date.now();
+    if (key === lastHistKey && now - lastHistTs < 60000) return;
+    lastHistKey = key;
+    lastHistTs = now;
+
+    var summary = (r.score != null ? '评分 ' + r.score + ' · ' : '') +
+      'BMI ' + fmt1(r.bmi) + ' · 体脂 ' + (r.bodyFat != null ? fmt1(r.bodyFat) + '%' : '—') +
+      ' · TDEE ' + fmt0(r.tdee) + ' kcal';
+
+    history.unshift({
+      ts: now,
+      title: (r.gender === 'male' ? '👨 ' : '👩 ') + r.age + ' 岁 · ' + r.weight + ' kg',
+      summary: summary,
+      data: {
+        gender: r.gender, age: r.age, height: r.height, weight: r.weight,
+        waist: waistEl.value, neck: neckEl.value, hip: hipEl.value,
+        activity: r.activity, goal: r.goal, restHR: r.restHR,
+        bpSys: r.bpSys, bpDia: r.bpDia, glucose: r.glucose
+      }
+    });
+    if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
+    saveHistory();
+    renderHistory();
+  }
+
+  /* 在 calculate 末尾调用：把 calculate 包一层 */
+  var origCalculate = calculate;
+  calculate = function () {
+    origCalculate();
+    if (state.lastResult) autoSaveHistory(state.lastResult);
+  };
+  // 重新绑定
+  calcBtn.removeEventListener('click', origCalculate);
+  calcBtn.addEventListener('click', calculate);
+
+  /* ============ 打印 ============ */
+  printBtn.addEventListener('click', function () {
+    if (!state.lastResult) { showToast('请先计算'); return; }
+    window.print();
+  });
+
+  /* ============ 初始化 ============ */
+  var fromURL = loadFromURL();
+  if (!fromURL) loadInputs();
   document.body.classList.toggle('gender-female', state.gender === 'female');
+  loadHistory();
+  renderHistory();
 })();
