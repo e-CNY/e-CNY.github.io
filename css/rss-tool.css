@@ -1,20 +1,63 @@
-.rs-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
-.rs-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
-.rs-tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; cursor: pointer; transition: all .15s; }
-.rs-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
+.rs-layout { max-width: 1100px; margin: 0 auto; padding: 0 16px 32px; height: calc(100vh - 130px); min-height: 600px; display: flex; flex-direction: column; }
+@media (max-width: 800px) { .rs-layout { height: auto; } }
 
-.rs-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
-.rs-panel { display: none; }
-.rs-panel.active { display: block; animation: fadeIn .2s; }
+/* Tabs */
+.rs-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; flex-shrink: 0; flex-wrap: wrap; }
+.rs-tab { padding: 8px 20px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .9rem; font-weight: 600; cursor: pointer; transition: all .15s; outline: none; }
+.rs-tab:hover { background: #f5ecd5; }
+.rs-tab.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; box-shadow: 0 2px 4px rgba(138,90,43,.2); }
 
-.rs-textarea { width: 100%; padding: 12px; border: 1px solid #d5c7a8; border-radius: 8px; background: #fff; font-family: monospace; font-size: .9rem; resize: vertical; box-sizing: border-box; margin-bottom: 12px; line-height: 1.5; }
-.rs-textarea:focus { outline: none; border-color: #8a5a2b; }
+/* Content */
+.rs-content { flex: 1; background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; overflow: hidden; }
+.rs-panel { display: none; height: 100%; }
+.rs-panel.active { display: flex; flex-direction: column; animation: fadeIn .2s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-.rs-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; }
-.rs-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; font-weight: bold; }
+/* Split */
+.rs-split { display: flex; gap: 16px; width: 100%; height: 100%; }
+@media (max-width: 800px) { .rs-split { flex-direction: column; } .rs-col { height: 400px; } }
 
-.rs-result-box { margin-top: 16px; background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; padding: 16px; max-height: 400px; overflow-y: auto; font-size: .9rem; line-height: 1.6; color: #3d3226; }
-.rss-item { border-bottom: 1px dashed #e5d9bd; padding-bottom: 12px; margin-bottom: 12px; }
-.rss-item:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
-.rss-title { font-weight: bold; color: #8a5a2b; margin-bottom: 4px; font-size: 1rem; }
-.rss-meta { font-size: .8rem; color: #6b5d47; }
+.rs-col { flex: 1; display: flex; flex-direction: column; min-width: 0; background: #fff; border: 1px solid #d5c7a8; border-radius: 10px; overflow: hidden; }
+.rs-col:focus-within { border-color: #8a5a2b; box-shadow: 0 0 0 2px rgba(138,90,43,.1); }
+
+.rs-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #fdf8ec; border-bottom: 1px solid #d5c7a8; font-weight: bold; color: #4b3f2f; font-size: 0.9rem; flex-shrink: 0; }
+.rs-mini-btn { padding: 2px 8px; font-size: 0.75rem; background: #fff; border: 1px solid #d5c7a8; border-radius: 4px; cursor: pointer; color: #8a5a2b; font-weight: 600; transition: all 0.15s; }
+.rs-mini-btn:hover { background: #f5ecd5; border-color: #b08a5a; }
+
+.rs-textarea { flex: 1; width: 100%; padding: 16px; border: none; resize: none; outline: none; font-family: "SFMono-Regular", Consolas, Menlo, monospace; font-size: .9rem; line-height: 1.6; color: #3d3226; white-space: pre; overflow: auto; }
+.rs-textarea:focus { background: #fafbfc; }
+
+/* 操作栏 */
+.rs-action-bar { padding: 10px 16px; background: #f9f3e3; border-top: 1px solid #e5d9bd; text-align: right; flex-shrink: 0; }
+.rs-btn { padding: 8px 20px; border-radius: 6px; border: 1px solid #d5c7a8; background: #fff; color: #3d3226; cursor: pointer; font-size: .9rem; font-weight: bold; transition: all .15s; outline: none; }
+.rs-btn:hover { background: #f5ecd5; border-color: #b08a5a; }
+.rs-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.rs-btn.primary:hover { background: #6b8c4e; }
+
+/* 视图切换 */
+.rs-view-toggle { display: flex; background: #efe6d0; border-radius: 6px; padding: 2px; }
+.rs-toggle-btn { padding: 4px 12px; border: none; background: transparent; font-size: 0.8rem; font-weight: 600; color: #6b5d47; border-radius: 4px; cursor: pointer; transition: all 0.15s; outline: none; }
+.rs-toggle-btn.active { background: #fff; color: #8a5a2b; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+
+/* 结果区 */
+.rs-result-box { flex: 1; overflow-y: auto; padding: 16px; font-size: 0.9rem; color: #3d3226; line-height: 1.6; background: #fafafa; display: none; }
+.rs-result-box.active { display: block; }
+.rs-empty { text-align: center; color: #8a7a5f; margin-top: 40px; font-size: 0.95rem; }
+
+/* RSS 卡片 */
+.rss-feed-header { background: #fdf8ec; border: 1px solid #e5d9bd; border-radius: 8px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 16px; }
+.rss-feed-icon { width: 48px; height: 48px; background: #ffedd5; color: #ea580c; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+.rss-feed-info h3 { margin: 0 0 4px 0; font-size: 1.1rem; color: #3d3226; }
+.rss-feed-info p { margin: 0; font-size: 0.8rem; color: #8a7a5f; }
+
+.rss-item { background: #fff; border: 1px solid #e5d9bd; border-radius: 8px; padding: 16px; margin-bottom: 12px; transition: box-shadow 0.15s; }
+.rss-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.rss-title { font-weight: bold; margin-bottom: 8px; font-size: 1.05rem; }
+.rss-title a { color: #8a5a2b; text-decoration: none; }
+.rss-title a:hover { text-decoration: underline; }
+.rss-meta { font-size: 0.8rem; color: #8a7a5f; display: flex; gap: 12px; margin-bottom: 8px; }
+.rss-desc { font-size: 0.9rem; color: #4b3f2f; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); background: rgba(61, 50, 38, 0.92); color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; z-index: 9999; max-width: 80vw; text-align: center; word-break: break-all; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }

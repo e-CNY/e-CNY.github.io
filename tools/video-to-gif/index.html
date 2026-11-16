@@ -10,15 +10,17 @@
 <link rel="stylesheet" href="../../css/video-to-gif.css">
 </head>
 <body>
-<div class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🎞️ 视频转序列帧</h1>
-  <p>精准逐帧截取视频画面，打包下载 JPG / PNG / WebP 序列，支持裁剪与调速</p>
+  <p>精准逐帧截取视频画面，支持调速、滤镜，打包导出 JPG / PNG / WebP。</p>
   <a href="../../index.html">← 返回首页</a>
-</div>
+</header>
 
 <main class="vg-wrap">
   <!-- 左侧操作面板 -->
-  <div class="control-panel">
+  <aside class="control-panel">
+    
+    <!-- 1. 上传 -->
     <div class="panel-section">
       <label class="section-title">📁 1. 上传视频</label>
       <div class="upload-box" id="drop-zone">
@@ -26,41 +28,73 @@
         <small>支持 MP4 / WebM / OGG 等</small>
         <input type="file" id="file-input" accept="video/mp4,video/webm,video/ogg" hidden>
       </div>
+      <div id="video-info" class="video-info" style="display:none;">
+        <div><span>分辨率:</span> <b id="info-res">-</b></div>
+        <div><span>时长:</span> <b id="info-duration">-</b></div>
+        <div><span>大小:</span> <b id="info-size">-</b></div>
+      </div>
     </div>
 
-    <div id="settings" style="display: none;">
-      <!-- 时间设置 -->
+    <div id="settings" style="display: none; flex-direction: column; gap: 20px;">
+      <!-- 2. 截取设置 -->
       <div class="panel-section">
-        <label class="section-title">✂️ 2. 截取片段</label>
+        <label class="section-title">✂️ 2. 截取设置</label>
         <div class="time-info">
           <span id="current-time">00:00</span> / <span id="duration">00:00</span>
         </div>
+        
+        <div class="slider-group">
+          <label>提取方式</label>
+          <select id="extract-mode">
+            <option value="fps">按帧率 (FPS) 提取</option>
+            <option value="interval">按时间间隔提取</option>
+          </select>
+        </div>
+
+        <div class="slider-group" id="group-fps">
+          <label>抽帧帧率 (FPS)</label>
+          <select id="fps-select">
+            <option value="5">5 帧/秒 (最小体积)</option>
+            <option value="10" selected>10 帧/秒 (推荐)</option>
+            <option value="15">15 帧/秒</option>
+            <option value="24">24 帧/秒 (电影)</option>
+            <option value="30">30 帧/秒 (流畅)</option>
+            <option value="60">60 帧/秒 (高刷)</option>
+          </select>
+        </div>
+
+        <div class="slider-group" id="group-interval" style="display: none;">
+          <label>提取间隔 (秒)</label>
+          <input type="number" id="interval-select" value="1" step="0.1" min="0.1">
+        </div>
+
         <div class="slider-group">
           <label>起始时间 (秒)</label>
           <div class="row">
             <input type="number" id="start-time" value="0" step="0.1" min="0">
-            <button class="btn-small" id="btn-set-start">设为当前</button>
+            <button class="btn-small" id="btn-set-start">当前</button>
           </div>
         </div>
+        
         <div class="slider-group">
           <label>结束时间 (秒)</label>
           <div class="row">
             <input type="number" id="end-time" value="3" step="0.1" min="0">
-            <button class="btn-small" id="btn-set-end">设为当前</button>
+            <button class="btn-small" id="btn-set-end">当前</button>
           </div>
         </div>
       </div>
 
-      <!-- 高级画面设置 -->
+      <!-- 3. 处理与滤镜 -->
       <div class="panel-section">
-        <label class="section-title">🎨 3. 画面与速度</label>
+        <label class="section-title">🎨 3. 处理与滤镜</label>
         <div class="slider-group">
           <label>播放倍速</label>
           <select id="speed-select">
-            <option value="0.5">0.5x (慢动作)</option>
+            <option value="0.5">0.5x (慢动作 - 增加帧)</option>
             <option value="1" selected>1.0x (正常)</option>
             <option value="1.5">1.5x</option>
-            <option value="2">2.0x (快进)</option>
+            <option value="2">2.0x (快进 - 减少帧)</option>
           </select>
         </div>
         <div class="slider-group">
@@ -73,7 +107,7 @@
           </select>
         </div>
         <div class="slider-group">
-          <label>尺寸缩放</label>
+          <label>输出尺寸</label>
           <select id="width-select">
             <option value="320">小图 (320px)</option>
             <option value="480" selected>中等 (480px)</option>
@@ -84,37 +118,15 @@
         </div>
       </div>
 
-      <!-- 格式与参数 -->
+      <!-- 4. 导出 -->
       <div class="panel-section">
-        <label class="section-title">⚙️ 4. 导出设置</label>
+        <label class="section-title">⚙️ 4. 导出格式</label>
         <div class="slider-group">
           <label>图片格式</label>
           <select id="format-select">
             <option value="jpg" selected>JPG 序列 (体积小)</option>
-            <option value="png">PNG 序列 (无损)</option>
-            <option value="webp">WebP 序列 (现代格式)</option>
-          </select>
-        </div>
-        <div class="slider-group" id="fps-group">
-          <label>抽帧频率 (FPS)</label>
-          <select id="fps-select">
-            <optgroup label="普通帧率">
-              <option value="8">8 帧 (体积最小)</option>
-              <option value="10" selected>10 帧 (推荐)</option>
-              <option value="12">12 帧</option>
-              <option value="15">15 帧</option>
-            </optgroup>
-            <optgroup label="视频原生帧率">
-              <option value="24">24 帧 (电影)</option>
-              <option value="25">25 帧 (PAL)</option>
-              <option value="30">30 帧 (NTSC)</option>
-            </optgroup>
-            <optgroup label="高帧率 / 慢动作 (需原视频支持)">
-              <option value="48">48 帧</option>
-              <option value="50">50 帧</option>
-              <option value="60">60 帧 (电竞/高刷)</option>
-              <option value="120">120 帧 (极清慢动作)</option>
-            </optgroup>
+            <option value="png">PNG 序列 (无损支持透明)</option>
+            <option value="webp">WebP 序列 (现代高压缩)</option>
           </select>
         </div>
         <div class="slider-group" id="quality-group">
@@ -127,12 +139,12 @@
           </select>
         </div>
         <div class="slider-group">
-          <label>画布背景色 (处理透明通道用)</label>
+          <label>画布背景色</label>
           <input type="color" id="bg-color" value="#ffffff">
         </div>
       </div>
 
-      <button id="btn-generate" class="primary-btn" style="width: 100%; margin-top: 10px;">✨ 提取序列帧</button>
+      <button id="btn-generate" class="primary-btn" style="width: 100%; margin-top: 4px;">✨ 提取序列帧</button>
       
       <!-- 进度条 -->
       <div class="progress-container" id="progress-container" style="display: none;">
@@ -142,27 +154,49 @@
         <div class="progress-text" id="progress-text">0%</div>
       </div>
     </div>
-  </div>
+  </aside>
 
   <!-- 右侧预览区 -->
   <div class="preview-panel">
     <div class="video-container" id="video-container">
-      <video id="video-player" controls playsinline></video>
-      <div class="empty-hint" id="empty-hint">请上传视频以进行编辑</div>
+      <video id="video-player" controls playsinline crossorigin="anonymous"></video>
+      <div class="empty-hint" id="empty-hint">
+        <div style="font-size: 3rem; margin-bottom: 12px;">🎬</div>
+        请上传视频以开始编辑
+      </div>
     </div>
 
+    <!-- 结果面板 -->
     <div class="result-container" id="result-container" style="display: none;">
       <div class="result-header">
-        <h3>✅ 序列帧生成完毕</h3>
+        <h3>✅ 提取完成 <span id="result-count" style="font-size:0.85rem; color:#6b5d47; font-weight:normal;"></span></h3>
         <button id="btn-download" class="primary-btn">💾 下载 ZIP 压缩包</button>
       </div>
-      <div class="gif-preview" id="preview-box"></div>
+      <div class="gif-preview" id="preview-box">
+        <!-- 预览图 -->
+        <img id="result-thumb" style="display:none; max-width:100%; max-height:300px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); margin-bottom:12px;" />
+        <p style="margin:0; font-size:0.9rem; color:#8a7a5f;">请点击右上角下载完整序列帧</p>
+      </div>
     </div>
   </div>
 </main>
 
+<!-- 自定义确认弹窗 -->
+<div id="confirm-modal" class="vg-modal" style="display: none;">
+  <div class="vg-modal-content">
+    <h3>⚠️ 内存占用警告</h3>
+    <p id="confirm-msg">生成帧数较多，可能会消耗大量内存和处理时间。是否继续？</p>
+    <div class="vg-modal-actions">
+      <button class="vg-btn" onclick="closeConfirm()">取消</button>
+      <button class="vg-btn primary" id="confirm-yes">继续生成</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/jszip.min.js"></script>
-<script src="../../js/video-to-gif.js"></script>
+<script src="../../js/video-to-gif.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
 </html>

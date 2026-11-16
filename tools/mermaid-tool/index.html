@@ -10,14 +10,16 @@
 <link rel="stylesheet" href="../../css/mermaid-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🧠 架构图 & 脑图工具</h1>
-  <p>支持 Mermaid 语法，实时渲染流程图、时序图、甘特图、状态图等 8 种图表。</p>
+  <p>支持 Mermaid 语法，实时渲染流程图、时序图、脑图等 8 种图表。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="mm-layout" style="padding-top: 0;">
+<main class="mm-layout">
   <div class="mm-container">
+    
+    <!-- 左侧代码区 -->
     <div class="mm-col">
       <div class="mm-toolbar">
         <select id="mm-sample" class="mm-select">
@@ -28,24 +30,58 @@
           <option value="state">状态图 (State)</option>
           <option value="class">类图 (Class)</option>
           <option value="er">实体关系图 (ER)</option>
+          <option value="pie">饼图 (Pie)</option>
         </select>
-        <select id="mm-theme" class="mm-select">
-          <option value="default">默认主题</option>
-          <option value="dark">暗黑主题</option>
-          <option value="forest">森林主题</option>
-          <option value="neutral">中性主题</option>
+        <select id="mm-theme" class="mm-select" style="flex: 0 0 100px;">
+          <option value="default">默认</option>
+          <option value="dark">暗黑</option>
+          <option value="forest">森林</option>
+          <option value="neutral">中性</option>
         </select>
+        <label class="mm-checkbox-label">
+          <input type="checkbox" id="mm-auto-render" checked> 实时渲染
+        </label>
         <button id="btn-render" class="mm-btn primary">🔄 渲染</button>
       </div>
-      <textarea id="mm-code" class="mm-textarea" spellcheck="false"></textarea>
-    </div>
-    <div class="mm-col">
-      <div class="mm-preview-wrap">
-        <div id="mm-preview" class="mermaid"></div>
+      
+      <div class="mm-editor-wrap">
+        <textarea id="mm-code" class="mm-textarea" spellcheck="false" placeholder="在此输入 Mermaid 代码..."></textarea>
+        <div class="mm-editor-actions">
+          <button id="btn-download-mmd" class="mm-mini-btn">💾 下载源码</button>
+          <button id="btn-clear-code" class="mm-mini-btn danger">🗑️ 清空</button>
+        </div>
       </div>
     </div>
+
+    <!-- 右侧预览区 -->
+    <div class="mm-col">
+      <div class="mm-preview-header">
+        <span>👁️ 实时预览</span>
+        <div class="mm-preview-actions">
+          <button id="btn-zoom-in" class="mm-icon-btn" title="放大">➕</button>
+          <button id="btn-zoom-out" class="mm-icon-btn" title="缩小">➖</button>
+          <button id="btn-zoom-reset" class="mm-icon-btn" title="重置缩放">🔄</button>
+          <button id="btn-fullscreen" class="mm-icon-btn" title="全屏查看">⛶</button>
+          <span class="mm-divider">|</span>
+          <button id="btn-download-svg" class="mm-btn">⬇️ SVG</button>
+          <button id="btn-download-png" class="mm-btn">⬇️ PNG</button>
+        </div>
+      </div>
+      
+      <div class="mm-preview-wrap" id="preview-wrap">
+        <div id="mm-preview" class="mermaid"></div>
+        <div id="mm-error" class="mm-error-overlay" style="display: none;">
+          <div style="font-size:2rem; margin-bottom:10px;">⚠️</div>
+          <div class="err-msg">语法错误</div>
+        </div>
+      </div>
+    </div>
+    
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/mermaid.min.js"></script>
 <script src="../../js/mermaid-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

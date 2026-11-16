@@ -10,25 +10,45 @@
 <link rel="stylesheet" href="../../css/storage-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🗄️ 浏览器存储查看器</h1>
-  <p>查看、新增、删除当前域名下的 LocalStorage 与 SessionStorage。</p>
+  <p>查看、管理、导入导出当前域名的 LocalStorage 与 SessionStorage。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="st-layout" style="padding-top: 0;">
+<main class="st-layout">
   <div class="st-tabs">
-    <button class="st-tab active" data-target="panel-local">LocalStorage</button>
-    <button class="st-tab" data-target="panel-session">SessionStorage</button>
+    <button class="st-tab active" data-target="panel-local">💾 LocalStorage</button>
+    <button class="st-tab" data-target="panel-session">⏳ SessionStorage</button>
   </div>
 
   <div class="st-content">
+    
+    <!-- 顶部工具栏 -->
     <div class="st-toolbar">
-      <button id="btn-refresh" class="st-btn">🔄 刷新列表</button>
-      <button id="btn-add" class="st-btn primary">➕ 新增键值对</button>
-      <button id="btn-clear" class="st-btn danger">🗑️ 清空当前存储</button>
+      <div class="st-search-wrap">
+        <span class="st-search-icon">🔍</span>
+        <input type="text" id="st-search" class="st-search" placeholder="搜索 Key 或 Value...">
+      </div>
+      
+      <div class="st-actions">
+        <button id="btn-refresh" class="st-btn">🔄 刷新</button>
+        <button id="btn-add" class="st-btn primary">➕ 新增</button>
+        <button id="btn-export" class="st-btn">📤 导出备份</button>
+        <button id="btn-import" class="st-btn">📥 导入</button>
+        <button id="btn-clear" class="st-btn danger">🗑️ 清空</button>
+        <input type="file" id="import-file" accept=".json" hidden>
+      </div>
     </div>
     
+    <!-- 统计栏 -->
+    <div class="st-stats-bar">
+      <span>当前存储: <b id="st-stat-type">LocalStorage</b></span>
+      <span>总条数: <b id="st-stat-count">0</b></span>
+      <span>占用空间: <b id="st-stat-size">0 B</b></span>
+    </div>
+
+    <!-- 表格区 -->
     <div class="st-table-wrap">
       <table class="st-table">
         <thead>
@@ -42,10 +62,55 @@
           <!-- JS 渲染 -->
         </tbody>
       </table>
-      <div id="st-empty" class="st-empty" style="display: none;">当前存储为空</div>
+      <div id="st-empty" class="st-empty" style="display: none;">
+        <div style="font-size:2rem; margin-bottom:10px;">📭</div>
+        当前存储为空
+      </div>
     </div>
+
   </div>
 </main>
+
+<!-- 编辑/新增 模态框 -->
+<div id="edit-modal" class="st-modal" style="display: none;">
+  <div class="st-modal-content">
+    <div class="st-modal-header">
+      <h3 id="modal-title">新增键值对</h3>
+      <button class="st-modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="st-modal-body">
+      <label>键名 (Key)</label>
+      <input type="text" id="modal-key" class="st-input" placeholder="请输入键名" autocomplete="off">
+      
+      <label>值 (Value)</label>
+      <textarea id="modal-value" class="st-textarea" rows="6" placeholder="请输入值。如果是 JSON 格式，系统会自动校验并格式化。"></textarea>
+      <div id="json-hint" style="font-size:0.75rem; color:#7ba05b; margin-top:4px; display:none;">✅ 有效的 JSON 格式</div>
+      <div id="json-error" style="font-size:0.75rem; color:#a8452a; margin-top:4px; display:none;">❌ 无效的 JSON 格式</div>
+    </div>
+    <div class="st-modal-footer">
+      <button class="st-btn" onclick="closeModal()">取消</button>
+      <button class="st-btn primary" id="modal-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 删除确认 模态框 -->
+<div id="confirm-modal" class="st-modal" style="display: none;">
+  <div class="st-modal-content" style="width: 320px; text-align: center;">
+    <div class="st-modal-body" style="padding: 24px 16px;">
+      <div style="font-size: 2rem; margin-bottom: 12px;">⚠️</div>
+      <h3 style="margin:0 0 8px 0; font-size:1.1rem; color:#4b3f2f;" id="confirm-title">确定删除？</h3>
+      <p style="margin:0; font-size:0.85rem; color:#6b5d47; line-height:1.5;" id="confirm-desc">此操作不可逆。</p>
+    </div>
+    <div class="st-modal-footer" style="justify-content: center; gap: 12px; padding-bottom: 20px;">
+      <button class="st-btn" onclick="closeConfirm()">取消</button>
+      <button class="st-btn danger" id="confirm-yes">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/storage-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

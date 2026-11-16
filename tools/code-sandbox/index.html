@@ -10,53 +10,85 @@
 <link rel="stylesheet" href="../../css/code-sandbox.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>💻 在线代码沙盒</h1>
-  <p>HTML / CSS / JS 实时预览，支持自动保存与多格式导出。</p>
+  <p>HTML / CSS / JS 实时预览，支持自动保存、控制台捕获与打包导出。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="cs-layout" style="padding-top: 0;">
+<main class="cs-layout">
   <div class="cs-toolbar">
     <div class="cs-group">
-      <button id="btn-run" class="cs-btn primary">▶️ 运行代码</button>
+      <button id="btn-run" class="cs-btn primary">▶️ 运行代码 (Ctrl+S)</button>
       <button id="btn-clear" class="cs-btn danger">🗑️ 清空全部</button>
+    </div>
+    <div class="cs-group">
       <button id="btn-download-merge" class="cs-btn">📦 导出单文件 HTML</button>
-      <button id="btn-download-three" class="cs-btn">📁 导出 3 个文件</button>
+      <button id="btn-download-zip" class="cs-btn">📁 打包下载 ZIP</button>
     </div>
   </div>
   
   <div class="cs-container">
-    <div class="cs-col">
-      <div class="cs-tab-header">
-        <span class="active">HTML</span>
-        <button class="cs-copy-btn" data-target="ed-html">📋 复制</button>
+    <!-- 代码编辑区 -->
+    <div class="cs-editors">
+      <div class="cs-col">
+        <div class="cs-tab-header">
+          <span class="active">HTML</span>
+          <button class="cs-copy-btn" data-target="ed-html">📋 复制</button>
+        </div>
+        <div class="cs-editor-wrap">
+          <div class="cs-line-nums" id="nums-html">1</div>
+          <textarea id="ed-html" class="cs-editor" spellcheck="false" placeholder="<h1>Hello World</h1>"></textarea>
+        </div>
       </div>
-      <textarea id="ed-html" class="cs-editor" spellcheck="false" placeholder="<h1>Hello World</h1>"></textarea>
+      
+      <div class="cs-col">
+        <div class="cs-tab-header">
+          <span class="active">CSS</span>
+          <button class="cs-copy-btn" data-target="ed-css">📋 复制</button>
+        </div>
+        <div class="cs-editor-wrap">
+          <div class="cs-line-nums" id="nums-css">1</div>
+          <textarea id="ed-css" class="cs-editor" spellcheck="false" placeholder="body { color: red; }"></textarea>
+        </div>
+      </div>
+      
+      <div class="cs-col">
+        <div class="cs-tab-header">
+          <span class="active">JS</span>
+          <button class="cs-copy-btn" data-target="ed-js">📋 复制</button>
+        </div>
+        <div class="cs-editor-wrap">
+          <div class="cs-line-nums" id="nums-js">1</div>
+          <textarea id="ed-js" class="cs-editor" spellcheck="false" placeholder="console.log('Hello');"></textarea>
+        </div>
+      </div>
     </div>
-    <div class="cs-col">
-      <div class="cs-tab-header">
-        <span class="active">CSS</span>
-        <button class="cs-copy-btn" data-target="ed-css">📋 复制</button>
+
+    <!-- 预览与控制台区 -->
+    <div class="cs-preview-area">
+      <div class="cs-preview-box">
+        <div class="cs-tab-header">
+          <span style="color:#7ba05b; font-weight:bold;">👁️ 预览</span>
+          <button id="btn-refresh-preview" class="cs-copy-btn" style="color:#2563eb; font-weight:bold;">🔄 刷新</button>
+        </div>
+        <iframe id="preview-frame" class="cs-preview"></iframe>
       </div>
-      <textarea id="ed-css" class="cs-editor" spellcheck="false" placeholder="body { color: red; }"></textarea>
-    </div>
-    <div class="cs-col">
-      <div class="cs-tab-header">
-        <span class="active">JS</span>
-        <button class="cs-copy-btn" data-target="ed-js">📋 复制</button>
+      
+      <div class="cs-console-box">
+        <div class="cs-tab-header" style="background:#1e1e1e; border-bottom-color:#333;">
+          <span style="color:#fff;">💻 控制台</span>
+          <button id="btn-clear-console" class="cs-copy-btn" style="color:#aaa;">🗑️ 清空</button>
+        </div>
+        <div id="console-output" class="cs-console"></div>
       </div>
-      <textarea id="ed-js" class="cs-editor" spellcheck="false" placeholder="console.log('Hello');"></textarea>
-    </div>
-    <div class="cs-col">
-      <div class="cs-tab-header">
-        <span class="active" style="color:#7ba05b;">预览</span>
-        <button id="btn-refresh-preview" class="cs-copy-btn" style="color:#2563eb;">🔄 刷新</button>
-      </div>
-      <iframe id="preview-frame" class="cs-preview"></iframe>
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
+<script src="../../js/libs/jszip.min.js"></script>
 <script src="../../js/code-sandbox.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

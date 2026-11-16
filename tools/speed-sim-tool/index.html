@@ -10,49 +10,96 @@
 <link rel="stylesheet" href="../../css/speed-sim-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
-  <h1>⏱️ 前端测速模拟器</h1>
-  <p>模拟不同网络环境下的资源瀑布流加载耗时。</p>
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
+  <h1>⏱️ 前端资源测速模拟器</h1>
+  <p>模拟真实网络环境与 HTTP 并发限制下的资源瀑布流加载耗时。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="ss-layout" style="padding-top: 0;">
+<main class="ss-layout">
   <div class="ss-container">
     <!-- 左侧配置 -->
     <aside class="ss-sidebar">
-      <h3>1. 网络环境</h3>
-      <div class="ss-row">
-        <label>网络预设</label>
-        <select id="ss-network">
-          <option value="4g">4G (10Mbps / 50ms)</option>
-          <option value="3g" selected>3G (1.5Mbps / 200ms)</option>
-          <option value="slow3g">慢速 3G (400Kbps / 400ms)</option>
-          <option value="wifi">Wi-Fi (50Mbps / 10ms)</option>
-          <option value="custom">自定义</option>
-        </select>
+      
+      <!-- 1. 网络环境 -->
+      <div class="ss-section">
+        <h3>1. 网络环境</h3>
+        <div class="ss-row">
+          <label>网络预设</label>
+          <select id="ss-network">
+            <option value="5g">5G (100Mbps / 10ms)</option>
+            <option value="4g">4G (15Mbps / 50ms)</option>
+            <option value="3g" selected>3G (1.5Mbps / 200ms)</option>
+            <option value="slow3g">慢速 3G (400Kbps / 400ms)</option>
+            <option value="wifi">Wi-Fi (50Mbps / 5ms)</option>
+            <option value="custom">自定义</option>
+          </select>
+        </div>
+        <div class="ss-row">
+          <label>带宽 (Mbps)</label>
+          <input type="number" id="ss-bw" value="1.5" step="0.1" min="0.1">
+        </div>
+        <div class="ss-row">
+          <label>RTT 延迟 (ms)</label>
+          <input type="number" id="ss-rtt" value="200" min="0">
+        </div>
+        <div class="ss-row">
+          <label>最大并发数</label>
+          <select id="ss-concurrency">
+            <option value="2">2 个 (极慢)</option>
+            <option value="6" selected>6 个 (HTTP/1.1 标准)</option>
+            <option value="10">10 个 (现代浏览器)</option>
+            <option value="100">不限 (HTTP/2 多路复用)</option>
+          </select>
+        </div>
       </div>
-      <div class="ss-row"><label>带宽 (Mbps)</label><input type="number" id="ss-bw" value="1.5" step="0.1"></div>
-      <div class="ss-row"><label>RTT 延迟 (ms)</label><input type="number" id="ss-rtt" value="200"></div>
 
-      <h3>2. 资源列表</h3>
-      <div id="ss-res-list" class="ss-res-list"></div>
-      <button id="btn-add-res" class="ss-btn">➕ 添加资源</button>
-      <button id="btn-simulate" class="ss-btn primary" style="margin-top: 10px; width: 100%;">▶️ 开始模拟</button>
+      <!-- 2. 资源列表 -->
+      <div class="ss-section" style="flex:1; display:flex; flex-direction:column; min-height:0;">
+        <h3 style="display:flex; justify-content:space-between; align-items:center;">
+          <span>2. 资源列表</span>
+          <span style="font-size:0.75rem; font-weight:normal; color:#8a7a5f;">共 <b id="ss-total-count">0</b> 项</span>
+        </h3>
+        <div id="ss-res-list" class="ss-res-list"></div>
+        
+        <div class="ss-tool-row">
+          <button id="btn-add-res" class="ss-btn">➕ 添加</button>
+          <button id="btn-reset-res" class="ss-btn">🔄 重置</button>
+        </div>
+      </div>
+
+      <button id="btn-simulate" class="ss-btn primary ss-btn-lg">▶️ 开始模拟</button>
     </aside>
 
     <!-- 右侧图表 -->
     <div class="ss-main">
+      <!-- 统计头部 -->
       <div class="ss-header">
-        <span>资源名称</span>
-        <span class="ss-time-ruler" id="ss-time-ruler"></span>
+        <div class="ss-header-info">
+          <span>资源名称</span>
+        </div>
+        <div class="ss-time-ruler" id="ss-time-ruler"></div>
       </div>
+      
+      <!-- 瀑布流主体 -->
       <div class="ss-waterfall" id="ss-waterfall">
+        <!-- 背景网格 -->
+        <div class="ss-grid-lines" id="ss-grid-lines"></div>
         <!-- 渲染区域 -->
       </div>
-      <div id="ss-summary" class="ss-summary"></div>
+      
+      <!-- 底部统计 -->
+      <div id="ss-summary" class="ss-summary">
+        <div class="ss-stat-box"><span>总请求</span><b id="stat-req">0</b></div>
+        <div class="ss-stat-box"><span>总数据量</span><b id="stat-size">0 KB</b></div>
+        <div class="ss-stat-box"><span>预计加载</span><b id="stat-time" style="color:#7ba05b;">0.00s</b></div>
+      </div>
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/speed-sim-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

@@ -10,22 +10,35 @@
 <link rel="stylesheet" href="../../css/screen-recorder.css">
 </head>
 <body>
-<div class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🎥 在线屏幕录制</h1>
-  <p>无需安装，原生支持优先导出 MP4 或 WebM 格式，支持录制麦克风与系统声音</p>
+  <p>无水印、无需安装。支持原生导出 MP4 / WebM，支持混音录制。</p>
   <a href="../../index.html">← 返回首页</a>
-</div>
+</header>
 
 <main class="recorder-wrap">
+  <!-- 录制控制台 -->
   <div class="control-panel">
     <div class="options">
       <label class="checkbox-label">
         <input type="checkbox" id="opt-mic" checked>
-        🎙️ 录制麦克风声音
+        🎙️ 录制麦克风
+      </label>
+      <label class="checkbox-label" title="Mac 系统的 Chrome 默认不支持直接录系统音频，需安装虚拟声卡">
+        <input type="checkbox" id="opt-system-audio">
+        🔊 录制系统声音
       </label>
       <label class="checkbox-label">
-        <input type="checkbox" id="opt-system-audio">
-        🔊 录制系统声音 (需浏览器支持)
+        <input type="checkbox" id="opt-countdown" checked>
+        ⏱️ 3 秒倒计时
+      </label>
+      <label class="checkbox-label" style="gap: 4px;">
+        🎞️ 画质:
+        <select id="opt-quality" class="quality-select">
+          <option value="8000000">超清 (8Mbps)</option>
+          <option value="5000000" selected>高清 (5Mbps)</option>
+          <option value="2500000">标清 (2.5Mbps)</option>
+        </select>
       </label>
     </div>
     
@@ -33,25 +46,43 @@
       <button id="btn-start" class="primary-btn">🔴 开始录制</button>
       <button id="btn-pause" class="secondary-btn" disabled>⏸️ 暂停</button>
       <button id="btn-stop" class="secondary-btn" disabled>⏹️ 停止</button>
+      <button id="btn-restart" class="secondary-btn" disabled style="display:none;">🔄 重录</button>
     </div>
-    <div class="timer" id="timer">00:00:00</div>
+    
+    <div class="timer-wrap">
+      <div class="record-indicator" id="record-indicator"></div>
+      <div class="timer" id="timer">00:00:00</div>
+    </div>
   </div>
 
+  <!-- 倒计时遮罩 -->
+  <div id="countdown-overlay" class="countdown-overlay" style="display: none;">
+    <div class="countdown-number" id="countdown-number">3</div>
+  </div>
+
+  <!-- 预览区 -->
   <div class="preview-container" id="preview-container">
     <div class="empty-hint" id="empty-hint">
-      点击“开始录制”并选择要录制的屏幕区域。<br>
-      录制结束后，可在此预览并下载视频。
+      <div style="font-size:3rem; margin-bottom:12px;">🖥️</div>
+      点击“开始录制”并选择要录制的屏幕区域<br>
+      按 <kbd>Space</kbd> 暂停/继续，按 <kbd>Esc</kbd> 停止
     </div>
-    <video id="preview-video" controls autoplay muted hidden></video>
+    <video id="preview-video" controls playsinline hidden></video>
   </div>
 
+  <!-- 下载栏 -->
   <div class="download-bar" id="download-bar" hidden>
     <button id="btn-download" class="primary-btn">💾 下载视频</button>
-    <span class="file-size" id="file-size"></span>
+    <div class="file-info">
+      <span class="file-size" id="file-size"></span>
+      <span class="file-format" id="file-format"></span>
+    </div>
   </div>
 </main>
 
-<script src="../../js/screen-recorder.js"></script>
+<div id="toast" class="toast"></div>
+
+<script src="../../js/screen-recorder.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
 </html>

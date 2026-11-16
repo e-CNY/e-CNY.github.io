@@ -16,7 +16,7 @@
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="cf-layout" style="padding-top: 0;">
+<main class="cf-layout">
   <div class="cf-toolbar">
     <div class="cf-group">
       <select id="cf-language" class="cf-select">
@@ -41,24 +41,41 @@
     </div>
 
     <div class="cf-group">
-      <button id="btn-format" class="cf-btn primary">✨ 格式化/美化</button>
+      <button id="btn-format" class="cf-btn primary">✨ 格式化</button>
       <button id="btn-minify" class="cf-btn">🗜️ 极限压缩</button>
-      <button id="btn-copy" class="cf-btn">📋 复制结果</button>
+      <button id="btn-copy" class="cf-btn">📋 复制</button>
+      <button id="btn-download" class="cf-btn">💾 下载</button>
       <button id="btn-clear" class="cf-btn danger">🗑️ 清空</button>
     </div>
   </div>
 
   <div class="cf-container">
+    <!-- 左侧输入 -->
     <div class="cf-col">
-      <div class="cf-col-header">输入代码</div>
-      <textarea id="cf-input" class="cf-textarea" spellcheck="false" placeholder="在此粘贴代码..."></textarea>
+      <div class="cf-col-header">
+        <span>📝 输入代码 (支持拖拽文件)</span>
+        <label class="cf-upload-btn">📂 导入<input type="file" id="cf-file" hidden></label>
+      </div>
+      <div class="cf-editor-wrap">
+        <div class="cf-line-numbers" id="line-nums-in">1</div>
+        <textarea id="cf-input" class="cf-textarea" spellcheck="false" placeholder="在此粘贴代码，或拖拽代码文件到这里..."></textarea>
+      </div>
     </div>
+    
+    <!-- 右侧输出 -->
     <div class="cf-col">
-      <div class="cf-col-header">输出结果 <span id="cf-status"></span></div>
-      <textarea id="cf-output" class="cf-textarea" spellcheck="false" readonly placeholder="格式化结果..."></textarea>
+      <div class="cf-col-header">
+        <span>✨ 输出结果 <span id="cf-status"></span></span>
+      </div>
+      <div class="cf-editor-wrap">
+        <div class="cf-line-numbers" id="line-nums-out">1</div>
+        <textarea id="cf-output" class="cf-textarea" spellcheck="false" readonly placeholder="格式化结果将显示在这里..."></textarea>
+      </div>
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
 
 <!-- Prettier 核心与插件（本地化引入） -->
 <script src="../../js/libs/prettier/standalone.min.js"></script>

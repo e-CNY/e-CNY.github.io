@@ -10,86 +10,121 @@
 <link rel="stylesheet" href="../../css/wordcloud.css">
 </head>
 <body>
-<div class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>☁️ 文字云生成器</h1>
-  <p>智能词频统计 / 自定义形状 / 多格式高清导出</p>
+  <p>智能词频统计 / 自定义形状 / 多格式高清导出，全程本地渲染。</p>
   <a href="../../index.html">← 返回首页</a>
-</div>
+</header>
 
 <main class="wordcloud-wrap">
   <div class="layout-grid">
+    
     <!-- 左侧控制面板 -->
-    <div class="control-panel">
+    <aside class="control-panel">
+      
+      <!-- 1. 文本输入 -->
       <div class="panel-section">
-        <label class="section-title">📝 输入文本内容</label>
+        <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>📝 输入文本</span>
+          <span id="char-count" class="count" style="font-size:0.75rem; font-family:monospace;">0 / 10000</span>
+        </div>
         <textarea id="input-text" placeholder="在此粘贴长文本（建议不超过 1 万字）..."></textarea>
-        <div class="input-info">
-          <span class="hint">提示：词频越集中，生成的形状越饱满</span>
-          <span id="char-count" class="count">0 / 10000</span>
+        <div class="row" style="margin-top: 4px;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="enable-stopwords" checked> 
+            过滤常见停用词（的、了、是、the、a...）
+          </label>
         </div>
       </div>
 
+      <!-- 2. 字体设置 -->
       <div class="panel-section">
         <label class="section-title">🔤 字体设置</label>
         <div class="row">
           <label>当前字体：</label>
-          <span id="font-status" class="font-status">默认字体</span>
+          <span id="font-status" class="font-status">系统默认字体</span>
         </div>
         <div class="file-upload-wrapper">
           <input type="file" id="font-upload" accept=".ttf,.otf,.woff,.woff2" hidden>
-          <button id="btn-upload-font" class="secondary-btn" style="width: 100%; font-size: 0.85rem;">📁 上传本地字体 (.ttf/.otf/.woff)</button>
+          <button id="btn-upload-font" class="secondary-btn" style="width: 100%; font-size: 0.85rem;">📁 上传本地字体</button>
         </div>
       </div>
 
+      <!-- 3. 形状与背景 -->
       <div class="panel-section">
         <label class="section-title">🎨 形状与背景</label>
         <div class="row">
-          <label>形状：</label>
+          <label>基础形状：</label>
           <select id="shape-type">
             <option value="circle">圆形</option>
             <option value="cardioid">心形</option>
             <option value="star">五角星</option>
             <option value="diamond">菱形</option>
             <option value="square">正方形</option>
+            <option value="custom">自定义图片（需PNG）</option>
           </select>
+        </div>
+        <div class="row" id="custom-shape-row" style="display:none;">
+          <label>遮罩图：</label>
+          <div style="flex:1; display:flex; align-items:center; gap:8px;">
+            <input type="file" id="shape-upload" accept="image/png,image/jpeg" style="display:none;">
+            <button class="secondary-btn" id="btn-upload-shape" style="flex:1; padding:6px; font-size:0.8rem;">📸 上传遮罩图</button>
+            <span id="shape-file-name" style="font-size:0.75rem; color:#8a5a2b; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">未上传</span>
+          </div>
         </div>
         <div class="row">
           <label>背景色：</label>
           <div class="bg-controls">
             <input type="color" id="bg-color" value="#ffffff">
             <label class="checkbox-label" title="仅在导出 PNG/WebP 时生效">
-              <input type="checkbox" id="transparent-bg"> 透明背景
+              <input type="checkbox" id="transparent-bg"> 透明
             </label>
           </div>
         </div>
       </div>
 
+      <!-- 4. 排版与配色 -->
       <div class="panel-section">
         <label class="section-title">🎯 排版与配色</label>
         <div class="row">
-          <label>配色方案：</label>
+          <label>配色：</label>
           <select id="color-theme">
             <option value="random-dark">随机深色</option>
             <option value="random-light">随机浅色</option>
             <option value="ocean">海洋蓝</option>
             <option value="sunset">日落红</option>
             <option value="forest">森林绿</option>
+            <option value="monochrome">单色</option>
           </select>
         </div>
         <div class="row">
           <label>最大字号：</label>
-          <input type="range" id="max-font-size" min="20" max="120" value="80">
+          <input type="range" id="max-font-size" min="20" max="150" value="80">
           <span id="max-font-size-val">80px</span>
         </div>
         <div class="row">
+          <label>竖向比例：</label>
+          <input type="range" id="rotate-ratio" min="0" max="100" value="30">
+          <span id="rotate-ratio-val">30%</span>
+        </div>
+        <div class="row">
           <label>画布密度：</label>
-          <input type="range" id="grid-size" min="8" max="30" value="16">
-          <span id="grid-size-val">16</span>
+          <input type="range" id="grid-size" min="4" max="32" step="2" value="12">
+          <span id="grid-size-val">12</span>
         </div>
       </div>
 
+      <!-- 5. 导出 -->
       <div class="panel-section">
         <label class="section-title">💾 导出设置</label>
+        <div class="row">
+          <label>清晰度倍数：</label>
+          <select id="export-scale">
+            <option value="1">1x (标准)</option>
+            <option value="2" selected>2x (高清)</option>
+            <option value="3">3x (超清)</option>
+          </select>
+        </div>
         <div class="row">
           <label>图片格式：</label>
           <select id="export-format">
@@ -101,22 +136,29 @@
       </div>
 
       <div class="action-buttons">
-        <button id="btn-generate" class="primary-btn">✨ 生成文字云</button>
-        <button id="btn-download" class="secondary-btn">💾 下载高清图片</button>
+        <button id="btn-generate" class="primary-btn">✨ 重新生成文字云</button>
+        <button id="btn-download" class="secondary-btn">💾 下载图片</button>
       </div>
-    </div>
+    </aside>
 
     <!-- 右侧画布预览 -->
     <div class="preview-panel">
       <div id="canvas-container" class="transparent-grid">
         <canvas id="wordcloud-canvas" width="1000" height="750"></canvas>
+        <!-- Loading 遮罩 -->
+        <div id="loading-overlay" class="loading-overlay" style="display: none;">
+          <div class="spinner"></div>
+          <div style="margin-top:12px; font-weight:bold; color:#8a5a2b;">正在渲染...</div>
+        </div>
       </div>
     </div>
   </div>
 </main>
 
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/wordcloud2.min.js"></script>
-<script src="../../js/wordcloud.js"></script>
+<script src="../../js/wordcloud.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
 </html>

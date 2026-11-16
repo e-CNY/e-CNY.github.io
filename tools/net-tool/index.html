@@ -10,54 +10,88 @@
 <link rel="stylesheet" href="../../css/net-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🌐 网络与底层工具</h1>
-  <p>CIDR 子网划分计算、UA 浏览器解析、HTTP 状态码查询。</p>
+  <p>CIDR 子网划分计算、UA 浏览器精准解析、HTTP 状态码速查。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="nt-layout" style="padding-top: 0;">
+<main class="nt-layout">
   <div class="nt-tabs">
-    <button class="nt-tab active" data-target="panel-cidr">CIDR 子网计算</button>
-    <button class="nt-tab" data-target="panel-ua">UA 浏览器检测</button>
-    <button class="nt-tab" data-target="panel-http">HTTP 状态码</button>
+    <button class="nt-tab active" data-target="panel-cidr">🌐 CIDR 子网计算</button>
+    <button class="nt-tab" data-target="panel-ua">🕵️ UA 浏览器检测</button>
+    <button class="nt-tab" data-target="panel-http">🚦 HTTP 状态码</button>
   </div>
 
   <div class="nt-content">
-    <!-- 1. CIDR 计算 -->
+    <!-- ================= 1. CIDR 计算 ================= -->
     <div id="panel-cidr" class="nt-panel active">
       <div class="nt-row">
         <input type="text" id="cidr-input" class="nt-input" placeholder="输入 IPv4 / CIDR，如 192.168.1.0/24" value="192.168.1.0/24">
         <button id="btn-cidr" class="nt-btn primary">计算</button>
       </div>
-      <div class="nt-result-box" id="cidr-result">
-        <!-- 结果展示 -->
+      
+      <div class="nt-card">
+        <div class="nt-card-header">
+          <span>📊 计算结果</span>
+          <button class="nt-mini-btn" onclick="copyCidrResult()">📋 复制全部</button>
+        </div>
+        <div class="nt-result-box" id="cidr-result">
+          <!-- 结果渲染区 -->
+        </div>
       </div>
     </div>
 
-    <!-- 2. UA 检测 -->
+    <!-- ================= 2. UA 检测 ================= -->
     <div id="panel-ua" class="nt-panel">
-      <div class="nt-row">
+      <div class="nt-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
+        <label style="font-size:0.85rem; font-weight:bold; color:#4b3f2f;">User-Agent 字符串 (已自动填入当前浏览器)</label>
         <textarea id="ua-input" class="nt-textarea" rows="3"></textarea>
       </div>
-      <button id="btn-ua" class="nt-btn primary">解析 UA</button>
-      <div class="nt-result-box" id="ua-result"></div>
+      
+      <div class="nt-row" style="margin-top: 12px;">
+        <button id="btn-ua" class="nt-btn primary">解析 UA 信息</button>
+        <button class="nt-btn" onclick="document.getElementById('ua-input').value = navigator.userAgent; document.getElementById('btn-ua').click();">🔄 重置为当前浏览器</button>
+      </div>
+      
+      <div class="nt-card">
+        <div class="nt-card-header">
+          <span>🔍 解析结果</span>
+          <button class="nt-mini-btn" onclick="copyUaResult()">📋 复制信息</button>
+        </div>
+        <div id="ua-result" class="ua-grid">
+          <!-- UA 结果渲染区 -->
+        </div>
+      </div>
     </div>
 
-    <!-- 3. HTTP 状态码 -->
+    <!-- ================= 3. HTTP 状态码 ================= -->
     <div id="panel-http" class="nt-panel">
       <div class="nt-row">
-        <input type="text" id="http-input" class="nt-input" placeholder="搜索状态码或关键字 (如 404, 重定向)">
+        <input type="text" id="http-input" class="nt-input" placeholder="搜索状态码或关键字 (如 404, 超时, 成功)">
       </div>
+      
+      <div class="http-filters">
+        <button class="http-filter-btn active" data-filter="all">全部</button>
+        <button class="http-filter-btn" data-filter="1xx">1xx 信息</button>
+        <button class="http-filter-btn" data-filter="2xx">2xx 成功</button>
+        <button class="http-filter-btn" data-filter="3xx">3xx 重定向</button>
+        <button class="http-filter-btn" data-filter="4xx">4xx 客户端错误</button>
+        <button class="http-filter-btn" data-filter="5xx">5xx 服务端错误</button>
+      </div>
+
       <div class="nt-table-wrap">
         <table class="nt-table" id="http-table">
-          <thead><tr><th>状态码</th><th>名称</th><th>说明</th></tr></thead>
+          <thead><tr><th width="80">状态码</th><th width="200">名称</th><th>说明</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
+
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
 <script src="../../js/net-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

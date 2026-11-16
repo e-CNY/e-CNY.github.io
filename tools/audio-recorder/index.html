@@ -10,33 +10,49 @@
 <link rel="stylesheet" href="../../css/audio-recorder.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🎙️ 高保真音频工作站</h1>
-  <p>无损录音、波形频谱预览、精准裁剪、音量增益，纯本地处理。</p>
+  <p>多设备选择、实时频谱、可视化裁剪、音量增益，100% 本地处理。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="ar-layout" style="padding-top: 0;">
+<main class="ar-layout">
   <div class="ar-container">
-    <!-- 左侧：录音与频谱 -->
+    <!-- 左侧：录音控制区 -->
     <div class="ar-card">
+      <!-- 录音设置 -->
       <div class="ar-toolbar">
+        <div class="ar-setting-group" id="device-group" style="display:none;">
+          <label>🎤 麦克风:</label>
+          <select id="ar-device-select" class="ar-select"></select>
+        </div>
         <div class="ar-setting-group">
-          <label>视觉特效：</label>
+          <label>🎚️ 码率:</label>
+          <select id="ar-quality-select" class="ar-select">
+            <option value="128000">128 kbps (普通)</option>
+            <option value="256000" selected>256 kbps (高清)</option>
+            <option value="320000">320 kbps (极高)</option>
+          </select>
+        </div>
+        <div class="ar-setting-group">
+          <label>🎛️ 视觉:</label>
           <select id="ar-visual-mode" class="ar-select">
-            <option value="wave">波形 (时域)</option>
-            <option value="bars">频谱 (频域)</option>
+            <option value="wave">波形</option>
+            <option value="bars">频谱</option>
           </select>
         </div>
       </div>
 
-      <div class="ar-visualizer-wrap">
+      <!-- 可视化画布 -->
+      <div class="ar-visualizer-wrap" id="visualizer-container">
         <canvas id="ar-canvas"></canvas>
+        <div class="ar-time-ruler" id="time-ruler"></div>
       </div>
       
+      <!-- 录音按钮与计时 -->
       <div class="ar-controls">
         <button id="btn-record" class="ar-btn primary">
-          <span class="ar-icon">🔴</span> 开始录音
+          <span class="ar-icon">🔴</span> 开始录音 <kbd>R</kbd>
         </button>
         <button id="btn-pause" class="ar-btn" disabled>
           <span class="ar-icon">⏸️</span> 暂停
@@ -44,46 +60,53 @@
         <button id="btn-stop" class="ar-btn danger" disabled>
           <span class="ar-icon">⏹️</span> 停止
         </button>
-        <div class="ar-timer" id="ar-timer">00:00</div>
+        <div class="ar-timer-wrap">
+          <div class="rec-dot" id="rec-dot"></div>
+          <div class="ar-timer" id="ar-timer">00:00.0</div>
+        </div>
       </div>
     </div>
 
     <!-- 右侧：后处理与导出 -->
     <div class="ar-card" id="ar-editor-panel" style="display: none;">
       <div class="ar-header-row">
-        <h3>✂️ 音频剪辑与导出</h3>
+        <h3>✂️ 后期编辑与导出</h3>
+        <button class="ar-mini-btn" id="btn-reset-trim">🔄 重置裁剪</button>
       </div>
       
       <div class="ar-editor-content">
         <audio id="ar-audio-player" controls></audio>
         
         <div class="ar-edit-group">
-          <label>裁剪范围：</label>
+          <label style="display:flex; justify-content:space-between;">
+            <span>裁剪范围</span>
+            <span id="trim-duration" style="color:#8a5a2b; font-size:0.8rem;">0.0s</span>
+          </label>
           <div class="ar-slider-wrap">
-            <span id="label-start">00:00</span>
+            <span id="label-start">00:00.0</span>
             <input type="range" id="trim-start" min="0" max="100" step="0.1" value="0">
           </div>
           <div class="ar-slider-wrap">
-            <span id="label-end">00:00</span>
+            <span id="label-end">00:00.0</span>
             <input type="range" id="trim-end" min="0" max="100" step="0.1" value="100">
           </div>
         </div>
 
         <div class="ar-edit-group">
-          <label>音量增益：</label>
+          <label>音量增益</label>
           <div class="ar-slider-wrap">
-            <input type="range" id="vol-gain" min="0.5" max="3" step="0.1" value="1">
+            <input type="range" id="vol-gain" min="0.1" max="3" step="0.1" value="1">
             <span id="label-gain">1.0x</span>
           </div>
         </div>
 
         <div class="ar-edit-group">
-          <label>导出设置：</label>
+          <label>导出设置</label>
           <div class="ar-export-row">
             <input type="text" id="export-filename" placeholder="文件名" value="我的录音">
             <select id="export-format" class="ar-select">
               <option value="wav">.wav (无损)</option>
-              <option value="webm">.webm (压缩)</option>
+              <option value="webm">.webm (原始)</option>
             </select>
           </div>
         </div>
@@ -93,6 +116,14 @@
     </div>
   </div>
 </main>
+
+<!-- 全局 Loading 遮罩 -->
+<div id="loading-overlay" class="ar-loading-overlay" style="display: none;">
+  <div class="spinner"></div>
+  <div class="loading-text">正在处理音频，请稍候...</div>
+</div>
+
+<div id="toast" class="toast"></div>
 
 <script src="../../js/audio-recorder.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

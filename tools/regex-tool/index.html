@@ -10,74 +10,162 @@
 <link rel="stylesheet" href="../../css/regex-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🔍 正则与选择器测试</h1>
-  <p>正则匹配高亮、CSS / XPath 测试、HTML 链接提取。</p>
+  <p>正则匹配高亮与捕获组、CSS / XPath 测试、HTML 资源提取。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="rx-layout" style="padding-top: 0;">
+<main class="rx-layout">
   <div class="rx-tabs">
-    <button class="rx-tab active" data-target="panel-regex">正则表达式</button>
-    <button class="rx-tab" data-target="panel-css">CSS 选择器</button>
-    <button class="rx-tab" data-target="panel-xpath">XPath 选择器</button>
-    <button class="rx-tab" data-target="panel-extract">链接提取</button>
+    <button class="rx-tab active" data-target="panel-regex">🔤 正则表达式</button>
+    <button class="rx-tab" data-target="panel-css">🎨 CSS 选择器</button>
+    <button class="rx-tab" data-target="panel-xpath">🌳 XPath 选择器</button>
+    <button class="rx-tab" data-target="panel-extract">🔗 链接提取</button>
   </div>
 
   <div class="rx-content">
-    <!-- 1. 正则表达式 -->
+    
+    <!-- ================= 1. 正则表达式 ================= -->
     <div id="panel-regex" class="rx-panel active">
-      <div class="rx-row">
-        <span class="rx-slash">/</span>
-        <input type="text" id="rx-pattern" class="rx-input" placeholder="输入正则表达式">
-        <span class="rx-slash">/</span>
-        <input type="text" id="rx-flags" class="rx-input" style="max-width: 60px;" value="g" placeholder="修饰符">
-      </div>
-      <textarea id="rx-text" class="rx-textarea" rows="6" placeholder="在此粘贴要测试的文本..."></textarea>
-      <button id="btn-regex" class="rx-btn primary">▶️ 执行匹配</button>
-      <div class="rx-result-box">
-        <p>匹配数量: <span id="rx-count">0</span></p>
-        <div id="rx-highlight" class="rx-highlight-box"></div>
+      <div class="rx-split">
+        <!-- 左侧输入 -->
+        <div class="rx-col">
+          <div class="rx-panel-header"><span>规则与文本</span></div>
+          
+          <div class="rx-regex-bar">
+            <span class="rx-slash">/</span>
+            <input type="text" id="rx-pattern" class="rx-input" placeholder="输入正则表达式">
+            <span class="rx-slash">/</span>
+            <div class="rx-flags">
+              <label title="全局匹配"><input type="checkbox" id="flag-g" checked>g</label>
+              <label title="忽略大小写"><input type="checkbox" id="flag-i">i</label>
+              <label title="多行模式"><input type="checkbox" id="flag-m">m</label>
+              <label title="点号匹配换行"><input type="checkbox" id="flag-s">s</label>
+            </div>
+          </div>
+
+          <textarea id="rx-text" class="rx-textarea" rows="8" placeholder="在此粘贴要测试的文本..."></textarea>
+          
+          <div class="rx-panel-header" style="margin-top:16px;"><span>替换为 (可选)</span></div>
+          <input type="text" id="rx-replace" class="rx-input" style="width:100%; box-sizing:border-box; margin-bottom:12px;" placeholder="输入替换的内容，支持 $1, $2...">
+
+          <button id="btn-regex" class="rx-btn primary">▶️ 执行匹配</button>
+        </div>
+
+        <!-- 右侧结果 -->
+        <div class="rx-col">
+          <div class="rx-panel-header">
+            <span>执行结果</span>
+            <div class="rx-actions">
+              <span class="rx-stat">匹配: <b id="rx-count">0</b></span>
+              <button class="rx-mini-btn" onclick="copyText('rx-highlight')">📋 复制结果</button>
+            </div>
+          </div>
+          <div class="rx-result-box">
+            <div id="rx-highlight" class="rx-highlight-box"></div>
+          </div>
+          
+          <div class="rx-panel-header" style="margin-top:12px;"><span>捕获组详情</span></div>
+          <div id="rx-groups" class="rx-groups-box"></div>
+        </div>
       </div>
     </div>
 
-    <!-- 2. CSS 选择器 -->
+    <!-- ================= 2. CSS 选择器 ================= -->
     <div id="panel-css" class="rx-panel">
-      <div class="rx-row">
-        <input type="text" id="css-selector" class="rx-input" placeholder="输入 CSS 选择器，如 .class a 或 div#id">
-        <button id="btn-css" class="rx-btn primary">查询</button>
-      </div>
-      <textarea id="css-html" class="rx-textarea" rows="6" placeholder="粘贴 HTML 源码..."></textarea>
-      <div class="rx-result-box">
-        <p>匹配数量: <span id="css-count">0</span></p>
-        <div id="css-result" class="rx-highlight-box"></div>
+      <div class="rx-split">
+        <div class="rx-col">
+          <div class="rx-panel-header"><span>规则与源码</span></div>
+          <div class="rx-row">
+            <input type="text" id="css-selector" class="rx-input" placeholder="输入 CSS 选择器，如 .class a 或 div#id">
+          </div>
+          <textarea id="css-html" class="rx-textarea" rows="12" placeholder="粘贴 HTML 源码..."></textarea>
+          <button id="btn-css" class="rx-btn primary">🔍 查询</button>
+        </div>
+        <div class="rx-col">
+          <div class="rx-panel-header">
+            <span>匹配结果</span>
+            <div class="rx-actions">
+              <span class="rx-stat">匹配: <b id="css-count">0</b></span>
+              <select id="css-view-mode" class="rx-select" style="padding:2px 6px; font-size:0.8rem;">
+                <option value="text">提取纯文本</option>
+                <option value="html">显示 outerHTML</option>
+              </select>
+              <button class="rx-mini-btn" onclick="copyText('css-result')">📋 复制</button>
+            </div>
+          </div>
+          <div class="rx-result-box">
+            <div id="css-result" class="rx-highlight-box"></div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 3. XPath 选择器 -->
+    <!-- ================= 3. XPath 选择器 ================= -->
     <div id="panel-xpath" class="rx-panel">
-      <div class="rx-row">
-        <input type="text" id="xpath-selector" class="rx-input" placeholder="输入 XPath，如 //div[@class='test']">
-        <button id="btn-xpath" class="rx-btn primary">查询</button>
-      </div>
-      <textarea id="xpath-html" class="rx-textarea" rows="6" placeholder="粘贴 HTML 源码..."></textarea>
-      <div class="rx-result-box">
-        <p>匹配数量: <span id="xpath-count">0</span></p>
-        <div id="xpath-result" class="rx-highlight-box"></div>
+      <div class="rx-split">
+        <div class="rx-col">
+          <div class="rx-panel-header"><span>规则与源码</span></div>
+          <div class="rx-row">
+            <input type="text" id="xpath-selector" class="rx-input" placeholder="输入 XPath，如 //div[@class='test']">
+          </div>
+          <textarea id="xpath-html" class="rx-textarea" rows="12" placeholder="粘贴 HTML 源码..."></textarea>
+          <button id="btn-xpath" class="rx-btn primary">🔍 查询</button>
+        </div>
+        <div class="rx-col">
+          <div class="rx-panel-header">
+            <span>匹配结果</span>
+            <div class="rx-actions">
+              <span class="rx-stat">匹配: <b id="xpath-count">0</b></span>
+              <select id="xpath-view-mode" class="rx-select" style="padding:2px 6px; font-size:0.8rem;">
+                <option value="text">提取纯文本</option>
+                <option value="html">显示 outerHTML</option>
+              </select>
+              <button class="rx-mini-btn" onclick="copyText('xpath-result')">📋 复制</button>
+            </div>
+          </div>
+          <div class="rx-result-box">
+            <div id="xpath-result" class="rx-highlight-box"></div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 4. 链接提取 -->
+    <!-- ================= 4. 链接提取 ================= -->
     <div id="panel-extract" class="rx-panel">
-      <textarea id="ex-html" class="rx-textarea" rows="6" placeholder="粘贴网页 HTML 源码..."></textarea>
-      <div class="rx-row">
-        <button id="btn-extract-a" class="rx-btn primary">提取 a 标签</button>
-        <button id="btn-extract-img" class="rx-btn primary">提取 img 标签</button>
+      <div class="rx-split">
+        <div class="rx-col">
+          <div class="rx-panel-header"><span>HTML 源码</span></div>
+          <textarea id="ex-html" class="rx-textarea" rows="12" placeholder="在此粘贴网页 HTML 源码..."></textarea>
+          
+          <div class="rx-row" style="margin-top:12px;">
+            <button id="btn-extract-a" class="rx-btn primary">提取 a 标签 (链接)</button>
+            <button id="btn-extract-img" class="rx-btn primary">提取 img 标签 (图片)</button>
+          </div>
+          <div class="rx-row" style="margin-top:8px;">
+            <label class="rx-checkbox"><input type="checkbox" id="ex-md-format"> 输出 Markdown 格式 ([文字](链接))</label>
+            <label class="rx-checkbox"><input type="checkbox" id="ex-dedupe" checked> 去重</label>
+          </div>
+        </div>
+        <div class="rx-col">
+          <div class="rx-panel-header">
+            <span>提取结果</span>
+            <div class="rx-actions">
+              <button class="rx-mini-btn" onclick="copyText('ex-result')">📋 复制</button>
+            </div>
+          </div>
+          <div class="rx-result-box" style="padding:0;">
+            <textarea id="ex-result" class="rx-textarea" rows="14" readonly style="border:none; margin:0; border-radius:8px;" placeholder="提取结果将显示在这里..."></textarea>
+          </div>
+        </div>
       </div>
-      <textarea id="ex-result" class="rx-textarea" rows="6" readonly placeholder="提取结果将显示在这里..."></textarea>
     </div>
+
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
 <script src="../../js/regex-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

@@ -10,34 +10,96 @@
 <link rel="stylesheet" href="../../css/rss-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>📡 RSS & OPML 工具</h1>
-  <p>RSS / Atom 转 JSON 预览、OPML 订阅源提取。</p>
+  <p>RSS / Atom 解析与 JSON 导出、OPML 订阅源结构树提取。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="rs-layout" style="padding-top: 0;">
+<main class="rs-layout">
   <div class="rs-tabs">
-    <button class="rs-tab active" data-target="panel-rss">RSS 转 JSON</button>
-    <button class="rs-tab" data-target="panel-opml">OPML 提取</button>
+    <button class="rs-tab active" data-target="panel-rss">📰 RSS / Atom 解析</button>
+    <button class="rs-tab" data-target="panel-opml">📁 OPML 订阅源提取</button>
   </div>
 
   <div class="rs-content">
-    <!-- RSS -->
+    
+    <!-- ================= 1. RSS / Atom ================= -->
     <div id="panel-rss" class="rs-panel active">
-      <textarea id="rss-input" class="rs-textarea" rows="6" placeholder="粘贴 RSS / Atom XML 源码..."></textarea>
-      <button id="btn-rss" class="rs-btn primary">解析 RSS</button>
-      <div id="rss-result" class="rs-result-box"></div>
+      <div class="rs-split">
+        <!-- 左侧输入 -->
+        <div class="rs-col">
+          <div class="rs-header">
+            <span>📄 XML 源码</span>
+            <div style="display:flex; gap:6px;">
+              <button class="rs-mini-btn" onclick="loadRssSample()">📥 填入示例</button>
+              <button class="rs-mini-btn" onclick="clearInput('rss-input')">🗑️ 清空</button>
+            </div>
+          </div>
+          <textarea id="rss-input" class="rs-textarea" spellcheck="false" placeholder="在此粘贴 RSS / Atom XML 源码..."></textarea>
+          <div class="rs-action-bar">
+            <button id="btn-rss" class="rs-btn primary">🚀 解析 RSS</button>
+          </div>
+        </div>
+        
+        <!-- 右侧结果 -->
+        <div class="rs-col">
+          <div class="rs-header">
+            <div class="rs-view-toggle">
+              <button class="rs-toggle-btn active" data-view="card">卡片视图</button>
+              <button class="rs-toggle-btn" data-view="json">JSON 源码</button>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button class="rs-mini-btn" onclick="copyText('rss-result-json')">📋 复制</button>
+              <button class="rs-mini-btn" onclick="downloadResult('rss')">💾 下载</button>
+            </div>
+          </div>
+          <!-- 卡片视图 -->
+          <div id="rss-result-card" class="rs-result-box active">
+            <div class="rs-empty">等待解析...</div>
+          </div>
+          <!-- JSON 视图 -->
+          <textarea id="rss-result-json" class="rs-textarea" style="display:none; border-radius: 0; border: none; flex:1;" readonly placeholder="JSON 结果..."></textarea>
+        </div>
+      </div>
     </div>
 
-    <!-- OPML -->
+    <!-- ================= 2. OPML ================= -->
     <div id="panel-opml" class="rs-panel">
-      <textarea id="opml-input" class="rs-textarea" rows="6" placeholder="粘贴 OPML XML 源码..."></textarea>
-      <button id="btn-opml" class="rs-btn primary">提取订阅源</button>
-      <div id="opml-result" class="rs-result-box" style="white-space: pre-wrap; font-family: monospace;"></div>
+      <div class="rs-split">
+        <!-- 左侧输入 -->
+        <div class="rs-col">
+          <div class="rs-header">
+            <span>📄 OPML 源码</span>
+            <div style="display:flex; gap:6px;">
+              <button class="rs-mini-btn" onclick="loadOpmlSample()">📥 填入示例</button>
+              <button class="rs-mini-btn" onclick="clearInput('opml-input')">🗑️ 清空</button>
+            </div>
+          </div>
+          <textarea id="opml-input" class="rs-textarea" spellcheck="false" placeholder="在此粘贴 OPML XML 源码..."></textarea>
+          <div class="rs-action-bar">
+            <button id="btn-opml" class="rs-btn primary">🚀 提取订阅源</button>
+          </div>
+        </div>
+        
+        <!-- 右侧结果 -->
+        <div class="rs-col">
+          <div class="rs-header">
+            <span>🌳 提取结果 <b id="opml-count" style="color:#8a5a2b; font-size:0.85rem;"></b></span>
+            <div style="display:flex; gap:6px;">
+              <button class="rs-mini-btn" onclick="copyText('opml-result')">📋 复制</button>
+              <button class="rs-mini-btn" onclick="downloadResult('opml')">💾 下载 JSON</button>
+            </div>
+          </div>
+          <textarea id="opml-result" class="rs-textarea" style="border-radius: 0; border: none; flex:1;" readonly placeholder="提取结果将显示在这里..."></textarea>
+        </div>
+      </div>
     </div>
+
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
 <script src="../../js/rss-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

@@ -1,23 +1,48 @@
-.cs-layout { max-width: 1400px; margin: 0 auto; padding: 28px 16px 56px; height: calc(100vh - 120px); display: flex; flex-direction: column; }
-.cs-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+.cs-layout { max-width: 1400px; margin: 0 auto; padding: 0 16px 24px; height: calc(100vh - 120px); display: flex; flex-direction: column; }
+@media (max-width: 1000px) { .cs-layout { height: auto; } }
+
+/* 工具栏 */
+.cs-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; flex-shrink: 0; }
 .cs-group { display: flex; gap: 8px; flex-wrap: wrap; }
-
-.cs-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; font-weight: bold; transition: all .15s; }
+.cs-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .9rem; font-weight: 600; transition: all .15s; outline: none; }
+.cs-btn:hover { background: #f5ecd5; border-color: #b08a5a; }
 .cs-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.cs-btn.primary:hover { background: #6b8c4e; }
 .cs-btn.danger { background: #fef2f2; color: #a8452a; border-color: #fecaca; }
-.cs-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.cs-btn.danger:hover { background: #fee2e2; }
 
-.cs-container { display: flex; flex: 1; gap: 4px; background: #d5c7a8; border: 1px solid #d5c7a8; border-radius: 12px; overflow: hidden; min-height: 0; }
-@media (max-width: 900px) { .cs-container { flex-direction: column; } }
+/* 主容器 */
+.cs-container { display: flex; flex: 1; gap: 12px; min-height: 0; }
+@media (max-width: 1000px) { .cs-container { flex-direction: column; } }
+
+/* 左侧编辑器 */
+.cs-editors { flex: 3; display: flex; gap: 1px; background: #d5c7a8; border: 1px solid #d5c7a8; border-radius: 12px; overflow: hidden; min-width: 0; }
+@media (max-width: 800px) { .cs-editors { flex-direction: column; height: 600px; } }
 
 .cs-col { flex: 1; display: flex; flex-direction: column; background: #fff; min-width: 0; }
-.cs-tab-header { background: #f9f3e3; padding: 8px 12px; font-size: .8rem; color: #6b5d47; border-bottom: 1px solid #d5c7a8; font-family: monospace; display: flex; justify-content: space-between; align-items: center; }
+.cs-tab-header { background: #f9f3e3; padding: 8px 12px; font-size: .8rem; color: #6b5d47; display: flex; justify-content: space-between; align-items: center; font-family: monospace; border-bottom: 1px solid #d5c7a8; flex-shrink: 0; }
 .cs-tab-header span.active { color: #8a5a2b; font-weight: bold; }
-
 .cs-copy-btn { background: none; border: none; font-size: .8rem; color: #8a7a5f; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: all 0.15s; }
 .cs-copy-btn:hover { background: #e5d9bd; color: #3d3226; }
 
-.cs-editor { flex: 1; padding: 12px; border: none; font-family: monospace; font-size: .9rem; line-height: 1.5; resize: none; outline: none; color: #3d3226; background: #fdf8ec; white-space: pre; overflow-x: auto; }
-.cs-editor:focus { background: #fff; }
+.cs-editor-wrap { flex: 1; display: flex; overflow: hidden; }
+.cs-line-nums { width: 32px; flex-shrink: 0; background: #f5ecd5; text-align: right; padding: 12px 6px; color: #8a7a5f; font-family: monospace; font-size: .85rem; line-height: 1.5; user-select: none; overflow: hidden; border-right: 1px solid #d5c7a8; white-space: pre; }
+.cs-editor { flex: 1; padding: 12px; border: none; font-family: Consolas, Monaco, monospace; font-size: .9rem; line-height: 1.5; resize: none; outline: none; color: #3d3226; background: #fff; white-space: pre; overflow: auto; tab-size: 2; }
+.cs-editor:focus { background: #fafbfc; }
 
-.cs-preview { flex: 1; border: none; background: #fff; width: 100%; height: 100%; }
+/* 右侧预览与控制台 */
+.cs-preview-area { flex: 2; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.cs-preview-box { flex: 1; display: flex; flex-direction: column; border: 1px solid #d5c7a8; border-radius: 12px; overflow: hidden; background: #fff; min-height: 300px; }
+.cs-preview { flex: 1; border: none; width: 100%; height: 100%; background: #fff; }
+
+.cs-console-box { height: 200px; display: flex; flex-direction: column; border: 1px solid #333; border-radius: 12px; overflow: hidden; background: #1e1e1e; flex-shrink: 0; }
+.cs-console { flex: 1; padding: 8px 12px; overflow-y: auto; font-family: Consolas, Monaco, monospace; font-size: .85rem; line-height: 1.5; color: #d4d4d4; }
+.console-line { border-bottom: 1px solid #333; padding: 2px 0; word-break: break-all; }
+.console-error { color: #f87171; }
+.console-warn { color: #fbbf24; }
+.console-info { color: #60a5fa; }
+.console-log { color: #e2e8f0; }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); background: rgba(61, 50, 38, 0.92); color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; z-index: 9999; max-width: 80vw; text-align: center; word-break: break-all; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
