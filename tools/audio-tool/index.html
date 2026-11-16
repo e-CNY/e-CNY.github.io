@@ -10,57 +10,102 @@
 <link rel="stylesheet" href="../../css/audio-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🎵 高级音频工具</h1>
-  <p>波形预览、音频倒放、选区裁剪、无损 WAV 导出。</p>
+  <p>高精度波形预览、无损倒放、精准选区裁剪、导出 WAV。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="au-layout" style="padding-top: 0;">
+<main class="au-layout">
   <div class="au-card">
+    <!-- 上传区 -->
     <div id="au-drop-zone" class="au-drop-zone">
-      <span>📁 点击或拖拽音频文件</span>
-      <span class="au-hint">支持 mp3 / wav / ogg / m4a / flac 等</span>
+      <div style="font-size:3rem; margin-bottom:12px;">🎧</div>
+      <span>点击、拖拽或粘贴音频文件</span>
+      <span class="au-hint">支持 mp3 / wav / ogg / m4a / flac 等，纯本地解析</span>
       <input id="au-input" type="file" accept="audio/*" hidden>
     </div>
 
+    <!-- 工作区 -->
     <div id="au-workspace" style="display: none;">
+      <!-- 波形显示区 -->
       <div class="au-wave-wrap" id="wave-wrap">
         <canvas id="au-canvas"></canvas>
+        <div class="au-playhead" id="au-playhead"></div>
       </div>
       
-      <div class="au-controls">
-        <div class="au-row">
-          <label>音量</label>
+      <!-- 顶部信息与控制 -->
+      <div class="au-header-bar">
+        <div class="au-file-info">
+          <span id="au-filename" style="font-weight:bold; color:#4b3f2f;">未命名音频</span>
+          <span id="au-time" style="font-family:monospace; color:#8a5a2b;">00:00.0 / 00:00.0</span>
+        </div>
+        <div class="au-volume-wrap">
+          <span>🔊</span>
           <input type="range" id="au-volume" min="0" max="1" step="0.01" value="1">
-          <span id="au-vol-val">100%</span>
-          <span style="margin-left: auto;" id="au-time">00:00 / 00:00</span>
+          <span id="au-vol-val" style="width:40px; text-align:right; font-family:monospace;">100%</span>
+        </div>
+      </div>
+
+      <div class="au-controls">
+        <!-- 播放控制 -->
+        <div class="au-btn-row">
+          <button id="au-play" class="au-btn primary" title="快捷键: 空格">
+            <span style="font-size:1.2rem;">▶️</span> 播放
+          </button>
+          <button id="au-pause" class="au-btn" disabled>
+            <span style="font-size:1.2rem;">⏸️</span> 暂停
+          </button>
+          <button id="au-reverse" class="au-btn" title="音频倒放">
+            <span style="font-size:1.2rem;">⏪</span> 倒放
+          </button>
+          <button id="au-restore" class="au-btn" style="display:none;" title="恢复原始音频">
+            <span style="font-size:1.2rem;">🔄</span> 恢复
+          </button>
         </div>
         
-        <div class="au-row" style="justify-content: center; gap: 16px; margin-top: 10px;">
-          <button id="au-play" class="au-btn primary">▶️ 播放</button>
-          <button id="au-pause" class="au-btn" disabled>⏸️ 暂停</button>
-          <button id="au-reverse" class="au-btn" title="音频倒放">⏪ 倒放</button>
-        </div>
-        
+        <!-- 裁剪与导出 -->
         <div class="au-crop-box">
-          <h3>✂️ 裁剪与导出</h3>
-          <div class="au-row">
-            <label>起点 (秒)</label>
-            <input type="number" id="au-start" min="0" step="0.1" value="0">
-            <label>终点 (秒)</label>
-            <input type="number" id="au-end" min="0" step="0.1" value="0">
-            <select id="au-channel" class="au-select">
-              <option value="keep">保留原声道</option>
-              <option value="mono">混合为单声道</option>
-            </select>
+          <div class="au-crop-header">
+            <h3>✂️ 选区裁剪与导出</h3>
+            <button class="au-mini-btn" id="btn-reset-trim">🔄 重置选区</button>
           </div>
-          <button id="au-export" class="au-btn primary" style="width: 100%; margin-top: 12px;">导出选中片段为无损 WAV</button>
+          
+          <div class="au-trim-inputs">
+            <div class="au-input-group">
+              <label>起点 (秒)</label>
+              <input type="number" id="au-start" min="0" step="0.1" value="0">
+            </div>
+            <div class="au-input-group">
+              <label>终点 (秒)</label>
+              <input type="number" id="au-end" min="0" step="0.1" value="0">
+            </div>
+            <div class="au-input-group">
+              <label>声道</label>
+              <select id="au-channel" class="au-select">
+                <option value="keep">保留原声道</option>
+                <option value="mono">混合为单声道 (体积减半)</option>
+              </select>
+            </div>
+          </div>
+          
+          <button id="au-export" class="au-btn primary" style="width: 100%; margin-top: 16px; padding: 12px; font-size: 1rem;">
+            💾 导出选中片段为无损 WAV
+          </button>
         </div>
       </div>
     </div>
   </div>
 </main>
+
+<!-- Loading 遮罩 -->
+<div id="loading-overlay" class="au-loading-overlay" style="display: none;">
+  <div class="spinner"></div>
+  <div class="loading-text">正在处理音频，请稍候...</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/audio-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

@@ -12,7 +12,7 @@
 </head>
 <body>
 <main class="age-page">
-  <header class="tool-page-header">
+  <header class="tool-page-header" style="padding: 12px 16px 8px;">
     <h1>🎂 年龄计算器</h1>
     <p>精确年龄 / 生肖星座 / 生日倒计时 / 虚岁 / 人生进度 / 里程碑</p>
     <a href="../../index.html">← 返回工具站</a>
@@ -37,17 +37,17 @@
             <span>岁</span>
           </div>
         </div>
-        <button class="primary-btn" id="calcBtn" type="button">计算</button>
+        <button class="primary-btn" id="calcBtn" type="button">📊 开始计算</button>
       </div>
-      <p class="input-hint">💡 默认以今天作为计算日期，也可以指定某个未来/过去的日期</p>
+      <p class="input-hint">💡 默认以今天作为计算日期，你可以指定任意未来或过去的日期来进行推演。</p>
     </section>
 
     <!-- 主结果 -->
     <section class="result-section" id="resultSection" hidden>
       <!-- 主卡片 -->
-      <div class="main-card">
+      <div class="main-card" id="mainCard">
         <div class="main-left">
-          <div class="main-label">当前年龄</div>
+          <div class="main-label">当前精确年龄</div>
           <div class="main-age" id="mainAge">
             <span class="big-num" id="ageYears">0</span>
             <span class="age-unit">岁</span>
@@ -78,7 +78,7 @@
 
       <!-- 人生进度 -->
       <div class="section-block">
-        <h2 class="section-title">📊 人生进度</h2>
+        <h2 class="section-title">📊 人生进度条</h2>
         <div class="progress-wrap">
           <div class="progress-info" id="progressInfo"></div>
           <div class="progress-bar">
@@ -86,7 +86,7 @@
             <div class="progress-marker" id="progressMarker"></div>
           </div>
           <div class="progress-labels">
-            <span>出生</span>
+            <span>0 岁</span>
             <span id="progressEnd">80 岁</span>
           </div>
         </div>
@@ -107,6 +107,9 @@
     </section>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/age.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

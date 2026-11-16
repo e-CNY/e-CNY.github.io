@@ -2,6 +2,17 @@
 (function () {
   'use strict';
 
+  // ================= 通用工具 =================
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
+  }
+
   /* ============ 字体栈 ============ */
   var FONTS = {
     kai:  '"楷体", KaiTi, STKaiti, "Kaiti SC", "LXGW WenKai", serif',
@@ -11,8 +22,8 @@
     yuan: '"幼圆", YouYuan, "Yuanti SC", "Microsoft YaHei", "LXGW WenKai", sans-serif'
   };
 
-  /* ============ 状态 ============ */
-  var state = {
+  /* ============ 默认状态 ============ */
+  var defaultState = {
     shape: 'circle',
     text: '华夏科技有限公司',
     subText: '合同专用章',
@@ -25,6 +36,28 @@
     aging: 0,
     rotation: 0
   };
+
+  var state = JSON.parse(JSON.stringify(defaultState));
+  var STORAGE_KEY = 'seal_config_v2';
+
+  // 读取本地缓存
+  function loadState() {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        var parsed = JSON.parse(saved);
+        // 合并配置，防止旧版本缺失字段
+        for (var key in defaultState) {
+          if (parsed[key] !== undefined) state[key] = parsed[key];
+        }
+      }
+    } catch(e) {}
+  }
+
+  // 保存状态
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  }
 
   /* ============ DOM ============ */
   var canvas       = document.getElementById('sealCanvas');
@@ -40,9 +73,16 @@
   var exportSizeEl = document.getElementById('exportSize');
   var downloadBtn  = document.getElementById('downloadBtn');
   var layoutGroup  = document.getElementById('layoutGroup');
+  var canvasWrap   = document.getElementById('canvasWrap');
 
   /* ============ 绘制核心 ============ */
-  function renderSeal(ctx, size) {
+  // 伪随机数生成器 (基于坐标，保证同一位置的值固定)
+  function pseudoRandom(x, y, seed) {
+    var sin = Math.sin(x * 12.9898 + y * 78.233 + seed) * 43758.5453;
+    return sin - Math.floor(sin);
+  }
+
+  function renderSeal(ctx, size, seed) {
     ctx.clearRect(0, 0, size, size);
 
     var cx = size / 2;
@@ -107,6 +147,7 @@
 
     /* ============ 3. 主文字 ============ */
     var layout = state.layout;
+    // 如果当前是方形，且设置为环形，强制降级为横排
     if (isSquare && layout === 'arc') layout = 'horizontal';
 
     if (layout === 'arc') {
@@ -124,9 +165,11 @@
 
     ctx.restore();
 
-    /* ============ 5. 做旧效果 ============ */
+    /* ============ 5. 真实印油质感与做旧 ============ */
+    applyRealisticInk(ctx, size, seed);
+
     if (state.aging > 0) {
-      applyAging(ctx, size, state.aging);
+      applyAging(ctx, size, state.aging, seed);
     }
   }
 
@@ -136,7 +179,6 @@
     if (isSquare) {
       var side = Math.min(rx, ry) * 2;
       var r = side * 0.04;
-      // 圆角方形
       ctx.moveTo(cx - side / 2 + r, cy - side / 2);
       ctx.lineTo(cx + side / 2 - r, cy - side / 2);
       ctx.quadraticCurveTo(cx + side / 2, cy - side / 2, cx + side / 2, cy - side / 2 + r);
@@ -177,23 +219,18 @@
     var n = chars.length;
     if (n === 0) return;
 
-    // 计算跨度
     var totalSpan = Math.min(4.2, n * 0.4 + 1.2);
     var startAngle = 3 * Math.PI / 2 - totalSpan / 2;
 
-    // 字号（按平均半径和弧长估算）
     var avgR = Math.min(rx, ry);
     var deltaAngle = n > 1 ? totalSpan / (n - 1) : 0;
     var autoFontSize = n > 1 ? avgR * deltaAngle * 0.62 : avgR * 0.45;
     autoFontSize = Math.min(autoFontSize, avgR * 0.55);
 
     var fontSize = autoFontSize * state.fontScale;
-
-    // 字符中心圆半径，保证字不超出内圈
     var textRX = rx - fontSize / 2 - rx * 0.02;
     var textRY = ry - fontSize / 2 - ry * 0.02;
 
-    // 如果五角星较大，需要让文字圆半径更大一些避免重叠
     if (starRadius > 0) {
       var minR = starRadius + fontSize * 0.7;
       if (textRX < minR) textRX = Math.min(minR, rx - fontSize / 2);
@@ -212,8 +249,6 @@
 
       var x = cx + textRX * Math.cos(angle);
       var y = cy + textRY * Math.sin(angle);
-
-      // 旋转角度：字符"上"指向外侧
       var rot = Math.atan2(ry * Math.cos(angle), -rx * Math.sin(angle));
 
       ctx.save();
@@ -234,7 +269,6 @@
     var fontSize = size * 0.13 * state.fontScale;
     fontSize = Math.min(fontSize, ry * 0.5);
 
-    // 自动缩小保证单行放得下
     ctx.save();
     ctx.font = '700 ' + fontSize + 'px ' + FONTS[state.font];
     var measured = ctx.measureText(text).width;
@@ -247,7 +281,6 @@
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // 垂直居中的位置：考虑五角星
     var textY = cy;
     if (starRadius > 0) textY = cy + starRadius + fontSize * 0.6;
     if (textY + fontSize / 2 > cy + ry * 0.7) textY = cy + ry * 0.55;
@@ -270,7 +303,6 @@
     var totalH = lineHeight * n;
     var startY = cy - totalH / 2 + lineHeight / 2;
 
-    // 五角星较大时下移
     if (starRadius > 0 && startY - fontSize / 2 < cy - starRadius - fontSize * 0.5) {
       startY = cy + starRadius + fontSize * 0.7 + lineHeight / 2;
     }
@@ -310,7 +342,6 @@
     ctx.textBaseline = 'middle';
 
     var y = cy + ry * 0.62;
-    // 防止贴边框
     var maxY = cy + ry - fontSize * 0.9;
     if (y > maxY) y = maxY;
 
@@ -318,9 +349,42 @@
     ctx.restore();
   }
 
-  /* ---------- 做旧效果 ---------- */
-  function applyAging(ctx, size, level) {
-    var densities = [0, 0.0004, 0.0012, 0.0032];
+  /* ---------- 真实印油质感 (透明度渐变 + 边缘毛刺) ---------- */
+  function applyRealisticInk(ctx, size, seed) {
+    ctx.save();
+    // 1. 制造印油浓淡不均 (覆盖一层半透明的白色，带极细噪点)
+    ctx.globalCompositeOperation = 'destination-out';
+    
+    // 用径向渐变让边缘颜色浅一点，中心深一点
+    var gradient = ctx.createRadialGradient(size/2, size/2, size*0.1, size/2, size/2, size*0.5);
+    gradient.addColorStop(0, 'rgba(0,0,0,0)'); // 中心完全保留
+    gradient.addColorStop(0.7, 'rgba(0,0,0,0.05)');
+    gradient.addColorStop(1, 'rgba(0,0,0,0.15)'); // 边缘淡一点
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+
+    // 2. 边缘毛刺 (专门针对边框和文字边缘，用大颗粒噪点擦拭)
+    // 这里用大量大半径的圆去擦除，制造印章盖下时的毛边感
+    var spikes = 300;
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    for (var i = 0; i < spikes; i++) {
+      var angle = pseudoRandom(i, 1, seed) * Math.PI * 2;
+      var dist = size * 0.44 + pseudoRandom(i, 2, seed) * size * 0.06; // 集中在边缘
+      var x = size/2 + Math.cos(angle) * dist;
+      var y = size/2 + Math.sin(angle) * dist;
+      var r = pseudoRandom(i, 3, seed) * size * 0.008 + 0.5;
+      
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    ctx.restore();
+  }
+
+  /* ---------- 固定噪点做旧效果 ---------- */
+  function applyAging(ctx, size, level, seed) {
+    var densities = [0, 0.0006, 0.0018, 0.0040];
     var density = densities[level] || 0;
     var count = Math.floor(size * size * density);
 
@@ -328,22 +392,25 @@
     ctx.globalCompositeOperation = 'destination-out';
     ctx.fillStyle = 'rgba(0,0,0,1)';
 
-    // 细密噪点
+    // 细密噪点 (坐标伪随机固定)
     for (var i = 0; i < count; i++) {
-      var x = Math.random() * size;
-      var y = Math.random() * size;
-      var r = Math.random() * size * 0.0025 + 0.3;
+      // 使用 i 和 seed 生成固定的 x y
+      var x = pseudoRandom(i, 1, seed) * size;
+      var y = pseudoRandom(i, 2, seed) * size;
+      var r = pseudoRandom(i, 3, seed) * size * 0.0025 + 0.4;
+      
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    // 稍大的斑块
-    var bigCount = Math.floor(count * 0.05);
+    // 大斑块
+    var bigCount = Math.floor(count * 0.04);
     for (var j = 0; j < bigCount; j++) {
-      var bx = Math.random() * size;
-      var by = Math.random() * size;
-      var br = Math.random() * size * 0.012 + 1;
+      var bx = pseudoRandom(j, 11, seed) * size;
+      var by = pseudoRandom(j, 12, seed) * size;
+      var br = pseudoRandom(j, 13, seed) * size * 0.015 + 1.5;
+      
       ctx.beginPath();
       ctx.arc(bx, by, br, 0, Math.PI * 2);
       ctx.fill();
@@ -353,6 +420,9 @@
   }
 
   /* ============ 预览 ============ */
+  // 生成一个固定的种子，保证当前页面生命周期内做旧纹理不变
+  var globalSeed = Date.now() % 10000;
+
   function drawPreview() {
     var dpr = window.devicePixelRatio || 1;
     var cssSize = canvas.clientWidth || 400;
@@ -363,7 +433,7 @@
     }
     var ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    renderSeal(ctx, cssSize);
+    renderSeal(ctx, cssSize, globalSeed);
   }
 
   /* ============ 导出 ============ */
@@ -373,7 +443,7 @@
     off.width = outSize;
     off.height = outSize;
     var ctx = off.getContext('2d');
-    renderSeal(ctx, outSize);
+    renderSeal(ctx, outSize, globalSeed);
 
     off.toBlob(function (blob) {
       if (!blob) return;
@@ -392,6 +462,7 @@
       a.click();
       document.body.removeChild(a);
       setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+      showToast('印章已下载');
     }, 'image/png');
   }
 
@@ -407,6 +478,7 @@
       var v = btn.dataset.value;
       state[key] = (key === 'aging') ? parseInt(v, 10) : v;
       if (onUpdate) onUpdate(v);
+      saveState();
       drawPreview();
     });
   }
@@ -421,6 +493,7 @@
         function (b) { b.classList.toggle('active', b.dataset.value === 'horizontal'); }
       );
     }
+    // 如果是圆形/椭圆，且当前是横排，且用户之前是方形切过来的，可以自动切回环形，但尊重用户选择
     layoutGroup.style.opacity = (state.shape === 'square') ? '.55' : '1';
   });
 
@@ -440,18 +513,21 @@
   mainTextEl.addEventListener('input', function () {
     state.text = mainTextEl.value;
     textLenEl.textContent = Array.from(state.text).length + ' / 20';
+    saveState();
     drawPreview();
   });
 
   /* 副文字 */
   subTextEl.addEventListener('input', function () {
     state.subText = subTextEl.value;
+    saveState();
     drawPreview();
   });
 
   /* 字体 */
   fontSelect.addEventListener('change', function () {
     state.font = fontSelect.value;
+    saveState();
     drawPreview();
   });
 
@@ -459,6 +535,7 @@
   fontScaleEl.addEventListener('input', function () {
     state.fontScale = parseFloat(fontScaleEl.value) || 1;
     fontScaleVal.textContent = state.fontScale.toFixed(2) + '×';
+    saveState();
     drawPreview();
   });
 
@@ -471,6 +548,7 @@
       document.querySelectorAll('.swatch').forEach(function (s) {
         s.classList.toggle('active', s === btn);
       });
+      saveState();
       drawPreview();
     });
   });
@@ -481,6 +559,7 @@
     document.querySelectorAll('.swatch').forEach(function (s) {
       s.classList.remove('active');
     });
+    saveState();
     drawPreview();
   });
 
@@ -488,11 +567,34 @@
   rotationEl.addEventListener('input', function () {
     state.rotation = parseFloat(rotationEl.value) || 0;
     rotationVal.textContent = state.rotation + '°';
+    saveState();
     drawPreview();
   });
 
   /* 导出 */
   downloadBtn.addEventListener('click', exportPNG);
+
+  /* 恢复默认 */
+  document.getElementById('btn-reset').addEventListener('click', function () {
+    if (confirm('确定要恢复所有默认设置吗？')) {
+      state = JSON.parse(JSON.stringify(defaultState));
+      localStorage.removeItem(STORAGE_KEY);
+      globalSeed = Date.now() % 10000; // 重新生成噪点
+      syncUI();
+      drawPreview();
+      showToast('已恢复默认设置');
+    }
+  });
+
+  /* 预览背景切换 */
+  document.querySelectorAll('.bg-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.bg-btn').forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      
+      canvasWrap.className = 'canvas-wrap bg-' + this.dataset.bg;
+    });
+  });
 
   /* 尺寸变化重绘 */
   if (window.ResizeObserver) {
@@ -502,18 +604,46 @@
   }
 
   /* ============ 初始化 ============ */
-  function init() {
-    // 高亮初始颜色
+  function syncUI() {
+    // 输入框
+    mainTextEl.value = state.text;
+    subTextEl.value = state.subText;
+    textLenEl.textContent = Array.from(state.text).length + ' / 20';
+    
+    fontSelect.value = state.font;
+    fontScaleEl.value = state.fontScale;
+    fontScaleVal.textContent = state.fontScale.toFixed(2) + '×';
+    
+    colorPicker.value = state.color;
     document.querySelectorAll('.swatch').forEach(function (s) {
       s.classList.toggle('active', s.dataset.color === state.color);
     });
-    textLenEl.textContent = Array.from(state.text).length + ' / 20';
-    fontScaleVal.textContent = state.fontScale.toFixed(2) + '×';
+
+    rotationEl.value = state.rotation;
     rotationVal.textContent = state.rotation + '°';
-    drawPreview();
+
+    // 按钮组
+    function setSeg(segId, value) {
+      Array.prototype.forEach.call(document.getElementById(segId).children, function (b) {
+        b.classList.toggle('active', b.dataset.value === String(value));
+      });
+    }
+    setSeg('shapeSeg', state.shape);
+    setSeg('layoutSeg', state.layout);
+    setSeg('starSeg', state.star);
+    setSeg('borderSeg', state.border);
+    setSeg('agingSeg', state.aging);
+
+    layoutGroup.style.opacity = (state.shape === 'square') ? '.55' : '1';
   }
 
-  // 字体加载后再重绘一次（避免某些字体延迟加载）
+  function init() {
+    loadState();
+    syncUI();
+    drawPreview();
+    showToast('配置已加载');
+  }
+
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(drawPreview);
   }

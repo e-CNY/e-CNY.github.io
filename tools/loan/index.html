@@ -12,9 +12,9 @@
 </head>
 <body>
 <main class="loan-page">
-  <header class="tool-page-header">
-    <h1>🏦 贷款计算器</h1>
-    <p>等额本息 / 等额本金 / 组合贷款 / 提前还款 / 完整还款计划 / 图表可视化</p>
+  <header class="tool-page-header" style="padding: 12px 16px 8px;">
+    <h1>🏦 房贷计算器</h1>
+    <p>等额本息 / 等额本金 / 组合贷款 / 提前还款 / 可视化交互图表</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
 
@@ -115,16 +115,17 @@
           <div class="field">
             <label>提前还款后处理方式</label>
             <div class="seg" id="prepayModeSeg">
-              <button data-value="reduce_term" class="active" type="button">缩短期限</button>
-              <button data-value="reduce_payment" type="button">减少月供</button>
+              <button data-value="reduce_term" class="active" type="button">月供不变，缩短期限</button>
+              <button data-value="reduce_payment" type="button">期限不变，减少月供</button>
             </div>
           </div>
         </div>
+        <p class="hint" style="margin-top: 8px; font-size: 0.75rem; color: #a0947c;">* 组合贷款提前还款时，金额将按商贷与公积金余额比例自动分配。</p>
       </details>
 
       <div class="input-actions">
         <button class="primary-btn" id="calcBtn" type="button">📊 开始计算</button>
-        <button class="ghost-btn" id="resetBtn" type="button">↩️ 重置</button>
+        <button class="ghost-btn" id="resetBtn" type="button">↩️ 恢复默认</button>
       </div>
     </section>
 
@@ -138,20 +139,21 @@
         <div class="chart-head">
           <h2>📈 还款趋势图</h2>
           <div class="chart-legend">
-            <span><i class="dot principal"></i> 本金</span>
-            <span><i class="dot interest"></i> 利息</span>
-            <span><i class="dot balance"></i> 剩余余额</span>
+            <span><i class="dot principal"></i> 累计本金</span>
+            <span><i class="dot interest"></i> 当期利息</span>
+            <span><i class="dot balance"></i> 剩余本金</span>
           </div>
         </div>
-        <div class="chart-wrap">
+        <div class="chart-wrap" id="chartWrap">
           <canvas id="loanChart"></canvas>
+          <div id="chartTooltip" class="chart-tooltip" style="display: none;"></div>
         </div>
       </div>
 
       <!-- 还款计划表 -->
       <div class="schedule-card">
         <div class="schedule-head">
-          <h2>📋 还款计划表</h2>
+          <h2>📋 还款计划明细</h2>
           <div class="schedule-actions">
             <div class="seg sm" id="scheduleViewSeg">
               <button data-value="monthly" class="active" type="button">按月</button>
@@ -176,7 +178,22 @@
       <p class="disclaimer">⚠️ 以上结果基于标准贷款公式估算，实际月供以银行最终审批为准。提前还款违约金、保险费、税费等未计入。</p>
     </section>
   </div>
+
+  <!-- 自定义确认弹窗 -->
+  <div class="confirm-mask" id="confirmModal" hidden>
+    <div class="confirm-body">
+      <h3 id="confirmTitle">提示</h3>
+      <p id="confirmMsg">确定要执行此操作吗？</p>
+      <div class="confirm-actions">
+        <button class="ghost-btn" id="confirmCancel">取消</button>
+        <button class="primary-btn" id="confirmOk" style="background:#c0392b;">确认</button>
+      </div>
+    </div>
+  </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/loan.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

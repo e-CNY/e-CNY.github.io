@@ -12,15 +12,28 @@
 </head>
 <body>
 <main class="cd-page">
-  <header class="tool-page-header">
+  <header class="tool-page-header" style="padding: 12px 16px 8px;">
     <h1>📅 倒数日 · 纪念日</h1>
-    <p>记录重要日子 · 倒数/正数天数 · 每年重复 · 生成分享图</p>
+    <p>记录重要日子 · 倒数/正数天数 · 每年重复 · 生成高清分享图</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
 
   <div class="cd-app">
-    <!-- 添加表单 -->
-    <section class="add-panel">
+    <!-- 顶部工具栏 -->
+    <div class="toolbar">
+      <div style="flex:1;"></div>
+      <button class="ghost-btn" id="importBtn" type="button">📥 导入备份</button>
+      <button class="ghost-btn" id="exportBtn" type="button">📤 导出备份</button>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+    </div>
+
+    <!-- 添加 / 编辑表单 -->
+    <section class="add-panel" id="addPanel">
+      <div class="panel-header">
+        <h2 id="formTitle">添加重要日子</h2>
+        <button class="cancel-edit-btn" id="cancelEditBtn" type="button" style="display:none;">✖ 取消编辑</button>
+      </div>
+      
       <div class="add-row">
         <div class="field grow">
           <label for="eventName">事件名称</label>
@@ -44,10 +57,11 @@
           <label for="eventNote">备注（可选）</label>
           <input type="text" id="eventNote" placeholder="例如：别忘了准备惊喜" maxlength="50">
         </div>
-        <button class="btn-primary" id="addBtn" type="button">＋ 添加</button>
+        <button class="btn-primary" id="addBtn" type="button">＋ 添加事件</button>
       </div>
+      
       <div class="quick-tags">
-        <span class="quick-label">快捷添加：</span>
+        <span class="quick-label">快捷一键添加：</span>
         <button class="quick-tag" data-name="元旦" data-date="1-1" type="button">🎊 元旦</button>
         <button class="quick-tag" data-name="情人节" data-date="2-14" type="button">💕 情人节</button>
         <button class="quick-tag" data-name="妇女节" data-date="3-8" type="button">🌸 妇女节</button>
@@ -79,7 +93,7 @@
       </p>
     </section>
 
-    <p class="tips">💡 数据保存在浏览器本地，清理浏览器数据会丢失记录，请珍惜。</p>
+    <p class="tips">💡 数据保存在浏览器本地，清理浏览器数据会丢失记录，请定期导出备份。</p>
   </div>
 
   <!-- 分享卡片弹窗 -->
@@ -89,13 +103,28 @@
       <h3 class="modal-title">📤 分享卡片</h3>
       <div class="modal-canvas-wrap" id="modalCanvasWrap"></div>
       <div class="modal-actions">
-        <button class="btn-ghost" id="downloadBtn" type="button">💾 下载图片</button>
+        <button class="btn-ghost" id="downloadBtn" type="button">💾 保存图片</button>
         <button class="btn-ghost" id="copyShareBtn" type="button">📋 复制图片</button>
       </div>
-      <p class="modal-tip">手机端可长按图片保存</p>
+      <p class="modal-tip">手机端可长按上方图片直接保存</p>
+    </div>
+  </div>
+
+  <!-- 自定义确认弹窗 -->
+  <div class="confirm-mask" id="confirmModal" hidden>
+    <div class="confirm-body">
+      <h3 id="confirmTitle">提示</h3>
+      <p id="confirmMsg">确定要执行此操作吗？</p>
+      <div class="confirm-actions">
+        <button class="ghost-btn" id="confirmCancel">取消</button>
+        <button class="primary-btn" id="confirmOk" style="background:#c0392b;">确认</button>
+      </div>
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/countdown.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

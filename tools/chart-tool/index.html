@@ -10,15 +10,17 @@
 <link rel="stylesheet" href="../../css/chart-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>📊 图表生成预览</h1>
-  <p>支持折线、柱状、饼图、雷达、极地、气泡图。</p>
+  <p>支持折线、柱状、饼图、雷达等 8 种图表，实时 JSON 渲染，一键导出。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="ch-layout" style="padding-top: 0;">
+<main class="ch-layout">
   <div class="ch-container">
-    <div class="ch-sidebar">
+    
+    <!-- 左侧配置面板 -->
+    <aside class="ch-sidebar">
       <div class="ch-row">
         <label>图表类型</label>
         <select id="ch-type" class="ch-select">
@@ -32,19 +34,56 @@
           <option value="scatter">散点图 (Scatter)</option>
         </select>
       </div>
-      <div class="ch-row" style="flex: 1; flex-direction: column;">
-        <label>数据 (JSON)</label>
-        <textarea id="ch-data" class="ch-textarea" spellcheck="false"></textarea>
+
+      <div class="ch-row">
+        <label>颜色主题</label>
+        <select id="ch-theme" class="ch-select">
+          <option value="default">默认主题</option>
+          <option value="morandi">莫兰迪色系</option>
+          <option value="pastel">清新马卡龙</option>
+          <option value="vivid">高对比鲜艳</option>
+        </select>
       </div>
-      <button id="btn-render" class="ch-btn primary">▶️ 渲染图表</button>
-    </div>
+
+      <div class="ch-row checkbox-row">
+        <label class="ch-checkbox-label">
+          <input type="checkbox" id="ch-show-legend" checked> 显示图例
+        </label>
+        <label class="ch-checkbox-label">
+          <input type="checkbox" id="ch-show-grid" checked> 显示网格
+        </label>
+      </div>
+
+      <div class="ch-row" style="flex: 1; flex-direction: column; min-height: 0;">
+        <div class="ch-label-bar">
+          <label>数据配置 (JSON)</label>
+          <div class="ch-mini-actions">
+            <button class="ch-mini-btn" id="btn-format-json" title="格式化/美化代码">格式化</button>
+            <button class="ch-mini-btn" id="btn-reset-json" title="重置当前类型的示例数据">重置</button>
+          </div>
+        </div>
+        <textarea id="ch-data" class="ch-textarea" spellcheck="false"></textarea>
+        <div id="ch-error" class="ch-error"></div>
+      </div>
+
+      <div class="ch-action-bar">
+        <button id="btn-render" class="ch-btn primary" style="width: 100%;">▶️ 强制渲染</button>
+        <button id="btn-download" class="ch-btn" style="width: 100%; margin-top: 8px; background:#fff;">💾 下载 PNG 图片</button>
+      </div>
+    </aside>
+
+    <!-- 右侧图表预览区 -->
     <div class="ch-main">
       <div class="ch-canvas-wrap">
         <canvas id="myChart"></canvas>
       </div>
     </div>
+    
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/chart.umd.min.js"></script>
 <script src="../../js/chart-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

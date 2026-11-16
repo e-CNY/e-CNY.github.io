@@ -14,13 +14,20 @@
 <main class="inv-page">
   <header class="tool-page-header">
     <h1>💰 复利 · 投资收益计算器</h1>
-    <p>初始本金 / 定期定投 / 复利增长 / 通胀调整 / 年化 IRR / 逐年明细 / 增长曲线</p>
+    <p>初始本金 / 定期定投 / 定投增长 / 管理费 / 通胀调整 / 年化 IRR / 情景对比 / 目标反推 / 逐年明细 / 增长曲线</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
 
   <div class="inv-app">
     <!-- 输入区 -->
     <section class="input-section">
+      <div class="preset-row">
+        <span class="preset-label">快捷预设</span>
+        <button class="preset-btn" data-preset="conservative" type="button">🛡️ 保守 4%</button>
+        <button class="preset-btn" data-preset="balanced" type="button">⚖️ 平衡 7%</button>
+        <button class="preset-btn" data-preset="aggressive" type="button">🚀 激进 10%</button>
+      </div>
+
       <div class="input-grid">
         <div class="field">
           <label for="initialPrincipal">初始本金</label>
@@ -49,18 +56,20 @@
             <input type="number" id="years" value="20" min="1" max="60" step="1" inputmode="numeric">
             <span>年</span>
           </div>
+          <input type="range" id="yearsRange" min="1" max="60" value="20" aria-label="投资年限滑块">
         </div>
       </div>
 
       <details class="advanced">
-        <summary>⚙️ 高级选项（投入频率 / 通胀率）</summary>
+        <summary>⚙️ 高级选项（投入频率 / 通胀率 / 管理费 / 定投增长 / 情景对比 / 目标反推）</summary>
+
         <div class="input-grid">
           <div class="field">
             <label>投入频率</label>
             <div class="seg" id="freqSeg">
-              <button data-value="monthly" class="active" type="button">每月投入</button>
-              <button data-value="yearly" type="button">每年投入</button>
-              <button data-value="once" type="button">仅一次性</button>
+              <button data-value="monthly" class="active" type="button">每月</button>
+              <button data-value="yearly" type="button">每年</button>
+              <button data-value="once" type="button">一次性</button>
             </div>
           </div>
           <div class="field">
@@ -70,8 +79,45 @@
               <span>%</span>
             </div>
           </div>
+          <div class="field">
+            <label for="feeRate">年管理费率</label>
+            <div class="input-unit">
+              <input type="number" id="feeRate" value="0" min="0" max="10" step="0.1" inputmode="decimal">
+              <span>% / 年</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="investGrowth">定投年增长率</label>
+            <div class="input-unit">
+              <input type="number" id="investGrowth" value="0" min="-20" max="30" step="0.5" inputmode="decimal">
+              <span>% / 年</span>
+            </div>
+          </div>
         </div>
-        <p class="adv-tip">💡 通胀率用于计算"实际购买力"，3% 是较常见的长期通胀假设</p>
+
+        <div class="adv-toggle-row">
+          <label class="adv-check">
+            <input type="checkbox" id="scenarioToggle">
+            <span>显示悲观 / 乐观情景对比</span>
+          </label>
+          <div class="scenario-delta-wrap" id="scenarioDeltaWrap" hidden>
+            <span>波动幅度</span>
+            <input type="number" id="scenarioDelta" value="3" min="0" max="20" step="0.5" inputmode="decimal">
+            <span>± %</span>
+          </div>
+        </div>
+
+        <div class="input-grid" style="margin-top:12px">
+          <div class="field">
+            <label for="targetAmount">目标金额（可选，用于反推年限）</label>
+            <div class="input-unit">
+              <input type="number" id="targetAmount" value="0" min="0" step="10000" inputmode="numeric">
+              <span>元</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="adv-tip">💡 通胀率用于计算"实际购买力"；管理费按年从资产中扣除；定投增长率表示每年投入比上一年增加的比例；目标金额 &gt; 0 时会反推达成所需年数</p>
       </details>
 
       <div class="input-actions">
@@ -82,25 +128,28 @@
 
     <!-- 结果区 -->
     <section class="result-section" id="resultSection" hidden>
-      <!-- 摘要卡片 -->
       <div class="summary-grid" id="summaryGrid"></div>
 
-      <!-- 图表 -->
       <div class="chart-card">
         <div class="chart-head">
           <h2>📈 资产增长曲线</h2>
-          <div class="chart-legend">
-            <span><i class="dot principal"></i> 本金累积</span>
-            <span><i class="dot asset"></i> 总资产</span>
-            <span><i class="dot real"></i> 通胀调整后</span>
+          <div class="chart-tools">
+            <div class="chart-legend">
+              <span><i class="dot principal"></i> 本金累积</span>
+              <span><i class="dot asset"></i> 总资产</span>
+              <span><i class="dot real"></i> 通胀调整后</span>
+              <span class="scenario-legend" hidden><i class="dot optimistic"></i> 乐观</span>
+              <span class="scenario-legend" hidden><i class="dot pessimistic"></i> 悲观</span>
+            </div>
+            <button class="ghost-btn xs" id="scaleBtn" type="button">切换对数坐标</button>
           </div>
         </div>
         <div class="chart-wrap">
           <canvas id="growthChart"></canvas>
+          <div class="chart-tooltip" id="chartTooltip" hidden></div>
         </div>
       </div>
 
-      <!-- 明细表 -->
       <div class="schedule-card">
         <div class="schedule-head">
           <h2>📋 逐年明细</h2>
@@ -115,6 +164,7 @@
                 <th>累计本金</th>
                 <th>本年收益</th>
                 <th>累计收益</th>
+                <th>本年管理费</th>
                 <th>年末总资产</th>
                 <th>通胀调整后</th>
               </tr>

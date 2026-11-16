@@ -1,33 +1,52 @@
-.lt-layout { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
-.lt-container { display: flex; gap: 24px; height: calc(100vh - 150px); }
-@media (max-width: 768px) { .lt-container { flex-direction: column; height: auto; } }
+.lt-layout { max-width: 1050px; margin: 0 auto; padding: 0 16px 32px; height: calc(100vh - 130px); min-height: 600px; }
+@media (max-width: 800px) { .lt-layout { height: auto; } }
 
-.lt-sidebar { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
-.lt-drop-zone { border: 2px dashed #c4b48f; border-radius: 12px; padding: 30px 12px; text-align: center; cursor: pointer; background: #fdf8ec; transition: all .2s; display: flex; flex-direction: column; gap: 6px; }
-.lt-drop-zone:hover { border-color: #8a5a2b; background: #f5ecd5; }
+.lt-container { display: flex; gap: 20px; height: 100%; }
+@media (max-width: 800px) { .lt-container { flex-direction: column; } }
+
+/* 左侧面板 */
+.lt-sidebar { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+.lt-drop-zone { border: 2px dashed #c4b48f; border-radius: 12px; padding: 24px 16px; text-align: center; cursor: pointer; background: #fdf8ec; transition: all .2s; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.lt-drop-zone:hover, .lt-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
+.lt-icon { font-size: 2rem; }
+.lt-drop-zone span { font-size: .95rem; color: #3d3226; font-weight: bold; }
 
 .lt-info { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 12px; padding: 16px; }
-.lt-info h3 { font-size: .95rem; margin: 0 0 12px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 6px; }
-.lt-info p { margin: 6px 0; font-size: .85rem; color: #6b5d47; }
-.lt-info b { color: #3d3226; }
+.lt-info h3 { font-size: .9rem; margin: 0 0 12px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 6px; font-weight: 600; }
+.lt-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.lt-info p { margin: 0; font-size: .85rem; color: #6b5d47; }
+.lt-info b { color: #8a5a2b; font-family: monospace; }
 
-.lt-select { width: 100%; padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fff; font-size: .85rem; margin-top: 4px; outline: none; }
+.lt-info label { display: block; font-size: .85rem; color: #6b5d47; font-weight: bold; margin-bottom: 6px; }
+.lt-select { width: 100%; padding: 8px 12px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fff; font-size: .85rem; outline: none; cursor: pointer; box-sizing: border-box; }
+.lt-select:focus { border-color: #8a5a2b; }
 
+.lt-export-row { display: flex; gap: 8px; }
+.lt-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fff; color: #3d3226; cursor: pointer; font-size: .85rem; font-weight: bold; transition: all .15s; outline: none; }
+.lt-btn:hover { background: #f5ecd5; border-color: #b08a5a; }
+
+/* 右侧预览区 */
 .lt-main { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.lt-preview { flex: 1; border: 1px solid #d5c7a8; border-radius: 14px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; transition: background 0.2s; }
-.lt-placeholder { color: #8a7a5f; font-size: .9rem; }
+.lt-preview { flex: 1; border: 1px solid #d5c7a8; border-radius: 14px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; transition: background-color 0.2s; min-height: 400px; }
+.lt-placeholder { color: #8a7a5f; font-size: 1rem; font-weight: bold; }
 
-/* 棋盘格透明背景 */
 .transparent-bg {
-  background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
-  background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-  background-color: #fff;
+  background-image: linear-gradient(45deg, #e5e5e5 25%, transparent 25%), linear-gradient(-45deg, #e5e5e5 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e5e5e5 75%), linear-gradient(-45deg, transparent 75%, #e5e5e5 75%);
+  background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; background-color: #fff;
 }
 
-.lt-controls { display: flex; align-items: center; gap: 12px; background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 10px; padding: 10px 16px; font-family: monospace; font-size: .85rem; color: #6b5d47; }
-.lt-controls input[type="range"] { flex: 1; accent-color: #8a5a2b; }
+/* 底部控制条 */
+.lt-controls { display: flex; align-items: center; gap: 16px; background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 10px; padding: 10px 16px; }
+.lt-ctrl-btns { display: flex; gap: 8px; align-items: center; }
+.lt-icon-btn { width: 32px; height: 32px; border-radius: 6px; border: 1px solid #d5c7a8; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.15s; outline: none; }
+.lt-icon-btn:hover { background: #f5ecd5; border-color: #b08a5a; }
+.lt-icon-btn.play-btn { width: 40px; height: 40px; font-size: 1.2rem; border-color: #7ba05b; color: #7ba05b; }
+.lt-icon-btn.play-btn:hover { background: #f0fdf4; }
 
-.lt-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .85rem; font-weight: bold; transition: all .15s; }
-.lt-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
-.lt-btn:hover { opacity: 0.9; }
+.lt-frame-text { font-family: monospace; font-size: .85rem; color: #8a5a2b; width: 40px; text-align: center; font-weight: bold; }
+.lt-controls input[type="range"] { flex: 1; accent-color: #8a5a2b; cursor: pointer; }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); background: rgba(61, 50, 38, 0.92); color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; z-index: 9999; max-width: 80vw; text-align: center; word-break: break-all; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }

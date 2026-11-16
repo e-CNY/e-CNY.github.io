@@ -10,67 +10,97 @@
 <link rel="stylesheet" href="../../css/lottie-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🎞️ Lottie 动画预览</h1>
-  <p>支持播放控制、速度调节、透明背景与帧导出。</p>
+  <p>播放控制、速度调节、引擎切换与高清帧导出，完全本地处理。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="lt-layout" style="padding-top: 0;">
+<main class="lt-layout">
   <div class="lt-container">
+    <!-- 左侧控制面板 -->
     <aside class="lt-sidebar">
+      <!-- 上传区 -->
       <div id="lt-drop-zone" class="lt-drop-zone">
-        <span>📁 上传 Lottie JSON</span>
+        <div class="lt-icon">📁</div>
+        <span>点击或拖拽 Lottie JSON</span>
         <input id="lt-input" type="file" accept=".json" hidden>
       </div>
 
+      <!-- 信息与设置面板 -->
       <div class="lt-info" id="lt-info" style="display: none;">
-        <h3>动画信息</h3>
-        <p>尺寸: <b id="lt-w">0</b> x <b id="lt-h">0</b></p>
-        <p>帧率: <b id="lt-fr">0</b> fps</p>
-        <p>时长: <b id="lt-duration">0</b> s</p>
+        <h3>📊 动画信息</h3>
+        <div class="lt-info-grid">
+          <p>尺寸: <b id="lt-w">0</b> x <b id="lt-h">0</b></p>
+          <p>帧率: <b id="lt-fr">0</b> fps</p>
+          <p>总帧: <b id="lt-total">0</b></p>
+          <p>时长: <b id="lt-duration">0</b> s</p>
+        </div>
         
-        <div style="margin-top: 16px;">
-          <label>播放速度</label>
-          <select id="lt-speed" class="lt-select">
-            <option value="0.5">0.5x</option>
-            <option value="1" selected>1.0x</option>
-            <option value="1.5">1.5x</option>
-            <option value="2">2.0x</option>
-          </select>
-        </div>
+        <h3 style="margin-top: 16px;">⚙️ 播放设置</h3>
+        <label>播放速度</label>
+        <select id="lt-speed" class="lt-select">
+          <option value="0.25">0.25x</option>
+          <option value="0.5">0.5x</option>
+          <option value="1" selected>1.0x (正常)</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2.0x</option>
+        </select>
+        
+        <label style="margin-top: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+          <input type="checkbox" id="lt-loop" checked style="accent-color: #8a5a2b;"> 循环播放
+        </label>
 
-        <div style="margin-top: 12px;">
-          <label>背景风格</label>
-          <select id="lt-bg" class="lt-select">
-            <option value="transparent">透明棋盘格</option>
-            <option value="#ffffff">纯白背景</option>
-            <option value="#000000">纯黑背景</option>
-            <option value="#f9f3e3">羊皮纸色</option>
-          </select>
-        </div>
+        <label style="margin-top: 12px;">渲染引擎</label>
+        <select id="lt-engine" class="lt-select">
+          <option value="svg" selected>SVG (矢量高清)</option>
+          <option value="canvas">Canvas (适合复杂动画)</option>
+        </select>
 
-        <div style="margin-top: 16px; display: flex; gap: 8px;">
-          <button id="btn-play" class="lt-btn primary" style="flex:1;">暂停</button>
-          <button id="btn-replay" class="lt-btn" style="flex:1;">重播</button>
+        <label style="margin-top: 12px;">预览背景</label>
+        <select id="lt-bg" class="lt-select">
+          <option value="transparent">透明棋盘格</option>
+          <option value="#ffffff">纯白背景</option>
+          <option value="#1a1c23">暗黑背景</option>
+          <option value="#f9f3e3">羊皮纸色</option>
+        </select>
+
+        <h3 style="margin-top: 16px;">📸 导出设置</h3>
+        <div class="lt-export-row">
+          <select id="lt-scale" class="lt-select" style="flex:1;">
+            <option value="1">1x (标准)</option>
+            <option value="2" selected>2x (高清)</option>
+            <option value="3">3x (超清)</option>
+          </select>
+          <button id="btn-export-frame" class="lt-btn" style="flex:1;">导出当前帧</button>
         </div>
-        <button id="btn-export-frame" class="lt-btn" style="width: 100%; margin-top: 8px;">📸 导出当前帧</button>
       </div>
     </aside>
 
+    <!-- 右侧预览区 -->
     <div class="lt-main">
-      <div id="lt-preview" class="lt-preview transparent-bg">
+      <div class="lt-preview transparent-bg" id="lt-preview">
         <span class="lt-placeholder">等待上传动画...</span>
       </div>
       
+      <!-- 底部播放控制条 -->
       <div class="lt-controls" id="lt-controls" style="display: none;">
-        <span id="lt-current-frame">0</span>
+        <div class="lt-ctrl-btns">
+          <button id="btn-prev" class="lt-icon-btn" title="上一帧">⏮️</button>
+          <button id="btn-play" class="lt-icon-btn play-btn" title="播放/暂停">⏸️</button>
+          <button id="btn-next" class="lt-icon-btn" title="下一帧">⏭️</button>
+          <button id="btn-replay" class="lt-icon-btn" title="重播">🔄</button>
+        </div>
+        <span id="lt-current-frame" class="lt-frame-text">0</span>
         <input type="range" id="lt-progress" min="0" max="100" value="0" step="1">
-        <span id="lt-total-frame">0</span>
+        <span id="lt-total-frame" class="lt-frame-text">0</span>
       </div>
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/lottie.min.js"></script>
 <script src="../../js/lottie-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

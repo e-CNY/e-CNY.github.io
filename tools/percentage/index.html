@@ -14,11 +14,21 @@
 <main class="pct-page">
   <header class="tool-page-header">
     <h1>💯 百分比计算器</h1>
-    <p>6 种常用场景 · 输入即计算 · 公式全透明 · 数字格式化</p>
+    <p>12 种常用场景 · 输入即计算 · 公式透明 · 历史记录 · 结果可复制</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
 
   <div class="pct-app">
+    <!-- 工具栏 -->
+    <div class="app-toolbar">
+      <button class="tool-btn" id="exampleBtn" type="button" title="填充当前模式的示例">💡 示例</button>
+      <button class="tool-btn" id="clearBtn" type="button" title="清空当前模式的输入">🧹 清空</button>
+      <button class="tool-btn" id="copyBtn" type="button" title="复制当前模式的主结果">📋 复制结果</button>
+      <button class="tool-btn" id="saveBtn" type="button" title="将当前结果存入历史">💾 存历史</button>
+      <button class="tool-btn" id="historyBtn" type="button" title="打开历史记录">📜 历史 <span id="historyCount">(0)</span></button>
+      <button class="tool-btn" id="formatBtn" type="button" title="切换数字格式">🔢 千分位</button>
+    </div>
+
     <!-- 模式切换 -->
     <div class="mode-tabs" id="modeTabs">
       <button data-mode="of" class="active" type="button">
@@ -51,6 +61,36 @@
         <span class="tab-name">小费</span>
         <span class="tab-desc">分账</span>
       </button>
+      <button data-mode="original" type="button">
+        <span class="tab-emoji">🔍</span>
+        <span class="tab-name">反推原价</span>
+        <span class="tab-desc">折扣逆向</span>
+      </button>
+      <button data-mode="cagr" type="button">
+        <span class="tab-emoji">🚀</span>
+        <span class="tab-name">CAGR</span>
+        <span class="tab-desc">复合增长率</span>
+      </button>
+      <button data-mode="points" type="button">
+        <span class="tab-emoji">➕</span>
+        <span class="tab-name">百分点</span>
+        <span class="tab-desc">百分比加减</span>
+      </button>
+      <button data-mode="ratio" type="button">
+        <span class="tab-emoji">⚖️</span>
+        <span class="tab-name">比例换算</span>
+        <span class="tab-desc">A:B = C:?</span>
+      </button>
+      <button data-mode="error" type="button">
+        <span class="tab-emoji">🎯</span>
+        <span class="tab-name">误差 %</span>
+        <span class="tab-desc">相对误差</span>
+      </button>
+      <button data-mode="split" type="button">
+        <span class="tab-emoji">💸</span>
+        <span class="tab-name">按比例分账</span>
+        <span class="tab-desc">总额拆分</span>
+      </button>
     </div>
 
     <!-- 计算区 -->
@@ -58,14 +98,14 @@
       <!-- 模式 1: Y 的 X% 是多少 -->
       <div class="mode-form" data-mode="of">
         <div class="form-sentence">
-          <input type="number" id="ofPercent" class="inline-num" placeholder="15" min="0" step="any" inputmode="decimal">
+          <input type="number" id="ofPercent" class="inline-num" placeholder="15" step="any" inputmode="decimal">
           <span class="inline-unit">%</span>
           <span class="inline-text">的</span>
           <input type="number" id="ofValue" class="inline-num" placeholder="200" step="any" inputmode="decimal">
           <span class="inline-text">是</span>
-          <span class="inline-answer" id="ofAnswer">—</span>
+          <span class="inline-answer" id="ofAnswer" title="点击复制">—</span>
         </div>
-        <p class="form-formula" id="ofFormula">公式：结果 = Y × X ÷ 100</p>
+        <p class="form-formula">公式：结果 = Y × X ÷ 100</p>
       </div>
 
       <!-- 模式 2: X 是 Y 的百分之几 -->
@@ -75,16 +115,16 @@
           <span class="inline-text">是</span>
           <input type="number" id="isTotal" class="inline-num" placeholder="200" step="any" inputmode="decimal">
           <span class="inline-text">的</span>
-          <span class="inline-answer" id="isAnswer">—</span>
+          <span class="inline-answer" id="isAnswer" title="点击复制">—</span>
           <span class="inline-unit">%</span>
         </div>
-        <p class="form-formula" id="isFormula">公式：百分比 = X ÷ Y × 100</p>
+        <p class="form-formula">公式：百分比 = X ÷ Y × 100</p>
       </div>
 
       <!-- 模式 3: X 增加/减少 Y% 后 -->
       <div class="mode-form" data-mode="change" hidden>
         <div class="seg-row">
-          <div class="seg" id="changeDirSeg">
+          <div class="seg" id="changeDirSeg" data-value="add">
             <button data-value="add" class="active" type="button">📈 增加</button>
             <button data-value="sub" type="button">📉 减少</button>
           </div>
@@ -92,12 +132,12 @@
         <div class="form-sentence">
           <input type="number" id="chgBase" class="inline-num" placeholder="200" step="any" inputmode="decimal">
           <span class="inline-text" id="chgDirText">增加</span>
-          <input type="number" id="chgPercent" class="inline-num" placeholder="15" min="0" step="any" inputmode="decimal">
+          <input type="number" id="chgPercent" class="inline-num" placeholder="15" step="any" inputmode="decimal">
           <span class="inline-unit">%</span>
           <span class="inline-text">后是</span>
-          <span class="inline-answer" id="chgAnswer">—</span>
+          <span class="inline-answer" id="chgAnswer" title="点击复制">—</span>
         </div>
-        <p class="form-formula" id="chgFormula">公式：结果 = 原值 × (1 ± Y ÷ 100)</p>
+        <p class="form-formula" id="chgFormula">公式：结果 = 原值 × (1 + Y ÷ 100)</p>
       </div>
 
       <!-- 模式 4: 从 X 到 Y 变化百分之几 -->
@@ -108,16 +148,16 @@
           <span class="inline-text">到</span>
           <input type="number" id="diffTo" class="inline-num" placeholder="230" step="any" inputmode="decimal">
           <span class="inline-text">变化了</span>
-          <span class="inline-answer" id="diffAnswer">—</span>
+          <span class="inline-answer" id="diffAnswer" title="点击复制">—</span>
           <span class="inline-unit">%</span>
         </div>
-        <p class="form-formula" id="diffFormula">公式：变化率 = (Y − X) ÷ X × 100</p>
+        <p class="form-formula">公式：变化率 = (Y − X) ÷ X × 100</p>
       </div>
 
       <!-- 模式 5: 折扣计算 -->
       <div class="mode-form" data-mode="discount" hidden>
         <div class="seg-row">
-          <div class="seg" id="discModeSeg">
+          <div class="seg" id="discModeSeg" data-value="zhe">
             <button data-value="zhe" class="active" type="button">几折</button>
             <button data-value="percent" type="button">百分比</button>
           </div>
@@ -136,7 +176,7 @@
           </div>
           <div class="disc-row">
             <span class="disc-label">节省</span>
-            <span class="disc-value" id="discSave">—</span>
+            <span class="disc-value save" id="discSave">—</span>
           </div>
           <div class="disc-row">
             <span class="disc-label">折扣比例</span>
@@ -191,11 +231,192 @@
           <button class="chip" data-tip="25" type="button">25%</button>
         </div>
       </div>
+
+      <!-- 模式 7: 反推原价 -->
+      <div class="mode-form" data-mode="original" hidden>
+        <div class="seg-row">
+          <div class="seg" id="orgModeSeg" data-value="zhe">
+            <button data-value="zhe" class="active" type="button">几折</button>
+            <button data-value="percent" type="button">百分比</button>
+          </div>
+        </div>
+        <div class="form-sentence">
+          <span class="inline-text">折后价</span>
+          <input type="number" id="orgPrice" class="inline-num" placeholder="160" min="0" step="any" inputmode="decimal">
+          <span class="inline-text">元，打</span>
+          <input type="number" id="orgDiscount" class="inline-num" placeholder="8" min="0" step="any" inputmode="decimal">
+          <span class="inline-text" id="orgUnit">折</span>
+          <span class="inline-text">，原价是</span>
+          <span class="inline-answer" id="orgAnswer" title="点击复制">—</span>
+        </div>
+        <div class="disc-result" id="orgResult" hidden>
+          <div class="disc-row">
+            <span class="disc-label">原价</span>
+            <span class="disc-value primary" id="orgFinal">—</span>
+          </div>
+          <div class="disc-row">
+            <span class="disc-label">节省</span>
+            <span class="disc-value save" id="orgSave">—</span>
+          </div>
+          <div class="disc-row">
+            <span class="disc-label">折扣比例</span>
+            <span class="disc-value" id="orgPct">—</span>
+          </div>
+        </div>
+        <p class="form-formula">公式：原价 = 折后价 ÷ 折扣率</p>
+      </div>
+
+      <!-- 模式 8: CAGR 复合增长率 -->
+      <div class="mode-form" data-mode="cagr" hidden>
+        <div class="form-sentence">
+          <span class="inline-text">起始值</span>
+          <input type="number" id="cagrStart" class="inline-num" placeholder="100" step="any" inputmode="decimal">
+          <span class="inline-text">→</span>
+          <input type="number" id="cagrEnd" class="inline-num" placeholder="200" step="any" inputmode="decimal">
+          <span class="inline-text">经过</span>
+          <input type="number" id="cagrYears" class="inline-num small" placeholder="5" min="0.01" step="any" inputmode="decimal">
+          <span class="inline-text">年，CAGR</span>
+          <span class="inline-answer" id="cagrAnswer" title="点击复制">—</span>
+          <span class="inline-unit">%</span>
+        </div>
+        <div class="disc-result" id="cagrResult" hidden>
+          <div class="disc-row">
+            <span class="disc-label">总增长率</span>
+            <span class="disc-value" id="cagrTotal">—</span>
+          </div>
+          <div class="disc-row">
+            <span class="disc-label">最终倍数</span>
+            <span class="disc-value primary" id="cagrMul">—</span>
+          </div>
+        </div>
+        <p class="form-formula">公式：CAGR = (终止值 ÷ 起始值)^(1 ÷ 年数) − 1</p>
+      </div>
+
+      <!-- 模式 9: 百分点加减 -->
+      <div class="mode-form" data-mode="points" hidden>
+        <div class="seg-row">
+          <div class="seg" id="ptDirSeg" data-value="add">
+            <button data-value="add" class="active" type="button">➕ 加</button>
+            <button data-value="sub" type="button">➖ 减</button>
+          </div>
+        </div>
+        <div class="form-sentence">
+          <input type="number" id="ptBase" class="inline-num" placeholder="20" step="any" inputmode="decimal">
+          <span class="inline-unit">%</span>
+          <span class="inline-text" id="ptDirText">加</span>
+          <input type="number" id="ptDelta" class="inline-num" placeholder="5" step="any" inputmode="decimal">
+          <span class="inline-text">个百分点 =</span>
+          <span class="inline-answer" id="ptAnswer" title="点击复制">—</span>
+          <span class="inline-unit">%</span>
+        </div>
+        <div class="disc-result" id="ptResult" hidden>
+          <div class="disc-row">
+            <span class="disc-label">相对变化（vs 原始）</span>
+            <span class="disc-value primary" id="ptRel">—</span>
+          </div>
+        </div>
+        <p class="form-formula">百分点是绝对差值，例如 20% + 5 个点 = 25%（相对增长 25%）</p>
+      </div>
+
+      <!-- 模式 10: 比例换算 A:B = C:? -->
+      <div class="mode-form" data-mode="ratio" hidden>
+        <div class="form-sentence">
+          <input type="number" id="ratioA" class="inline-num small" placeholder="3" step="any" inputmode="decimal">
+          <span class="inline-text">:</span>
+          <input type="number" id="ratioB" class="inline-num small" placeholder="4" step="any" inputmode="decimal">
+          <span class="inline-text">=</span>
+          <input type="number" id="ratioC" class="inline-num small" placeholder="6" step="any" inputmode="decimal">
+          <span class="inline-text">:</span>
+          <span class="inline-answer" id="ratioAnswer" title="点击复制">—</span>
+        </div>
+        <div class="disc-result" id="ratioResult" hidden>
+          <div class="disc-row">
+            <span class="disc-label">比例 A:B</span>
+            <span class="disc-value" id="ratioValAB">—</span>
+          </div>
+          <div class="disc-row">
+            <span class="disc-label">比例 C:?</span>
+            <span class="disc-value primary" id="ratioValCD">—</span>
+          </div>
+        </div>
+        <p class="form-formula">公式：A:B = C:? → ? = B × C ÷ A</p>
+      </div>
+
+      <!-- 模式 11: 误差百分比 -->
+      <div class="mode-form" data-mode="error" hidden>
+        <div class="form-sentence">
+          <span class="inline-text">实测值</span>
+          <input type="number" id="errActual" class="inline-num" placeholder="105" step="any" inputmode="decimal">
+          <span class="inline-text">，理论值</span>
+          <input type="number" id="errExpected" class="inline-num" placeholder="100" step="any" inputmode="decimal">
+          <span class="inline-text">，误差</span>
+          <span class="inline-answer" id="errAnswer" title="点击复制">—</span>
+          <span class="inline-unit">%</span>
+        </div>
+        <div class="disc-result" id="errResult" hidden>
+          <div class="disc-row">
+            <span class="disc-label">绝对误差</span>
+            <span class="disc-value" id="errAbs">—</span>
+          </div>
+          <div class="disc-row">
+            <span class="disc-label">绝对误差百分比</span>
+            <span class="disc-value primary" id="errAbsPct">—</span>
+          </div>
+        </div>
+        <p class="form-formula">公式：误差% = (实测 − 理论) ÷ 理论 × 100</p>
+      </div>
+
+      <!-- 模式 12: 按比例分账 -->
+      <div class="mode-form" data-mode="split" hidden>
+        <div class="form-sentence">
+          <span class="inline-text">总额</span>
+          <input type="number" id="splitTotal" class="inline-num" placeholder="1000" min="0" step="any" inputmode="decimal">
+          <span class="inline-text">元，按</span>
+          <input type="number" id="splitA" class="inline-num small" placeholder="3" min="0" step="any" inputmode="decimal">
+          <span class="inline-text">:</span>
+          <input type="number" id="splitB" class="inline-num small" placeholder="2" min="0" step="any" inputmode="decimal">
+          <span class="inline-text">分</span>
+        </div>
+        <div class="disc-result" id="splitResult" hidden>
+          <div class="disc-row">
+            <span class="disc-label">第一份</span>
+            <span class="disc-value primary" id="splitAPart">—</span>
+          </div>
+          <div class="disc-row">
+            <span class="disc-label">第一份占比</span>
+            <span class="disc-value" id="splitAPct">—</span>
+          </div>
+          <div class="disc-row">
+            <span class="disc-label">第二份</span>
+            <span class="disc-value primary" id="splitBPart">—</span>
+          </div>
+          <div class="disc-row">
+            <span class="disc-label">第二份占比</span>
+            <span class="disc-value" id="splitBPct">—</span>
+          </div>
+        </div>
+        <p class="form-formula">第一份 = 总额 × A ÷ (A + B)</p>
+      </div>
     </div>
 
-    <!-- 使用提示 -->
-    <p class="tips">💡 所有结果实时计算，无需点击按钮。支持小数输入，结果自动保留适当精度并做千分位分隔。</p>
+    <p class="tips">💡 结果实时计算。Enter 跳到下一输入框，Esc 清空当前输入框，点击结果数字可直接复制。</p>
   </div>
+
+  <!-- 历史抽屉 -->
+  <div class="history-backdrop" id="historyBackdrop" hidden></div>
+  <aside class="history-drawer" id="historyDrawer">
+    <div class="history-head">
+      <h3>📜 历史记录</h3>
+      <button class="tool-btn" id="historyClose" type="button">✕</button>
+    </div>
+    <div class="history-list" id="historyList"></div>
+    <div class="history-actions">
+      <button class="tool-btn danger" id="historyClear" type="button">🗑 清空历史</button>
+    </div>
+  </aside>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 </main>
 <script src="../../js/percentage.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

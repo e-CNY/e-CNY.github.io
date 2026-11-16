@@ -10,43 +10,82 @@
 <link rel="stylesheet" href="../../css/doc-automation.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>📄 办公文档自动化</h1>
-  <p>Word 转 HTML、提取图片，纯本地处理。</p>
+  <p>Word 转 HTML / Markdown，提取图片，纯本地处理。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="da-layout" style="padding-top: 0;">
+<main class="da-layout">
   <div class="da-container">
+    <!-- 左侧控制面板 -->
     <aside class="da-sidebar">
       <div class="da-section">
-        <h3>1. 上传 Word 文档</h3>
+        <h3>📁 导入文档</h3>
         <div id="da-drop-zone" class="da-drop-zone">
-          <span>📁 点击或拖拽 .docx 文件</span>
+          <div style="font-size:2rem; margin-bottom:8px;">📄</div>
+          <span>点击或拖拽 .docx 文件</span>
+          <small>文件完全在本地解析，不会上传</small>
         </div>
         <input id="da-input" type="file" accept=".docx" hidden>
       </div>
+
       <div class="da-section" id="da-actions" style="display:none;">
-        <h3>2. 操作</h3>
-        <button id="btn-copy-html" class="da-btn primary">📋 复制 HTML 代码</button>
-        <button id="btn-copy-rich" class="da-btn">📋 复制为富文本(Word用)</button>
+        <h3>📤 导出与复制</h3>
+        <button id="btn-copy-rich" class="da-btn primary">📋 复制为富文本 (直接粘贴Word)</button>
+        <div class="da-btn-group">
+          <button id="btn-copy-html" class="da-btn">📋 复制 HTML</button>
+          <button id="btn-copy-md" class="da-btn">📋 复制 MD</button>
+        </div>
+        <div class="da-btn-group" style="margin-top: 8px;">
+          <button id="btn-download-html" class="da-btn" disabled>💾 下载 .html</button>
+          <button id="btn-download-md" class="da-btn" disabled>💾 下载 .md</button>
+        </div>
+      </div>
+      
+      <div class="da-section" style="flex:1;">
+        <h3>💡 使用提示</h3>
+        <p class="da-hint">
+          • 支持包含图文、表格的复杂 Word。
+          • 导出 HTML 时会自动附带基础排版样式。
+        </p>
       </div>
     </aside>
 
+    <!-- 右侧预览区 -->
     <div class="da-main">
       <div class="da-toolbar">
         <span id="da-status">等待上传文件...</span>
-        <button id="btn-download-html" class="da-btn" style="display:none;">⬇️ 下载 HTML</button>
-      </div>
-      <div class="da-preview-wrap">
-        <div id="da-preview" class="da-preview markdown-body">
-          <p style="color:#8a7a5f; text-align:center; margin-top:50px;">预览区域</p>
+        <div class="da-toolbar-actions">
+          <button id="btn-view-mode" class="da-mini-btn" style="display: none;">👁️ 源码模式</button>
         </div>
+      </div>
+      
+      <div class="da-preview-wrap" id="da-preview-wrap">
+        <!-- 预览区 -->
+        <div id="da-preview" class="da-preview markdown-body">
+          <div class="da-empty">
+            <div style="font-size:3rem; margin-bottom:16px; opacity:0.5;">📝</div>
+            <p>请上传 .docx 文件以开始转换</p>
+          </div>
+        </div>
+        <!-- 源码区 -->
+        <textarea id="da-source" class="da-source" readonly style="display: none;" spellcheck="false"></textarea>
       </div>
     </div>
   </div>
 </main>
+
+<!-- 解析 Loading -->
+<div id="loading-overlay" class="da-loading" style="display: none;">
+  <div class="spinner"></div>
+  <div class="loading-text">正在解析文档内容...</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/mammoth.browser.min.js"></script>
+<script src="../../js/libs/turndown.js"></script>
 <script src="../../js/doc-automation.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

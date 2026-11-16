@@ -12,15 +12,21 @@
 </head>
 <body>
 <main class="seal-page">
-  <header class="tool-page-header">
+  <header class="tool-page-header" style="padding: 12px 16px 8px;">
     <h1>📮 电子印章生成器</h1>
-    <p>环形文字 / 五角星 / 做旧效果 / 导出透明 PNG · 纯本地处理</p>
+    <p>环形文字 / 智能排版 / 真实做旧质感 / 导出透明 PNG</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
 
   <div class="seal-layout">
     <!-- 左侧控制面板 -->
     <aside class="panel">
+      
+      <!-- 顶部操作栏 -->
+      <div class="panel-header-actions">
+        <button id="btn-reset" class="mini-btn">🔄 恢复默认</button>
+      </div>
+
       <div class="group">
         <label class="group-label">印章形状</label>
         <div class="seg" id="shapeSeg" role="group">
@@ -67,8 +73,9 @@
           <button class="swatch" data-color="#b02616" style="background:#b02616" title="深红"></button>
           <button class="swatch" data-color="#d43030" style="background:#d43030" title="正红"></button>
           <button class="swatch" data-color="#8e1e1e" style="background:#8e1e1e" title="暗红"></button>
-          <button class="swatch" data-color="#1e3a8a" style="background:#1e3a8a" title="蓝色（专用）"></button>
-          <button class="swatch" data-color="#166534" style="background:#166534" title="绿色"></button>
+          <button class="swatch" data-color="#1e3a8a" style="background:#1e3a8a" title="藏青（专用）"></button>
+          <button class="swatch" data-color="#4a044e" style="background:#4a044e" title="紫红（专用）"></button>
+          <button class="swatch" data-color="#000000" style="background:#000000" title="纯黑"></button>
           <input id="colorPicker" type="color" value="#c8202a" title="自定义颜色">
         </div>
       </div>
@@ -115,7 +122,15 @@
 
     <!-- 右侧预览与导出 -->
     <section class="stage">
-      <div class="canvas-wrap">
+      <!-- 预览背景切换 -->
+      <div class="preview-bg-bar">
+        <button class="bg-btn active" data-bg="checker">棋盘格</button>
+        <button class="bg-btn" data-bg="white">纯白</button>
+        <button class="bg-btn" data-bg="paper">牛皮纸</button>
+        <button class="bg-btn" data-bg="dark">深色</button>
+      </div>
+
+      <div class="canvas-wrap bg-checker" id="canvasWrap">
         <canvas id="sealCanvas"></canvas>
       </div>
 
@@ -135,6 +150,9 @@
     </section>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/seal.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

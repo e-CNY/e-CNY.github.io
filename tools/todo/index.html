@@ -12,26 +12,32 @@
 </head>
 <body>
 <main class="todo-page">
-  <header class="tool-page-header">
+  <header class="tool-page-header" style="padding: 12px 16px 8px;">
     <h1>✅ 待办清单</h1>
-    <p>任务管理 · 分类标签 · 优先级 · 拖拽排序 · 本地保存</p>
+    <p>任务管理 · 分类标签 · 优先级 · 拖拽排序 · 多格式导出</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
 
   <div class="todo-app">
+    <!-- 添加栏 -->
     <div class="add-bar">
       <input id="newTask" type="text" placeholder="输入任务，按回车添加…" autocomplete="off" maxlength="200">
       <button id="addBtn" type="button">＋ 添加</button>
     </div>
 
+    <!-- 工具栏 -->
     <div class="toolbar">
       <div class="toolbar-row">
+        <label class="select-all-wrap">
+          <input type="checkbox" id="selectAll">
+          <span>全选</span>
+        </label>
         <div class="seg" id="statusFilters" role="tablist">
           <button data-status="all" class="active" type="button">全部</button>
           <button data-status="active" type="button">进行中</button>
           <button data-status="done" type="button">已完成</button>
         </div>
-        <input id="search" type="search" placeholder="🔍 搜索任务…" autocomplete="off">
+        <input id="search" type="search" placeholder="🔍 搜索任务 (Ctrl+K)" autocomplete="off">
       </div>
       <div class="toolbar-row">
         <div class="cat-bar" id="catFilters"></div>
@@ -44,21 +50,32 @@
       </div>
     </div>
 
+    <!-- 任务列表 -->
     <ul class="task-list" id="taskList"></ul>
     <p class="empty-tip" id="emptyTip" hidden></p>
 
+    <!-- 底部栏 -->
     <div class="footer-bar">
       <div class="stats" id="stats"></div>
       <div class="footer-actions">
-        <button id="importBtn" type="button">导入</button>
-        <button id="exportBtn" type="button">导出</button>
+        <button id="importBtn" type="button">📥 导入</button>
+        <div class="dropdown" id="exportDropdown">
+          <button type="button" class="dropdown-toggle">📤 导出 ▼</button>
+          <div class="dropdown-menu">
+            <button id="exportJsonBtn" type="button">导出 JSON (备份)</button>
+            <button id="exportMdBtn" type="button">导出 Markdown</button>
+          </div>
+        </div>
         <button id="clearDoneBtn" type="button">清除已完成</button>
-        <button id="clearAllBtn" type="button">全部清除</button>
+        <button id="clearAllBtn" type="button" class="danger-text">全部清除</button>
         <input id="importFile" type="file" accept="application/json,.json" hidden>
       </div>
     </div>
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/todo.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

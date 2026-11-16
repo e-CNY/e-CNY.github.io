@@ -10,49 +10,90 @@
 <link rel="stylesheet" href="../../css/table-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>📊 表格处理工具</h1>
-  <p>支持 Excel / CSV 解析与在线编辑，双击单元格即可修改内容。</p>
+  <p>Excel/CSV 解析，支持在线编辑、直接粘贴 Excel 数据与多格式导出。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="tt-layout" style="padding-top: 0;">
+<main class="tt-layout">
   <div class="tt-container">
-    <div class="tt-sidebar">
+    <!-- 左侧工具栏 -->
+    <aside class="tt-sidebar">
+      
       <div class="tt-section">
-        <h3>1. 上传表格</h3>
+        <h3>📁 导入与新建</h3>
         <div id="tt-drop-zone" class="tt-drop-zone">
-          <span>📁 点击或拖拽文件</span>
+          <span>点击或拖拽文件</span>
           <span class="tt-hint">支持 .csv / .xlsx / .xls</span>
         </div>
         <input id="tt-input" type="file" accept=".csv,.xlsx,.xls" hidden>
+        <button id="btn-new-table" class="tt-btn" style="margin-top:10px;">✨ 新建空表格</button>
       </div>
 
       <div class="tt-section">
-        <h3>2. 在线编辑</h3>
-        <button id="btn-add-row" class="tt-btn" disabled>➕ 在末尾添加行</button>
-        <button id="btn-add-col" class="tt-btn" disabled>➕ 在末尾添加列</button>
-        <button id="btn-clear" class="tt-btn danger" disabled>🗑️ 清空表格</button>
+        <h3>🛠️ 编辑操作</h3>
+        <div class="tt-btn-group">
+          <button id="btn-undo" class="tt-mini-btn" title="撤销 (Ctrl+Z)">↩️ 撤销</button>
+          <button id="btn-redo" class="tt-mini-btn" title="重做 (Ctrl+Y)">↪️ 重做</button>
+        </div>
+        <p class="tt-hint" style="margin-top: 12px; line-height: 1.5;">
+          💡 <b>提示：</b><br>
+          • 在单元格内按 <kbd>Tab</kbd> 向右跳转<br>
+          • 按 <kbd>Enter</kbd> 向下跳转<br>
+          • 右键单元格可插入/删除行列<br>
+          • 支持直接从 Excel 复制粘贴
+        </p>
       </div>
 
       <div class="tt-section">
-        <h3>3. 导出下载</h3>
+        <h3>💾 导出下载</h3>
         <button id="btn-export-csv" class="tt-btn" disabled>导出为 CSV</button>
         <button id="btn-export-json" class="tt-btn" disabled>导出为 JSON</button>
         <button id="btn-export-xlsx" class="tt-btn" disabled>导出为 Excel</button>
+        <button id="btn-export-md" class="tt-btn" disabled>导出为 Markdown</button>
       </div>
-    </div>
+      
+    </aside>
 
+    <!-- 右侧表格主体 -->
     <div class="tt-main">
       <div class="tt-toolbar">
-        <span id="tt-status">等待上传文件或直接编辑...</span>
+        <div class="tt-stat-group">
+          <span id="tt-status" style="font-weight: bold; color: #4b3f2f;">等待导入数据...</span>
+        </div>
+        <div class="tt-stat-group">
+          <span class="tt-badge">行: <b id="stat-rows">0</b></span>
+          <span class="tt-badge">列: <b id="stat-cols">0</b></span>
+          <span class="tt-badge">单元格: <b id="stat-cells">0</b></span>
+        </div>
       </div>
+      
       <div class="tt-preview-wrap" id="tt-table-wrap">
         <table id="tt-preview-table" class="tt-table"></table>
+        <div id="tt-empty-state" class="tt-empty-state">
+          <div style="font-size:3rem; margin-bottom:12px; opacity:0.5;">📄</div>
+          <p>请上传文件或点击左侧“新建空表格”开始</p>
+        </div>
       </div>
     </div>
   </div>
 </main>
+
+<!-- 右键菜单 -->
+<div id="tt-context-menu" class="tt-context-menu" style="display:none;">
+  <div class="ctx-item" data-action="insert-row-above">⬆️ 在上方插入行</div>
+  <div class="ctx-item" data-action="insert-row-below">⬇️ 在下方插入行</div>
+  <div class="ctx-divider"></div>
+  <div class="ctx-item" data-action="insert-col-left">⬅️ 在左侧插入列</div>
+  <div class="ctx-item" data-action="insert-col-right">➡️ 在右侧插入列</div>
+  <div class="ctx-divider"></div>
+  <div class="ctx-item danger" data-action="delete-row">❌ 删除当前行</div>
+  <div class="ctx-item danger" data-action="delete-col">❌ 删除当前列</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/xlsx.full.min.js"></script>
 <script src="../../js/table-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

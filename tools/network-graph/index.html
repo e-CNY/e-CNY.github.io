@@ -10,32 +10,83 @@
 <link rel="stylesheet" href="../../css/network-graph.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>🗺️ 关系网络图</h1>
-  <p>知识图谱、力导向布局与交互节点可视化。</p>
+  <p>知识图谱可视化，支持自定义数据、节点拖拽与高亮搜索。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="ng-layout" style="padding-top: 0;">
-  <div class="ng-toolbar">
-    <select id="ng-layout" class="ng-select">
-      <option value="force">力导向布局 (Force)</option>
-      <option value="circular">环形布局 (Circular)</option>
-    </select>
-    <select id="ng-symbol" class="ng-select">
-      <option value="circle">圆形节点</option>
-      <option value="rect">矩形节点</option>
-      <option value="roundRect">圆角矩形</option>
-      <option value="triangle">三角形</option>
-      <option value="diamond">菱形</option>
-    </select>
-    <input type="text" id="ng-search" class="ng-input" placeholder="搜索节点名称（如 JavaScript）...">
-    <button id="btn-search" class="ng-btn primary">🔍 搜索定位</button>
-  </div>
-  <div class="ng-card">
-    <div id="ng-chart" class="ng-chart"></div>
+<main class="ng-layout">
+  <div class="ng-container">
+    
+    <!-- 左侧控制面板 -->
+    <aside class="ng-sidebar">
+      <div class="ng-panel-section">
+        <h3>⚙️ 视图设置</h3>
+        <div class="ng-row">
+          <label>布局方式</label>
+          <select id="ng-layout" class="ng-select">
+            <option value="force">力导向布局 (Force)</option>
+            <option value="circular">环形布局 (Circular)</option>
+          </select>
+        </div>
+        <div class="ng-row">
+          <label>节点形状</label>
+          <select id="ng-symbol" class="ng-select">
+            <option value="circle">圆形</option>
+            <option value="rect">矩形</option>
+            <option value="roundRect">圆角矩形</option>
+            <option value="triangle">三角形</option>
+            <option value="diamond">菱形</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="ng-panel-section">
+        <h3>🔍 搜索与操作</h3>
+        <div class="ng-row">
+          <input type="text" id="ng-search" class="ng-input" placeholder="搜索节点名称，如 JavaScript...">
+        </div>
+        <div class="ng-row btn-group">
+          <button id="btn-search" class="ng-btn primary">🔍 搜索</button>
+          <button id="btn-clear-search" class="ng-btn">重置</button>
+        </div>
+        <div class="ng-row btn-group" style="margin-top: 12px;">
+          <button id="btn-reset-view" class="ng-btn">🔄 整理节点</button>
+          <button id="btn-download" class="ng-btn">🖼️ 导出 PNG</button>
+        </div>
+      </div>
+
+      <div class="ng-panel-section" style="flex:1; display:flex; flex-direction:column; min-height: 200px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h3>📊 数据源 (JSON)</h3>
+          <button id="btn-reset-data" class="ng-mini-btn">恢复示例</button>
+        </div>
+        <textarea id="ng-data" class="ng-textarea" spellcheck="false" placeholder="输入包含 nodes 和 links 的 JSON..."></textarea>
+        <button id="btn-apply-data" class="ng-btn primary" style="width: 100%; margin-top: 8px;">✅ 应用数据并渲染</button>
+      </div>
+    </aside>
+
+    <!-- 右侧图表区域 -->
+    <div class="ng-main">
+      <div class="ng-chart-header">
+        <span>👁️ 拓扑预览</span>
+        <span class="ng-hint">提示：按住鼠标左键可拖拽画布，按住节点可拖拽固定</span>
+      </div>
+      <div id="ng-chart" class="ng-chart"></div>
+      
+      <!-- Loading 遮罩 -->
+      <div id="ng-loading" class="ng-loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <div class="loading-text">正在解析图谱数据...</div>
+      </div>
+    </div>
+
   </div>
 </main>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/echarts.min.js"></script>
 <script src="../../js/network-graph.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

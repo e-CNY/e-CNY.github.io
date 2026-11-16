@@ -8,22 +8,20 @@
 <title>代码截图美化器 · 工具站</title>
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="../../css/code-screenshot.css">
-<!-- 高亮主题样式 -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header" style="padding: 12px 16px 8px;">
   <h1>📸 代码截图美化器</h1>
-  <p>一键将代码转化为极客风精美截图。</p>
+  <p>一键将代码转化为极客风精美截图，支持多语言与个性化定制。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="cs-layout" style="padding-top: 0;">
+<main class="cs-layout">
   <div class="cs-container">
     <!-- 左侧配置 -->
     <aside class="cs-sidebar">
       <div class="cs-section">
-        <label>选择语言</label>
+        <label>代码语言</label>
         <select id="cs-language" class="cs-select">
           <option value="javascript">JavaScript</option>
           <option value="typescript">TypeScript</option>
@@ -39,7 +37,6 @@
           <option value="php">PHP</option>
           <option value="ruby">Ruby</option>
           <option value="swift">Swift</option>
-          <option value="kotlin">Kotlin</option>
           <option value="sql">SQL</option>
           <option value="bash">Bash / Shell</option>
           <option value="json">JSON</option>
@@ -49,28 +46,47 @@
       </div>
 
       <div class="cs-section">
-        <label>窗口样式</label>
-        <select id="cs-window-style" class="cs-select">
-          <option value="mac">macOS (左侧红黄绿)</option>
-          <option value="win">Windows (右侧控制)</option>
-        </select>
+        <label>窗口外观</label>
+        <div class="cs-row">
+          <select id="cs-window-style" class="cs-select">
+            <option value="mac">macOS 风格</option>
+            <option value="win">Windows 风格</option>
+          </select>
+        </div>
+        <div class="cs-row" style="margin-top:8px;">
+          <select id="cs-code-bg" class="cs-select">
+            <option value="#282c34">深色背景 (Atom)</option>
+            <option value="#1e1e1e">极客黑 (VSCode)</option>
+            <option value="#f8f9fa">浅色背景</option>
+          </select>
+        </div>
         <div class="cs-options" style="margin-top: 10px;">
           <label><input type="checkbox" id="cs-show-shadow" checked> 添加阴影</label>
+          <label><input type="checkbox" id="cs-show-lines" checked> 显示行号</label>
         </div>
       </div>
 
       <div class="cs-section">
-        <label>背景渐变风格</label>
+        <label>排版调整</label>
+        <div class="cs-slider-group">
+          <span>字号: <b id="val-font-size">15</b>px</span>
+          <input type="range" id="cs-font-size" min="12" max="24" value="15">
+        </div>
+        <div class="cs-slider-group" style="margin-top: 8px;">
+          <span>内边距: <b id="val-padding">24</b>px</span>
+          <input type="range" id="cs-padding" min="16" max="64" value="24">
+        </div>
+      </div>
+
+      <div class="cs-section">
+        <label>背景渐变</label>
         <div class="cs-colors">
-          <!-- 经典色 -->
           <button class="cs-color-btn active" style="background: linear-gradient(135deg, #7ba05b, #4a90e2);" data-bg="linear-gradient(135deg, #7ba05b, #4a90e2)"></button>
           <button class="cs-color-btn" style="background: linear-gradient(135deg, #f1c40f, #e67e22);" data-bg="linear-gradient(135deg, #f1c40f, #e67e22)"></button>
           <button class="cs-color-btn" style="background: linear-gradient(135deg, #a8452a, #8e44ad);" data-bg="linear-gradient(135deg, #a8452a, #8e44ad)"></button>
           <button class="cs-color-btn" style="background: linear-gradient(135deg, #2d3748, #1a202c);" data-bg="linear-gradient(135deg, #2d3748, #1a202c)"></button>
-          <!-- 极客暗色系 -->
           <button class="cs-color-btn" style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);" data-bg="linear-gradient(135deg, #0f2027, #203a43, #2c5364)"></button>
           <button class="cs-color-btn" style="background: linear-gradient(135deg, #232526, #414345);" data-bg="linear-gradient(135deg, #232526, #414345)"></button>
-          <!-- 骚气渐变 -->
           <button class="cs-color-btn" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);" data-bg="linear-gradient(135deg, #ff9a9e, #fecfef)"></button>
           <button class="cs-color-btn" style="background: linear-gradient(135deg, #667eea, #764ba2);" data-bg="linear-gradient(135deg, #667eea, #764ba2)"></button>
           <button class="cs-color-btn" style="background: linear-gradient(135deg, #4facfe, #00f2fe);" data-bg="linear-gradient(135deg, #4facfe, #00f2fe)"></button>
@@ -85,40 +101,65 @@
 
     <!-- 右侧工作区 -->
     <div class="cs-main">
-      <div class="cs-editor-wrap">
-        <textarea id="cs-input" spellcheck="false" placeholder="在此粘贴代码..."></textarea>
+      <!-- 编辑区 -->
+      <div class="cs-editor-wrap" id="cs-editor-wrap">
+        <div class="cs-editor-header">
+          <span>📝 粘贴或拖拽代码文件</span>
+          <button id="btn-clear-code" class="cs-mini-btn danger">🗑️ 清空</button>
+        </div>
+        <textarea id="cs-input" spellcheck="false" placeholder="在此粘贴代码，或拖拽 .js / .py / .html 等文件到这里..."></textarea>
       </div>
       
       <!-- 截图预览区 -->
       <div id="cs-preview-area" class="cs-preview-area" style="display:none;">
-        <div id="capture-target" class="capture-target">
-          
-          <!-- 窗口头部 (Flex 完美布局) -->
-          <div class="window-header" id="window-header">
-            <!-- Mac 左侧按钮 -->
-            <div class="header-mac" id="header-mac">
-              <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-            </div>
-            
-            <!-- 右侧容器：包含语言标签和 Win 按钮 -->
-            <div class="header-right">
-              <span class="lang-label" id="lang-label">javascript</span>
-              <!-- Win 按钮 -->
-              <div class="header-win" id="header-win" style="display:none;">
-                <span class="win-btn minimize"></span>
-                <span class="win-btn maximize"></span>
-                <span class="win-btn close"></span>
+        <div class="cs-preview-actions">
+          <button id="btn-back" class="cs-mini-btn">⬅️ 返回编辑</button>
+          <div class="cs-download-group">
+            <select id="cs-export-scale" class="cs-select" style="width:auto; padding:4px 8px;">
+              <option value="1">1x 标准</option>
+              <option value="2" selected>2x 高清</option>
+              <option value="3">3x 超清</option>
+            </select>
+            <button id="btn-download" class="cs-btn download-btn" style="width:auto; padding:8px 16px; margin:0;">⬇️ 下载图片</button>
+          </div>
+        </div>
+        
+        <div class="cs-capture-wrap" id="cs-capture-wrap">
+          <div id="capture-target" class="capture-target">
+            <!-- 窗口头部 -->
+            <div class="window-header">
+              <div class="header-mac" id="header-mac">
+                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+              </div>
+              <div class="header-right">
+                <span class="lang-label" id="lang-label">javascript</span>
+                <div class="header-win" id="header-win" style="display:none;">
+                  <span class="win-btn minimize"></span>
+                  <span class="win-btn maximize"></span>
+                  <span class="win-btn close"></span>
+                </div>
               </div>
             </div>
+            <!-- 代码区 -->
+            <div class="code-container" id="code-container">
+              <div class="line-numbers" id="line-numbers"></div>
+              <pre><code id="code-preview" class="hljs"></code></pre>
+            </div>
           </div>
-
-          <pre><code id="code-preview" class="hljs"></code></pre>
         </div>
-        <button id="btn-download" class="cs-btn download-btn">⬇️ 下载高清图片</button>
       </div>
     </div>
   </div>
 </main>
+
+<!-- 导出 Loading -->
+<div id="loading-overlay" class="cs-loading" style="display: none;">
+  <div class="spinner"></div>
+  <div class="loading-text">正在渲染高清图片...</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script src="../../js/libs/highlight.min.js"></script>
 <script src="../../js/libs/html2canvas.min.js"></script>
 <script src="../../js/code-screenshot.js" defer></script>

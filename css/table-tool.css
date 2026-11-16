@@ -1,36 +1,71 @@
-.tt-layout { max-width: 1200px; margin: 0 auto; padding: 28px 16px 56px; }
-.tt-container { display: flex; gap: 24px; height: calc(100vh - 150px); }
-@media (max-width: 768px) { .tt-container { flex-direction: column; height: auto; } }
+.tt-layout { max-width: 1200px; margin: 0 auto; padding: 0 16px 32px; height: calc(100vh - 130px); min-height: 600px; }
+@media (max-width: 800px) { .tt-layout { height: auto; } }
 
-.tt-sidebar { width: 260px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
+.tt-container { display: flex; gap: 20px; height: 100%; }
+@media (max-width: 800px) { .tt-container { flex-direction: column; } }
+
+/* 左侧面板 */
+.tt-sidebar { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
 .tt-section { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 16px; }
-.tt-section h3 { font-size: .95rem; margin: 0 0 12px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 6px; }
+.tt-section h3 { font-size: .95rem; margin: 0 0 12px; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 8px; }
 
-.tt-drop-zone { border: 2px dashed #c4b48f; border-radius: 10px; padding: 24px 12px; text-align: center; cursor: pointer; background: #fdf8ec; transition: all .2s; display: flex; flex-direction: column; gap: 4px; }
+.tt-drop-zone { border: 2px dashed #c4b48f; border-radius: 10px; padding: 24px 12px; text-align: center; cursor: pointer; background: #fdf8ec; transition: all .2s; display: flex; flex-direction: column; gap: 6px; }
 .tt-drop-zone:hover, .tt-drop-zone.dragover { border-color: #8a5a2b; background: #f5ecd5; }
-.tt-hint { font-size: .75rem; color: #8a7a5f; }
+.tt-drop-zone span { font-size: .9rem; color: #3d3226; font-weight: bold; }
+.tt-hint { font-size: .75rem; color: #8a7a5f; font-weight: normal !important; }
+kbd { display: inline-block; padding: 1px 5px; background: #fff; border: 1px solid #d5c7a8; border-radius: 4px; font-family: monospace; font-size: 0.8em; }
 
-.tt-btn { width: 100%; padding: 10px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; font-size: .9rem; cursor: pointer; transition: all .15s; }
+.tt-btn { width: 100%; padding: 10px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fff; color: #3d3226; font-size: .9rem; font-weight: 600; cursor: pointer; transition: all .15s; outline: none; }
+.tt-btn:last-child { margin-bottom: 0; }
 .tt-btn:hover:not(:disabled) { background: #f5ecd5; border-color: #b08a5a; }
 .tt-btn:disabled { opacity: .5; cursor: not-allowed; }
-.tt-btn.danger { color: #a8452a; border-color: #fecaca; background: #fef2f2; }
-.tt-btn.danger:hover:not(:disabled) { background: #fee2e2; }
 
+.tt-btn-group { display: flex; gap: 8px; }
+.tt-mini-btn { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #d5c7a8; background: #fff; color: #3d3226; font-size: .85rem; font-weight: bold; cursor: pointer; transition: all .15s; outline: none; }
+.tt-mini-btn:hover:not(:disabled) { background: #f5ecd5; border-color: #b08a5a; }
+.tt-mini-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* 右侧主区域 */
 .tt-main { flex: 1; background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; min-width: 0; }
-.tt-toolbar { margin-bottom: 12px; font-size: .85rem; color: #6b5d47; font-weight: bold; }
+
+.tt-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; flex-shrink: 0; }
+.tt-stat-group { display: flex; gap: 8px; align-items: center; font-size: .85rem; }
+.tt-badge { background: #fff; padding: 4px 10px; border-radius: 6px; border: 1px solid #d5c7a8; color: #6b5d47; font-weight: bold; }
+.tt-badge b { color: #8a5a2b; font-family: monospace; font-size: 0.95rem; }
+
 .tt-preview-wrap { flex: 1; overflow: auto; background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; position: relative; }
 
-.tt-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.tt-table { width: 100%; border-collapse: collapse; font-size: .85rem; table-layout: fixed; }
 .tt-table th, .tt-table td { 
   border: 1px solid #e5d9bd; padding: 8px 12px; text-align: left; 
-  min-width: 100px; outline: none; transition: background 0.15s;
+  min-width: 100px; max-width: 300px; outline: none; transition: background 0.15s;
+  white-space: pre-wrap; word-break: break-all;
 }
-.tt-table th { background: #fdf8ec; color: #8a5a2b; font-weight: bold; position: sticky; top: 0; z-index: 10; }
-.tt-table tr:nth-child(even) { background: #faf8f5; }
+.tt-table th { background: #fdf8ec; color: #8a5a2b; font-weight: bold; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid #d5c7a8; }
+.tt-table tr:nth-child(even) td { background: #faf8f5; }
+.tt-table tr:hover td { background: #f0f7ff; }
 
 /* 可编辑状态 */
 .tt-table th[contenteditable="true"]:focus, 
 .tt-table td[contenteditable="true"]:focus {
-  background: #f0f7ff;
+  background: #fff !important;
   box-shadow: inset 0 0 0 2px #2563eb;
+  z-index: 5;
+  position: relative;
 }
+
+/* 空状态 */
+.tt-empty-state { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #8a7a5f; background: #fdfcf9; }
+.tt-empty-state p { font-size: 0.95rem; margin: 0; }
+
+/* 右键菜单 */
+.tt-context-menu { position: fixed; background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 6px; z-index: 9999; min-width: 160px; }
+.ctx-item { padding: 8px 12px; font-size: .85rem; color: #3d3226; cursor: pointer; border-radius: 4px; transition: background 0.1s; }
+.ctx-item:hover { background: #f5ecd5; color: #8a5a2b; }
+.ctx-item.danger { color: #a8452a; }
+.ctx-item.danger:hover { background: #fee2e2; }
+.ctx-divider { height: 1px; background: #e5d9bd; margin: 4px 0; }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); background: rgba(61, 50, 38, 0.92); color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; z-index: 9999; max-width: 80vw; text-align: center; word-break: break-all; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }

@@ -2,7 +2,44 @@
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'tool.habit.v1';
+  // ================= 通用工具 =================
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function showToast(msg, isError) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    if (isError) toastEl.style.background = 'rgba(168, 69, 42, 0.95)';
+    else toastEl.style.background = 'rgba(61, 50, 38, 0.92)';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
+  }
+
+  function confirmAction(title, msg, onOk) {
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMsg').textContent = msg;
+    var modal = document.getElementById('confirmModal');
+    modal.hidden = false;
+
+    var btnOk = document.getElementById('confirmOk');
+    var btnCancel = document.getElementById('confirmCancel');
+
+    function cleanup() {
+      modal.hidden = true;
+      btnOk.removeEventListener('click', okHandler);
+      btnCancel.removeEventListener('click', cleanup);
+    }
+
+    function okHandler() {
+      cleanup();
+      if (onOk) onOk();
+    }
+
+    btnOk.addEventListener('click', okHandler);
+    btnCancel.addEventListener('click', cleanup);
+  }
+
+  var STORAGE_KEY = 'tool.habit.v2'; // 升级版本号防止老数据冲突
 
   /* ============ 常量 ============ */
   var EMOJIS = [
@@ -31,8 +68,9 @@
   var habitList     = document.getElementById('habitList');
   var emptyTip      = document.getElementById('emptyTip');
   var addHabitBtn   = document.getElementById('addHabitBtn');
+  var exportJsonBtn = document.getElementById('exportJsonBtn');
+  var exportMdBtn   = document.getElementById('exportMdBtn');
   var importBtn     = document.getElementById('importBtn');
-  var exportBtn     = document.getElementById('exportBtn');
   var importFile    = document.getElementById('importFile');
 
   var habitModal    = document.getElementById('habitModal');
@@ -41,8 +79,11 @@
   var habitNameEl   = document.getElementById('habitName');
   var emojiGrid     = document.getElementById('emojiGrid');
   var colorRow      = document.getElementById('colorRow');
+  var customEmojiInput = document.getElementById('customEmojiInput');
+  var customColorInput = document.getElementById('customColorInput');
   var saveBtn       = document.getElementById('saveBtn');
   var cancelBtn     = document.getElementById('cancelBtn');
+  var tooltipEl     = document.getElementById('heatmap-tooltip');
 
   /* ============ 状态 ============ */
   var state = {
@@ -62,32 +103,15 @@
   }
 
   function pad2(n) { return n < 10 ? '0' + n : String(n); }
-
-  function formatDate(d) {
-    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
-  }
-
-  function parseDate(str) {
-    var p = str.split('-');
-    return new Date(+p[0], +p[1] - 1, +p[2]);
-  }
-
-  function todayStr() {
-    var d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return formatDate(d);
-  }
+  function formatDate(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+  function parseDate(str) { var p = str.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function todayStr() { var d = new Date(); d.setHours(0, 0, 0, 0); return formatDate(d); }
+  function yesterdayStr() { var d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - 1); return formatDate(d); }
 
   function escapeHtml(s) {
-    return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
-  /* 浅色混合 */
   function lighten(hex, ratio) {
     hex = hex.replace('#', '');
     var r = parseInt(hex.substring(0, 2), 16);
@@ -104,18 +128,12 @@
     if (!habit.checkins || habit.checkins.length === 0) return 0;
     var checkinSet = {};
     habit.checkins.forEach(function (d) { checkinSet[d] = true; });
-
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
+    var today = new Date(); today.setHours(0, 0, 0, 0);
     var cursor = new Date(today);
-
-    // 如果今天没打卡，从昨天开始算（今天还没过完，不算断）
     if (!checkinSet[formatDate(cursor)]) {
       cursor.setDate(cursor.getDate() - 1);
-      // 如果昨天也没打卡，streak = 0
       if (!checkinSet[formatDate(cursor)]) return 0;
     }
-
     var streak = 0;
     while (checkinSet[formatDate(cursor)]) {
       streak++;
@@ -127,12 +145,9 @@
   function calcLongestStreak(habit) {
     if (!habit.checkins || habit.checkins.length === 0) return 0;
     var sorted = habit.checkins.slice().sort();
-    var maxStreak = 1;
-    var currStreak = 1;
+    var maxStreak = 1, currStreak = 1;
     for (var i = 1; i < sorted.length; i++) {
-      var prev = parseDate(sorted[i - 1]);
-      var curr = parseDate(sorted[i]);
-      var diff = Math.round((curr - prev) / 86400000);
+      var diff = Math.round((parseDate(sorted[i]) - parseDate(sorted[i - 1])) / 86400000);
       if (diff === 1) {
         currStreak++;
         if (currStreak > maxStreak) maxStreak = currStreak;
@@ -144,50 +159,48 @@
   }
 
   function calcMonthRate(habit) {
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
+    var today = new Date(); today.setHours(0, 0, 0, 0);
     var startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     var days = Math.round((today - startOfMonth) / 86400000) + 1;
     var checkinSet = {};
     (habit.checkins || []).forEach(function (d) { checkinSet[d] = true; });
-
     var checked = 0;
     for (var i = 0; i < days; i++) {
-      var d = new Date(startOfMonth);
-      d.setDate(startOfMonth.getDate() + i);
+      var d = new Date(startOfMonth); d.setDate(startOfMonth.getDate() + i);
       if (checkinSet[formatDate(d)]) checked++;
     }
     return days > 0 ? (checked / days) * 100 : 0;
   }
 
-  /* ============ 打卡 ============ */
+  /* ============ 打卡操作 ============ */
   function toggleCheckin(habitId, dateStr) {
     var habit = state.habits.find(function (h) { return h.id === habitId; });
     if (!habit) return;
 
-    var todayZero = new Date();
-    todayZero.setHours(0, 0, 0, 0);
+    var todayZero = new Date(); todayZero.setHours(0, 0, 0, 0);
     var target = parseDate(dateStr);
-    if (target > todayZero) return; // 未来不能打卡
+    if (target > todayZero) return showToast('不能为未来时间打卡', true);
 
     if (!habit.checkins) habit.checkins = [];
     var idx = habit.checkins.indexOf(dateStr);
-    if (idx >= 0) {
+    var isChecked = idx >= 0;
+    
+    if (isChecked) {
       habit.checkins.splice(idx, 1);
+      showToast(dateStr === todayStr() ? '已取消今日打卡' : '已取消 ' + dateStr + ' 的打卡');
     } else {
       habit.checkins.push(dateStr);
+      showToast(dateStr === todayStr() ? '✅ 今日打卡成功！' : '✅ 已补卡 ' + dateStr);
     }
     save();
     render();
   }
 
-  /* ============ 概览 ============ */
+  /* ============ 渲染概览 ============ */
   function renderOverview() {
     var total = state.habits.length;
     var today = todayStr();
-    var todayChecked = 0;
-    var maxStreak = 0;
-    var totalCheckins = 0;
+    var todayChecked = 0, maxStreak = 0, totalCheckins = 0;
 
     state.habits.forEach(function (h) {
       if (h.checkins && h.checkins.indexOf(today) >= 0) todayChecked++;
@@ -216,45 +229,35 @@
     ].join('');
   }
 
-  /* ============ 渲染周迷你视图 ============ */
+  /* ============ 渲染周视图 ============ */
   function renderWeekMini(habit) {
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
+    var today = new Date(); today.setHours(0, 0, 0, 0);
     var checkinSet = {};
     (habit.checkins || []).forEach(function (d) { checkinSet[d] = true; });
 
     var html = '<div class="week-mini">';
-    html += '<span class="week-mini-label">最近 7 天</span>';
-    html += '<div class="week-mini-days">';
+    html += '<span class="week-mini-label">最近 7 天</span><div class="week-mini-days">';
 
     for (var i = 6; i >= 0; i--) {
-      var d = new Date(today);
-      d.setDate(today.getDate() - i);
+      var d = new Date(today); d.setDate(today.getDate() - i);
       var ds = formatDate(d);
       var checked = checkinSet[ds];
       var isToday = i === 0;
-      var cls = 'mini-day';
-      if (checked) cls += ' checked';
-      if (isToday) cls += ' today';
+      var cls = 'mini-day' + (checked ? ' checked' : '') + (isToday ? ' today' : '');
       var style = checked ? 'background:' + habit.color + ';' : '';
-      html += '<div class="' + cls + '" style="' + style + '" data-habit="' + habit.id + '" data-date="' + ds + '" title="' + ds + (isToday ? ' 今天' : '') + '">' +
-        WEEKDAYS[d.getDay()] + '</div>';
+      html += '<div class="' + cls + '" style="' + style + '" data-habit="' + habit.id + '" data-date="' + ds + '">' + WEEKDAYS[d.getDay()] + '</div>';
     }
-
     html += '</div></div>';
     return html;
   }
 
   /* ============ 渲染热力图 ============ */
   function renderHeatmap(habit) {
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
+    var today = new Date(); today.setHours(0, 0, 0, 0);
     var todayDay = today.getDay();
     var todayMon = (todayDay + 6) % 7;
-
     var thisMonday = new Date(today);
     thisMonday.setDate(today.getDate() - todayMon);
-
     var startMonday = new Date(thisMonday);
     startMonday.setDate(thisMonday.getDate() - 52 * 7);
 
@@ -265,7 +268,6 @@
     var emptyColor = '#ecdfc4';
     var todayDS = formatDate(today);
 
-    // 计算月份标签位置
     var monthLabels = [];
     var lastMonth = -1;
     var cellsHTML = '';
@@ -280,35 +282,31 @@
         var checked = checkinSet[ds];
 
         var bgColor = checked ? checkedColor : emptyColor;
-        var cls = 'heatmap-cell';
-        if (isFuture) cls += ' future';
-        if (isToday) cls += ' today';
+        var cls = 'heatmap-cell' + (isFuture ? ' future' : '') + (isToday ? ' today' : '');
+        
+        cellsHTML += '<div class="' + cls + '" style="background:' + bgColor + '" data-habit="' + habit.id + '" data-date="' + ds + '" data-checked="' + (checked ? '1' : '0') + '"></div>';
 
-        cellsHTML += '<div class="' + cls + '" style="background:' + bgColor + '" ' +
-          'data-habit="' + habit.id + '" data-date="' + ds + '" ' +
-          'title="' + ds + (checked ? ' ✓ 已打卡' : ' · 未打卡') + '"></div>';
-
-        // 记录每月第一天
         if (d === 0) {
           var m = date.getMonth();
+          // 只有相差一个月才推入标签
           if (m !== lastMonth) {
-            lastMonth = m;
-            monthLabels.push({ week: w, month: m + 1 });
+            // 防止相邻两个月挨太近（比如只有3周）
+            if (monthLabels.length === 0 || (w - monthLabels[monthLabels.length - 1].week) > 2) {
+              lastMonth = m;
+              monthLabels.push({ week: w, month: m + 1 });
+            }
           }
         }
       }
     }
 
-    // 月份标签
     var monthHTML = '<div class="heatmap-months">';
     monthLabels.forEach(function (ml) {
-      // 每列约 11px + gap 3px = 14px
       var left = ml.week * 14;
       monthHTML += '<span class="heatmap-month-label" style="left:' + left + 'px">' + ml.month + '月</span>';
     });
     monthHTML += '</div>';
 
-    // 行标签（周一、周三、周五）
     var rowLabels = '<div class="heatmap-row-labels">';
     ['一', '', '三', '', '五', '', '日'].forEach(function (l) {
       rowLabels += '<div class="heatmap-row-label">' + l + '</div>';
@@ -316,9 +314,7 @@
     rowLabels += '</div>';
 
     return '<div class="heatmap-wrap">' +
-      '<div class="heatmap-container">' +
-        monthHTML +
-        rowLabels +
+      '<div class="heatmap-container">' + monthHTML + rowLabels +
         '<div class="heatmap">' + cellsHTML + '</div>' +
       '</div>' +
     '</div>';
@@ -331,6 +327,7 @@
     var monthRate = calcMonthRate(habit);
     var totalCheckins = (habit.checkins || []).length;
     var todayChecked = (habit.checkins || []).indexOf(todayStr()) >= 0;
+    var yesterdayChecked = (habit.checkins || []).indexOf(yesterdayStr()) >= 0;
     var emojiBg = lighten(habit.color, 0.82);
 
     var html = '<div class="habit-card" data-id="' + habit.id + '">';
@@ -340,7 +337,7 @@
     html += '<div class="habit-emoji" style="background:' + emojiBg + ';">' + escapeHtml(habit.emoji) + '</div>';
     html += '<div class="habit-info">';
     html += '<div class="habit-name">' + escapeHtml(habit.name) + '</div>';
-    html += '<div class="habit-meta">已创建 ' + daysSinceCreated(habit) + ' 天 · 累计打卡 ' + totalCheckins + ' 次</div>';
+    html += '<div class="habit-meta">已创建 ' + Math.max(1, Math.floor((Date.now() - habit.createdAt) / 86400000) + 1) + ' 天 · 累计 ' + totalCheckins + ' 次</div>';
     html += '</div>';
     html += '<div class="habit-actions">';
     html += '<button class="icon-btn" data-act="edit" data-id="' + habit.id + '" title="编辑">✏️</button>';
@@ -356,18 +353,18 @@
     html += '<div class="hstat"><div class="hstat-label">🎯 累计打卡</div><div class="hstat-value">' + totalCheckins + ' 次</div></div>';
     html += '</div>';
 
-    // 今日打卡按钮
+    // 打卡按钮
+    html += '<div class="checkin-row">';
     html += '<button class="checkin-btn' + (todayChecked ? ' done' : '') + '" data-act="toggle-today" data-id="' + habit.id + '" type="button">';
-    if (todayChecked) {
-      html += '<span class="check-icon">✅</span> 今日已完成 · 再点取消';
-    } else {
-      html += '<span class="check-icon">☑️</span> 点击打卡（今日）';
-    }
+    html += todayChecked ? '<span class="check-icon">✅</span> 今日已完成' : '<span class="check-icon">☑️</span> 点击打卡（今日）';
     html += '</button>';
+    if (!yesterdayChecked) {
+      html += '<button class="checkin-btn mini" data-act="toggle-yesterday" data-id="' + habit.id + '" type="button">⏪ 补卡昨日</button>';
+    }
+    html += '</div>';
 
     // 最近 7 天
     html += renderWeekMini(habit);
-
     // 热力图
     html += renderHeatmap(habit);
 
@@ -375,14 +372,7 @@
     return html;
   }
 
-  function daysSinceCreated(habit) {
-    if (!habit.createdAt) return 1;
-    var now = Date.now();
-    var days = Math.floor((now - habit.createdAt) / 86400000) + 1;
-    return Math.max(1, days);
-  }
-
-  /* ============ 渲染列表 ============ */
+  /* ============ 渲染主逻辑 ============ */
   function render() {
     renderOverview();
 
@@ -391,16 +381,15 @@
       habitList.innerHTML = '';
       return;
     }
-
     emptyTip.hidden = true;
     habitList.innerHTML = state.habits.map(renderHabitCard).join('');
   }
 
-  /* ============ 持久化 ============ */
+  /* ============ 数据存取 ============ */
   function save() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ habits: state.habits }));
-    } catch (e) { /* ignore */ }
+    } catch (e) { showToast('本地存储空间已满，可能无法保存', true); }
   }
 
   function load() {
@@ -409,33 +398,19 @@
       if (!raw) return;
       var data = JSON.parse(raw);
       if (data && Array.isArray(data.habits)) {
-        state.habits = data.habits.filter(function (h) {
-          return h && h.id && h.name;
-        }).map(function (h) {
+        state.habits = data.habits.filter(function (h) { return h && h.id && h.name; }).map(function (h) {
           return {
-            id: String(h.id),
-            name: String(h.name),
-            emoji: String(h.emoji || '🌱'),
+            id: String(h.id), name: String(h.name), emoji: String(h.emoji || '🌱'),
             color: String(h.color || '#8a5a2b'),
             checkins: Array.isArray(h.checkins) ? h.checkins.filter(function (d) { return /^\d{4}-\d{2}-\d{2}$/.test(d); }) : [],
             createdAt: Number(h.createdAt) || Date.now()
           };
         });
       }
-    } catch (e) { /* ignore */ }
+    } catch (e) {}
   }
 
-  /* ============ 删除 / 编辑 ============ */
-  function deleteHabit(id) {
-    var h = state.habits.find(function (x) { return x.id === id; });
-    if (!h) return;
-    if (!confirm('删除习惯「' + h.name + '」？所有打卡记录都会丢失。')) return;
-    state.habits = state.habits.filter(function (x) { return x.id !== id; });
-    save();
-    render();
-  }
-
-  /* ============ 添加 / 编辑 Modal ============ */
+  /* ============ Modal 交互 ============ */
   function openHabitModal(habit) {
     if (habit) {
       state.editingId = habit.id;
@@ -443,12 +418,16 @@
       habitNameEl.value = habit.name;
       state.form.emoji = habit.emoji;
       state.form.color = habit.color;
+      customEmojiInput.value = '';
+      customColorInput.value = habit.color;
     } else {
       state.editingId = null;
       modalTitle.textContent = '添加习惯';
       habitNameEl.value = '';
       state.form.emoji = EMOJIS[0];
       state.form.color = COLORS[0];
+      customEmojiInput.value = '';
+      customColorInput.value = COLORS[0];
     }
     renderEmojiGrid();
     renderColorRow();
@@ -470,6 +449,7 @@
       btn.textContent = e;
       btn.addEventListener('click', function () {
         state.form.emoji = e;
+        customEmojiInput.value = '';
         renderEmojiGrid();
       });
       emojiGrid.appendChild(btn);
@@ -485,18 +465,36 @@
       btn.style.background = c;
       btn.addEventListener('click', function () {
         state.form.color = c;
+        customColorInput.value = c;
         renderColorRow();
       });
       colorRow.appendChild(btn);
     });
   }
 
+  // 监听自定义 Emoji 输入
+  customEmojiInput.addEventListener('input', function() {
+    var val = this.value.trim();
+    if (val) {
+      state.form.emoji = val;
+      // 取消预设的高亮
+      document.querySelectorAll('.emoji-btn').forEach(function(b) { b.classList.remove('active'); });
+    }
+  });
+
+  // 监听自定义颜色输入
+  customColorInput.addEventListener('input', function() {
+    state.form.color = this.value;
+    document.querySelectorAll('.color-btn').forEach(function(b) { b.classList.remove('active'); });
+  });
+
   function saveHabit() {
     var name = habitNameEl.value.trim();
-    if (!name) {
-      alert('请填写习惯名称');
-      habitNameEl.focus();
-      return;
+    if (!name) return showToast('请填写习惯名称', true);
+    
+    // 如果在自定义输入框里填了 Emoji，优先使用
+    if (customEmojiInput.value.trim()) {
+      state.form.emoji = customEmojiInput.value.trim();
     }
 
     if (state.editingId) {
@@ -508,18 +506,15 @@
       }
     } else {
       state.habits.push({
-        id: genId(),
-        name: name,
-        emoji: state.form.emoji,
-        color: state.form.color,
-        checkins: [],
-        createdAt: Date.now()
+        id: genId(), name: name, emoji: state.form.emoji,
+        color: state.form.color, checkins: [], createdAt: Date.now()
       });
     }
 
     save();
     closeHabitModal();
     render();
+    showToast('保存成功');
   }
 
   /* ============ 事件绑定 ============ */
@@ -530,25 +525,18 @@
   habitModal.addEventListener('click', function (e) {
     if (e.target === habitModal) closeHabitModal();
   });
-
   habitNameEl.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      saveHabit();
-    }
+    if (e.key === 'Enter') { e.preventDefault(); saveHabit(); }
   });
-
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !habitModal.hidden) closeHabitModal();
   });
 
-  /* 列表事件委托 */
+  // 列表交互代理
   habitList.addEventListener('click', function (e) {
     var cell = e.target.closest('[data-date]');
     if (cell) {
-      var habitId = cell.dataset.habit;
-      var dateStr = cell.dataset.date;
-      toggleCheckin(habitId, dateStr);
+      toggleCheckin(cell.dataset.habit, cell.dataset.date);
       return;
     }
 
@@ -558,108 +546,112 @@
     var id = btn.dataset.id;
 
     if (act === 'del') {
-      deleteHabit(id);
+      var h = state.habits.find(function (x) { return x.id === id; });
+      confirmAction('删除确认', '删除习惯「' + h.name + '」？所有打卡记录都会丢失。', function() {
+        state.habits = state.habits.filter(function (x) { return x.id !== id; });
+        save(); render(); showToast('已删除');
+      });
     } else if (act === 'edit') {
       var h = state.habits.find(function (x) { return x.id === id; });
       if (h) openHabitModal(h);
     } else if (act === 'toggle-today') {
       toggleCheckin(id, todayStr());
+    } else if (act === 'toggle-yesterday') {
+      toggleCheckin(id, yesterdayStr());
     }
   });
 
-  /* ============ 导入 / 导出 ============ */
-  function exportJSON() {
-    if (state.habits.length === 0) {
-      alert('没有习惯可以导出');
-      return;
+  // 悬浮 Tooltip
+  habitList.addEventListener('mouseover', function(e) {
+    var cell = e.target.closest('.heatmap-cell');
+    if (cell) {
+      var ds = cell.dataset.date;
+      var checked = cell.dataset.checked === '1';
+      tooltipEl.textContent = ds + (checked ? ' ✓ 已打卡' : ' · 未打卡');
+      tooltipEl.style.display = 'block';
+      
+      var rect = cell.getBoundingClientRect();
+      tooltipEl.style.left = (rect.left + rect.width / 2) + 'px';
+      tooltipEl.style.top = rect.top + 'px';
     }
-    var data = {
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      habits: state.habits
-    };
-    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    var d = new Date();
-    var ts = d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate());
+  });
+  habitList.addEventListener('mouseout', function(e) {
+    if (e.target.closest('.heatmap-cell')) {
+      tooltipEl.style.display = 'none';
+    }
+  });
+
+  /* ============ 导入导出 ============ */
+  function downloadBlob(content, filename, mimeType) {
+    var blob = new Blob([content], { type: mimeType });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
-    a.href = url;
-    a.download = 'habits-' + ts + '.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1500);
   }
 
-  function importJSON() {
-    importFile.click();
-  }
+  exportJsonBtn.addEventListener('click', function() {
+    if (state.habits.length === 0) return showToast('没有数据可导出', true);
+    var data = { version: 2, exportedAt: new Date().toISOString(), habits: state.habits };
+    downloadBlob(JSON.stringify(data, null, 2), 'habits_' + todayStr() + '.json', 'application/json');
+    showToast('JSON 备份已下载');
+  });
+
+  exportMdBtn.addEventListener('click', function() {
+    if (state.habits.length === 0) return showToast('没有数据可导出', true);
+    var md = '# 习惯打卡记录 (' + todayStr() + ')\n\n';
+    md += '| 习惯名称 | 当前连续 | 最长连续 | 累计打卡 |\n';
+    md += '| --- | --- | --- | --- |\n';
+    state.habits.forEach(function(h) {
+      md += '| ' + h.emoji + ' ' + h.name + ' | ' + calcStreak(h) + ' 天 | ' + calcLongestStreak(h) + ' 天 | ' + (h.checkins||[]).length + ' 次 |\n';
+    });
+    downloadBlob(md, 'habits_' + todayStr() + '.md', 'text/markdown;charset=utf-8');
+    showToast('Markdown 文件已下载');
+  });
+
+  importBtn.addEventListener('click', function () { importFile.click(); });
 
   importFile.addEventListener('change', function () {
     var f = importFile.files && importFile.files[0];
     if (!f) return;
-
     var reader = new FileReader();
     reader.onload = function () {
       try {
         var data = JSON.parse(String(reader.result));
-        if (!data || !Array.isArray(data.habits)) {
-          alert('文件格式不正确');
-          return;
-        }
+        if (!data || !Array.isArray(data.habits)) return showToast('文件格式不正确', true);
 
-        var imported = data.habits.filter(function (h) {
-          return h && h.name;
-        }).map(function (h) {
+        var imported = data.habits.filter(function (h) { return h && h.name; }).map(function (h) {
           return {
-            id: genId(),
-            name: String(h.name),
-            emoji: String(h.emoji || '🌱'),
+            id: genId(), name: String(h.name), emoji: String(h.emoji || '🌱'),
             color: String(h.color || '#8a5a2b'),
             checkins: Array.isArray(h.checkins) ? h.checkins.filter(function (d) { return /^\d{4}-\d{2}-\d{2}$/.test(d); }) : [],
             createdAt: Number(h.createdAt) || Date.now()
           };
         });
 
-        if (imported.length === 0) {
-          alert('未找到有效习惯');
-          return;
-        }
+        if (imported.length === 0) return showToast('未找到有效习惯', true);
 
-        var merge = false;
         if (state.habits.length > 0) {
-          merge = confirm('当前已有 ' + state.habits.length + ' 个习惯。\n\n点击「确定」合并导入 ' + imported.length + ' 个习惯；\n点击「取消」替换当前所有习惯。');
-        }
-
-        if (merge) {
-          state.habits = state.habits.concat(imported);
+          confirmAction('导入确认', '当前已有 ' + state.habits.length + ' 个习惯。点击确定将追加导入 ' + imported.length + ' 个。', function() {
+            state.habits = state.habits.concat(imported);
+            save(); render(); showToast('成功追加 ' + imported.length + ' 个习惯');
+          });
         } else {
           state.habits = imported;
+          save(); render(); showToast('成功导入 ' + imported.length + ' 个习惯');
         }
-
-        save();
-        render();
-        alert('✅ 成功导入 ' + imported.length + ' 个习惯');
       } catch (err) {
-        alert('读取失败：' + (err && err.message ? err.message : err));
+        showToast('读取失败：文件格式错误', true);
       } finally {
         importFile.value = '';
       }
     };
-    reader.onerror = function () {
-      alert('读取文件失败');
-      importFile.value = '';
-    };
     reader.readAsText(f);
   });
 
-  exportBtn.addEventListener('click', exportJSON);
-  importBtn.addEventListener('click', importJSON);
-
   /* ============ 初始化 ============ */
   load();
-
-  // 如果没有任何习惯，自动添加 3 个示例
   if (state.habits.length === 0) {
     state.habits = [
       { id: genId(), name: '早起', emoji: '🌅', color: '#a05b00', checkins: [], createdAt: Date.now() },
@@ -668,6 +660,5 @@
     ];
     save();
   }
-
   render();
 })();
