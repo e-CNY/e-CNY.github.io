@@ -12,81 +12,158 @@
 <body>
 <header class="tool-page-header">
   <h1>🛠️ 单位与进制转换</h1>
-  <p>万能进制、中文数字、开发单位、物理换算一网打尽。</p>
+  <p>进制 / 单位 / 中文数字 / 罗马数字 / 字符编码 / 颜色格式</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="un-layout" style="padding-top: 0;">
+<main class="un-layout">
+  <div class="un-toolbar">
+    <div class="un-toolbar-right">
+      <button class="un-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
+    </div>
+  </div>
+
   <div class="un-grid">
-    <!-- 1. 进制转换 -->
+    <!-- ============ 1. 进制转换 ============ -->
     <div class="un-card">
-      <h2>💻 万能进制转换</h2>
-      <div class="un-row"><label>10 进制</label><input type="text" id="base-10" class="un-input" placeholder="十进制数字"></div>
-      <div class="un-row"><label>16 进制</label><input type="text" id="base-16" class="un-input" placeholder="十六进制"></div>
-      <div class="un-row"><label>2 进制</label><input type="text" id="base-2" class="un-input" placeholder="二进制"></div>
-      <div class="un-row"><label>8 进制</label><input type="text" id="base-8" class="un-input" placeholder="八进制"></div>
-      <div class="un-row">
-        <label>其他 (2-36)</label>
-        <input type="number" id="base-custom-n" class="un-input" style="max-width:60px;" placeholder="N" value="36">
-        <input type="text" id="base-custom" class="un-input" placeholder="N进制数">
+      <h2>
+        <span>💻 进制转换</span>
+        <span class="un-hint-tag">支持负数 · 超大数</span>
+      </h2>
+      <div class="un-base-list">
+        <div class="un-base-row">
+          <label>10 进制</label>
+          <input type="text" id="base-10" class="un-input" placeholder="0" autocomplete="off">
+          <button class="un-copy-icon" data-copy="base-10" type="button" title="复制">📋</button>
+        </div>
+        <div class="un-base-row">
+          <label>16 进制</label>
+          <input type="text" id="base-16" class="un-input" placeholder="0" autocomplete="off">
+          <button class="un-copy-icon" data-copy="base-16" type="button" title="复制">📋</button>
+        </div>
+        <div class="un-base-row">
+          <label>2 进制</label>
+          <input type="text" id="base-2" class="un-input" placeholder="0" autocomplete="off">
+          <button class="un-copy-icon" data-copy="base-2" type="button" title="复制">📋</button>
+        </div>
+        <div class="un-base-row">
+          <label>8 进制</label>
+          <input type="text" id="base-8" class="un-input" placeholder="0" autocomplete="off">
+          <button class="un-copy-icon" data-copy="base-8" type="button" title="复制">📋</button>
+        </div>
+        <div class="un-base-row">
+          <label class="un-base-custom-label">
+            <input type="number" id="base-custom-n" class="un-base-n" value="36" min="2" max="36" title="自定义进制">
+            <span>进制</span>
+          </label>
+          <input type="text" id="base-custom" class="un-input" placeholder="0" autocomplete="off">
+          <button class="un-copy-icon" data-copy="base-custom" type="button" title="复制">📋</button>
+        </div>
       </div>
+      <div class="un-base-error" id="base-error" hidden></div>
     </div>
 
-    <!-- 2. 单位换算 -->
+    <!-- ============ 2. 单位换算 ============ -->
     <div class="un-card">
-      <h2>📏 物理与开发单位</h2>
-      <select id="unit-type" class="un-select">
-        <option value="length">长度 (m, km, cm)</option>
-        <option value="weight">重量 (kg, g, lb)</option>
-        <option value="storage">存储 (B, KB, MB, GB)</option>
-        <option value="temperature">温度 (℃, ℉, K)</option>
-        <option value="speed">速度 (km/h, m/s, mph)</option>
-        <option value="area">面积 (m², 亩, 公顷)</option>
-        <option value="dev">CSS 单位 (px, rem, em)</option>
-      </select>
-      
-      <div class="un-row" id="unit-input-row">
-        <input type="number" id="unit-input" class="un-input" value="1">
+      <h2>
+        <span>📏 单位换算</span>
+        <span class="un-hint-tag">12 类 · 实时</span>
+      </h2>
+      <select id="unit-type" class="un-select"></select>
+      <div class="un-row">
+        <input type="number" id="unit-input" class="un-input" value="1" step="any">
         <select id="unit-from" class="un-select-half"></select>
-        <span>→</span>
-        <select id="unit-to" class="un-select-half"></select>
       </div>
-      
-      <div class="un-row" id="dev-root-row" style="display:none;">
-        <label>根字号 (px)</label>
-        <input type="number" id="dev-root-size" class="un-input" value="16">
+      <div class="un-row" id="dev-root-row" hidden>
+        <label>根字号</label>
+        <input type="number" id="dev-root-size" class="un-input" value="16" min="1">
+        <span class="un-unit-text">px</span>
       </div>
-
-      <div class="un-result" id="unit-result">1</div>
+      <div class="un-unit-table-wrap">
+        <table class="un-unit-table" id="unit-table">
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- 3. 中文数字与金额 -->
+    <!-- ============ 3. 中文数字 ============ -->
     <div class="un-card">
-      <h2>🧾 中文数字 / 大写金额</h2>
-      <div class="un-row">
-        <input type="text" id="cn-num-input" class="un-input" placeholder="阿拉伯数字，如 1234.56" value="1234.56">
-        <button id="btn-cn-num" class="un-btn">转中文</button>
+      <h2>
+        <span>🧾 中文数字 / 金额</span>
+      </h2>
+      <div class="un-cn-tabs">
+        <button class="un-cn-tab active" data-tab="n2c" type="button">数字 → 中文</button>
+        <button class="un-cn-tab" data-tab="c2n" type="button">中文 → 数字</button>
       </div>
-      <div class="un-result" id="cn-num-result" style="font-size: 1rem;">壹仟贰佰叁拾肆元伍角陆分</div>
-      
-      <div class="un-row" style="margin-top: 16px;">
-        <input type="text" id="cn-str-input" class="un-input" placeholder="中文数字，如 九万九千" value="九万九千">
-        <button id="btn-cn-str" class="un-btn">转数字</button>
+
+      <div class="un-cn-panel active" data-panel="n2c">
+        <div class="un-row">
+          <input type="number" id="cn-num-input" class="un-input" placeholder="如：1234.56" value="1234.56" step="any">
+          <button class="un-copy-icon" data-copy="cn-num-result" type="button" title="复制">📋</button>
+        </div>
+        <div class="un-cn-format-row">
+          <label><input type="radio" name="cn-format" value="lower" checked> 小写（一二三）</label>
+          <label><input type="radio" name="cn-format" value="upper"> 大写（壹贰叁）</label>
+          <label><input type="radio" name="cn-format" value="money"> 人民币</label>
+        </div>
+        <div class="un-result" id="cn-num-result">壹仟贰佰叁拾肆元伍角陆分</div>
       </div>
-      <div class="un-result" id="cn-str-result">99000</div>
+
+      <div class="un-cn-panel" data-panel="c2n">
+        <div class="un-row">
+          <input type="text" id="cn-str-input" class="un-input" placeholder="如：九万九千 / 壹万贰仟 / 三点一四" value="九万九千">
+          <button class="un-copy-icon" data-copy="cn-str-result" type="button" title="复制">📋</button>
+        </div>
+        <div class="un-result" id="cn-str-result">99000</div>
+      </div>
     </div>
 
-    <!-- 4. 罗马数字 -->
+    <!-- ============ 4. 罗马数字 ============ -->
     <div class="un-card">
-      <h2>🏛️ 罗马数字转换</h2>
+      <h2>
+        <span>🏛️ 罗马数字</span>
+        <span class="un-hint-tag">1-3999</span>
+      </h2>
       <div class="un-row">
-        <input type="number" id="roman-input" class="un-input" placeholder="1 - 3999" value="2024">
-        <span>⇌</span>
-        <input type="text" id="roman-output" class="un-input" readonly>
+        <input type="number" id="roman-num" class="un-input" placeholder="1-3999" min="1" max="3999" value="2024">
+        <button class="un-swap-btn" id="roman-swap" type="button" title="切换方向">⇄</button>
+        <input type="text" id="roman-str" class="un-input" placeholder="罗马数字" value="MMXXIV">
       </div>
+      <div class="un-result un-roman-detail" id="roman-detail"></div>
+    </div>
+
+    <!-- ============ 5. 字符编码 ============ -->
+    <div class="un-card">
+      <h2>
+        <span>🔤 字符编码</span>
+        <span class="un-hint-tag">双向</span>
+      </h2>
+      <div class="un-row">
+        <input type="text" id="char-input" class="un-input" placeholder="字符 / 65 / 0x41 / U+0041" value="A" autocomplete="off">
+      </div>
+      <div class="un-char-list" id="char-list"></div>
+    </div>
+
+    <!-- ============ 6. 颜色格式 ============ -->
+    <div class="un-card">
+      <h2>
+        <span>🎨 颜色格式转换</span>
+        <span class="un-hint-tag">HEX · RGB · HSL</span>
+      </h2>
+      <div class="un-color-swatch-wrap">
+        <div class="un-color-swatch" id="color-swatch"></div>
+        <div class="un-color-hex-big" id="color-hex-big">#FF5722</div>
+      </div>
+      <div class="un-row">
+        <input type="text" id="color-input" class="un-input" placeholder="#FF5722 / rgb(255,87,34) / hsl(14,100%,57%)" value="#FF5722" autocomplete="off">
+      </div>
+      <div class="un-color-list" id="color-list"></div>
     </div>
   </div>
 </main>
+
+<div class="un-toast" id="un-toast"></div>
+
 <script src="../../js/unit-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

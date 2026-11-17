@@ -12,93 +12,193 @@
 <body>
 <header class="tool-page-header">
   <h1>⏱️ 时间与计时工具</h1>
-  <p>久坐提醒 / 秒表 / 倒计时 / 番茄钟，全本地运行。</p>
+  <p>久坐提醒 / 秒表 / 倒计时 / 番茄钟 / 统计，全本地运行。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="tt-layout">
+  <div class="tt-topbar">
+    <div class="tt-top-actions">
+      <button id="btn-notify" class="tt-icon-btn" type="button" title="桌面通知">🔔</button>
+      <button id="btn-wake" class="tt-icon-btn" type="button" title="屏幕常亮">💡</button>
+      <button id="btn-theme" class="tt-icon-btn" type="button" title="切换主题">🌙</button>
+    </div>
+  </div>
+
   <div class="tt-tabs">
-    <button class="tt-tab active" data-target="panel-sit">🪑 久坐提醒</button>
-    <button class="tt-tab" data-target="panel-stopwatch">⏱️ 秒表</button>
-    <button class="tt-tab" data-target="panel-countdown">⏳ 倒计时</button>
-    <button class="tt-tab" data-target="panel-pomodoro">🍅 番茄钟</button>
+    <button class="tt-tab active" data-target="panel-sit" type="button">🪑 久坐</button>
+    <button class="tt-tab" data-target="panel-stopwatch" type="button">⏱️ 秒表</button>
+    <button class="tt-tab" data-target="panel-countdown" type="button">⏳ 倒计时</button>
+    <button class="tt-tab" data-target="panel-pomodoro" type="button">🍅 番茄钟</button>
+    <button class="tt-tab" data-target="panel-stats" type="button">📊 统计</button>
   </div>
 
   <div class="tt-content">
-    <!-- 面板 1：久坐提醒 -->
+    <!-- ============ 1. 久坐 ============ -->
     <div id="panel-sit" class="tt-panel active">
-      <div class="sr-tool" style="width:100%;">
-        <p style="text-align:center;color:#6b5d47;font-size:.9rem;margin-bottom:20px;">坐下 → 活动 → 站立 循环提醒，设为 0 的阶段自动跳过。</p>
+      <div class="sr-tool">
+        <p class="sr-tip">坐下 → 活动 → 站立 循环提醒，设为 0 的阶段自动跳过。</p>
         <section class="sr-rings">
           <article class="sr-card" style="--phase-color:#6a8db8" data-phase="sit">
             <div class="sr-ring-wrap">
-              <svg class="sr-ring" viewBox="0 0 100 100"><circle class="sr-ring-track" cx="50" cy="50" r="45"/><circle class="sr-ring-progress" cx="50" cy="50" r="45"/></svg>
-              <div class="sr-ring-text"><span class="sr-emoji">🪑</span><span class="sr-time">--:--</span></div>
+              <svg class="sr-ring" viewBox="0 0 100 100">
+                <circle class="sr-ring-track" cx="50" cy="50" r="45"/>
+                <circle class="sr-ring-progress" cx="50" cy="50" r="45"/>
+              </svg>
+              <div class="sr-ring-text">
+                <span class="sr-emoji">🪑</span>
+                <span class="sr-time">--:--</span>
+              </div>
             </div>
-            <label class="sr-label"><span>坐下</span><input type="number" min="0" max="999" value="40" data-phase="sit"><span>分</span></label>
+            <label class="sr-label">
+              <span>坐下</span>
+              <input type="number" min="0" max="999" value="40" data-phase="sit">
+              <span>分</span>
+            </label>
           </article>
           <article class="sr-card" style="--phase-color:#7ba05b" data-phase="move">
             <div class="sr-ring-wrap">
-              <svg class="sr-ring" viewBox="0 0 100 100"><circle class="sr-ring-track" cx="50" cy="50" r="45"/><circle class="sr-ring-progress" cx="50" cy="50" r="45"/></svg>
-              <div class="sr-ring-text"><span class="sr-emoji">🚶</span><span class="sr-time">--:--</span></div>
+              <svg class="sr-ring" viewBox="0 0 100 100">
+                <circle class="sr-ring-track" cx="50" cy="50" r="45"/>
+                <circle class="sr-ring-progress" cx="50" cy="50" r="45"/>
+              </svg>
+              <div class="sr-ring-text">
+                <span class="sr-emoji">🚶</span>
+                <span class="sr-time">--:--</span>
+              </div>
             </div>
-            <label class="sr-label"><span>活动</span><input type="number" min="0" max="999" value="3" data-phase="move"><span>分</span></label>
+            <label class="sr-label">
+              <span>活动</span>
+              <input type="number" min="0" max="999" value="3" data-phase="move">
+              <span>分</span>
+            </label>
           </article>
           <article class="sr-card" style="--phase-color:#c99a4b" data-phase="stand">
             <div class="sr-ring-wrap">
-              <svg class="sr-ring" viewBox="0 0 100 100"><circle class="sr-ring-track" cx="50" cy="50" r="45"/><circle class="sr-ring-progress" cx="50" cy="50" r="45"/></svg>
-              <div class="sr-ring-text"><span class="sr-emoji">🧍</span><span class="sr-time">--:--</span></div>
+              <svg class="sr-ring" viewBox="0 0 100 100">
+                <circle class="sr-ring-track" cx="50" cy="50" r="45"/>
+                <circle class="sr-ring-progress" cx="50" cy="50" r="45"/>
+              </svg>
+              <div class="sr-ring-text">
+                <span class="sr-emoji">🧍</span>
+                <span class="sr-time">--:--</span>
+              </div>
             </div>
-            <label class="sr-label"><span>站立</span><input type="number" min="0" max="999" value="20" data-phase="stand"><span>分</span></label>
+            <label class="sr-label">
+              <span>站立</span>
+              <input type="number" min="0" max="999" value="20" data-phase="stand">
+              <span>分</span>
+            </label>
           </article>
         </section>
         <div class="sr-controls">
-          <button id="btn-start" class="primary">开始</button>
-          <button id="btn-pause" disabled>暂停</button>
-          <button id="btn-stop" disabled>停止</button>
+          <button id="btn-start" class="primary" type="button">开始</button>
+          <button id="btn-pause" type="button" disabled>暂停</button>
+          <button id="btn-stop" type="button" disabled>停止</button>
         </div>
         <p id="sr-status" class="sr-status"></p>
+        <div class="sr-today">
+          <span>今日完成 <b id="sr-today-rounds">0</b> 轮</span>
+          <span>坐 <b id="sr-today-sit">0</b> 分</span>
+          <span>站 <b id="sr-today-stand">0</b> 分</span>
+          <span>动 <b id="sr-today-move">0</b> 分</span>
+        </div>
       </div>
     </div>
 
-    <!-- 面板 2：秒表 -->
+    <!-- ============ 2. 秒表 ============ -->
     <div id="panel-stopwatch" class="tt-panel">
       <div class="timer-display" id="sw-display">00:00.00</div>
       <div class="timer-controls">
-        <button id="sw-start" class="btn-primary">开始</button>
-        <button id="sw-lap" disabled>计次</button>
-        <button id="sw-reset" disabled>重置</button>
+        <button id="sw-start" class="btn-primary" type="button">开始</button>
+        <button id="sw-lap" type="button" disabled>计次</button>
+        <button id="sw-reset" type="button" disabled>重置</button>
+        <button id="sw-export" type="button" disabled>导出</button>
       </div>
       <ul id="sw-laps" class="laps-list"></ul>
     </div>
 
-    <!-- 面板 3：倒计时 -->
+    <!-- ============ 3. 倒计时 ============ -->
     <div id="panel-countdown" class="tt-panel">
-      <div class="timer-display" id="cd-display">00:00</div>
+      <div class="cd-ring-wrap">
+        <svg class="sr-ring" viewBox="0 0 100 100">
+          <circle class="sr-ring-track" cx="50" cy="50" r="45"/>
+          <circle class="sr-ring-progress cd-progress" cx="50" cy="50" r="45"/>
+        </svg>
+        <div class="sr-ring-text cd-ring-text">
+          <span id="cd-display">00:00</span>
+        </div>
+      </div>
       <div class="timer-inputs">
-        <input type="number" id="cd-min" placeholder="分" min="0" style="width:60px"> : 
-        <input type="number" id="cd-sec" placeholder="秒" min="0" max="59" style="width:60px">
+        <input type="number" id="cd-min" placeholder="分" min="0" max="999" style="width:70px">
+        <span>:</span>
+        <input type="number" id="cd-sec" placeholder="秒" min="0" max="59" style="width:70px">
+      </div>
+      <div class="cd-presets">
+        <button data-preset="60" type="button">1分</button>
+        <button data-preset="180" type="button">3分</button>
+        <button data-preset="300" type="button">5分</button>
+        <button data-preset="600" type="button">10分</button>
+        <button data-preset="900" type="button">15分</button>
+        <button data-preset="1800" type="button">30分</button>
       </div>
       <div class="timer-controls">
-        <button id="cd-start" class="btn-primary">开始</button>
-        <button id="cd-pause" disabled>暂停</button>
-        <button id="cd-reset">重置</button>
+        <button id="cd-start" class="btn-primary" type="button">开始</button>
+        <button id="cd-pause" type="button" disabled>暂停</button>
+        <button id="cd-reset" type="button">重置</button>
       </div>
     </div>
 
-    <!-- 面板 4：番茄钟 -->
+    <!-- ============ 4. 番茄钟 ============ -->
     <div id="panel-pomodoro" class="tt-panel">
-      <div class="timer-display" id="pm-display">25:00</div>
+      <div class="pm-config">
+        <label>专注 <input type="number" id="pm-work-min" min="1" max="120" value="25"> 分</label>
+        <label>短休 <input type="number" id="pm-short-min" min="1" max="60" value="5"> 分</label>
+        <label>长休 <input type="number" id="pm-long-min" min="1" max="120" value="15"> 分</label>
+        <label>长休间隔 <input type="number" id="pm-long-interval" min="2" max="12" value="4"> 轮</label>
+      </div>
+      <div class="cd-ring-wrap">
+        <svg class="sr-ring" viewBox="0 0 100 100">
+          <circle class="sr-ring-track" cx="50" cy="50" r="45"/>
+          <circle class="sr-ring-progress pm-progress" cx="50" cy="50" r="45"/>
+        </svg>
+        <div class="sr-ring-text cd-ring-text">
+          <span id="pm-display">25:00</span>
+        </div>
+      </div>
       <p class="timer-status" id="pm-status">专注时间</p>
       <div class="timer-controls">
-        <button id="pm-start" class="btn-primary">开始专注</button>
-        <button id="pm-reset">重置</button>
+        <button id="pm-start" class="btn-primary" type="button">开始专注</button>
+        <button id="pm-skip" type="button" disabled>跳过</button>
+        <button id="pm-reset" type="button">重置</button>
+      </div>
+      <p class="pm-today">今日已专注 <b id="pm-today-count">0</b> 个番茄 · 累计 <b id="pm-today-min">0</b> 分钟</p>
+    </div>
+
+    <!-- ============ 5. 统计 ============ -->
+    <div id="panel-stats" class="tt-panel">
+      <div class="stat-summary" id="stat-summary"></div>
+      <div class="stat-chart-wrap">
+        <h3>最近 7 天番茄数</h3>
+        <canvas id="stat-chart" width="600" height="220"></canvas>
+      </div>
+      <div class="stat-actions">
+        <button id="stat-export" type="button" class="btn-secondary">📤 导出 CSV</button>
+        <button id="stat-clear" type="button" class="btn-secondary danger">🗑 清空统计</button>
       </div>
     </div>
   </div>
 
+  <!-- 闹铃设置 -->
   <section class="sr-alarm-settings" aria-label="闹铃设置">
     <h2>🔔 闹铃设置</h2>
+    <div class="sr-sound-grid">
+      <label class="sr-radio"><input type="radio" name="sr-sound" value="chime" checked> 🔔 默认响铃</label>
+      <label class="sr-radio"><input type="radio" name="sr-sound" value="bell"> 🛎️ 钟声</label>
+      <label class="sr-radio"><input type="radio" name="sr-sound" value="click"> 🥢 敲击</label>
+      <label class="sr-radio"><input type="radio" name="sr-sound" value="electronic"> 🎵 电子音</label>
+      <label class="sr-radio" id="sr-custom-radio-label" hidden><input type="radio" name="sr-sound" value="custom"> 🎧 自定义</label>
+    </div>
     <div class="sr-volume-row">
       <label for="sr-volume">音量</label>
       <input id="sr-volume" type="range" min="0" max="100" step="1" value="88">
@@ -111,10 +211,15 @@
       </label>
       <span id="sr-audio-name" class="sr-audio-name"></span>
       <button id="sr-audio-clear" type="button" class="sr-audio-clear" hidden>清除</button>
+      <button id="btn-test-sound" type="button" class="sr-test-btn">▶ 试听</button>
     </div>
-    <p class="sr-audio-hint">支持 mp3 / wav / ogg / m4a 等浏览器可播放格式，文件 ≤ 5MB、时长 ≤ 30 秒。文件只在浏览器本地播放，不会上传到任何服务器；刷新页面后需重新选择。</p>
+    <p class="sr-audio-hint">支持 mp3 / wav / ogg / m4a，文件 ≤ 5MB、时长 ≤ 30 秒。文件本地播放，不上传服务器；刷新页面后需重新选择。</p>
   </section>
+
+  <!-- Toast -->
+  <div class="tt-toast" id="tt-toast"></div>
 </main>
+
 <script src="../../js/sitting-reminder.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
