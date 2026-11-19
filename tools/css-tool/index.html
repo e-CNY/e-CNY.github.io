@@ -12,132 +12,465 @@
 <body>
 <header class="tool-page-header">
   <h1>🎛️ CSS 生成器</h1>
-  <p>可视化调节样式并一键复制代码。</p>
+  <p>10 种常用 CSS 效果 · 可视化调节 · 预设库 · 一键复制</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="cs-layout" style="padding-top: 0;">
-  <div class="cs-tabs">
-    <button class="cs-tab active" data-target="panel-shadow">阴影 (Shadow)</button>
-    <button class="cs-tab" data-target="panel-radius">圆角 (Radius)</button>
-    <button class="cs-tab" data-target="panel-gradient">渐变 (Gradient)</button>
-    <button class="cs-tab" data-target="panel-glass">毛玻璃 (Glass)</button>
-    <button class="cs-tab" data-target="panel-filter">滤镜 (Filter)</button>
-    <button class="cs-tab" data-target="panel-transform">变换 (Transform)</button>
+<main class="cs-layout">
+  <!-- 顶栏 -->
+  <div class="cs-topbar">
+    <div class="cs-tabs" id="cs-tabs">
+      <button class="cs-tab active" data-target="panel-shadow" type="button">阴影</button>
+      <button class="cs-tab" data-target="panel-radius" type="button">圆角</button>
+      <button class="cs-tab" data-target="panel-gradient" type="button">渐变</button>
+      <button class="cs-tab" data-target="panel-glass" type="button">毛玻璃</button>
+      <button class="cs-tab" data-target="panel-filter" type="button">滤镜</button>
+      <button class="cs-tab" data-target="panel-transform" type="button">变换</button>
+      <button class="cs-tab" data-target="panel-text-shadow" type="button">文字阴影</button>
+      <button class="cs-tab" data-target="panel-text-grad" type="button">文本渐变</button>
+      <button class="cs-tab" data-target="panel-flex" type="button">Flex</button>
+      <button class="cs-tab" data-target="panel-grid" type="button">Grid</button>
+    </div>
+    <div class="cs-top-actions">
+      <button class="cs-icon-btn" id="btn-random" type="button" title="随机">🎲</button>
+      <button class="cs-icon-btn" id="btn-fav" type="button" title="收藏当前 CSS">⭐</button>
+      <button class="cs-icon-btn" id="btn-history" type="button" title="收藏与历史">📜 <span id="history-count">0</span></button>
+      <button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
+    </div>
   </div>
 
   <div class="cs-content">
-    <!-- 1. 阴影 -->
-    <div id="panel-shadow" class="cs-panel active">
+
+    <!-- ==================== 1. 阴影 ==================== -->
+    <div class="cs-panel active" id="panel-shadow">
+      <div class="cs-preset-bar" data-preset-target="shadow">
+        <span class="cs-preset-label">预设</span>
+        <button data-preset="sh-material1" type="button">Material 1</button>
+        <button data-preset="sh-material3" type="button">Material 3</button>
+        <button data-preset="sh-card" type="button">卡片</button>
+        <button data-preset="sh-dialog" type="button">对话框</button>
+        <button data-preset="sh-neon" type="button">霓虹</button>
+        <button data-preset="sh-inset" type="button">内阴影</button>
+        <button data-preset="sh-layer" type="button">多层叠加</button>
+      </div>
       <div class="cs-grid">
         <div class="cs-controls">
-          <div class="cs-row"><label>X 偏移</label><input type="range" id="sh-x" min="-50" max="50" value="10"><span id="val-sh-x">10px</span></div>
-          <div class="cs-row"><label>Y 偏移</label><input type="range" id="sh-y" min="-50" max="50" value="10"><span id="val-sh-y">10px</span></div>
-          <div class="cs-row"><label>模糊半径</label><input type="range" id="sh-blur" min="0" max="100" value="20"><span id="val-sh-blur">20px</span></div>
-          <div class="cs-row"><label>扩散半径</label><input type="range" id="sh-spread" min="-50" max="50" value="0"><span id="val-sh-spread">0px</span></div>
-          <div class="cs-row"><label>颜色 / 透明度</label><input type="color" id="sh-color" value="#000000"><input type="range" id="sh-opacity" min="0" max="1" step="0.01" value="0.2"></div>
+          <div class="cs-sub-title">
+            <span>阴影层</span>
+            <button class="cs-mini-btn" id="btn-add-shadow" type="button">+ 添加层</button>
+          </div>
+          <div id="shadow-layers" class="cs-layers"></div>
+          <div class="cs-sub-title" style="margin-top:10px;">预览背景</div>
+          <div class="cs-bg-picker" id="shadow-bg-picker">
+            <button data-bg="#fff" class="active" type="button" title="白色"></button>
+            <button data-bg="#f5f5f5" type="button" title="浅灰"></button>
+            <button data-bg="#222" type="button" title="深色"></button>
+            <button data-bg="#7ba05b" type="button" title="绿色"></button>
+            <input type="color" id="shadow-bg-custom" value="#ffffff" title="自定义">
+          </div>
         </div>
-        <div class="cs-preview">
-          <div class="cs-box" id="preview-shadow"></div>
+        <div class="cs-preview-wrap">
+          <div class="cs-preview" id="shadow-preview-bg" style="background:#fff;">
+            <div class="cs-box" id="preview-shadow"></div>
+          </div>
           <div class="cs-code-wrap">
-            <textarea class="cs-code" id="code-shadow" readonly></textarea>
-            <button class="cs-copy-btn" data-target="code-shadow">📋</button>
+            <textarea class="cs-code" id="code-shadow" readonly rows="2"></textarea>
+            <button class="cs-copy-btn" data-target="code-shadow" type="button">📋</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 2. 圆角 -->
-    <div id="panel-radius" class="cs-panel">
+    <!-- ==================== 2. 圆角 ==================== -->
+    <div class="cs-panel" id="panel-radius">
+      <div class="cs-preset-bar" data-preset-target="radius">
+        <span class="cs-preset-label">预设</span>
+        <button data-preset="rd-all" type="button">全圆角</button>
+        <button data-preset="rd-pill" type="button">胶囊</button>
+        <button data-preset="rd-circle" type="button">圆形</button>
+        <button data-preset="rd-card" type="button">卡片</button>
+        <button data-preset="rd-leaf" type="button">叶片</button>
+        <button data-preset="rd-bubble" type="button">气泡</button>
+      </div>
       <div class="cs-grid">
         <div class="cs-controls">
-          <div class="cs-row"><label>统一圆角</label><input type="range" id="rd-all" min="0" max="100" value="20"><span id="val-rd-all">20px</span></div>
+          <div class="cs-row">
+            <label>统一圆角</label>
+            <input type="range" id="rd-all" min="0" max="100" value="20">
+            <span id="val-rd-all">20px</span>
+          </div>
+          <div class="cs-row">
+            <label>单位</label>
+            <select id="rd-unit" class="cs-select-sm">
+              <option value="px" selected>px</option>
+              <option value="%">%</option>
+              <option value="em">em</option>
+            </select>
+            <button class="cs-mini-btn" id="rd-lock" type="button" title="锁定四角同步">🔓 锁定</button>
+          </div>
+          <div class="cs-sub-title">独立四角</div>
+          <div class="cs-row"><label>↖ 左上</label><input type="range" id="rd-tl" min="0" max="100" value="20"><span id="val-rd-tl">20px</span></div>
+          <div class="cs-row"><label>↗ 右上</label><input type="range" id="rd-tr" min="0" max="100" value="20"><span id="val-rd-tr">20px</span></div>
+          <div class="cs-row"><label>↙ 左下</label><input type="range" id="rd-bl" min="0" max="100" value="20"><span id="val-rd-bl">20px</span></div>
+          <div class="cs-row"><label>↘ 右下</label><input type="range" id="rd-br" min="0" max="100" value="20"><span id="val-rd-br">20px</span></div>
         </div>
-        <div class="cs-preview">
-          <div class="cs-box" id="preview-radius"></div>
+        <div class="cs-preview-wrap">
+          <div class="cs-preview">
+            <div class="cs-box" id="preview-radius"></div>
+          </div>
           <div class="cs-code-wrap">
             <textarea class="cs-code" id="code-radius" readonly></textarea>
-            <button class="cs-copy-btn" data-target="code-radius">📋</button>
+            <button class="cs-copy-btn" data-target="code-radius" type="button">📋</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 3. 渐变 -->
-    <div id="panel-gradient" class="cs-panel">
+    <!-- ==================== 3. 渐变 ==================== -->
+    <div class="cs-panel" id="panel-gradient">
+      <div class="cs-preset-bar" data-preset-target="gradient">
+        <span class="cs-preset-label">预设</span>
+        <button data-preset="gr-sunset" type="button">日落</button>
+        <button data-preset="gr-ocean" type="button">海洋</button>
+        <button data-preset="gr-emerald" type="button">翡翠</button>
+        <button data-preset="gr-fire" type="button">火焰</button>
+        <button data-preset="gr-aurora" type="button">极光</button>
+        <button data-preset="gr-candy" type="button">糖果</button>
+        <button data-preset="gr-sakura" type="button">樱花</button>
+        <button data-preset="gr-night" type="button">夜空</button>
+      </div>
       <div class="cs-grid">
         <div class="cs-controls">
-          <div class="cs-row"><label>角度</label><input type="range" id="gr-angle" min="0" max="360" value="45"><span id="val-gr-angle">45deg</span></div>
-          <div class="cs-row"><label>起始颜色</label><input type="color" id="gr-c1" value="#8a5a2b"></div>
-          <div class="cs-row"><label>结束颜色</label><input type="color" id="gr-c2" value="#7ba05b"></div>
+          <div class="cs-row">
+            <label>类型</label>
+            <div class="cs-seg" id="gr-type">
+              <button data-val="linear" class="active" type="button">线性</button>
+              <button data-val="radial" type="button">径向</button>
+              <button data-val="conic" type="button">锥形</button>
+            </div>
+          </div>
+          <div class="cs-row" id="gr-angle-row">
+            <label>角度</label>
+            <input type="range" id="gr-angle" min="0" max="360" value="45">
+            <span id="val-gr-angle">45°</span>
+          </div>
+          <div class="cs-row" id="gr-shape-row" hidden>
+            <label>形状</label>
+            <div class="cs-seg" id="gr-shape">
+              <button data-val="circle" class="active" type="button">圆形</button>
+              <button data-val="ellipse" type="button">椭圆</button>
+            </div>
+          </div>
+          <div class="cs-sub-title">
+            <span>颜色</span>
+            <button class="cs-mini-btn" id="gr-add-color" type="button">+ 添加</button>
+          </div>
+          <div id="gr-colors" class="cs-layers"></div>
         </div>
-        <div class="cs-preview">
-          <div class="cs-box" id="preview-gradient"></div>
+        <div class="cs-preview-wrap">
+          <div class="cs-preview">
+            <div class="cs-box" id="preview-gradient"></div>
+          </div>
           <div class="cs-code-wrap">
-            <textarea class="cs-code" id="code-gradient" readonly></textarea>
-            <button class="cs-copy-btn" data-target="code-gradient">📋</button>
+            <textarea class="cs-code" id="code-gradient" readonly rows="2"></textarea>
+            <button class="cs-copy-btn" data-target="code-gradient" type="button">📋</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 4. 毛玻璃 -->
-    <div id="panel-glass" class="cs-panel">
+    <!-- ==================== 4. 毛玻璃 ==================== -->
+    <div class="cs-panel" id="panel-glass">
+      <div class="cs-preset-bar" data-preset-target="glass">
+        <span class="cs-preset-label">预设</span>
+        <button data-preset="gl-ios" type="button">iOS 风格</button>
+        <button data-preset="gl-macos" type="button">macOS</button>
+        <button data-preset="gl-win11" type="button">Win11</button>
+        <button data-preset="gl-heavy" type="button">强模糊</button>
+      </div>
       <div class="cs-grid">
         <div class="cs-controls">
-          <div class="cs-row"><label>模糊程度</label><input type="range" id="gl-blur" min="0" max="20" value="10"><span id="val-gl-blur">10px</span></div>
+          <div class="cs-row"><label>模糊</label><input type="range" id="gl-blur" min="0" max="30" value="10"><span id="val-gl-blur">10px</span></div>
           <div class="cs-row"><label>背景透明度</label><input type="range" id="gl-opacity" min="0" max="1" step="0.05" value="0.2"><span id="val-gl-opacity">0.2</span></div>
           <div class="cs-row"><label>边框透明度</label><input type="range" id="gl-border" min="0" max="1" step="0.05" value="0.3"><span id="val-gl-border">0.3</span></div>
+          <div class="cs-row"><label>饱和度</label><input type="range" id="gl-saturate" min="0" max="200" value="120"><span id="val-gl-saturate">120%</span></div>
+          <div class="cs-row">
+            <label>背景</label>
+            <div class="cs-seg" id="gl-bg-preset">
+              <button data-val="pink" class="active" type="button">粉</button>
+              <button data-val="blue" type="button">蓝</button>
+              <button data-val="green" type="button">绿</button>
+              <button data-val="upload" type="button">上传</button>
+            </div>
+          </div>
+          <input type="file" id="gl-bg-file" accept="image/*" hidden>
         </div>
-        <div class="cs-preview cs-bg-image">
-          <div class="cs-glass-box" id="preview-glass">Glass</div>
+        <div class="cs-preview-wrap">
+          <div class="cs-preview cs-glass-bg" id="gl-bg-area">
+            <div class="cs-glass-box" id="preview-glass">GLASS</div>
+          </div>
           <div class="cs-code-wrap">
-            <textarea class="cs-code" id="code-glass" readonly></textarea>
-            <button class="cs-copy-btn" data-target="code-glass">📋</button>
+            <textarea class="cs-code" id="code-glass" readonly rows="5"></textarea>
+            <button class="cs-copy-btn" data-target="code-glass" type="button">📋</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 5. 滤镜 -->
-    <div id="panel-filter" class="cs-panel">
+    <!-- ==================== 5. 滤镜 ==================== -->
+    <div class="cs-panel" id="panel-filter">
+      <div class="cs-preset-bar" data-preset-target="filter">
+        <span class="cs-preset-label">预设</span>
+        <button data-preset="ft-orig" type="button">原图</button>
+        <button data-preset="ft-mono" type="button">黑白</button>
+        <button data-preset="ft-retro" type="button">复古</button>
+        <button data-preset="ft-dark" type="button">暗黑</button>
+        <button data-preset="ft-vivid" type="button">高对比</button>
+        <button data-preset="ft-warm" type="button">暖调</button>
+        <button data-preset="ft-cool" type="button">冷调</button>
+        <button data-preset="ft-blur" type="button">模糊</button>
+      </div>
       <div class="cs-grid">
         <div class="cs-controls">
-          <div class="cs-row"><label>模糊</label><input type="range" id="ft-blur" min="0" max="10" value="0"><span id="val-ft-blur">0px</span></div>
+          <div class="cs-row"><label>模糊</label><input type="range" id="ft-blur" min="0" max="20" step="0.5" value="0"><span id="val-ft-blur">0px</span></div>
           <div class="cs-row"><label>灰度</label><input type="range" id="ft-gray" min="0" max="100" value="0"><span id="val-ft-gray">0%</span></div>
           <div class="cs-row"><label>亮度</label><input type="range" id="ft-bright" min="0" max="200" value="100"><span id="val-ft-bright">100%</span></div>
           <div class="cs-row"><label>对比度</label><input type="range" id="ft-contrast" min="0" max="200" value="100"><span id="val-ft-contrast">100%</span></div>
+          <div class="cs-row"><label>饱和度</label><input type="range" id="ft-saturate" min="0" max="200" value="100"><span id="val-ft-saturate">100%</span></div>
+          <div class="cs-row"><label>褐色</label><input type="range" id="ft-sepia" min="0" max="100" value="0"><span id="val-ft-sepia">0%</span></div>
+          <div class="cs-row"><label>色相</label><input type="range" id="ft-hue" min="0" max="360" value="0"><span id="val-ft-hue">0°</span></div>
+          <div class="cs-row"><label>反色</label><input type="range" id="ft-invert" min="0" max="100" value="0"><span id="val-ft-invert">0%</span></div>
         </div>
-        <div class="cs-preview">
-          <div class="cs-box" id="preview-filter" style="background-image: url('https://picsum.photos/200/200'); background-size: cover;"></div>
+        <div class="cs-preview-wrap">
+          <div class="cs-preview">
+            <img id="preview-filter" class="cs-img-preview" src="https://picsum.photos/200/200?random=1" alt="filter preview">
+          </div>
           <div class="cs-code-wrap">
-            <textarea class="cs-code" id="code-filter" readonly></textarea>
-            <button class="cs-copy-btn" data-target="code-filter">📋</button>
+            <textarea class="cs-code" id="code-filter" readonly rows="2"></textarea>
+            <button class="cs-copy-btn" data-target="code-filter" type="button">📋</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 6. 变换 -->
-    <div id="panel-transform" class="cs-panel">
+    <!-- ==================== 6. 变换 ==================== -->
+    <div class="cs-panel" id="panel-transform">
+      <div class="cs-preset-bar" data-preset-target="transform">
+        <span class="cs-preset-label">预设</span>
+        <button data-preset="tf-reset" type="button">还原</button>
+        <button data-preset="tf-hover" type="button">悬停放大</button>
+        <button data-preset="tf-rotate45" type="button">旋转 45°</button>
+        <button data-preset="tf-flip" type="button">翻转</button>
+        <button data-preset="tf-skew" type="button">倾斜</button>
+        <button data-preset="tf-pop" type="button">上浮</button>
+      </div>
       <div class="cs-grid">
         <div class="cs-controls">
-          <div class="cs-row"><label>水平平移</label><input type="range" id="tf-x" min="-100" max="100" value="0"><span id="val-tf-x">0px</span></div>
-          <div class="cs-row"><label>垂直平移</label><input type="range" id="tf-y" min="-100" max="100" value="0"><span id="val-tf-y">0px</span></div>
-          <div class="cs-row"><label>旋转角度</label><input type="range" id="tf-rotate" min="0" max="360" value="0"><span id="val-tf-rotate">0deg</span></div>
-          <div class="cs-row"><label>缩放比例</label><input type="range" id="tf-scale" min="0.1" max="2" step="0.1" value="1"><span id="val-tf-scale">1x</span></div>
+          <div class="cs-row"><label>X 平移</label><input type="range" id="tf-x" min="-100" max="100" value="0"><span id="val-tf-x">0px</span></div>
+          <div class="cs-row"><label>Y 平移</label><input type="range" id="tf-y" min="-100" max="100" value="0"><span id="val-tf-y">0px</span></div>
+          <div class="cs-row"><label>旋转</label><input type="range" id="tf-rotate" min="-360" max="360" value="0"><span id="val-tf-rotate">0°</span></div>
+          <div class="cs-row"><label>缩放</label><input type="range" id="tf-scale" min="0.1" max="2" step="0.05" value="1"><span id="val-tf-scale">1</span></div>
+          <div class="cs-row"><label>斜切 X</label><input type="range" id="tf-skewx" min="-45" max="45" value="0"><span id="val-tf-skewx">0°</span></div>
+          <div class="cs-row"><label>斜切 Y</label><input type="range" id="tf-skewy" min="-45" max="45" value="0"><span id="val-tf-skewy">0°</span></div>
+          <div class="cs-sub-title">变换中心</div>
+          <div class="cs-origin-grid" id="tf-origin">
+            <button data-origin="left top" type="button">↖</button>
+            <button data-origin="center top" type="button">↑</button>
+            <button data-origin="right top" type="button">↗</button>
+            <button data-origin="left center" type="button">←</button>
+            <button data-origin="center center" class="active" type="button">·</button>
+            <button data-origin="right center" type="button">→</button>
+            <button data-origin="left bottom" type="button">↙</button>
+            <button data-origin="center bottom" type="button">↓</button>
+            <button data-origin="right bottom" type="button">↘</button>
+          </div>
         </div>
-        <div class="cs-preview">
-          <div class="cs-box" id="preview-transform"></div>
+        <div class="cs-preview-wrap">
+          <div class="cs-preview">
+            <div class="cs-box" id="preview-transform"></div>
+          </div>
           <div class="cs-code-wrap">
-            <textarea class="cs-code" id="code-transform" readonly></textarea>
-            <button class="cs-copy-btn" data-target="code-transform">📋</button>
+            <textarea class="cs-code" id="code-transform" readonly rows="2"></textarea>
+            <button class="cs-copy-btn" data-target="code-transform" type="button">📋</button>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- ==================== 7. 文字阴影 ==================== -->
+    <div class="cs-panel" id="panel-text-shadow">
+      <div class="cs-preset-bar" data-preset-target="text-shadow">
+        <span class="cs-preset-label">预设</span>
+        <button data-preset="ts-glow" type="button">发光</button>
+        <button data-preset="ts-neon" type="button">霓虹</button>
+        <button data-preset="ts-3d" type="button">3D</button>
+        <button data-preset="ts-outline" type="button">描边</button>
+        <button data-preset="ts-soft" type="button">柔和</button>
+      </div>
+      <div class="cs-grid">
+        <div class="cs-controls">
+          <div class="cs-row"><label>文字</label><input type="text" id="ts-text" class="cs-input-sm" value="Hello CSS" maxlength="20"></div>
+          <div class="cs-sub-title">
+            <span>阴影层</span>
+            <button class="cs-mini-btn" id="btn-add-tshadow" type="button">+ 添加</button>
+          </div>
+          <div id="tshadow-layers" class="cs-layers"></div>
+        </div>
+        <div class="cs-preview-wrap">
+          <div class="cs-preview cs-preview-text">
+            <div id="preview-text-shadow" class="cs-text-demo">Hello CSS</div>
+          </div>
+          <div class="cs-code-wrap">
+            <textarea class="cs-code" id="code-text-shadow" readonly rows="2"></textarea>
+            <button class="cs-copy-btn" data-target="code-text-shadow" type="button">📋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 8. 文本渐变 ==================== -->
+    <div class="cs-panel" id="panel-text-grad">
+      <div class="cs-preset-bar" data-preset-target="text-grad">
+        <span class="cs-preset-label">预设</span>
+        <button data-preset="tg-gold" type="button">金光</button>
+        <button data-preset="tg-rainbow" type="button">彩虹</button>
+        <button data-preset="tg-fire" type="button">火焰</button>
+        <button data-preset="tg-candy" type="button">糖果</button>
+        <button data-preset="tg-night" type="button">夜空</button>
+      </div>
+      <div class="cs-grid">
+        <div class="cs-controls">
+          <div class="cs-row"><label>文字</label><input type="text" id="tg-text" class="cs-input-sm" value="Gradient Text" maxlength="20"></div>
+          <div class="cs-row"><label>角度</label><input type="range" id="tg-angle" min="0" max="360" value="90"><span id="val-tg-angle">90°</span></div>
+          <div class="cs-sub-title">颜色</div>
+          <div class="cs-row"><label>起始</label><input type="color" id="tg-c1" value="#ff6b6b"></div>
+          <div class="cs-row"><label>中间</label><input type="color" id="tg-c2" value="#feca57"></div>
+          <div class="cs-row"><label>结束</label><input type="color" id="tg-c3" value="#48dbfb"></div>
+        </div>
+        <div class="cs-preview-wrap">
+          <div class="cs-preview cs-preview-text">
+            <div id="preview-text-grad" class="cs-text-demo cs-text-grad-big">Gradient Text</div>
+          </div>
+          <div class="cs-code-wrap">
+            <textarea class="cs-code" id="code-text-grad" readonly rows="5"></textarea>
+            <button class="cs-copy-btn" data-target="code-text-grad" type="button">📋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 9. Flex ==================== -->
+    <div class="cs-panel" id="panel-flex">
+      <div class="cs-preset-bar" data-preset-target="flex">
+        <span class="cs-preset-label">预设</span>
+        <button data-preset="fl-center" type="button">居中</button>
+        <button data-preset="fl-between" type="button">两端对齐</button>
+        <button data-preset="fl-column" type="button">纵向</button>
+        <button data-preset="fl-wrap" type="button">换行</button>
+      </div>
+      <div class="cs-grid">
+        <div class="cs-controls">
+          <div class="cs-row"><label>方向</label>
+            <div class="cs-seg" id="fl-dir">
+              <button data-val="row" class="active" type="button">row</button>
+              <button data-val="row-reverse" type="button">row-rev</button>
+              <button data-val="column" type="button">col</button>
+              <button data-val="column-reverse" type="button">col-rev</button>
+            </div>
+          </div>
+          <div class="cs-row"><label>主轴</label>
+            <select id="fl-justify" class="cs-select-sm">
+              <option value="flex-start" selected>flex-start</option>
+              <option value="center">center</option>
+              <option value="flex-end">flex-end</option>
+              <option value="space-between">space-between</option>
+              <option value="space-around">space-around</option>
+              <option value="space-evenly">space-evenly</option>
+            </select>
+          </div>
+          <div class="cs-row"><label>交叉轴</label>
+            <select id="fl-align" class="cs-select-sm">
+              <option value="flex-start">flex-start</option>
+              <option value="center">center</option>
+              <option value="flex-end">flex-end</option>
+              <option value="stretch" selected>stretch</option>
+              <option value="baseline">baseline</option>
+            </select>
+          </div>
+          <div class="cs-row"><label>换行</label>
+            <div class="cs-seg" id="fl-wrap">
+              <button data-val="nowrap" class="active" type="button">不换</button>
+              <button data-val="wrap" type="button">换行</button>
+            </div>
+          </div>
+          <div class="cs-row"><label>间距</label><input type="range" id="fl-gap" min="0" max="40" value="8"><span id="val-fl-gap">8px</span></div>
+          <div class="cs-row"><label>子项</label><input type="range" id="fl-count" min="1" max="8" value="4"><span id="val-fl-count">4</span></div>
+        </div>
+        <div class="cs-preview-wrap">
+          <div class="cs-preview">
+            <div class="cs-flex-preview" id="preview-flex"></div>
+          </div>
+          <div class="cs-code-wrap">
+            <textarea class="cs-code" id="code-flex" readonly rows="6"></textarea>
+            <button class="cs-copy-btn" data-target="code-flex" type="button">📋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 10. Grid ==================== -->
+    <div class="cs-panel" id="panel-grid">
+      <div class="cs-preset-bar" data-preset-target="grid">
+        <span class="cs-preset-label">预设</span>
+        <button data-preset="gd-2col" type="button">两列</button>
+        <button data-preset="gd-3col" type="button">三列</button>
+        <button data-preset="gd-4col" type="button">四列</button>
+        <button data-preset="gd-holy" type="button">圣杯</button>
+      </div>
+      <div class="cs-grid">
+        <div class="cs-controls">
+          <div class="cs-row"><label>列</label><input type="range" id="gd-cols" min="1" max="6" value="3"><span id="val-gd-cols">3</span></div>
+          <div class="cs-row"><label>行</label><input type="range" id="gd-rows" min="1" max="6" value="2"><span id="val-gd-rows">2</span></div>
+          <div class="cs-row"><label>间距</label><input type="range" id="gd-gap" min="0" max="40" value="10"><span id="val-gd-gap">10px</span></div>
+          <div class="cs-row"><label>子项</label><input type="range" id="gd-count" min="1" max="12" value="6"><span id="val-gd-count">6</span></div>
+        </div>
+        <div class="cs-preview-wrap">
+          <div class="cs-preview">
+            <div class="cs-grid-preview" id="preview-grid"></div>
+          </div>
+          <div class="cs-code-wrap">
+            <textarea class="cs-code" id="code-grid" readonly rows="4"></textarea>
+            <button class="cs-copy-btn" data-target="code-grid" type="button">📋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </main>
+
+<!-- 抽屉 -->
+<div class="cs-drawer-backdrop" id="drawer-backdrop" hidden></div>
+<aside class="cs-drawer" id="drawer">
+  <div class="cs-drawer-head">
+    <h3>⭐ 收藏与历史</h3>
+    <button class="cs-icon-btn" id="drawer-close" type="button">✕</button>
+  </div>
+  <div class="cs-drawer-section">
+    <h4>收藏</h4>
+    <div class="cs-drawer-list" id="fav-list"></div>
+  </div>
+  <div class="cs-drawer-section">
+    <h4>最近历史</h4>
+    <div class="cs-drawer-list" id="history-list"></div>
+  </div>
+  <div class="cs-drawer-actions">
+    <button class="cs-btn-danger" id="clear-history" type="button">🗑 清空历史</button>
+  </div>
+</aside>
+
+<div class="cs-toast" id="cs-toast"></div>
+
 <script src="../../js/css-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

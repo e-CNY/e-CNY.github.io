@@ -12,65 +12,141 @@
 <body>
 <header class="tool-page-header">
   <h1>🎨 颜色处理工具箱</h1>
-  <p>HEX/RGB/HSL 转换、色彩预览、WCAG 对比度校验、色盲模拟。</p>
+  <p>7 种格式互转 · WCAG 对比度 · 色盲模拟 · 配色方案 · 色阶 · 图片取色</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="cl-layout" style="padding-top: 0;">
-  <div class="cl-grid">
-    <!-- 左栏：颜色转换 -->
-    <div class="cl-card">
-      <h2>色值转换</h2>
-      <div class="cl-color-preview" id="color-preview" style="background: #7ba05b;">
-        <input type="color" id="color-picker" value="#7ba05b" title="点击取色">
-      </div>
-      
-      <div class="cl-input-group">
-        <label>HEX</label>
-        <input type="text" id="in-hex" value="#7ba05b">
-      </div>
-      <div class="cl-input-group">
-        <label>RGB</label>
-        <input type="text" id="in-rgb" value="rgb(123, 160, 91)">
-      </div>
-      <div class="cl-input-group">
-        <label>HSL</label>
-        <input type="text" id="in-hsl" value="hsl(91, 28%, 49%)">
-      </div>
+<main class="cl-layout">
+  <!-- 顶栏 -->
+  <div class="cl-topbar">
+    <div class="cl-top-actions">
+      <button class="cl-icon-btn" id="btn-random" type="button" title="随机颜色">🎲 随机</button>
+      <button class="cl-icon-btn" id="btn-fav" type="button" title="收藏当前颜色">⭐ 收藏</button>
+      <button class="cl-icon-btn" id="btn-history" type="button" title="收藏与历史">
+        📜 历史 <span id="history-count">0</span>
+      </button>
+      <button class="cl-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
     </div>
+  </div>
 
-    <!-- 右栏：对比度与色盲模拟 -->
-    <div class="cl-card">
-      <h2>WCAG 对比度校验</h2>
-      <div class="cl-wcag-row">
-        <div class="cl-wcag-box" style="background: #ffffff;">
-          <span style="color: #7ba05b;" id="wcag-text-preview">Text Sample</span>
-        </div>
+  <!-- 颜色转换 -->
+  <div class="cl-card cl-card-full">
+    <h2>
+      <span>🎨 颜色转换</span>
+      <span class="cl-hint-tag">支持任意格式输入</span>
+    </h2>
+    <div class="cl-color-bar">
+      <div class="cl-color-preview" id="color-preview" style="background:#7ba05b">
+        <input type="color" id="color-picker" value="#7ba05b" title="点击拾色">
       </div>
-      <div class="cl-result-box">
-        <p>对比度比值: <b id="wcag-ratio">0.00</b> : 1</p>
-        <p>AA (正常文本): <span id="wcag-aa">-</span></p>
-        <p>AAA (正常文本): <span id="wcag-aaa">-</span></p>
-      </div>
-
-      <h2 style="margin-top: 24px;">色盲模拟</h2>
-      <div class="cl-blind-grid">
-        <div class="cl-blind-item">
-          <div class="cl-blind-preview" id="sim-protanopia" style="background: #7ba05b;"></div>
-          <span>红色盲</span>
+      <div class="cl-color-info">
+        <div class="cl-main-input-wrap">
+          <input type="text" id="cl-input" class="cl-main-input" value="#7BA05B" autocomplete="off"
+                 placeholder="#7BA05B / rgb(123,160,91) / hsl(91,28%,49%) / red">
+          <span class="cl-name-badge" id="color-name"></span>
         </div>
-        <div class="cl-blind-item">
-          <div class="cl-blind-preview" id="sim-deuteranopia" style="background: #7ba05b;"></div>
-          <span>绿色盲</span>
-        </div>
-        <div class="cl-blind-item">
-          <div class="cl-blind-preview" id="sim-tritanopia" style="background: #7ba05b;"></div>
-          <span>蓝色盲</span>
-        </div>
+        <div class="cl-format-list" id="format-list"></div>
       </div>
     </div>
   </div>
+
+  <!-- WCAG 对比度 -->
+  <div class="cl-card">
+    <h2>
+      <span>♿ WCAG 对比度</span>
+      <span class="cl-hint-tag">WCAG 2.1</span>
+    </h2>
+    <div class="cl-wcag-config">
+      <div class="cl-wcag-picker">
+        <label>前景</label>
+        <input type="color" id="fg-color" value="#333333">
+        <span id="fg-hex" class="cl-hex-mini">#333333</span>
+      </div>
+      <button class="cl-swap-btn" id="btn-swap" type="button" title="交换">⇄</button>
+      <div class="cl-wcag-picker">
+        <label>背景</label>
+        <input type="color" id="bg-color" value="#ffffff">
+        <span id="bg-hex" class="cl-hex-mini">#ffffff</span>
+      </div>
+    </div>
+
+    <div class="cl-wcag-demo" id="wcag-demo">
+      <div class="cl-wcag-sample-large">大文本 (24px) Sample</div>
+      <div class="cl-wcag-sample-normal">正常文本 (14px) Sample text 123</div>
+    </div>
+
+    <div class="cl-wcag-result" id="wcag-result"></div>
+  </div>
+
+  <!-- 色盲模拟 -->
+  <div class="cl-card">
+    <h2>
+      <span>👁️ 色盲模拟</span>
+      <span class="cl-hint-tag">Brettel 近似</span>
+    </h2>
+    <div class="cl-blind-list" id="blind-list"></div>
+  </div>
+
+  <!-- 配色方案 -->
+  <div class="cl-card cl-card-full">
+    <h2>
+      <span>🌈 配色方案</span>
+      <span class="cl-hint-tag">点击色块可应用</span>
+    </h2>
+    <div class="cl-scheme-list" id="scheme-list"></div>
+  </div>
+
+  <!-- 色阶 -->
+  <div class="cl-card cl-card-full">
+    <h2>
+      <span>📊 深浅色阶</span>
+      <span class="cl-hint-tag">11 级 · 点击应用</span>
+    </h2>
+    <div class="cl-shades" id="shades"></div>
+  </div>
+
+  <!-- 图片取色 -->
+  <div class="cl-card cl-card-full">
+    <h2>
+      <span>🖼️ 图片取色</span>
+      <span class="cl-hint-tag">上传图片 · 鼠标悬浮取色</span>
+    </h2>
+    <div class="cl-img-controls">
+      <label class="cl-upload-btn">
+        📁 上传图片
+        <input type="file" id="img-input" accept="image/*" hidden>
+      </label>
+      <span class="cl-img-pick-info" id="img-pick-info">未上传图片</span>
+    </div>
+    <div class="cl-img-canvas-wrap" id="img-canvas-wrap" hidden>
+      <canvas id="img-canvas"></canvas>
+      <div class="cl-img-cursor" id="img-cursor" hidden></div>
+    </div>
+  </div>
 </main>
+
+<!-- 收藏 / 历史抽屉 -->
+<div class="cl-drawer-backdrop" id="drawer-backdrop" hidden></div>
+<aside class="cl-drawer" id="drawer">
+  <div class="cl-drawer-head">
+    <h3>📜 收藏与历史</h3>
+    <button class="cl-icon-btn" id="drawer-close" type="button">✕</button>
+  </div>
+  <div class="cl-drawer-section">
+    <h4>⭐ 收藏</h4>
+    <div class="cl-drawer-list" id="fav-list"></div>
+  </div>
+  <div class="cl-drawer-section">
+    <h4>🕐 最近历史</h4>
+    <div class="cl-drawer-list" id="history-list"></div>
+  </div>
+  <div class="cl-drawer-actions">
+    <button class="cl-btn-danger" id="clear-history" type="button">🗑 清空历史</button>
+  </div>
+</aside>
+
+<div class="cl-toast" id="cl-toast"></div>
+
 <script src="../../js/color-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

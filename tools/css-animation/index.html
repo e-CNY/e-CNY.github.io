@@ -12,119 +12,162 @@
 <body>
 <header class="tool-page-header">
   <h1>💫 CSS 动画生成器</h1>
-  <p>60+ 经典预设 · 高级参数控制 · 可视化实时预览 · 一键复制代码</p>
+  <p>54+ 经典预设 · 高级参数 · 实时预览 · 一键导出独立 HTML</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="ca-app">
+  <!-- 顶栏 -->
+  <div class="ca-topbar">
+    <div class="ca-top-actions">
+      <button class="ca-icon-btn" id="btn-random" type="button" title="随机动画">🎲 随机</button>
+      <button class="ca-icon-btn" id="btn-fav" type="button" title="收藏当前动画">⭐ 收藏</button>
+      <button class="ca-icon-btn" id="btn-history" type="button" title="收藏与最近使用">
+        📜 历史 <span id="history-count">0</span>
+      </button>
+      <button class="ca-icon-btn" id="btn-share" type="button" title="复制分享链接">🔗 分享</button>
+      <button class="ca-icon-btn" id="btn-export" type="button" title="导出为独立 HTML">📥 导出 HTML</button>
+      <button class="ca-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
+    </div>
+  </div>
+
   <div class="ca-layout">
-    
-    <!-- 左侧：预设动画列表 -->
+    <!-- 左侧：预设 -->
     <aside class="ca-sidebar">
       <div class="ca-search-wrap">
-        <input type="search" id="ca-search" placeholder="搜索动画 (如 bounce...)" autocomplete="off">
+        <input type="search" id="ca-search" placeholder="搜索动画 (如 bounce, 淡入...)" autocomplete="off">
       </div>
-      <div class="ca-preset-list" id="ca-preset-list">
-        <!-- JS 动态渲染 -->
+      <div class="ca-filter-bar" id="ca-filter-bar">
+        <button data-filter="all" class="active" type="button">全部</button>
+        <button data-filter="fav" type="button">⭐ 收藏</button>
+        <button data-filter="recent" type="button">🕐 最近</button>
       </div>
+      <div class="ca-preset-list" id="ca-preset-list"></div>
     </aside>
 
     <!-- 右侧：预览与配置 -->
     <section class="ca-main">
-      
       <!-- 预览区 -->
       <div class="ca-preview-area">
-        <div class="ca-grid-bg">
+        <div class="ca-grid-bg" id="ca-grid-bg">
           <div class="ca-preview-box" id="ca-preview-box">
             <span class="ca-preview-text" id="ca-preview-text">🎁</span>
           </div>
         </div>
         <div class="ca-preview-actions">
-          <button class="ca-btn ca-btn-primary" id="ca-btn-replay">▶️ 重新播放</button>
+          <button class="ca-btn ca-btn-primary" id="ca-btn-replay" type="button">▶️ 重播</button>
+          <button class="ca-btn" id="ca-btn-pause" type="button" title="暂停/继续">⏸</button>
+          <select class="ca-shape-select" id="ca-shape" title="预览形状">
+            <option value="rect">矩形</option>
+            <option value="rounded">圆角</option>
+            <option value="circle">圆形</option>
+            <option value="text">仅文字</option>
+            <option value="img">图片</option>
+          </select>
           <div class="ca-preview-input">
-            <input type="text" id="ca-text-input" placeholder="自定义演示内容 (如: Hello 或 🎁)" maxlength="20">
+            <input type="text" id="ca-text-input" placeholder="自定义内容" maxlength="20" value="🎁">
           </div>
+          <button class="ca-icon-btn" id="ca-toggle-grid" type="button" title="切换网格背景">🔲</button>
         </div>
       </div>
 
       <!-- 配置区 -->
       <div class="ca-config-area">
         <h3 class="ca-config-title">动画参数配置</h3>
-        
+
         <div class="ca-controls-grid">
-          <!-- 时长 -->
           <div class="ca-control">
-            <label>动画时长 (Duration): <span id="val-duration">1s</span></label>
+            <label>动画时长 <span id="val-duration">1s</span></label>
             <input type="range" id="ctrl-duration" min="0.1" max="5" step="0.1" value="1">
           </div>
-          
-          <!-- 延迟 -->
+
           <div class="ca-control">
-            <label>延迟时间 (Delay): <span id="val-delay">0s</span></label>
+            <label>延迟时间 <span id="val-delay">0s</span></label>
             <input type="range" id="ctrl-delay" min="0" max="3" step="0.1" value="0">
           </div>
 
-          <!-- 缓动函数 -->
           <div class="ca-control">
-            <label>缓动函数 (Timing Function)</label>
+            <label>缓动函数</label>
             <select id="ctrl-timing">
-              <option value="ease">ease (默认)</option>
-              <option value="linear">linear (匀速)</option>
-              <option value="ease-in">ease-in (渐快)</option>
-              <option value="ease-out">ease-out (渐慢)</option>
-              <option value="ease-in-out">ease-in-out (两头慢)</option>
-              <option value="cubic-bezier(0.68, -0.55, 0.265, 1.55)">cubic-bezier (夸张回弹)</option>
-              <option value="cubic-bezier(0.175, 0.885, 0.32, 1.275)">cubic-bezier (平滑回弹)</option>
+              <option value="ease">ease（默认）</option>
+              <option value="linear">linear（匀速）</option>
+              <option value="ease-in">ease-in（渐快）</option>
+              <option value="ease-out">ease-out（渐慢）</option>
+              <option value="ease-in-out">ease-in-out（两头慢）</option>
+              <option value="cubic-bezier(0.68, -0.55, 0.265, 1.55)">夸张回弹</option>
+              <option value="cubic-bezier(0.175, 0.885, 0.32, 1.275)">平滑回弹</option>
             </select>
           </div>
 
-          <!-- 迭代次数 -->
           <div class="ca-control">
-            <label>播放次数 (Iteration)</label>
+            <label>播放次数</label>
             <select id="ctrl-iteration">
               <option value="1">1 次</option>
               <option value="2">2 次</option>
               <option value="3">3 次</option>
-              <option value="infinite" selected>无限循环 (infinite)</option>
+              <option value="5">5 次</option>
+              <option value="infinite" selected>无限循环</option>
             </select>
           </div>
 
-          <!-- 播放方向 -->
           <div class="ca-control">
-            <label>播放方向 (Direction)</label>
+            <label>播放方向</label>
             <select id="ctrl-direction">
-              <option value="normal">normal (正向)</option>
-              <option value="reverse">reverse (反向)</option>
-              <option value="alternate">alternate (来回交替)</option>
-              <option value="alternate-reverse">alternate-reverse (反向来回)</option>
+              <option value="normal">normal</option>
+              <option value="reverse">reverse</option>
+              <option value="alternate">alternate</option>
+              <option value="alternate-reverse">alternate-reverse</option>
             </select>
           </div>
 
-          <!-- 填充模式 -->
           <div class="ca-control">
-            <label>填充模式 (Fill Mode)</label>
+            <label>填充模式</label>
             <select id="ctrl-fill-mode">
-              <option value="none">none (不保留状态)</option>
-              <option value="forwards">forwards (保留结束状态)</option>
-              <option value="backwards">backwards (应用起始状态)</option>
-              <option value="both">both (双向保留)</option>
+              <option value="none">none</option>
+              <option value="forwards">forwards</option>
+              <option value="backwards">backwards</option>
+              <option value="both">both</option>
             </select>
           </div>
         </div>
 
-        <!-- 代码输出区 -->
+        <!-- 代码区 -->
         <div class="ca-code-wrap">
           <div class="ca-code-header">
             <span>生成的 CSS 代码</span>
-            <button class="ca-btn ca-btn-small" id="ca-btn-copy">📋 复制代码</button>
+            <div class="ca-code-actions">
+              <button class="ca-btn ca-btn-small" id="ca-btn-copy" type="button">📋 复制</button>
+              <button class="ca-btn ca-btn-small" id="ca-btn-download-css" type="button" title="下载 .css 文件">💾 .css</button>
+            </div>
           </div>
-          <pre><code id="ca-code-output" class="language-css"></code></pre>
+          <pre id="ca-code-output"><code></code></pre>
         </div>
       </div>
-
     </section>
   </div>
 </main>
+
+<!-- 收藏 / 历史抽屉 -->
+<div class="ca-drawer-backdrop" id="ca-drawer-backdrop" hidden></div>
+<aside class="ca-drawer" id="ca-drawer">
+  <div class="ca-drawer-head">
+    <h3>⭐ 收藏与最近使用</h3>
+    <button class="ca-icon-btn" id="drawer-close" type="button">✕</button>
+  </div>
+  <div class="ca-drawer-section">
+    <h4>收藏</h4>
+    <div class="ca-drawer-list" id="fav-list"></div>
+  </div>
+  <div class="ca-drawer-section">
+    <h4>最近使用</h4>
+    <div class="ca-drawer-list" id="history-list"></div>
+  </div>
+  <div class="ca-drawer-actions">
+    <button class="ca-btn ca-btn-danger" id="clear-history" type="button">🗑 清空历史</button>
+  </div>
+</aside>
+
+<div class="ca-toast" id="ca-toast"></div>
 
 <script src="../../js/css-animation.js"></script>
 <script src="../../js/traffic-guard.js"></script>
