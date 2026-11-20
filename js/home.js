@@ -38,7 +38,7 @@
 
     // === 3. 开发 ===
     { name: '加解密与编解码', emoji: '🔐', desc: '涵盖 Hash / AES / RSA / JWT / 编码转换 / 古典密码', href: 'tools/crypto-tool/index.html', category: '开发' },
-    { name: '正则与选择测试', emoji: '🔍', desc: '正则匹配高亮与捕获、CSS/XPath测试、HTML资源提取', href: 'tools/regex-tool/index.html', category: '开发' },
+    { name: '正则与选择测试', emoji: '🔍', desc: '正则匹配高亮与捕获、CSS/XPath测试、HTML提取', href: 'tools/regex-tool/index.html', category: '开发' },
     { name: '语言代码格式化', emoji: '🪄', desc: 'JS/TS/HTML/CSS/JSON/YAML/Markdown/SQL/Vue', href: 'tools/code-formatter/index.html', category: '开发' },
     { name: '代码沙盒预览器', emoji: '💻', desc: 'HTML / CSS / JS 实时预览，支持自动保存、控制台捕获', href: 'tools/code-sandbox/index.html', category: '开发' },
     { name: '开发辅助工具箱', emoji: '🛠️', desc: 'Cron表达式、Gitignore配置、Nginx格式化提效利器', href: 'tools/dev-tool/index.html', category: '开发' },
