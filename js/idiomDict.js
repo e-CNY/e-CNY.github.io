@@ -1,3 +1,6 @@
+/* 由 json2js.py 自动生成 */
+window.idiom = window.idiom || {};
+
 window.idiom.dictionary = [
   {
     "word": "阿鼻地狱",
