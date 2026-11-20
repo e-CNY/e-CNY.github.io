@@ -6,7 +6,7 @@
     { name: '图片调色与滤镜', emoji: '🌅', desc: '极速调整亮度/对比度/饱和度，支持一键复古滤镜', href: 'tools/image-filter/index.html', category: '图像' },
     
     // === 插入到全部的第三位 ===
-    { name: '教育类游戏厅', emoji: '🕹️', desc: '各种教育类像素游戏不定期开发中...', href: 'games/index.html', category: '趣味' },
+    { name: '成语词典', emoji: '📔', desc: '本地离线词库 · 中文/拼音搜索 · 生词本与历史记录', href: 'tools/idiomDict/index.html', category: '文档' },
 
     // === 继续图像分类 ===
     { name: '图片取色器与配色', emoji: '🖍️', desc: '提取图片主色调 / 放大镜吸管 / UI 实战预览', href: 'tools/color-extractor/index.html', category: '图像' },

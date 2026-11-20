@@ -12,30 +12,38 @@
 <body>
 <div class="tool-page-header">
   <h1>🛡️ 文件哈希校验</h1>
-  <p>极速计算文件的 MD5 / SHA-1 / SHA-256，支持 GB 级大文件分片计算，不消耗流量。</p>
+  <p>MD5 / SHA-1 / SHA-256 / SHA-384 / SHA-512 / CRC32 · 大文件分片 · 完全本地</p>
   <a href="../../index.html">← 返回首页</a>
 </div>
 
 <main class="hash-wrap">
+  <!-- 顶栏 -->
+  <div class="hash-topbar">
+    <div class="hash-top-actions">
+      <button class="h-icon-btn" id="btn-case" type="button" title="切换大小写">🔠 大写</button>
+      <button class="h-icon-btn" id="btn-history" type="button" title="最近记录">
+        📜 历史 <span id="history-count">0</span>
+      </button>
+      <button class="h-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
+    </div>
+  </div>
+
   <!-- 文件上传区 -->
   <div class="hash-upload-box" id="drop-zone">
     <div class="upload-icon">📁</div>
     <p class="upload-title">点击选择文件，或将文件拖拽至此</p>
-    <p class="upload-hint">支持任意格式文件，完全本地解析，不上传服务器</p>
+    <p class="upload-hint">支持任意格式 · 大文件自动分片读取 · 完全本地解析</p>
     <input type="file" id="file-input" hidden>
   </div>
 
   <!-- 计算选项 -->
   <div class="hash-options">
-    <label class="checkbox-label">
-      <input type="checkbox" id="opt-md5" checked> MD5
-    </label>
-    <label class="checkbox-label">
-      <input type="checkbox" id="opt-sha1" checked> SHA-1
-    </label>
-    <label class="checkbox-label">
-      <input type="checkbox" id="opt-sha256" checked> SHA-256
-    </label>
+    <label class="checkbox-label"><input type="checkbox" id="opt-md5" checked> MD5</label>
+    <label class="checkbox-label"><input type="checkbox" id="opt-sha1" checked> SHA-1</label>
+    <label class="checkbox-label"><input type="checkbox" id="opt-sha256" checked> SHA-256</label>
+    <label class="checkbox-label"><input type="checkbox" id="opt-sha384"> SHA-384</label>
+    <label class="checkbox-label"><input type="checkbox" id="opt-sha512"> SHA-512</label>
+    <label class="checkbox-label"><input type="checkbox" id="opt-crc32"> CRC32</label>
   </div>
 
   <!-- 进度条 -->
@@ -51,30 +59,27 @@
     <div class="file-info">
       <p><strong>📄 文件名：</strong> <span id="info-name">-</span></p>
       <p><strong>📦 文件大小：</strong> <span id="info-size">-</span></p>
+      <p><strong>⏱ 耗时：</strong> <span id="info-time">-</span></p>
     </div>
 
-    <div class="hash-list">
-      <div class="hash-item" id="result-md5" hidden>
-        <div class="hash-title">MD5</div>
-        <div class="hash-value-wrap">
-          <input type="text" class="hash-value" id="val-md5" readonly>
-          <button class="btn small-btn" onclick="copyHash('val-md5')">复制</button>
-        </div>
+    <div class="hash-list" id="hash-list"></div>
+
+    <!-- 哈希对比验证 -->
+    <div class="hash-verify">
+      <div class="hash-verify-head">
+        <span>🔍 哈希对比验证</span>
+        <button class="h-mini-btn" id="btn-verify-clear" type="button" title="清空">✕</button>
       </div>
-      <div class="hash-item" id="result-sha1" hidden>
-        <div class="hash-title">SHA-1</div>
-        <div class="hash-value-wrap">
-          <input type="text" class="hash-value" id="val-sha1" readonly>
-          <button class="btn small-btn" onclick="copyHash('val-sha1')">复制</button>
-        </div>
-      </div>
-      <div class="hash-item" id="result-sha256" hidden>
-        <div class="hash-title">SHA-256</div>
-        <div class="hash-value-wrap">
-          <input type="text" class="hash-value" id="val-sha256" readonly>
-          <button class="btn small-btn" onclick="copyHash('val-sha256')">复制</button>
-        </div>
-      </div>
+      <input type="text" id="verify-input" class="hash-verify-input"
+             placeholder="粘贴一个哈希值（任意算法），自动匹配上方结果…"
+             autocomplete="off" spellcheck="false">
+      <div class="hash-verify-result" id="verify-result"></div>
+    </div>
+
+    <div class="hash-result-actions">
+      <button class="h-btn" id="btn-copy-all" type="button">📋 复制全部</button>
+      <button class="h-btn" id="btn-export" type="button">📤 导出 CSV</button>
+      <button class="h-btn" id="btn-reset" type="button">🔄 重新选择</button>
     </div>
   </div>
 
@@ -82,16 +87,35 @@
   <div class="text-hash-section">
     <div class="section-header">
       <h3>📝 文本哈希计算</h3>
-      <p class="hint">如果没有文件，可以直接在此输入文本进行哈希校验</p>
+      <p class="hint">输入即算 · 无需按钮 · 支持 UTF-8 中文</p>
     </div>
-    <textarea id="text-input" placeholder="在此输入需要计算哈希的文本..."></textarea>
-    <button class="btn primary-btn" id="btn-text-hash" style="margin-top: 12px;">计算文本哈希</button>
+    <textarea id="text-input" placeholder="在此输入需要计算哈希的文本，输入后实时计算…"></textarea>
+    <div class="text-hash-actions">
+      <span class="text-bytes-info" id="text-bytes-info">0 字节</span>
+      <button class="h-btn" id="btn-text-clear" type="button">🧹 清空</button>
+    </div>
+    <div class="hash-list" id="text-hash-list"></div>
   </div>
 </main>
 
+<!-- 历史抽屉 -->
+<div class="h-drawer-backdrop" id="drawer-backdrop" hidden></div>
+<aside class="h-drawer" id="drawer">
+  <div class="h-drawer-head">
+    <h3>📜 最近记录</h3>
+    <button class="h-icon-btn" id="drawer-close" type="button">✕</button>
+  </div>
+  <div class="h-drawer-list" id="drawer-list"></div>
+  <div class="h-drawer-actions">
+    <button class="h-btn h-btn-danger" id="clear-history" type="button">🗑 清空历史</button>
+  </div>
+</aside>
+
+<div class="h-toast" id="h-toast"></div>
+
 <script src="../../js/libs/spark-md5.min.js"></script>
 <script src="../../js/libs/sha256.min.js"></script>
-<script src="../../js/file-hash.js"></script>
+<script src="../../js/file-hash.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
 </html>
