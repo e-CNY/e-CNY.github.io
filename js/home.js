@@ -1,11 +1,11 @@
-/* js/home.js —— 工具站首页（放第 3 位，归属趣味分类） */
+/* js/home.js —— 工具站首页（教育类游戏厅放第 3 位，归属趣味分类） */
 (function () {
   var tools = [
     // === 1. 图像 ===
     { name: '电子签名生成器', emoji: '✒️', desc: '速度笔锋 · 压感支持 · 底图拖放', href: 'tools/e-signature/index.html', category: '图像' },
     { name: '图片调色与滤镜', emoji: '🌅', desc: '30+ 项精细调节 + 28 种预设滤镜 · 撤销重做', href: 'tools/image-filter/index.html', category: '图像' },
     
-    // === 全部的第三位 ===
+    // === 插入到全部的第三位 ===
     { name: '成语词典查看器', emoji: '📔', desc: '本地离线词库 · 中文/拼音搜索 · 生词本与历史记录', href: 'tools/idiomDict/index.html', category: '文档' },
 
     // === 继续图像分类 ===
@@ -96,7 +96,7 @@
 
     // === 8. 安全 ===
     { name: '文件哈希校验器', emoji: '🛡️', desc: 'MD5/SHA-1/SHA-256/SHA-384/SHA-512/CRC32', href: 'tools/file-hash/index.html', category: '安全' },
-    { name: '本地加密记事本', emoji: '🔒', desc: 'AES加密，数据仅保存在您本机浏览器中密码不会上传', href: 'tools/notepad-tool/index.html', category: '安全' },
+    { name: '本地加密记事本', emoji: '🔒', desc: 'PBKDF2 + AES-256 · 多笔记 · 自动保存 · 加密备份', href: 'tools/notepad-tool/index.html', category: '安全' },
     { name: '图片隐写与处理', emoji: '🕵️', desc: '将文本藏入图片像素深处', href: 'tools/steganography/index.html', category: '安全' },
     { name: '端口与编码字典', emoji: '📚', desc: '常用端口 / 国家码 / 区号', href: 'tools/dict-tool/index.html', category: '安全' },
 
