@@ -10,7 +10,7 @@
 <body>
 <div class="tool-page-header">
   <h1>✒️ 电子签名生成器</h1>
-  <p>速度笔锋 · 压感支持 · 底图拖放 · 多格式导出，纯本地运行无依赖</p>
+  <p>双签名引擎· 速度笔锋 · 压感支持 · 底图拖放/旋转 · SVG/PNG/JPEG/WebP 导出，纯本地运行无依赖</p>
   <a href="../../index.html">← 返回首页</a>
 </div>
 
@@ -19,6 +19,21 @@
     <!-- 1. 画笔 -->
     <div class="panel-section">
       <label class="section-title">🖋️ 1. 画笔设置</label>
+      <div class="setting-row">
+        <label>引擎：</label>
+        <select id="engine-mode">
+          <option value="native">原生（中点平滑）</option>
+          <option value="signaturepad">（贝塞尔笔锋）</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <label>笔刷：</label>
+        <select id="brush-type">
+          <option value="pen">钢笔</option>
+          <option value="marker">荧光笔（半透明）</option>
+          <option value="eraser">橡皮擦</option>
+        </select>
+      </div>
       <div class="setting-row">
         <label>颜色：</label>
         <div class="color-presets">
@@ -33,16 +48,29 @@
         <input type="range" id="brush-size" min="1" max="12" step="0.5" value="4">
         <span id="brush-size-val">4</span>
       </div>
+      <div class="setting-row">
+        <label>不透明度：</label>
+        <input type="range" id="stroke-opacity" min="0.1" max="1" step="0.05" value="1">
+        <span id="stroke-opacity-val">100%</span>
+      </div>
       <label class="checkbox-label">
         <input type="checkbox" id="pressure-enabled" checked>
         启用速度感应笔锋（写快变细 / 写慢变粗）
       </label>
-      <p class="hint">支持触控笔压感设备（如 iPad / Surface）会自动叠加真实压力。</p>
+      <p class="hint">支持触控笔压感设备（如 iPad / Surface）会自动叠加真实压力。橡皮擦仅对原生引擎生效。</p>
     </div>
 
-    <!-- 2. 底图 -->
+    <!-- 2. 画板底图 -->
     <div class="panel-section">
       <label class="section-title">🖼️ 2. 画板底图</label>
+      <div class="setting-row">
+        <label>画板：</label>
+        <select id="board-orientation">
+          <option value="landscape">横版 1600×800</option>
+          <option value="portrait">竖版 800×1200</option>
+          <option value="square">方形 1000×1000</option>
+        </select>
+      </div>
       <div class="setting-row">
         <label>空白画板：</label>
         <select id="bg-mode">
@@ -53,7 +81,7 @@
       </div>
       <button id="btn-upload" class="secondary-btn">📷 上传图片作为底图</button>
       <input type="file" id="image-input" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" hidden>
-      <p class="hint">支持 PNG / JPG / WebP / GIF / BMP，单张 ≤ <b>10MB</b>。导出时自动跟随底图格式。</p>
+      <p class="hint">支持 PNG / JPG / WebP / GIF / BMP，单张 ≤ <b>10MB</b>。也可直接把图片<b>拖拽</b>到画板。</p>
     </div>
 
     <!-- 3. 图片调整 -->
@@ -65,16 +93,34 @@
         <span id="image-zoom-val">100%</span>
       </div>
       <button id="btn-move-image" class="secondary-btn">✋ 拖动图片</button>
-      <button id="btn-fit-image" class="secondary-btn">⤢ 适应画板</button>
-      <button id="btn-fill-image" class="secondary-btn">⤢ 填充画板</button>
+      <div class="btn-grid">
+        <button id="btn-fit-image" class="secondary-btn">⤢ 适应画板</button>
+        <button id="btn-fill-image" class="secondary-btn">⤥ 填充画板</button>
+        <button id="btn-rotate-ccw" class="secondary-btn">↺ 左转 90°</button>
+        <button id="btn-rotate-cw" class="secondary-btn">↻ 右转 90°</button>
+        <button id="btn-flip-h" class="secondary-btn">⇋ 水平翻转</button>
+        <button id="btn-flip-v" class="secondary-btn">⇅ 垂直翻转</button>
+      </div>
       <button id="btn-reset-image" class="secondary-btn">↺ 重置</button>
       <button id="btn-remove-image" class="secondary-btn">✖ 移除底图</button>
       <p class="hint">开启「拖动图片」后可在画板上拖动底图；画板上滚动滚轮也可缩放。</p>
     </div>
 
-    <!-- 4. 裁切 -->
+    <!-- 4. 画板 / 草稿 -->
     <div class="panel-section">
-      <label class="section-title">✂️ 4. 智能裁切</label>
+      <label class="section-title">🧰 4. 画板工具</label>
+      <div class="btn-grid">
+        <button id="btn-center-sign" class="secondary-btn">🎯 签名居中</button>
+        <button id="btn-fullscreen" class="secondary-btn">⛶ 全屏</button>
+        <button id="btn-save-draft" class="secondary-btn">💾 保存草稿</button>
+        <button id="btn-load-draft" class="secondary-btn">📂 恢复草稿</button>
+      </div>
+      <p class="hint">草稿保存在浏览器本地（localStorage），含底图与签名；Ctrl+S 可快速保存。</p>
+    </div>
+
+    <!-- 5. 裁切 -->
+    <div class="panel-section">
+      <label class="section-title">✂️ 5. 智能裁切</label>
       <label class="checkbox-label">
         <input type="checkbox" id="auto-crop" checked>
         导出时自动裁切四周空白
@@ -82,9 +128,9 @@
       <p class="hint">仅对空白画板生效；有底图时导出完整画面。</p>
     </div>
 
-    <!-- 5. 导出 -->
+    <!-- 6. 导出 -->
     <div class="panel-section">
-      <label class="section-title">💾 5. 导出保存</label>
+      <label class="section-title">💾 6. 导出保存</label>
       <div class="setting-row">
         <label>格式：</label>
         <select id="export-format">
@@ -94,8 +140,23 @@
           <option value="webp">WebP</option>
         </select>
       </div>
+      <div class="setting-row">
+        <label>倍率：</label>
+        <select id="export-scale">
+          <option value="0.5">0.5×（缩小）</option>
+          <option value="1" selected>1×（原始）</option>
+          <option value="2">2×（高清）</option>
+          <option value="3">3×（超清）</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <label>质量：</label>
+        <input type="range" id="export-quality" min="0.5" max="1" step="0.01" value="0.95">
+        <span id="export-quality-val">95%</span>
+      </div>
       <button id="btn-download" class="primary-btn" style="width:100%;">⬇️ 下载签名图片</button>
-      <p class="hint">快捷键：Ctrl+Z 撤销，Ctrl+Shift+Z 重做，Delete 清空。</p>
+      <button id="btn-export-svg" class="secondary-btn" style="width:100%;">🧩 导出矢量 SVG</button>
+      <p class="hint">快捷键：Ctrl+Z 撤销，Ctrl+Shift+Z / Ctrl+Y 重做，Delete 清空，Ctrl+S 保存草稿。导出借助 FileSaver 触发下载。</p>
     </div>
   </div>
 
@@ -115,6 +176,8 @@
   </div>
 </main>
 
+<script src="../../js/libs/signature_pad.umd.min.js"></script>
+<script src="../../js/libs/FileSaver.min.js"></script>
 <script src="../../js/e-signature.js"></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

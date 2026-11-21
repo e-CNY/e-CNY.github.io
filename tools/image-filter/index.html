@@ -12,7 +12,7 @@
 <body>
 <div class="tool-page-header">
   <h1>🌅 图片调色与滤镜</h1>
-  <p>30+ 项精细调节 + 28 种预设滤镜 · 撤销重做 · 原图对比 · 纯本地 Canvas 渲染</p>
+  <p>40+ 项精细调节 + 44 种预设滤镜 · 高清导出 · 裁切 · 直方图 · 纯本地渲染</p>
   <a href="../../index.html">← 返回首页</a>
 </div>
 
@@ -23,7 +23,7 @@
     <div class="panel-section">
       <label class="section-title">🖼️ 1. 上传图片</label>
       <div class="upload-box" id="drop-zone">
-        <span>📁 点击或拖拽图片至此</span>
+        <span>📁 点击、拖拽或 Ctrl+V 粘贴图片</span>
         <small>支持 JPG / PNG / WebP / GIF / BMP</small>
         <input type="file" id="file-input" accept="image/*" hidden>
       </div>
@@ -34,6 +34,13 @@
       <div class="panel-section">
         <label class="section-title">✨ 2. 预设滤镜</label>
         <div class="filter-presets" id="presets-grid"></div>
+        <div class="btn-group">
+          <button id="btn-save-preset" class="geo-btn" title="把当前参数存成预设">💾 存为预设</button>
+          <button id="btn-export-preset" class="geo-btn" title="导出当前参数为 JSON">📤 导出</button>
+          <button id="btn-import-preset" class="geo-btn" title="导入预设 JSON">📥 导入</button>
+          <button id="btn-clear-presets" class="geo-btn" title="清空自定义预设">🗑️ 清空</button>
+          <input type="file" id="preset-file" accept="application/json,.json" hidden>
+        </div>
       </div>
 
       <!-- 几何变换 -->
@@ -90,6 +97,18 @@
           <div class="slider-label"><span>自然饱和度 Vibrance</span><span id="val-vibrance">0</span></div>
           <input type="range" id="p-vibrance" min="-100" max="100" value="0" step="1">
         </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>灰度系数 Gamma</span><span id="val-gamma">+0.00</span></div>
+          <input type="range" id="p-gamma" min="-100" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>褪色 Fade</span><span id="val-fade">0</span></div>
+          <input type="range" id="p-fade" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>整体提亮 Light</span><span id="val-hslLight">0</span></div>
+          <input type="range" id="p-hslLight" min="-100" max="100" value="0" step="1">
+        </div>
       </details>
 
       <!-- 色彩 -->
@@ -135,6 +154,18 @@
           <div class="slider-label"><span>蓝通道偏移</span><span id="val-blueShift">0</span></div>
           <input type="range" id="p-blueShift" min="-100" max="100" value="0" step="1">
         </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>双色调 Duotone</span><span id="val-duotone">0</span></div>
+          <input type="range" id="p-duotone" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>黑白阈值 Threshold</span><span id="val-threshold">0</span></div>
+          <input type="range" id="p-threshold" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>不透明度 Opacity</span><span id="val-opacity">100</span></div>
+          <input type="range" id="p-opacity" min="0" max="100" value="100" step="1">
+        </div>
       </details>
 
       <!-- 特效 -->
@@ -151,6 +182,10 @@
         <div class="slider-group">
           <div class="slider-label"><span>暗角 Vignette</span><span id="val-vignette">0</span></div>
           <input type="range" id="p-vignette" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>边缘虚化</span><span id="val-vignetteBlur">0</span></div>
+          <input type="range" id="p-vignetteBlur" min="0" max="100" value="0" step="1">
         </div>
         <div class="slider-group">
           <div class="slider-label"><span>胶片噪点 Noise</span><span id="val-noise">0</span></div>
@@ -184,17 +219,47 @@
           <div class="slider-label"><span>扫描线 Scanline</span><span id="val-scanline">0</span></div>
           <input type="range" id="p-scanline" min="0" max="100" value="0" step="1">
         </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>故障 Glitch</span><span id="val-glitch">0</span></div>
+          <input type="range" id="p-glitch" min="0" max="40" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>半调网点 Halftone</span><span id="val-halftone">0</span></div>
+          <input type="range" id="p-halftone" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>移轴 Tilt-shift</span><span id="val-tiltshift">0</span></div>
+          <input type="range" id="p-tiltshift" min="0" max="20" value="0" step="0.5">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>彩虹漏光 Rainbow</span><span id="val-rainbow">0</span></div>
+          <input type="range" id="p-rainbow" min="0" max="100" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>阴影染色 Shadow</span><span id="val-shadowFx">0</span></div>
+          <input type="range" id="p-shadowFx" min="-100" max="100" value="0" step="1">
+        </div>
       </details>
 
-      <button id="btn-reset" class="secondary-btn" style="margin-top: 8px;">🔄 重置所有参数</button>
+      <div class="btn-row">
+        <button id="btn-reset" class="secondary-btn">🔄 重置所有参数</button>
+        <button id="btn-random" class="secondary-btn">🎲 随机参数</button>
+      </div>
 
       <!-- 导出 -->
       <div class="panel-section" style="margin-top: 8px;">
         <label class="section-title">💾 7. 导出图片</label>
         <div class="slider-group">
-          <div class="slider-label"><span>导出质量</span><span id="val-quality">92%</span></div>
-          <input type="range" id="p-quality" min="10" max="100" value="92" step="1">
+          <div class="slider-label"><span>导出尺寸（高清缩放）</span><span id="val-export-scale">100%</span></div>
+          <select id="export-scale" class="text-input">
+            <option value="0.5">50%（缩小一半）</option>
+            <option value="1" selected>100%（原尺寸）</option>
+            <option value="1.5">150%（放大 1.5 倍）</option>
+            <option value="2">200%（放大 2 倍）</option>
+            <option value="3">300%（放大 3 倍）</option>
+          </select>
         </div>
+        <div class="export-info" id="export-info"></div>
         <div class="export-row">
           <select id="export-format">
             <option value="jpeg">JPG</option>
@@ -202,6 +267,9 @@
             <option value="webp">WebP</option>
           </select>
           <button id="btn-download" class="primary-btn">⬇️ 下载</button>
+        </div>
+        <div class="export-row">
+          <button id="btn-copy" class="secondary-btn">📋 复制到剪贴板</button>
         </div>
         <input type="text" id="export-name" class="text-input" placeholder="文件名（不含扩展名）" value="filtered">
       </div>
@@ -212,17 +280,41 @@
   <div class="preview-panel">
     <div class="preview-toolbar">
       <button id="btn-undo" class="tool-btn" disabled title="撤销 (Ctrl+Z)">↩️ 撤销</button>
-      <button id="btn-redo" class="tool-btn" disabled title="重做 (Ctrl+Shift+Z)">↪️ 重做</button>
+      <button id="btn-redo" class="tool-btn" disabled title="重做 (Ctrl+Shift+Z / Ctrl+Y)">↪️ 重做</button>
       <button id="btn-compare" class="tool-btn" title="按住查看原图">👁️ 按住对比</button>
+      <button id="btn-compare-toggle" class="tool-btn" title="切换查看原图 (H)">🔄 前后对比</button>
+      <button id="btn-crop" class="tool-btn" title="裁切 (C)">✂️ 裁切</button>
+      <button id="btn-histogram" class="tool-btn" title="显示/隐藏直方图">📊 直方图</button>
+      <span class="zoom-group">
+        <button id="btn-zoom-out" class="tool-btn" title="缩小 (-)">➖</button>
+        <span id="zoom-label">100%</span>
+        <button id="btn-zoom-in" class="tool-btn" title="放大 (+)">➕</button>
+        <button id="btn-zoom-fit" class="tool-btn" title="适应 (0)">适应</button>
+      </span>
       <span class="image-info" id="image-info"></span>
+    </div>
+    <div id="crop-bar" class="crop-bar" style="display:none;">
+      <span>拖拽移动 / 拖拽边角调整大小</span>
+      <span class="crop-size" id="crop-size-label"></span>
+      <button id="btn-crop-apply" class="tool-btn primary">✅ 应用裁切</button>
+      <button id="btn-crop-reset" class="tool-btn">↺ 恢复全图</button>
+      <button id="btn-crop-cancel" class="tool-btn">✖ 取消</button>
     </div>
     <div class="canvas-container" id="canvas-container">
       <div class="empty-hint" id="empty-hint">请上传图片以开始调色</div>
+      <div class="crop-overlay" id="crop-overlay" style="display:none;"><div class="crop-box" id="crop-box"></div></div>
       <canvas id="main-canvas"></canvas>
     </div>
+    <div id="histogram" class="histogram-panel">
+      <canvas id="hist-canvas"></canvas>
+      <div class="hist-caption">RGB 通道分布</div>
+    </div>
+    <div id="toast" class="toast"></div>
   </div>
 </main>
 
+<script src="../../js/libs/pica.min.js"></script>
+<script src="../../js/libs/upng.min.js"></script>
 <script src="../../js/image-filter.js"></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
