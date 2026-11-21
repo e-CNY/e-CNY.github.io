@@ -12,31 +12,153 @@
 <body>
 <header class="tool-page-header">
   <h1>🔒 本地加密记事本</h1>
-  <p>AES 加密，数据仅保存在您本机的浏览器中，密码不会上传。</p>
+  <p>PBKDF2 + AES-256 · 多笔记 · 自动保存 · 加密备份 · 全程本地</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="np-layout" style="padding-top: 0;">
-  
-  <!-- 解锁界面 -->
-  <div id="np-lock" class="np-card">
-    <h2>请输入解锁密码</h2>
-    <input type="password" id="np-password" class="np-input" placeholder="输入密码...">
-    <button id="btn-unlock" class="np-btn primary" style="width:100%;">🔓 解锁 / 创建</button>
-    <p class="np-hint">注意：密码仅用于本地 AES 加解密，忘记密码将无法恢复数据。</p>
-  </div>
+<main class="np-layout">
+  <div id="np-lock" class="np-lock-screen">
+    <div class="np-lock-card">
+      <div class="np-lock-icon">🔒</div>
+      <h2 id="np-lock-title">解锁记事本</h2>
+      <p id="np-lock-subtitle" class="np-lock-subtitle"></p>
 
-  <!-- 记事本界面 -->
-  <div id="np-editor" class="np-card" style="display: none;">
-    <div class="np-toolbar">
-      <span style="font-size: 0.85rem; color: #7ba05b;" id="np-status">🔒 已加密</span>
-      <button id="btn-lock" class="np-btn">🚪 锁定</button>
-      <button id="btn-save" class="np-btn primary">💾 保存并加密</button>
+      <div class="np-pwd-wrap">
+        <input type="password" id="np-password" class="np-pwd-input"
+               placeholder="主密码" autocomplete="new-password">
+        <button class="np-pwd-toggle" id="btn-pwd-toggle" type="button" title="显示/隐藏">👁</button>
+      </div>
+
+      <div class="np-strength-bar" id="np-strength-bar" hidden>
+        <div class="np-strength-fill" id="np-strength-fill"></div>
+      </div>
+      <p class="np-strength-text" id="np-strength-text" hidden></p>
+
+      <button id="btn-unlock" class="np-btn np-btn-primary np-btn-block" type="button">🔓 解锁</button>
+      <p class="np-hint">密码仅用于本地 PBKDF2 密钥派生 + AES-256 加密。忘记密码将<strong>无法恢复</strong>任何数据。</p>
     </div>
-    <textarea id="np-content" class="np-textarea" placeholder="在此输入您的秘密文本..."></textarea>
   </div>
 
+  <div id="np-app" class="np-app" hidden>
+    <div class="np-topbar">
+      <div class="np-topbar-left">
+        <button class="np-icon-btn" id="btn-sidebar-toggle" type="button" title="切换笔记列表">☰</button>
+        <span class="np-topbar-title">🔒 加密记事本</span>
+      </div>
+      <div class="np-topbar-right">
+        <button class="np-icon-btn" id="btn-settings" type="button" title="设置">⚙️</button>
+        <button class="np-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
+        <button class="np-icon-btn" id="btn-lock" type="button" title="锁定（Ctrl+L）">🔒</button>
+      </div>
+    </div>
+
+    <div class="np-body">
+      <aside class="np-sidebar" id="np-sidebar">
+        <div class="np-sidebar-top">
+          <input type="search" id="np-search" class="np-search" placeholder="🔍 搜索笔记…" autocomplete="off">
+          <button class="np-btn np-btn-primary np-btn-sm" id="btn-new-note" type="button" title="新建（Ctrl+N）">＋</button>
+        </div>
+        <div class="np-note-list" id="np-note-list"></div>
+        <div class="np-sidebar-bottom">
+          <span id="np-note-count">0 条笔记</span>
+        </div>
+      </aside>
+
+      <section class="np-editor-area" id="np-editor-area">
+        <div class="np-empty" id="np-empty">
+          <div class="np-empty-icon">📝</div>
+          <p>选择左侧笔记开始编辑</p>
+          <p class="np-empty-hint">或点击 <kbd>Ctrl</kbd>+<kbd>N</kbd> 新建笔记</p>
+        </div>
+
+        <div class="np-editor" id="np-editor" hidden>
+          <div class="np-editor-top">
+            <input type="text" id="np-note-title" class="np-title-input" placeholder="无标题" maxlength="100">
+            <div class="np-editor-actions">
+              <button class="np-icon-btn" id="btn-view-toggle" type="button" title="预览 / 编辑">👁</button>
+              <button class="np-icon-btn" id="btn-copy-note" type="button" title="复制全文">📋</button>
+              <button class="np-icon-btn" id="btn-export-note" type="button" title="导出为 .md">📤</button>
+              <button class="np-btn np-btn-primary np-btn-sm" id="btn-save-note" type="button" title="保存（Ctrl+S）">💾 保存</button>
+            </div>
+          </div>
+          <div class="np-editor-main">
+            <textarea id="np-content" class="np-textarea" spellcheck="false"
+                      placeholder="在此输入秘密内容…支持 Markdown 语法"></textarea>
+            <div id="np-preview" class="np-preview" hidden></div>
+          </div>
+          <div class="np-editor-bottom">
+            <span id="np-status">🔒 已解锁</span>
+            <span id="np-stats">0 字符 · 0 行</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="np-drawer-backdrop" id="np-settings-backdrop" hidden></div>
+  <aside class="np-drawer" id="np-settings-drawer">
+    <div class="np-drawer-head">
+      <h3>⚙️ 设置</h3>
+      <button class="np-icon-btn" id="btn-settings-close" type="button">✕</button>
+    </div>
+    <div class="np-drawer-body">
+      <div class="np-setting-row">
+        <div>
+          <div class="np-setting-label">自动保存</div>
+          <div class="np-setting-desc">停止输入 2 秒后自动加密保存</div>
+        </div>
+        <label class="np-switch">
+          <input type="checkbox" id="set-autosave" checked>
+          <span class="np-switch-slider"></span>
+        </label>
+      </div>
+
+      <div class="np-setting-row">
+        <div>
+          <div class="np-setting-label">自动锁定</div>
+          <div class="np-setting-desc">闲置超过该时长则清空密码并要求重新解锁</div>
+        </div>
+        <select id="set-autolock" class="np-select">
+          <option value="0">永不</option>
+          <option value="5">5 分钟</option>
+          <option value="10">10 分钟</option>
+          <option value="30" selected>30 分钟</option>
+          <option value="60">60 分钟</option>
+        </select>
+      </div>
+
+      <div class="np-divider"></div>
+
+      <button id="btn-change-pwd" class="np-btn np-btn-block" type="button">🔑 修改主密码</button>
+      <button id="btn-export-all" class="np-btn np-btn-block" type="button">📤 导出全部笔记（加密备份 .json）</button>
+      <button id="btn-import-backup" class="np-btn np-btn-block" type="button">📥 导入备份</button>
+      <input type="file" id="np-import-file" accept=".json,application/json" hidden>
+
+      <div class="np-divider"></div>
+
+      <button id="btn-clear-all" class="np-btn np-btn-block np-btn-danger" type="button">🗑 清空所有数据</button>
+
+      <p class="np-hint" style="margin-top:14px;">所有数据只保存在浏览器 localStorage。建议定期导出加密备份。</p>
+    </div>
+  </aside>
+
+  <div class="np-modal-mask" id="np-chpwd-modal" hidden>
+    <div class="np-modal">
+      <h3>修改主密码</h3>
+      <p class="np-hint" style="margin:0 0 12px;">修改后所有笔记将用新密码重新加密。</p>
+      <input type="password" id="chpwd-old" class="np-input" placeholder="当前密码" autocomplete="new-password">
+      <input type="password" id="chpwd-new" class="np-input" placeholder="新密码（≥ 6 位）" autocomplete="new-password">
+      <input type="password" id="chpwd-confirm" class="np-input" placeholder="确认新密码" autocomplete="new-password">
+      <div class="np-modal-actions">
+        <button class="np-btn" id="chpwd-cancel" type="button">取消</button>
+        <button class="np-btn np-btn-primary" id="chpwd-confirm-btn" type="button">确认修改</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="np-toast" id="np-toast"></div>
 </main>
+
 <script src="../../js/libs/crypto-js.min.js"></script>
 <script src="../../js/notepad-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
