@@ -12,30 +12,56 @@
 <body>
 <header class="tool-page-header">
   <h1>📚 端口与编码字典</h1>
-  <p>常用网络端口、ISO 国家码、国际电话区号极速查询。</p>
+  <p>120+ 网络端口 · 200+ ISO 国家码 · 160+ 国际区号 · 分类筛选 · 排序 · 一键复制</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="dc-layout" style="padding-top: 0;">
-  <div class="dc-tabs">
-    <button class="dc-tab active" data-target="panel-port">网络端口 (Ports)</button>
-    <button class="dc-tab" data-target="panel-country">国家代码 (ISO)</button>
-    <button class="dc-tab" data-target="panel-area">国际区号 (Area)</button>
+<main class="dc-layout">
+  <!-- 顶栏 -->
+  <div class="dc-topbar">
+    <div class="dc-top-actions">
+      <button class="dc-icon-btn" id="btn-share" type="button" title="复制分享链接">🔗 分享</button>
+      <button class="dc-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
+    </div>
   </div>
 
-  <div class="dc-content">
-    <div class="dc-search-row">
-      <input type="text" id="dc-search" class="dc-search" placeholder="输入关键词进行过滤，如 80, HTTP, 中国...">
-    </div>
-    
-    <div class="dc-table-wrap">
-      <table class="dc-table">
-        <thead id="dc-thead"></thead>
-        <tbody id="dc-tbody"></tbody>
-      </table>
+  <!-- Tabs -->
+  <div class="dc-tabs" id="dc-tabs">
+    <button class="dc-tab active" data-target="port" type="button">📡 网络端口</button>
+    <button class="dc-tab" data-target="country" type="button">🌍 国家代码</button>
+    <button class="dc-tab" data-target="area" type="button">📞 国际区号</button>
+  </div>
+
+  <!-- 分类筛选 -->
+  <div class="dc-filters" id="dc-filters"></div>
+
+  <!-- 搜索 -->
+  <div class="dc-search-row">
+    <div class="dc-search-wrap">
+      <span class="dc-search-icon">🔍</span>
+      <input type="search" id="dc-search" class="dc-search"
+             placeholder="输入关键词过滤，如 80, HTTP, 中国…" autocomplete="off">
+      <button class="dc-search-clear" id="btn-search-clear" type="button" hidden title="清空">✕</button>
     </div>
   </div>
+
+  <!-- 快捷标签 -->
+  <div class="dc-quick-tags" id="dc-quick-tags"></div>
+
+  <!-- 计数信息 -->
+  <div class="dc-count-info" id="dc-count-info"></div>
+
+  <!-- 表格 -->
+  <div class="dc-table-wrap">
+    <table class="dc-table" id="dc-table">
+      <thead id="dc-thead"></thead>
+      <tbody id="dc-tbody"></tbody>
+    </table>
+  </div>
 </main>
+
+<div class="dc-toast" id="dc-toast"></div>
+
 <script src="../../js/dict-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

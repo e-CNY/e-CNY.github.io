@@ -6,7 +6,7 @@
     { name: '图片调色与滤镜', emoji: '🌅', desc: '40+项精细调节+44种预设滤镜·高清导出·裁切·直方图', href: 'tools/image-filter/index.html', category: '图像' },
     
     // === 插入到全部的第三位 ===
-    { name: '成语词典查看器', emoji: '📔', desc: '本地离线词库 · 中文/拼音搜索 · 生词本与历史记录', href: 'tools/idiomDict/index.html', category: '文档' },
+    { name: '成语词典查看器', emoji: '📔', desc: '离线词库·中文/拼音搜索·接龙·抽卡·生词本与历史记录', href: 'tools/idiomDict/index.html', category: '文档' },
 
     // === 继续图像分类 ===
     { name: '图片取色与配色', emoji: '🖍️', desc: '智能提取图片主色调，支持放大镜吸管与 UI 配色预览', href: 'tools/color-extractor/index.html', category: '图像' },
@@ -98,11 +98,11 @@
     { name: '文件哈希校验器', emoji: '🛡️', desc: 'MD5/SHA-1/SHA-256/SHA-384/SHA-512/CRC32', href: 'tools/file-hash/index.html', category: '安全' },
     { name: '本地加密记事本', emoji: '🔒', desc: 'PBKDF2 + AES-256 · 多笔记 · 自动保存 · 加密备份', href: 'tools/notepad-tool/index.html', category: '安全' },
     { name: '图片隐写与处理', emoji: '🕵️', desc: '将文本藏入图片像素深处', href: 'tools/steganography/index.html', category: '安全' },
-    { name: '端口与编码字典', emoji: '📚', desc: '常用端口 / 国家码 / 区号', href: 'tools/dict-tool/index.html', category: '安全' },
+    { name: '端口与编码字典', emoji: '📚', desc: '120+网络端口·200+ISO国家码·160+国际区号·分类', href: 'tools/dict-tool/index.html', category: '安全' },
 
     // === 9. 数据 ===
-    { name: '数据密码生成器', emoji: '🆔', desc: 'UUID / NanoID / 密码强度', href: 'tools/generator-tool/index.html', category: '数据' },
-    { name: '随机数据工具箱', emoji: '🎲', desc: 'Mock 数据 / 抽奖 / 多面骰子', href: 'tools/mock-tool/index.html', category: '数据' },
+    { name: '数据密码生成器', emoji: '🆔', desc: '7种ID·14种Mock·加密安全随机·Diceware1200+词库', href: 'tools/generator-tool/index.html', category: '数据' },
+    { name: '随机数据工具箱', emoji: '🎲', desc: '28种字段·6种输出格式·权重抽奖·骰子·加密安全随机', href: 'tools/mock-tool/index.html', category: '数据' },
     { name: '码生成识别工具', emoji: '📱', desc: '二维码/条形码 生成与识别', href: 'tools/code-tool/index.html', category: '数据' },
 
     // === 10. 硬件 ===

@@ -33,7 +33,7 @@
 }
 #q {
   width: 100%;
-  padding: 14px 56px 14px 46px;
+  padding: 14px 86px 14px 46px;
   border: 2px solid #e5d9bd;
   border-radius: 16px;
   background: #fff;
@@ -72,6 +72,7 @@
   transition: all .15s;
 }
 .icon-btn:hover { background: #f1e7cf; color: #8a5a2b; }
+.icon-btn.on { background: #8a5a2b; color: #fff; }
 
 /* ================= 搜索模式 / 快捷 ================= */
 .search-meta {
@@ -89,9 +90,10 @@
   border-radius: 12px;
   background: #efe6d0;
   border: 1px solid #ddcfb3;
+  flex-wrap: wrap;
 }
 .modes .mode {
-  padding: 5px 16px;
+  padding: 5px 14px;
   border: 0;
   border-radius: 8px;
   background: transparent;
@@ -108,7 +110,7 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.quick-actions { display: flex; gap: 8px; }
+.quick-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .mini-btn {
   padding: 8px 14px;
   border: 1px solid #ddcfb3;
@@ -121,8 +123,48 @@
   transition: all .15s;
 }
 .mini-btn:hover { border-color: #8a5a2b; color: #8a5a2b; background: #fdf8ec; }
+.mini-btn:disabled { opacity: .45; cursor: default; }
 .mini-btn.danger { color: #a8452a; border-color: #fecaca; background: #fef2f2; }
 .mini-btn.danger:hover { background: #fee2e2; border-color: #c25b4a; }
+
+/* ================= 高级筛选 ================= */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px dashed #ddcfb3;
+  border-radius: 14px;
+  background: #fdfbf5;
+}
+.fld {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: #6b5d47;
+}
+.fld select,
+.fld input[type="text"] {
+  padding: 6px 8px;
+  border: 1px solid #ddcfb3;
+  border-radius: 8px;
+  background: #fff;
+  color: #3d3226;
+  font-size: .82rem;
+  font-family: inherit;
+}
+.fld input[type="text"] { width: 90px; }
+.fld select:focus,
+.fld input[type="text"]:focus {
+  outline: none;
+  border-color: #8a5a2b;
+}
+.fld.switch { cursor: pointer; }
+.fld.switch input { accent-color: #8a5a2b; }
 
 /* ================= 字母索引 ================= */
 .alpha {
@@ -242,6 +284,7 @@
   color: #3d3226;
   word-break: break-word;
 }
+.entry-word mark { background: #ffe9a8; border-radius: 4px; padding: 0 2px; }
 .entry-pinyin {
   margin-top: 6px;
   font-size: 1.05rem;
@@ -263,7 +306,57 @@
   line-height: 1.7;
   color: #4a3d2c;
 }
+.def-para mark { background: #ffe9a8; border-radius: 4px; padding: 0 2px; }
 .def-para:last-child { margin-bottom: 0; }
+
+/* 标签 */
+.entry-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+.tag-chip {
+  padding: 4px 12px;
+  border: 1px solid #ddcfb3;
+  border-radius: 999px;
+  background: #fff;
+  color: #8a5a2b;
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+}
+.tag-chip:hover { background: #f9f3e3; border-color: #8a5a2b; }
+.tag-chip.ghost { color: #a1947c; border-style: dashed; }
+
+/* 笔记 */
+.note-box {
+  margin-top: 16px;
+  padding: 10px 14px;
+  border: 1px dashed #ddcfb3;
+  border-radius: 10px;
+  background: #fdfbf5;
+}
+.note-box summary {
+  cursor: pointer;
+  font-size: .82rem;
+  font-weight: 600;
+  color: #8a7a5f;
+}
+.note-box textarea {
+  display: block;
+  width: 100%;
+  margin: 10px 0 8px;
+  padding: 8px 10px;
+  border: 1px solid #ddcfb3;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: .88rem;
+  color: #3d3226;
+  resize: vertical;
+}
+.note-box textarea:focus { outline: none; border-color: #8a5a2b; }
 
 /* 占位 / 空结果 */
 .placeholder,
@@ -318,6 +411,241 @@ kbd {
   transform: translateY(-1px);
 }
 
+/* ================= 结果列表 ================= */
+.result-list { margin-top: 4px; }
+.res-row {
+  padding: 10px 12px;
+  border: 1px solid #efe6d0;
+  border-radius: 12px;
+  background: #fff;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .15s;
+}
+.res-row:hover { border-color: #ddcfb3; background: #fdfbf5; }
+.res-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.res-word {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #3d3226;
+}
+.res-word mark { background: #ffe9a8; border-radius: 4px; padding: 0 2px; }
+.res-pinyin { font-size: .78rem; color: #8a5a2b; }
+.res-def {
+  margin: 2px 0 0 2px;
+  font-size: .8rem;
+  color: #8a7a5f;
+  line-height: 1.5;
+}
+.res-def mark { background: #ffe9a8; border-radius: 4px; padding: 0 2px; }
+
+/* 分页 */
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.page-info { font-size: .82rem; color: #6b5d47; font-weight: 600; }
+
+/* ================= 游戏 / 工具面板 ================= */
+.game-panel {
+  padding: 20px 22px 24px;
+  border: 1px solid #ddcfb3;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(138, 90, 43, .06);
+}
+.game-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  border-bottom: 2px dashed #efe6d0;
+}
+.game-head h3 { margin: 0; font-size: 1.05rem; color: #3d3226; }
+.game-ops { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.game-ops select {
+  padding: 6px 8px;
+  border: 1px solid #ddcfb3;
+  border-radius: 8px;
+  font-size: .8rem;
+  font-family: inherit;
+  color: #3d3226;
+  background: #fff;
+}
+.game-tip { margin: 12px 0 0; font-size: .78rem; color: #a1947c; }
+.score { font-size: .85rem; font-weight: 700; color: #8a5a2b; }
+
+/* 接龙 */
+.chain-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+  min-height: 40px;
+}
+.chain-node {
+  padding: 6px 12px;
+  border: 1px solid #ddcfb3;
+  border-radius: 999px;
+  background: #fdf8ec;
+  color: #8a5a2b;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.chain-node:last-child {
+  background: #8a5a2b;
+  color: #fff;
+  border-color: #8a5a2b;
+}
+.chain-input {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.chain-input input {
+  flex: 1;
+  min-width: 180px;
+  padding: 8px 10px;
+  border: 1px solid #ddcfb3;
+  border-radius: 8px;
+  font-size: .9rem;
+  font-family: inherit;
+}
+.chain-input input:focus { outline: none; border-color: #8a5a2b; }
+.chain-check { font-size: .78rem; font-weight: 600; color: #a8452a; }
+
+/* 填空 */
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #3d3226;
+  letter-spacing: 4px;
+}
+  color: #8a5a2b;
+  border-bottom: 2px dashed #c9a86a;
+}
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+}
+  width: 140px;
+  padding: 8px 10px;
+  border: 1px solid #ddcfb3;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: center;
+  font-family: inherit;
+}
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+/* 抽认卡 */
+.flash-card {
+  margin-top: 14px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  border: 1px dashed #c9b796;
+  border-radius: 14px;
+  background: #fdfbf5;
+  cursor: pointer;
+  text-align: center;
+}
+.flash-word { font-size: 2.4rem; font-weight: 700; color: #3d3226; letter-spacing: 6px; }
+.flash-word.small { font-size: 1.4rem; letter-spacing: 2px; }
+.flash-pinyin { color: #8a5a2b; font-size: .95rem; }
+.flash-def {
+  max-width: 34em;
+  font-size: .92rem;
+  line-height: 1.7;
+  color: #4a3d2c;
+}
+.flash-note {
+  font-size: .8rem;
+  color: #6b5d47;
+  padding: 6px 10px;
+  border-left: 3px solid #c9a86a;
+  background: #fff;
+  text-align: left;
+}
+.flash-hint { font-size: .78rem; color: #a1947c; }
+.flash-empty { font-size: .9rem; color: #a1947c; }
+
+/* 统计 */
+.stats-body { margin-top: 14px; }
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+.stat-card {
+  padding: 12px;
+  border: 1px solid #efe6d0;
+  border-radius: 12px;
+  background: #fdfbf5;
+  text-align: center;
+}
+.stat-num { font-size: 1.25rem; font-weight: 700; color: #8a5a2b; }
+.stat-label { font-size: .76rem; color: #8a7a5f; margin-top: 4px; }
+.stat-block { margin-top: 18px; }
+.stat-title {
+  font-size: .82rem;
+  font-weight: 700;
+  color: #6b5d47;
+  margin-bottom: 8px;
+}
+.bars { display: flex; flex-direction: column; gap: 5px; }
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .78rem;
+  color: #6b5d47;
+}
+.bar-label { width: 34px; text-align: right; font-weight: 600; }
+.bar-track {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: #efe6d0;
+  overflow: hidden;
+}
+.bar-track i { display: block; height: 100%; background: #c9a86a; border-radius: 999px; }
+.bar-val { width: 44px; text-align: right; color: #8a7a5f; }
+
 /* ================= 侧栏 ================= */
 .side-panel {
   border: 1px solid #ddcfb3;
@@ -370,6 +698,14 @@ kbd {
   font-size: .85rem;
   color: #a1947c;
 }
+.tag-group { margin-bottom: 10px; }
+.tag-group-title {
+  font-size: .74rem;
+  font-weight: 700;
+  color: #8a5a2b;
+  padding: 4px 6px;
+}
+.side-py { font-size: .72rem; color: #a1947c; font-weight: normal; }
 .side-row {
   display: flex;
   align-items: center;
@@ -420,7 +756,7 @@ kbd {
   background: #fdfcf9;
   flex-wrap: wrap;
 }
-.side-foot .mini-btn { flex: 1; padding: 8px 0; font-size: 0.8rem; text-align: center; }
+.side-foot .mini-btn { flex: 1 1 30%; padding: 8px 0; font-size: 0.8rem; text-align: center; }
 
 /* ================= Toast ================= */
 .toast {
@@ -444,6 +780,12 @@ kbd {
   to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }
 
+/* ================= 打印 ================= */
+@media print {
+  .side-panel, .search-panel, .pager, .toast, .entry-tools { display: none !important; }
+  .entry { border: 0; box-shadow: none; }
+}
+
 /* ================= 响应式 ================= */
 @media (max-width: 900px) {
   .dict-main { grid-template-columns: minmax(0, 1fr); }
@@ -453,7 +795,7 @@ kbd {
 
 @media (max-width: 560px) {
   .dict-app { padding: 0 12px 40px; }
-  #q { font-size: 1rem; padding: 12px 48px 12px 42px; }
+  #q { font-size: 1rem; padding: 12px 78px 12px 42px; }
   .entry { padding: 20px 16px 24px; }
   .entry-word { font-size: 1.6rem; }
   .def-para { font-size: .92rem; padding: 10px 12px; }
@@ -461,4 +803,5 @@ kbd {
   .quick-actions { justify-content: center; margin-top: 8px; }
   .modes { align-self: center; }
   .suggest { max-height: 320px; }
+  .side-foot .mini-btn { flex: 1 1 45%; }
 }

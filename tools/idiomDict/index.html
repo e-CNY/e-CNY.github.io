@@ -14,7 +14,7 @@
 
   <header class="tool-page-header">
     <h1>📔 成语词典查看器</h1>
-    <p>本地离线词库 · 中文/拼音搜索 · 生词本与历史记录</p>
+    <p>本地离线词库 · 中文/拼音搜索 · 接龙 · 抽认卡 · 生词本与历史记录</p>
     <a href="../../index.html">← 返回首页</a>
   </header>
 
@@ -24,7 +24,7 @@
     <section class="search-panel">
       <div class="search-box">
         <span class="search-icon" aria-hidden="true">🔍</span>
-        <input id="q" type="search" placeholder="输入成语或拼音…（本地词库，无需联网）"
+        <input id="q" type="search" placeholder="输入成语、拼音、首字母或通配符 ? *…（本地词库，无需联网）"
                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <div class="search-btns">
           <button id="btnClear" class="icon-btn" type="button" title="清空" aria-label="清空" hidden>✕</button>
@@ -38,10 +38,40 @@
           <button type="button" class="mode active" data-mode="prefix">前缀</button>
           <button type="button" class="mode" data-mode="contains">包含</button>
           <button type="button" class="mode" data-mode="exact">精确</button>
+          <button type="button" class="mode" data-mode="fuzzy">模糊</button>
+          <button type="button" class="mode" data-mode="regex">正则</button>
         </div>
         <div class="quick-actions">
           <button id="btnRandom" class="mini-btn" type="button">🎲 随机成语</button>
+          <button id="btnChain" class="mini-btn" type="button">🔗 成语接龙</button>
+          <button id="btnFlash" class="mini-btn" type="button">🃏 抽认卡</button>
+          <button id="btnStats" class="mini-btn" type="button">📊 词库统计</button>
         </div>
+      </div>
+
+      <!-- 高级筛选 -->
+      <div class="filters" id="filters">
+        <label class="fld">字数
+          <select id="fLen">
+            <option value="0">不限</option>
+            <option value="1">仅四字</option>
+            <option value="2">非四字</option>
+          </select>
+        </label>
+        <label class="fld">首字母
+          <select id="fInitial"></select>
+        </label>
+        <label class="fld">包含字
+          <input id="fInclude" type="text" maxlength="4" placeholder="如 水">
+        </label>
+        <label class="fld">排除字
+          <input id="fExclude" type="text" maxlength="4" placeholder="如 火">
+        </label>
+        <label class="fld">释义含
+          <input id="fDef" type="text" placeholder="在解释中搜索">
+        </label>
+        <label class="fld switch"><input id="fFav" type="checkbox"> 仅生词本</label>
+        <button id="btnResetFilter" class="mini-btn" type="button">重置筛选</button>
       </div>
 
       <div class="alpha" id="alpha" aria-label="按拼音首字母浏览"></div>
@@ -55,22 +85,77 @@
       <div id="placeholder" class="placeholder">
         <div class="ph-emoji">📚</div>
         <p>输入成语或拼音开始查询</p>
-        <p class="ph-tip">快捷键 <kbd>/</kbd> 聚焦搜索框 · <kbd>Esc</kbd> 清空</p>
+        <p class="ph-tip">快捷键 <kbd>/</kbd> 聚焦搜索框 · <kbd>Esc</kbd> 清空 · <kbd>R</kbd> 随机 · <kbd>F</kbd> 收藏</p>
+      </div>
+
+      <!-- 结果列表 -->
+      <div id="resultList" class="result-list" hidden></div>
+      <div id="pager" class="pager" hidden></div>
+
+      <!-- 接龙 -->
+      <div id="chainPanel" class="game-panel" hidden>
+        <div class="game-head">
+          <h3>🔗 成语接龙</h3>
+          <div class="game-ops">
+            <select id="chainMode">
+              <option value="tail">同字接（尾字=首字）</option>
+              <option value="homophone">同音接（尾音=首音）</option>
+            </select>
+            <button id="chainRestart" class="mini-btn" type="button">重新开始</button>
+            <button id="chainHint" class="mini-btn" type="button">💡 提示</button>
+            <button id="chainClose" class="mini-btn" type="button">关闭</button>
+          </div>
+        </div>
+        <div id="chainTrack" class="chain-track"></div>
+        <div class="chain-input">
+          <input id="chainInput" type="text" placeholder="输入以「」开头的成语，回车提交" autocomplete="off">
+          <button id="chainSubmit" class="mini-btn" type="button">接上</button>
+        </div>
+        <p class="game-tip">接不上就点「提示」看一个答案；同音接按拼音（不含声调）匹配。</p>
+      </div>
+
+      <!-- 抽认卡 -->
+      <div id="flashPanel" class="game-panel" hidden>
+        <div class="game-head">
+          <h3>🃏 抽认卡</h3>
+          <div class="game-ops">
+            <label class="fld switch"><input id="flashFavOnly" type="checkbox" checked> 只抽生词本</label>
+            <button id="flashFlip" class="mini-btn" type="button">翻面</button>
+            <button id="flashNext" class="mini-btn" type="button">下一张</button>
+            <button id="flashClose" class="mini-btn" type="button">关闭</button>
+          </div>
+        </div>
+        <div id="flashCard" class="flash-card"></div>
+        <p class="game-tip">点卡片翻面 · 快捷键 <kbd>空格</kbd> 翻面 · <kbd>N</kbd> 下一张</p>
+      </div>
+
+      <!-- 统计 -->
+      <div id="statsPanel" class="game-panel" hidden>
+        <div class="game-head">
+          <h3>📊 词库统计</h3>
+          <div class="game-ops">
+            <button id="statsClose" class="mini-btn" type="button">关闭</button>
+          </div>
+        </div>
+        <div id="statsBody" class="stats-body"></div>
       </div>
     </section>
 
-    <!-- ============ 侧栏：生词本 / 历史 ============ -->
+    <!-- ============ 侧栏：生词本 / 历史 / 标签 ============ -->
     <aside class="side-panel">
       <div class="side-tabs" id="sideTabs">
         <button type="button" class="side-tab active" data-tab="fav">⭐ 生词本 <em id="favCount">0</em></button>
         <button type="button" class="side-tab" data-tab="hist">🕘 历史 <em id="histCount">0</em></button>
+        <button type="button" class="side-tab" data-tab="tag">🏷️ 标签</button>
       </div>
       <div class="side-body" id="sideBody"></div>
       <div class="side-foot">
         <button id="btnImportFav" class="mini-btn" type="button">📥 导入</button>
         <button id="btnExportFav" class="mini-btn" type="button">📤 导出</button>
+        <button id="btnExportNote" class="mini-btn" type="button">📝 复习卡</button>
+        <button id="btnPrint" class="mini-btn" type="button">🖨️ 打印</button>
         <button id="btnClearFav" class="mini-btn danger" type="button">🗑️ 清空</button>
-        <input type="file" id="fileInput" accept=".txt,.md" hidden>
+        <input type="file" id="fileInput" accept=".txt,.md,.json" hidden>
       </div>
     </aside>
 
@@ -81,6 +166,10 @@
 
 <!-- 词库数据：window.idiom.dictionary = [...] -->
 <script src="../../js/idiomDict.js"></script>
+<!-- 可选依赖：模糊搜索 -->
+<script src="../../js/libs/fuse.min.js"></script>
+<!-- 可选依赖：复制 -->
+<script src="../../js/libs/clipboard.min.js"></script>
 <!-- 应用逻辑 -->
 <script src="../../js/idiomDictApp.js"></script>
 <script src="../../js/traffic-guard.js"></script>

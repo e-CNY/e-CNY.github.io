@@ -12,45 +12,109 @@
 <body>
 <header class="tool-page-header">
   <h1>🕵️ 图片隐写与处理</h1>
-  <p>将文本藏在图片的像素深处，肉眼看不出任何变化。</p>
+  <p>将文本藏在像素深处 · 1/2/4 位 LSB · 可选密码保护 · 支持中文和 Emoji</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="st-layout" style="padding-top: 0;">
-  <div class="st-tabs">
-    <button class="st-tab active" data-target="panel-hide">✍️ 隐藏信息 (Encode)</button>
-    <button class="st-tab" data-target="panel-extract">🔍 提取信息 (Decode)</button>
+<main class="st-layout">
+  <div class="st-tabs" id="st-tabs">
+    <button class="st-tab active" data-target="panel-hide" type="button">✍️ 隐藏信息</button>
+    <button class="st-tab" data-target="panel-extract" type="button">🔍 提取信息</button>
   </div>
 
   <div class="st-content">
-    <!-- 隐藏信息 -->
+    <!-- ============ 隐藏信息 ============ -->
     <div id="panel-hide" class="st-panel active">
       <div class="st-row">
-        <label>1. 上传封面图片 (建议 PNG)</label>
-        <input type="file" id="hide-img" accept="image/png,image/jpeg">
+        <label>1. 上传图片</label>
+        <div class="st-dropzone" id="hide-dropzone">
+          <div class="st-dropzone-icon">📁</div>
+          <p class="st-dropzone-text">点击选择 / 拖拽图片到此处</p>
+          <p class="st-dropzone-hint">支持 PNG / JPG / WebP，输出始终为 PNG</p>
+          <input type="file" id="hide-img" accept="image/*" hidden>
+        </div>
+        <div class="st-preview-wrap" id="hide-preview-wrap" hidden>
+          <img id="hide-preview" class="st-preview" alt="preview">
+          <div class="st-image-info" id="hide-image-info"></div>
+          <div class="st-capacity" id="hide-capacity"></div>
+        </div>
       </div>
+
       <div class="st-row">
         <label>2. 输入要隐藏的文本</label>
-        <textarea id="hide-text" class="st-textarea" rows="4" placeholder="输入绝密信息..."></textarea>
+        <textarea id="hide-text" class="st-textarea" rows="5"
+                  placeholder="输入绝密信息（支持中文、Emoji）"></textarea>
+        <div class="st-text-info">
+          <span id="hide-text-info">0 字节</span>
+        </div>
       </div>
-      <button id="btn-hide" class="st-btn primary">生成带隐秘信息的图片</button>
+
+      <div class="st-row st-row-inline">
+        <div class="st-col">
+          <label>3. LSB 深度</label>
+          <div class="st-seg" id="hide-depth-seg">
+            <button data-depth="1" class="active" type="button">1 位</button>
+            <button data-depth="2" type="button">2 位</button>
+            <button data-depth="4" type="button">4 位</button>
+          </div>
+          <div class="st-hint" id="hide-depth-hint">质量最佳 · 容量最小</div>
+        </div>
+        <div class="st-col">
+          <label>4. 加密密码（可选）</label>
+          <input type="password" id="hide-password" class="st-input"
+                 placeholder="留空则不加密" autocomplete="new-password">
+        </div>
+      </div>
+
+      <button id="btn-hide" class="st-btn primary" type="button">🔒 隐藏并生成图片</button>
+
       <div id="hide-result" class="st-result-area"></div>
     </div>
 
-    <!-- 提取信息 -->
+    <!-- ============ 提取信息 ============ -->
     <div id="panel-extract" class="st-panel">
       <div class="st-row">
-        <label>1. 上传包含隐秘信息的图片</label>
-        <input type="file" id="extract-img" accept="image/png">
+        <label>1. 上传含有隐藏信息的图片</label>
+        <div class="st-dropzone" id="extract-dropzone">
+          <div class="st-dropzone-icon">📁</div>
+          <p class="st-dropzone-text">点击选择 / 拖拽图片到此处</p>
+          <p class="st-dropzone-hint">请使用生成的 PNG 原图（未压缩）</p>
+          <input type="file" id="extract-img" accept="image/*" hidden>
+        </div>
+        <div class="st-preview-wrap" id="extract-preview-wrap" hidden>
+          <img id="extract-preview" class="st-preview" alt="preview">
+          <div class="st-image-info" id="extract-image-info"></div>
+        </div>
       </div>
-      <button id="btn-extract" class="st-btn primary">提取隐藏文本</button>
+
+      <div class="st-row">
+        <label>2. 密码（如编码时使用了）</label>
+        <input type="password" id="extract-password" class="st-input"
+               placeholder="留空则视为未加密" autocomplete="new-password">
+      </div>
+
+      <button id="btn-extract" class="st-btn primary" type="button">🔍 提取隐藏文本</button>
+
       <div class="st-row" style="margin-top:20px;">
-        <label>提取结果</label>
-        <textarea id="extract-text" class="st-textarea" rows="4" readonly></textarea>
+        <label>3. 提取结果</label>
+        <textarea id="extract-text" class="st-textarea" rows="6" readonly
+                  placeholder="提取结果将显示在此"></textarea>
+        <div class="st-text-info">
+          <span id="extract-text-info"></span>
+          <button class="st-mini-btn" id="btn-copy-extract" type="button" hidden>📋 复制</button>
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="st-warning">
+    ⚠️ <strong>重要提示</strong>：生成的图片必须保存为 <strong>PNG</strong> 格式。
+    如果被重新保存为 JPEG、被微信/QQ/微博等平台压缩、或截图，像素数据可能被修改，隐藏信息将<strong>永久丢失</strong>。
+  </div>
 </main>
+
+<div class="st-toast" id="st-toast"></div>
+
 <script src="../../js/steganography.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
