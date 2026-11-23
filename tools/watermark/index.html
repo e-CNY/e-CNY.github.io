@@ -12,7 +12,7 @@
 <body>
 <header class="tool-page-header">
   <h1>📸 照片处理与排版</h1>
-  <p>加水印、换底色、排版打印，一站式本地处理，保护隐私</p>
+  <p>加水印、换底色、抠图、裁剪旋转、压缩转换、排版打印，一站式本地处理，保护隐私</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
@@ -21,7 +21,10 @@
   <!-- Tab 切换按钮 -->
   <div class="app-tabs">
     <button class="tab-btn active" data-tab="tab-watermark">💧 加水印与换底色</button>
+    <button class="tab-btn" data-tab="tab-cutout">✂️ 智能抠图</button>
+    <button class="tab-btn" data-tab="tab-crop">🔄 裁剪旋转</button>
     <button class="tab-btn" data-tab="tab-print">🖨️ 证件照排版打印</button>
+    <button class="tab-btn" data-tab="tab-compress">🗜️ 压缩转换</button>
   </div>
 
   <!-- ================= Tab 1: 加水印与换底色 ================= -->
@@ -38,13 +41,21 @@
             <input id="wm-image-input" type="file" accept="image/*,.heic,.heif" hidden>
           </div>
           <div class="wm-img-info" id="wm-img-info" style="display:none;"></div>
+          <div class="wm-tools">
+            <button class="wm-tool-toggle" data-wm-tool="wm-sub-import">📚 批量 / 文件夹导入</button>
+          </div>
+          <div id="wm-sub-import" class="wm-sub-panel" style="display:none;">
+            <input id="wm-sub-import-files" type="file" accept="image/*" multiple hidden>
+            <button id="wm-import-all" class="wm-btn-small" style="width:100%;">📂 选择多张图片导入</button>
+            <p class="wm-hint">导入后第一张显示在画布，全部加入下方批量队列。</p>
+          </div>
         </div>
 
         <!-- 2. 水印 -->
         <div class="wm-section">
           <h2>2. 水印设置</h2>
-          <label class="wm-label">水印文字</label>
-          <input id="wm-text" class="wm-input" type="text" placeholder="输入水印文字" value="仅供办理业务使用，他用无效">
+          <label class="wm-label">水印文字（支持多行）</label>
+          <textarea id="wm-text" class="wm-input" rows="2" placeholder="输入水印文字">仅供办理业务使用，他用无效</textarea>
 
           <div class="wm-row">
             <div class="wm-col">
@@ -82,6 +93,29 @@
 
           <div class="wm-row">
             <div class="wm-col">
+              <label class="wm-label">行距倍数 <span id="wm-line-val">1</span></label>
+              <input id="wm-line" type="range" min="1" max="3" step="0.1" value="1">
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">平铺间距 <span id="wm-tile-gap-val">40</span></label>
+              <input id="wm-tile-gap" type="range" min="0" max="200" value="40">
+            </div>
+          </div>
+
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">平铺角度 <span id="wm-tile-angle-val">30</span>°</label>
+              <input id="wm-tile-angle" type="range" min="0" max="90" value="30">
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">样式</label>
+              <label class="checkbox-label"><input type="checkbox" id="wm-bold"> 加粗</label>
+              <label class="checkbox-label" style="margin-left:8px;"><input type="checkbox" id="wm-italic"> 斜体</label>
+            </div>
+          </div>
+
+          <div class="wm-row">
+            <div class="wm-col">
               <label class="wm-label">描边</label>
               <label class="checkbox-label"><input type="checkbox" id="wm-enable-stroke"> 启用描边</label>
             </div>
@@ -89,6 +123,32 @@
               <label class="wm-label">描边颜色</label>
               <div class="wm-color-wrap" title="选择描边颜色"><input id="wm-stroke-color" type="color" value="#ffffff"></div>
             </div>
+          </div>
+
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">阴影</label>
+              <label class="checkbox-label"><input type="checkbox" id="wm-enable-shadow"> 文字投影（浅色图更清晰）</label>
+            </div>
+          </div>
+
+          <div class="wm-tools">
+            <button class="wm-tool-toggle" data-wm-tool="wm-sub-logo">🖼️ 图片 LOGO 水印</button>
+          </div>
+          <div id="wm-sub-logo" class="wm-sub-panel" style="display:none;">
+            <label class="wm-upload-btn">🖼️ 上传 LOGO（PNG 透明底）<input id="wm-logo-input" type="file" accept="image/*" hidden></label>
+            <button id="wm-logo-clear" class="wm-btn-ghost" style="margin-top:6px;">移除 LOGO</button>
+            <div class="wm-row">
+              <div class="wm-col">
+                <label class="wm-label">大小 <span id="wm-logo-scale-val">20</span>%</label>
+                <input id="wm-logo-scale" type="range" min="5" max="60" value="20">
+              </div>
+              <div class="wm-col">
+                <label class="wm-label">透明度 <span id="wm-logo-opacity-val">80</span>%</label>
+                <input id="wm-logo-opacity" type="range" min="10" max="100" value="80">
+              </div>
+            </div>
+            <p class="wm-hint">LOGO 跟随下方所选水印位置。</p>
           </div>
         </div>
 
@@ -102,7 +162,14 @@
             </label>
           </h2>
           <div id="wm-bg-settings" style="display: none; margin-top: 12px;">
-            <div class="wm-row">
+            <button id="wm-auto-bg" class="wm-btn-small" style="width:100%;">✨ 自动识别背景色（取四角）</button>
+            <label class="wm-label">替换模式</label>
+            <select id="wm-bg-mode" class="wm-input">
+              <option value="global">全局颜色匹配（默认）</option>
+              <option value="keep-skin">保留肤色（防脸部变蓝）</option>
+              <option value="flood">连通区域（防衣服被换）</option>
+            </select>
+            <div class="wm-row" style="margin-top:8px;">
               <div class="wm-col">
                 <label class="wm-label">原背景色 (可点击图片吸取)</label>
                 <div class="wm-row" style="align-items: center; gap: 8px;">
@@ -118,6 +185,8 @@
                   <button type="button" class="wm-bg-color-btn" data-color="#438edb" style="background:#438edb" title="蓝底"></button>
                   <button type="button" class="wm-bg-color-btn" data-color="#ff0000" style="background:#ff0000" title="红底"></button>
                   <button type="button" class="wm-bg-color-btn" data-color="#888888" style="background:#888888" title="灰底"></button>
+                  <button type="button" class="wm-bg-color-btn" data-color="#4a8f3c" style="background:#4a8f3c" title="绿底"></button>
+                  <button type="button" class="wm-bg-color-btn" data-color="#ffd966" style="background:#ffd966" title="黄底"></button>
                   <input type="color" id="wm-target-color" value="#ffffff" title="自定义颜色">
                 </div>
               </div>
@@ -132,13 +201,49 @@
                 <input id="wm-feather" type="range" min="0" max="80" value="20">
               </div>
             </div>
-            <p class="wm-hint">提示：衣服被误换请调小容差；边缘有杂色请调大容差和羽化。</p>
+            <button id="wm-keep-skin" class="wm-btn-small" style="width:100%; margin-top:8px;">🙂 一键保护肤色区域</button>
+            <p class="wm-hint">提示：衣服被误换请调小容差或改用“连通区域”；边缘有杂色请调大容差和羽化。</p>
+          </div>
+        </div>
+
+        <!-- 3.5 画面调整 -->
+        <div class="wm-section">
+          <h2>4. 画面调整</h2>
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">亮度 <span id="wm-adj-brightness-val">0</span></label>
+              <input id="wm-adj-brightness" type="range" min="-100" max="100" value="0">
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">对比度 <span id="wm-adj-contrast-val">0</span></label>
+              <input id="wm-adj-contrast" type="range" min="-100" max="100" value="0">
+            </div>
+          </div>
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">饱和度 <span id="wm-adj-saturation-val">0</span></label>
+              <input id="wm-adj-saturation" type="range" min="-100" max="100" value="0">
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">色温 <span id="wm-adj-warm-val">0</span></label>
+              <input id="wm-adj-warm" type="range" min="-100" max="100" value="0">
+            </div>
+          </div>
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">噪点（防伪） <span id="wm-adj-noise-val">0</span></label>
+              <input id="wm-adj-noise" type="range" min="0" max="60" value="0">
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">重置</label>
+              <button id="wm-adj-reset" class="wm-btn-small" style="width:100%;">🔄 恢复默认</button>
+            </div>
           </div>
         </div>
 
         <!-- 4. 位置 -->
         <div class="wm-section">
-          <h2>4. 水印位置</h2>
+          <h2>5. 水印位置</h2>
           <div class="wm-positions">
             <button data-pos="top-left">↖️</button>
             <button data-pos="top-center">⬆️</button>
@@ -155,7 +260,7 @@
 
         <!-- 5. 导出设置 -->
         <div class="wm-section">
-          <h2>5. 导出设置</h2>
+          <h2>6. 导出设置</h2>
           <div class="wm-row">
             <div class="wm-col">
               <label class="wm-label">格式</label>
@@ -167,9 +272,11 @@
             </div>
             <div class="wm-col">
               <label class="wm-label">质量 <span id="wm-quality-val">92</span>%</label>
-              <input id="wm-quality" type="range" min="30" max="100" value="92">
+              <input id="wm-quality" type="range" min="1" max="100" value="92">
             </div>
           </div>
+          <label class="wm-label">文件名前缀</label>
+          <input id="wm-name-prefix" class="wm-input" type="text" value="watermarked_">
           <button id="wm-reset" class="wm-btn-small" style="width: 100%; margin-top: 12px;">🔄 重置所有设置</button>
         </div>
       </section>
@@ -180,12 +287,187 @@
           <p id="wm-placeholder" class="wm-placeholder">上传图片后在此预览</p>
           <canvas id="wm-canvas"></canvas>
         </div>
+        <div class="wm-btn-row">
+          <button id="wm-fit-screen" class="wm-btn-small">适应屏幕</button>
+          <button id="wm-orig-size" class="wm-btn-small">原始尺寸</button>
+        </div>
         <button id="wm-download" class="wm-download-btn" disabled>⬇️ 下载处理后的图片</button>
+        <div class="wm-section">
+          <h2>批量队列（同样参数一键导出）</h2>
+          <div id="wm-queue-list" class="wm-chip-list"></div>
+          <div class="wm-btn-row" style="margin-top:8px;">
+            <button id="wm-add-queue" class="wm-btn-small">➕ 添加图片</button>
+            <button id="wm-clear-queue" class="wm-btn-small">🗑️ 清空</button>
+            <button id="wm-download-all" class="wm-download-btn">📦 批量导出 ZIP式下载</button>
+          </div>
+          <p class="wm-hint">点击队列中的图片可切换到画布预览。</p>
+        </div>
       </section>
     </div>
   </div>
 
-  <!-- ================= Tab 2: 证件照排版打印 ================= -->
+  <!-- ================= Tab 2: 智能抠图 ================= -->
+  <div id="tab-cutout" class="tab-content">
+    <div class="ct-layout">
+      <section class="wm-panel">
+        <div class="wm-section">
+          <h2>1. 上传图片</h2>
+          <div id="ct-drop-zone" class="wm-drop-zone">
+            <span>📁 点击 / 拖拽图片</span>
+            <span class="wm-hint">自动从边缘移除背景，适合纯色/渐变背景</span>
+            <input id="ct-image-input" type="file" accept="image/*" hidden>
+          </div>
+          <div class="wm-img-info" id="ct-img-info" style="display:none;"></div>
+        </div>
+        <div class="wm-section">
+          <h2>2. 抠图参数</h2>
+          <button id="ct-auto" class="wm-btn-small" style="width:100%;">✨ 重新自动抠图</button>
+          <label class="wm-label">背景色（吸取要去掉的颜色）</label>
+          <input type="color" id="ct-origin-color" value="#ffffff" class="wm-color-full">
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">容差 <span id="ct-tolerance-val">45</span></label>
+              <input id="ct-tolerance" type="range" min="5" max="150" value="45">
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">边缘羽化 <span id="ct-feather-val">6</span></label>
+              <input id="ct-feather" type="range" min="0" max="30" value="6">
+            </div>
+          </div>
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">边缘收缩 <span id="ct-erode-val">0</span></label>
+              <input id="ct-erode" type="range" min="0" max="5" value="0">
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">背景预览</label>
+              <select id="ct-bg-mode" class="wm-input">
+                <option value="checker">透明棋盘格</option>
+                <option value="white">白色</option>
+                <option value="black">黑色</option>
+                <option value="color">自定义颜色</option>
+                <option value="original">原图对比</option>
+              </select>
+            </div>
+          </div>
+          <input type="color" id="ct-bg-color" value="#438edb" class="wm-color-full" style="margin-top:8px;">
+        </div>
+        <div class="wm-section">
+          <h2>3. 导出</h2>
+          <label class="wm-label">带背景导出格式</label>
+          <select id="ct-export-format" class="wm-input">
+            <option value="image/png">PNG</option>
+            <option value="image/jpeg">JPG</option>
+          </select>
+        </div>
+      </section>
+      <section class="wm-preview">
+        <div class="wm-canvas-container" id="ct-canvas-container">
+          <p id="ct-placeholder" class="wm-placeholder">上传图片后自动抠图<br><small>棋盘格代表透明区域</small></p>
+          <canvas id="ct-canvas"></canvas>
+        </div>
+        <div class="wm-btn-row">
+          <button id="ct-download" class="wm-download-btn" disabled>⬇️ 透明 PNG</button>
+          <button id="ct-download-bg" class="wm-download-btn" disabled>🖼️ 带背景图</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ================= Tab 3: 裁剪旋转 ================= -->
+  <div id="tab-crop" class="tab-content">
+    <div class="cr-layout">
+      <section class="wm-panel">
+        <div class="wm-section">
+          <h2>1. 上传图片</h2>
+          <div id="cr-drop-zone" class="wm-drop-zone">
+            <span>📁 点击 / 拖拽图片</span>
+            <input id="cr-image-input" type="file" accept="image/*" hidden>
+          </div>
+        </div>
+        <div class="wm-section">
+          <h2>2. 裁剪比例</h2>
+          <select id="cr-ratio" class="wm-input">
+            <option value="free">自由比例</option>
+            <option value="1:1">1:1 正方形</option>
+            <option value="4:3">4:3</option>
+            <option value="3:4">3:4</option>
+            <option value="16:9">16:9 宽屏</option>
+            <option value="9:16">9:16 手机</option>
+            <option value="3:2">3:2 照片</option>
+            <option value="2:3">2:3</option>
+            <option value="5:7">5:7 证件照</option>
+            <option value="7:5">7:5</option>
+            <option value="custom">自定义</option>
+          </select>
+          <div class="wm-row">
+            <div class="wm-col"><input id="cr-ratio-w" class="wm-input wm-num" type="number" value="5" min="1" style="display:none;">
+            <div class="wm-row"><label class="wm-label">裁剪框外区域</label>
+              <select id="cr-mask-mode">
+                <option value="dark">半透明黑色遮罩</option>
+                <option value="transparent">透明（白色方格）</option>
+                <option value="white">纯白</option>
+                <option value="black">纯黑</option>
+                <option value="none">保留原图</option>
+              </select>
+            </div>
+            <div class="wm-row"><label class="wm-label">遮罩浓度 <span id="cr-mask-alpha-val">45</span>%</label>
+              <input id="cr-mask-alpha" type="range" min="10" max="90" value="45">
+            </div></div>
+            <div class="wm-col"><input id="cr-ratio-h" class="wm-input wm-num" type="number" value="7" min="1" style="display:none;"></div>
+          </div>
+          <label class="wm-label">旋转 <span id="cr-rotate-val">0</span>°</label>
+          <input id="cr-rotate" type="range" min="-180" max="180" value="0">
+          <label class="wm-label">缩放 <span id="cr-zoom-val">100%</span></label>
+          <input id="cr-zoom" type="range" min="20" max="300" value="100">
+          <div class="wm-btn-row" style="margin-top:8px;">
+            <button id="cr-rot-left" class="wm-btn-small">↺ 左转90°</button>
+            <button id="cr-rot-right" class="wm-btn-small">↻ 右转90°</button>
+            <button id="cr-flip-h" class="wm-btn-small">⇋ 水平翻转</button>
+            <button id="cr-flip-v" class="wm-btn-small">⇅ 垂直翻转</button>
+            <button id="cr-reset" class="wm-btn-small">🔄 重置</button>
+          </div>
+          <p class="wm-hint">在预览上拖动移动图片，拖动右下角方块调整裁剪框。</p>
+        </div>
+        <div class="wm-section">
+          <h2>3. 导出</h2>
+          <label class="wm-label">输出尺寸</label>
+          <select id="cr-output-size" class="wm-input">
+            <option value="keep">按裁剪框原始像素</option>
+            <option value="1200x1200">1200 × 1200</option>
+            <option value="1080x1920">1080 × 1920（手机壁纸）</option>
+            <option value="1920x1080">1920 × 1080（电脑壁纸）</option>
+            <option value="800x800">800 × 800</option>
+            <option value="295x413">295 × 413（一寸@300dpi）</option>
+          </select>
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">格式</label>
+              <select id="cr-format" class="wm-input">
+                <option value="image/jpeg">JPG</option>
+                <option value="image/png">PNG</option>
+                <option value="image/webp">WebP</option>
+              </select>
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">质量 <span id="cr-quality-val">92</span></label>
+              <input id="cr-quality" type="range" min="1" max="100" value="92">
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="wm-preview">
+        <div class="wm-canvas-container" id="cr-canvas-wrap">
+          <p id="cr-placeholder" class="wm-placeholder">上传图片后在此裁剪</p>
+          <canvas id="cr-canvas"></canvas>
+        </div>
+        <div class="wm-img-info" id="cr-info" style="display:none;"></div>
+        <button id="cr-crop" class="wm-download-btn" disabled>✂️ 裁剪并下载</button>
+      </section>
+    </div>
+  </div>
+
+  <!-- ================= Tab 4: 证件照排版打印 ================= -->
   <div id="tab-print" class="tab-content">
     <div class="ps-layout">
       <!-- 左侧设置 -->
@@ -211,6 +493,7 @@
             <option value="a5">A5 (148×210mm)</option>
             <option value="custom">自定义尺寸</option>
           </select>
+          <label class="checkbox-label" style="margin-top:6px;"><input type="checkbox" id="ps-paper-landscape"> 相纸横向（旋转 90°）</label>
 
           <div class="wm-row" id="ps-paper-custom" style="display:none;">
             <div class="wm-col"><label class="wm-label">宽 (mm)</label><input class="wm-input" id="ps-paper-w" type="number" value="152" min="20"></div>
@@ -227,8 +510,13 @@
             <option value="big2">大二寸 (35×49mm)</option>
             <option value="visa_us">美国签证 (51×51mm)</option>
             <option value="visa_jp">日本签证 (35×45mm)</option>
+            <option value="idcard">身份证 (26×32mm)</option>
+            <option value="drive">驾驶证 (22×32mm)</option>
+            <option value="passport">护照 (33×48mm)</option>
+            <option value="exam">考试照 (35×45mm)</option>
             <option value="custom">自定义尺寸</option>
           </select>
+          <label class="checkbox-label" style="margin-top:6px;"><input type="checkbox" id="ps-photo-rotate"> 照片横排（宽高互换）</label>
 
           <div class="wm-row" id="ps-photo-custom" style="display:none;">
             <div class="wm-col"><label class="wm-label">宽 (mm)</label><input class="wm-input" id="ps-photo-w" type="number" value="25" min="5"></div>
@@ -261,9 +549,10 @@
           </div>
 
           <div class="wm-row" style="margin-top: 12px;">
-            <label class="checkbox-label">
-              <input type="checkbox" id="ps-cut-lines" checked> 显示切割辅助线
-            </label>
+            <label class="checkbox-label"><input type="checkbox" id="ps-cut-lines" checked> 显示切割辅助线</label>
+            <label class="checkbox-label"><input type="checkbox" id="ps-show-cutmark" checked> 四角裁切标记</label>
+            <label class="checkbox-label"><input type="checkbox" id="ps-show-margin"> 显示边距线</label>
+            <label class="checkbox-label"><input type="checkbox" id="ps-show-header"> 顶部标注信息</label>
           </div>
 
           <div class="wm-info-box" id="ps-info">请选择参数</div>
@@ -274,7 +563,10 @@
             <option value="image/png">PNG</option>
           </select>
 
-          <button id="ps-download" class="wm-download-btn" style="margin-top: 16px; width: 100%;">💾 导出打印高清图</button>
+          <div class="wm-btn-row" style="margin-top: 16px;">
+            <button id="ps-download" class="wm-download-btn">💾 导出高清图</button>
+            <button id="ps-print" class="wm-download-btn">🖨️ 直接打印</button>
+          </div>
 
           <p class="wm-hint" style="margin-top: 12px; line-height: 1.6;">
             💡 <strong>打印提示：</strong><br>
@@ -288,6 +580,62 @@
         <div class="wm-canvas-container" id="ps-canvas-container">
           <p id="ps-placeholder" class="wm-placeholder">请在左侧上传单张照片<br><small>系统将自动为您排版</small></p>
           <canvas id="ps-canvas"></canvas>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- : 压缩转换 ================= -->
+  <div id="tab-compress" class="tab-content">
+    <div class="cp-layout">
+      <section class="wm-panel">
+        <div class="wm-section">
+          <h2>1. 添加图片</h2>
+          <div id="cp-drop-zone" class="wm-drop-zone">
+            <span>📁 点击 / 拖拽多张图片</span>
+            <span class="wm-hint">PNG 按质量降色压缩，JPG/WebP 按质量压缩</span>
+            <span class="wm-hint">全部在本地处理，不上传服务器</span>
+            <input id="cp-image-input" type="file" accept="image/*" multiple hidden>
+          </div>
+          <div id="cp-list" class="cp-list"></div>
+        </div>
+        <div class="wm-section">
+          <h2>2. 压缩设置</h2>
+          <label class="wm-label">目标格式</label>
+          <select id="cp-format" class="wm-input">
+            <option value="image/jpeg">JPG（体积小）</option>
+            <option value="image/webp">WebP（更小）</option>
+            <option value="image/png">PNG（降色压缩）</option>
+          </select>
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">质量 <span id="cp-quality-val">85</span>%</label>
+              <input id="cp-quality" type="range" min="1" max="100" value="85">
+            </div>
+          </div>
+          <div class="wm-row">
+            <div class="wm-col">
+              <label class="wm-label">最大宽 (px，0=不限)</label>
+              <input id="cp-max-w" class="wm-input" type="number" value="0" min="0">
+            </div>
+            <div class="wm-col">
+              <label class="wm-label">最大高 (px，0=不限)</label>
+              <input id="cp-max-h" class="wm-input" type="number" value="0" min="0">
+            </div>
+          </div>
+          <label class="wm-label">目标大小 KB（0=不限制，仅 JPG/WebP 有效；PNG 由质量决定颜色数）</label>
+          <input id="cp-target-kb" class="wm-input" type="number" value="0" min="0">
+          <div class="wm-btn-row" style="margin-top:12px;">
+            <button id="cp-run" class="wm-btn-small">▶️ 处理未完成项</button>
+            <button id="cp-run-all" class="wm-download-btn">🗜️ 全部压缩</button>
+          </div>
+        </div>
+      </section>
+      <section class="wm-preview">
+        <div class="wm-canvas-container" style="min-height:240px;">
+          <div>
+            <p class="wm-placeholder">压缩 / 格式转换 / 尺寸缩放<br><small>支持设定目标大小，自动寻找合适质量</small></p>
+          </div>
         </div>
       </section>
     </div>

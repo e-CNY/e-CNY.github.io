@@ -12,38 +12,194 @@
 <body>
 <header class="tool-page-header">
   <h1>🔌 硬件串口调试器</h1>
-  <p>纯浏览器连接 Arduino / ESP32，无需安装客户端（需 Chrome/Edge）。</p>
+  <p>Chrome / Edge 直连 Arduino · ESP32 · 无需安装客户端</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
-<main class="se-layout" style="padding-top: 0;">
-  <div class="se-container">
-    <aside class="se-sidebar">
-      <div class="se-section">
-        <h3>1. 连接设置</h3>
-        <div class="se-row">
-          <label>波特率</label>
-          <select id="se-baudrate" class="se-select">
-            <option value="9600">9600</option>
-            <option value="115200" selected>115200</option>
-          </select>
-        </div>
-        <button id="btn-connect" class="se-btn primary">🔌 连接串口</button>
-        <button id="btn-disconnect" class="se-btn danger" disabled>❌ 断开</button>
-      </div>
-      
-      <div class="se-section">
-        <h3>2. 发送数据</h3>
-        <input type="text" id="se-send-input" class="se-input" placeholder="输入要发送的指令...">
-        <button id="btn-send" class="se-btn" disabled>发送</button>
-      </div>
-    </aside>
-
-    <div class="se-main">
-      <div class="se-terminal" id="se-terminal">等待连接...</div>
+<main class="se-layout">
+  <div class="se-toolbar">
+    <div class="se-status">
+      <span class="se-status-dot" id="status-dot"></span>
+      <span id="status-text">未连接</span>
+    </div>
+    <div class="se-toolbar-right">
+      <button class="se-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
     </div>
   </div>
+
+  <div class="se-container">
+    <!-- ============ 侧栏 ============ -->
+    <aside class="se-sidebar">
+
+      <!-- 1. 连接设置 -->
+      <section class="se-section">
+        <h3>🔌 连接设置</h3>
+        <div class="se-field">
+          <label>波特率</label>
+          <select id="se-baudrate" class="se-select">
+            <option value="300">300</option>
+            <option value="1200">1200</option>
+            <option value="2400">2400</option>
+            <option value="4800">4800</option>
+            <option value="9600">9600</option>
+            <option value="14400">14400</option>
+            <option value="19200">19200</option>
+            <option value="28800">28800</option>
+            <option value="38400">38400</option>
+            <option value="57600">57600</option>
+            <option value="76800">76800</option>
+            <option value="115200" selected>115200</option>
+            <option value="230400">230400</option>
+            <option value="250000">250000</option>
+            <option value="460800">460800</option>
+            <option value="500000">500000</option>
+            <option value="921600">921600</option>
+            <option value="1000000">1000000</option>
+            <option value="2000000">2000000</option>
+          </select>
+        </div>
+        <div class="se-field-row">
+          <div class="se-field">
+            <label>数据位</label>
+            <select id="se-databits" class="se-select">
+              <option value="7">7</option>
+              <option value="8" selected>8</option>
+            </select>
+          </div>
+          <div class="se-field">
+            <label>停止位</label>
+            <select id="se-stopbits" class="se-select">
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+            </select>
+          </div>
+        </div>
+        <div class="se-field-row">
+          <div class="se-field">
+            <label>校验位</label>
+            <select id="se-parity" class="se-select">
+              <option value="none" selected>无</option>
+              <option value="even">偶校验</option>
+              <option value="odd">奇校验</option>
+            </select>
+          </div>
+          <div class="se-field">
+            <label>流控</label>
+            <select id="se-flow" class="se-select">
+              <option value="none" selected>无</option>
+              <option value="hardware">RTS/CTS</option>
+            </select>
+          </div>
+        </div>
+        <button id="btn-connect" class="se-btn primary" type="button">🔌 连接串口</button>
+        <button id="btn-disconnect" class="se-btn danger" type="button" disabled>❌ 断开</button>
+      </section>
+
+      <!-- 2. 显示设置 -->
+      <section class="se-section">
+        <h3>🎨 显示设置</h3>
+        <div class="se-field">
+          <label>接收格式</label>
+          <div class="se-seg" id="seg-rx-format">
+            <button data-format="text" class="active" type="button">文本</button>
+            <button data-format="hex" type="button">Hex</button>
+          </div>
+        </div>
+        <label class="se-checkbox">
+          <input type="checkbox" id="opt-timestamp">
+          <span>显示时间戳</span>
+        </label>
+        <label class="se-checkbox">
+          <input type="checkbox" id="opt-autoscroll" checked>
+          <span>自动滚动</span>
+        </label>
+        <label class="se-checkbox">
+          <input type="checkbox" id="opt-show-rx" checked>
+          <span>显示接收 (RX)</span>
+        </label>
+        <label class="se-checkbox">
+          <input type="checkbox" id="opt-show-tx" checked>
+          <span>显示发送 (TX)</span>
+        </label>
+      </section>
+
+      <!-- 3. 宏指令 -->
+      <section class="se-section">
+        <h3>⚡ 快捷宏</h3>
+        <div class="se-macro-list" id="macro-list"></div>
+        <div class="se-macro-add">
+          <input type="text" id="macro-name" class="se-input" placeholder="名称" maxlength="20">
+          <input type="text" id="macro-content" class="se-input" placeholder="内容" maxlength="200">
+          <button class="se-btn primary se-btn-sm" id="btn-add-macro" type="button">＋ 添加</button>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- ============ 主区域 ============ -->
+    <div class="se-main">
+      <!-- 终端 -->
+      <div class="se-terminal-wrap">
+        <div class="se-terminal-head">
+          <span id="term-stats">RX: 0 B · TX: 0 B</span>
+          <div class="se-terminal-actions">
+            <button class="se-icon-btn" id="btn-clear-term" type="button" title="清空终端">🗑</button>
+            <button class="se-icon-btn" id="btn-export-term" type="button" title="导出为 .txt">📥</button>
+          </div>
+        </div>
+        <div class="se-terminal" id="se-terminal">
+          <div class="se-terminal-hint">👋 点击「连接串口」开始。需 Chrome / Edge 89+。</div>
+        </div>
+      </div>
+
+      <!-- 发送区 -->
+      <div class="se-send-area">
+        <div class="se-send-row">
+          <textarea id="se-send-input" class="se-send-input" rows="2"
+                    placeholder="输入要发送的内容，Ctrl+Enter 发送…" spellcheck="false"></textarea>
+          <button id="btn-send" class="se-btn primary se-btn-send" type="button" disabled>发送</button>
+        </div>
+        <div class="se-send-options">
+          <div class="se-field-inline">
+            <label>格式</label>
+            <div class="se-seg se-seg-sm" id="seg-tx-format">
+              <button data-format="text" class="active" type="button">文本</button>
+              <button data-format="hex" type="button">Hex</button>
+            </div>
+          </div>
+          <div class="se-field-inline">
+            <label>行尾</label>
+            <select id="se-line-ending" class="se-select se-select-sm">
+              <option value="none">无</option>
+              <option value="lf">LF (\n)</option>
+              <option value="cr">CR (\r)</option>
+              <option value="crlf" selected>CRLF (\r\n)</option>
+            </select>
+          </div>
+          <label class="se-checkbox">
+            <input type="checkbox" id="opt-loop-send">
+            <span>循环</span>
+          </label>
+          <input type="number" id="se-loop-interval" class="se-input se-input-sm" value="1000" min="100" max="60000" title="循环间隔（毫秒）">
+          <span class="se-unit">ms</span>
+          <button id="btn-send-history" class="se-icon-btn" type="button" title="历史（↑ 键）">🕐</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 历史下拉 -->
+  <div class="se-history-popover" id="history-popover" hidden>
+    <div class="se-history-head">
+      <span>最近发送</span>
+      <button class="se-icon-btn" id="btn-clear-history" type="button">✕</button>
+    </div>
+    <div class="se-history-list" id="history-list"></div>
+  </div>
 </main>
+
+<div class="se-toast" id="se-toast"></div>
+
 <script src="../../js/serial-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

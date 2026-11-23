@@ -1,16 +1,16 @@
-/* js/home.js —— 工具站首页（教育类游戏厅放第 3 位，归属趣味分类） */
+/* js/home.js —— 工具站首页（放第 3 位，归属趣味分类） */
 (function () {
   var tools = [
     // === 1. 图像 ===
     { name: '电子签名生成器', emoji: '✒️', desc: '双签名引擎·速度笔锋·压感支持·底图拖放/旋转·导出', href: 'tools/e-signature/index.html', category: '图像' },
     { name: '图片调色与滤镜', emoji: '🌅', desc: '40+项精细调节+44种预设滤镜·高清导出·裁切·直方图', href: 'tools/image-filter/index.html', category: '图像' },
     
-    // === 插入到全部的第三位 ===
+    // === 全部的第三位 ===
     { name: '成语词典查看器', emoji: '📔', desc: '离线词库·中文/拼音搜索·接龙·抽卡·生词本与历史记录', href: 'tools/idiomDict/index.html', category: '文档' },
 
     // === 继续图像分类 ===
-    { name: '图片取色与配色', emoji: '🖍️', desc: '智能提取图片主色调，支持放大镜吸管与 UI 配色预览', href: 'tools/color-extractor/index.html', category: '图像' },
-    { name: '照片处理与排版', emoji: '📸', desc: '加水印、换底色、排版打印', href: 'tools/watermark/index.html', category: '图像' },
+    { name: '图片取色与配色', emoji: '🖍️', desc: '智能提取主色调+中位切分调色板，支持放大镜吸管', href: 'tools/color-extractor/index.html', category: '图像' },
+    { name: '照片处理与排版', emoji: '📸', desc: '加水印、换底色、抠图、裁剪旋转、压缩转换、排版', href: 'tools/watermark/index.html', category: '图像' },
     { name: 'Meme 梗图生成', emoji: '😂', desc: '一键生成梗图，三段式文字、图片滤镜与自定义字体', href: 'tools/meme-generator/index.html', category: '图像' },
     { name: '图片切图与拼接', emoji: '🧩', desc: '支持网格切图、长图拼接、网格拼图', href: 'tools/image-slicer/index.html', category: '图像' },
     { name: '图片处理全家桶', emoji: '🖼️', desc: '格式转换、压缩、EXIF 查看与清理', href: 'tools/image-toolbox/index.html', category: '图像' },
@@ -107,10 +107,10 @@
 
     // === 10. 硬件 ===
     { name: '外设与硬件测试', emoji: '⌨️', desc: '键盘/鼠标/屏幕坏点/音视频摄像头全能诊断', href: 'tools/hardware-test/index.html', category: '硬件' },
-    { name: '硬件串口调试器', emoji: '🔌', desc: '纯浏览器连接 Arduino/ESP32', href: 'tools/serial-tool/index.html', category: '硬件' },
+    { name: '硬件串口调试器', emoji: '🔌', desc: 'Chrome/Edge直连Arduino·ESP32·无需安装客户端', href: 'tools/serial-tool/index.html', category: '硬件' },
 
     // === 11. 趣味 ===
-    { name: '幸运抽奖大转盘', emoji: '🎡', desc: '自定义名单 / 随机公平抽取 / 流畅转盘动画', href: 'tools/wheel/index.html', category: '趣味' },
+    { name: '幸运抽奖大转盘', emoji: '🎡', desc: '输入名单 · 一键抽奖 · 多人抽取', href: 'tools/wheel/index.html', category: '趣味' },
     { name: '全功能数学绘图', emoji: '📈', desc: '输入表达式渲染 2D 曲线', href: 'tools/math-plot/index.html', category: '趣味' },
     { name: '图标符号Emoji', emoji: '🔣', desc: '一键检索复制符号', href: 'tools/icon-tool/index.html', category: '趣味' },
     { name: '生辰历法计算器', emoji: '📆', desc: '公历农历转换 / 天干地支查询', href: 'tools/calculate/index.html', category: '趣味' }

@@ -14,25 +14,42 @@
 <main class="wheel-page">
   <header class="tool-page-header">
     <h1>🎡 幸运抽奖大转盘</h1>
-    <p>输入名单，点击转盘随机抽取 · 纯本地运行，数据不上传</p>
+    <p>输入名单 · 一键抽奖 · 多人抽取 · 数据全程本地</p>
     <a href="../../index.html">← 返回工具站</a>
   </header>
+
+  <div class="wheel-toolbar">
+    <div class="wheel-toolbar-actions">
+      <button class="wheel-icon-btn" id="btn-settings" type="button" title="设置">⚙️ 设置</button>
+      <button class="wheel-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
+    </div>
+  </div>
 
   <div class="wheel-layout">
     <!-- 左侧设置面板 -->
     <aside class="panel">
       <h2>抽奖名单 <span id="count">0 项</span></h2>
-      <textarea id="entries" spellcheck="false" placeholder="每行输入一个选项…&#10;例如：&#10;奖品A&#10;奖品B&#10;谢谢参与"></textarea>
+      <textarea id="entries" spellcheck="false" placeholder="每行输入一个选项…&#10;支持整段粘贴：自动按行拆分"></textarea>
       <p class="warn" id="warn" hidden></p>
 
       <div class="btn-row">
         <button class="btn" id="shuffleBtn" type="button">🔀 打乱顺序</button>
+        <button class="btn" id="dedupeBtn" type="button">🧹 去重</button>
         <button class="btn" id="resetBtn" type="button">↩️ 恢复默认</button>
+        <button class="btn" id="clearAllBtn" type="button">🗑 清空</button>
       </div>
 
       <h2 class="sep">选项</h2>
       <label class="check-row"><input type="checkbox" id="removeWinner"> 抽中后从名单移除</label>
       <label class="check-row"><input type="checkbox" id="soundToggle" checked> 转动音效</label>
+      <label class="check-row"><input type="checkbox" id="showModalToggle"> 中奖后弹出结果</label>
+
+      <h2 class="sep">快速抽取</h2>
+      <div class="quick-pick-row">
+        <button class="quick-pick-btn" data-count="3" type="button">抽 3 人</button>
+        <button class="quick-pick-btn" data-count="5" type="button">抽 5 人</button>
+        <button class="quick-pick-btn" data-count="10" type="button">抽 10 人</button>
+      </div>
 
       <h2 class="sep">抽奖结果</h2>
       <div class="result-box" id="result">
@@ -44,15 +61,18 @@
     <section class="stage">
       <div class="wheel-wrap">
         <canvas id="wheel"></canvas>
-        <div class="pointer" aria-hidden="true"></div>
+        <div class="pointer" id="pointer" aria-hidden="true"></div>
       </div>
 
       <button class="spin-btn" id="spinBtn" type="button">开 始 抽 奖</button>
 
       <div class="history-wrap">
         <div class="history-head">
-          <span>历史记录</span>
-          <button class="btn small" id="clearHistory" type="button">清空</button>
+          <span>历史记录 <em id="historyCount"></em></span>
+          <div class="history-head-actions">
+            <button class="btn small" id="exportHistory" type="button" title="导出为 .txt">📥 导出</button>
+            <button class="btn small" id="clearHistory" type="button">清空</button>
+          </div>
         </div>
         <p class="history-empty" id="historyEmpty">暂无记录</p>
         <ul class="history-list" id="historyList"></ul>
@@ -60,6 +80,80 @@
     </section>
   </div>
 </main>
+
+<!-- 设置抽屉 -->
+<div class="wheel-drawer-backdrop" id="drawerBackdrop" hidden></div>
+<aside class="wheel-drawer" id="settingsDrawer">
+  <div class="wheel-drawer-head">
+    <h3>⚙️ 设置</h3>
+    <button class="wheel-icon-btn" id="btn-settings-close" type="button">✕</button>
+  </div>
+  <div class="wheel-drawer-body">
+    <div class="setting-item">
+      <label>动画速度</label>
+      <div class="seg" id="seg-speed">
+        <button data-value="fast" type="button">快</button>
+        <button data-value="normal" class="active" type="button">中</button>
+        <button data-value="slow" type="button">慢</button>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <label>音效类型</label>
+      <div class="seg" id="seg-sound">
+        <button data-value="tick" class="active" type="button">嘀嗒</button>
+        <button data-value="beep" type="button">蜂鸣</button>
+        <button data-value="chime" type="button">铃声</button>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <label>同时抽取人数</label>
+      <div class="seg" id="seg-multi">
+        <button data-value="1" class="active" type="button">1</button>
+        <button data-value="3" type="button">3</button>
+        <button data-value="5" type="button">5</button>
+        <button data-value="10" type="button">10</button>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <label class="check-row" style="padding:0;">
+        <input type="checkbox" id="opt-hide-labels">
+        <span>隐藏扇形文字（极多项时更清晰）</span>
+      </label>
+    </div>
+
+    <div class="setting-item">
+      <label class="check-row" style="padding:0;">
+        <input type="checkbox" id="opt-confetti" checked>
+        <span>中奖时彩带庆祝</span>
+      </label>
+    </div>
+
+    <div class="drawer-divider"></div>
+    <p class="drawer-hint">💡 提示：转盘旋转时不能修改名单，请等待旋转结束。</p>
+  </div>
+</aside>
+
+<!-- 中奖弹窗 -->
+<div class="winner-modal" id="winnerModal" hidden>
+  <div class="winner-modal-body">
+    <div class="winner-modal-icon" id="winnerIcon">🎉</div>
+    <h3 class="winner-modal-title" id="winnerTitle">恭喜中奖</h3>
+    <div class="winner-modal-list" id="winnerList"></div>
+    <div class="winner-modal-actions">
+      <button class="btn" id="btn-winner-copy" type="button">📋 复制结果</button>
+      <button class="btn primary" id="btn-winner-close" type="button">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 彩带层 -->
+<canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+<div class="wheel-toast" id="wheelToast"></div>
+
 <script src="../../js/wheel.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>
