@@ -10,7 +10,13 @@
 <link rel="stylesheet" href="../../css/unit-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header theme-header">
+<!-- __THEME_INJECT_BEGIN__ -->
+<link rel="stylesheet" href="../../css/theme.css">
+<div class="theme-actions"><button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题"></button></div>
+<script src="../../js/theme.js"></script>
+<!-- __THEME_INJECT_END__ -->
+
   <h1>⚖️ 单位与进制转换</h1>
   <p>进制 / 单位 / 中文数字 / 罗马数字 / 字符编码 / 颜色格式</p>
   <a href="../../index.html">← 返回工具站</a>
@@ -19,8 +25,7 @@
 <main class="un-layout">
   <div class="un-toolbar">
     <div class="un-toolbar-right">
-      <button class="un-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
-    </div>
+</div>
   </div>
 
   <div class="un-grid">

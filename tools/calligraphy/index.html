@@ -10,7 +10,13 @@
 <link rel="stylesheet" href="../../css/calligraphy.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header theme-header">
+<!-- __THEME_INJECT_BEGIN__ -->
+<link rel="stylesheet" href="../../css/theme.css">
+<div class="theme-actions"><button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题"></button></div>
+<script src="../../js/theme.js"></script>
+<!-- __THEME_INJECT_END__ -->
+
   <h1>📝 书法字帖生成器</h1>
   <p>自定义字体、背景与格子，支持 A4 PDF 与图片打包导出。</p>
   <a href="../../index.html">← 返回工具站</a>

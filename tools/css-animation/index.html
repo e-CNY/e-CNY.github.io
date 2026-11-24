@@ -10,7 +10,13 @@
 <link rel="stylesheet" href="../../css/css-animation.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header theme-header">
+<!-- __THEME_INJECT_BEGIN__ -->
+<link rel="stylesheet" href="../../css/theme.css">
+<div class="theme-actions"><button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题"></button></div>
+<script src="../../js/theme.js"></script>
+<!-- __THEME_INJECT_END__ -->
+
   <h1>💫 CSS动画生成器</h1>
   <p>54+ 经典预设 · 高级参数 · 实时预览 · 一键导出独立 HTML</p>
   <a href="../../index.html">← 返回工具站</a>
@@ -27,8 +33,7 @@
       </button>
       <button class="ca-icon-btn" id="btn-share" type="button" title="复制分享链接">🔗 分享</button>
       <button class="ca-icon-btn" id="btn-export" type="button" title="导出为独立 HTML">📥 导出 HTML</button>
-      <button class="ca-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
-    </div>
+</div>
   </div>
 
   <div class="ca-layout">

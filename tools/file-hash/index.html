@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="tool-page-header">
+<!-- __THEME_INJECT_BEGIN__ -->
+<link rel="stylesheet" href="../../css/theme.css">
+<div class="theme-actions"><button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题"></button></div>
+<script src="../../js/theme.js"></script>
+<!-- __THEME_INJECT_END__ -->
+
   <h1>🛡️ 文件哈希校验器</h1>
   <p>MD5 / SHA-1 / SHA-256 / SHA-384 / SHA-512 / CRC32 · 大文件分片 · 完全本地</p>
   <a href="../../index.html">← 返回首页</a>
@@ -24,8 +30,7 @@
       <button class="h-icon-btn" id="btn-history" type="button" title="最近记录">
         📜 历史 <span id="history-count">0</span>
       </button>
-      <button class="h-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
-    </div>
+</div>
   </div>
 
   <!-- 文件上传区 -->

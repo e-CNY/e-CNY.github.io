@@ -10,7 +10,13 @@
 <link rel="stylesheet" href="../../css/notepad-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header theme-header">
+<!-- __THEME_INJECT_BEGIN__ -->
+<link rel="stylesheet" href="../../css/theme.css">
+<div class="theme-actions"><button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题"></button></div>
+<script src="../../js/theme.js"></script>
+<!-- __THEME_INJECT_END__ -->
+
   <h1>🔒 本地加密记事本</h1>
   <p>PBKDF2 + AES-256 · 多笔记 · 自动保存 · 加密备份 · 全程本地</p>
   <a href="../../index.html">← 返回工具站</a>
@@ -47,8 +53,7 @@
       </div>
       <div class="np-topbar-right">
         <button class="np-icon-btn" id="btn-settings" type="button" title="设置">⚙️</button>
-        <button class="np-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
-        <button class="np-icon-btn" id="btn-lock" type="button" title="锁定（Ctrl+L）">🔒</button>
+<button class="np-icon-btn" id="btn-lock" type="button" title="锁定（Ctrl+L）">🔒</button>
       </div>
     </div>
 

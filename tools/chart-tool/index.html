@@ -10,7 +10,13 @@
 <link rel="stylesheet" href="../../css/chart-tool.css">
 </head>
 <body>
-<header class="tool-page-header" style="padding: 12px 16px 8px;">
+<header class="tool-page-header theme-header" style="padding: 12px 16px 8px;">
+<!-- __THEME_INJECT_BEGIN__ -->
+<link rel="stylesheet" href="../../css/theme.css">
+<div class="theme-actions"><button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题"></button></div>
+<script src="../../js/theme.js"></script>
+<!-- __THEME_INJECT_END__ -->
+
   <h1>📉 饼状图生成预览</h1>
   <p>支持折线、柱状、饼图、雷达等 8 种图表，实时 JSON 渲染，一键导出。</p>
   <a href="../../index.html">← 返回工具站</a>

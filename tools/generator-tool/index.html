@@ -10,7 +10,13 @@
 <link rel="stylesheet" href="../../css/generator-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header theme-header">
+<!-- __THEME_INJECT_BEGIN__ -->
+<link rel="stylesheet" href="../../css/theme.css">
+<div class="theme-actions"><button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题"></button></div>
+<script src="../../js/theme.js"></script>
+<!-- __THEME_INJECT_END__ -->
+
   <h1>🆔 数据密码生成器</h1>
   <p>7 种 ID · 14 种 Mock · 加密安全随机 · Diceware 1200+ 词库 · 熵值强度</p>
   <a href="../../index.html">← 返回工具站</a>
@@ -21,8 +27,7 @@
   <div class="gn-topbar">
     <div class="gn-top-actions">
       <button class="gn-icon-btn" id="btn-history" type="button" title="生成历史">📜 历史 <span id="history-count">0</span></button>
-      <button class="gn-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
-    </div>
+</div>
   </div>
 
   <div class="gn-grid">

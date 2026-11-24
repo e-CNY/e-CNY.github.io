@@ -10,7 +10,13 @@
 <link rel="stylesheet" href="../../css/sitting-reminder.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header theme-header">
+<!-- __THEME_INJECT_BEGIN__ -->
+<link rel="stylesheet" href="../../css/theme.css">
+<div class="theme-actions"><button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题"></button></div>
+<script src="../../js/theme.js"></script>
+<!-- __THEME_INJECT_END__ -->
+
   <h1>⏱️ 时间与计时工具</h1>
   <p>久坐提醒 / 秒表 / 倒计时 / 番茄钟 / 统计，全本地运行。</p>
   <a href="../../index.html">← 返回工具站</a>
@@ -21,8 +27,7 @@
     <div class="tt-top-actions">
       <button id="btn-notify" class="tt-icon-btn" type="button" title="桌面通知">🔔</button>
       <button id="btn-wake" class="tt-icon-btn" type="button" title="屏幕常亮">💡</button>
-      <button id="btn-theme" class="tt-icon-btn" type="button" title="切换主题">🌙</button>
-    </div>
+</div>
   </div>
 
   <div class="tt-tabs">

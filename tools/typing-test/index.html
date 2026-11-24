@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="tool-page-header">
+<!-- __THEME_INJECT_BEGIN__ -->
+<link rel="stylesheet" href="../../css/theme.css">
+<div class="theme-actions"><button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题"></button></div>
+<script src="../../js/theme.js"></script>
+<!-- __THEME_INJECT_END__ -->
+
   <h1>🏎️ 打字速度统计器</h1>
   <p>支持中英文 · 实时 WPM 曲线 · 虚拟键盘 · 历史记录 · 音效 · 分享卡片</p>
   <a href="../../index.html">← 返回首页</a>
@@ -20,8 +26,7 @@
   <!-- 顶部工具栏 -->
   <div class="tt-topbar">
     <div class="tt-top-actions">
-      <button class="tt-icon-btn" id="btn-theme" type="button" title="切换深色/浅色">🌙</button>
-      <button class="tt-icon-btn" id="btn-sound" type="button" title="开关音效">🔊</button>
+<button class="tt-icon-btn" id="btn-sound" type="button" title="开关音效">🔊</button>
       <button class="tt-icon-btn" id="btn-countdown" type="button" title="开关倒计时">⏱</button>
       <button class="tt-icon-btn" id="btn-keyboard" type="button" title="开关虚拟键盘">⌨️</button>
       <button class="tt-icon-btn" id="btn-history" type="button" title="历史记录">📜</button>

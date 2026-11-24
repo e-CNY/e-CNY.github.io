@@ -10,7 +10,13 @@
 <link rel="stylesheet" href="../../css/calc-toolbox.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header theme-header">
+<!-- __THEME_INJECT_BEGIN__ -->
+<link rel="stylesheet" href="../../css/theme.css">
+<div class="theme-actions"><button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题"></button></div>
+<script src="../../js/theme.js"></script>
+<!-- __THEME_INJECT_END__ -->
+
   <h1>🧮 计算器工具合集</h1>
   <p>15 种常用计算工具合集 · 数学 / 金融 / 日常 · 一键复制结果 · 暗色主题</p>
   <a href="../../index.html">← 返回工具站</a>
@@ -27,8 +33,7 @@
     </div>
     <div class="ct-toolbar-right">
       <input type="search" id="ct-search" placeholder="🔍 搜索工具…" class="ct-search">
-      <button class="ct-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
-    </div>
+</div>
   </div>
 
   <div class="ct-grid" id="ct-grid">

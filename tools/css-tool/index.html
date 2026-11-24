@@ -10,7 +10,13 @@
 <link rel="stylesheet" href="../../css/css-tool.css">
 </head>
 <body>
-<header class="tool-page-header">
+<header class="tool-page-header theme-header">
+<!-- __THEME_INJECT_BEGIN__ -->
+<link rel="stylesheet" href="../../css/theme.css">
+<div class="theme-actions"><button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题"></button></div>
+<script src="../../js/theme.js"></script>
+<!-- __THEME_INJECT_END__ -->
+
   <h1>🎛️ CSS调节生成器</h1>
   <p>10 种常用 CSS 效果 · 可视化调节 · 预设库 · 一键复制</p>
   <a href="../../index.html">← 返回工具站</a>
@@ -35,8 +41,7 @@
       <button class="cs-icon-btn" id="btn-random" type="button" title="随机">🎲</button>
       <button class="cs-icon-btn" id="btn-fav" type="button" title="收藏当前 CSS">⭐</button>
       <button class="cs-icon-btn" id="btn-history" type="button" title="收藏与历史">📜 <span id="history-count">0</span></button>
-      <button class="cs-icon-btn" id="btn-theme" type="button" title="切换主题">🌙</button>
-    </div>
+</div>
   </div>
 
   <div class="cs-content">
