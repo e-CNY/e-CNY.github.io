@@ -17,8 +17,9 @@
 <script src="../../js/theme.js"></script>
 <!-- __THEME_INJECT_END__ -->
 
+
   <h1>😂 Meme 梗图生成</h1>
-  <p>一键生成经典梗图，支持三段式文字、图片滤镜与自定义字体</p>
+  <p>一键生成经典梗图，支持三段式文字、图片滤镜、贴纸拖拽、模板与批量导出</p>
   <a href="../../index.html">← 返回首页</a>
 </div>
 
@@ -36,9 +37,15 @@
     </div>
 
     <div id="settings" class="settings-panel">
+      <!-- 模板 -->
+      <div class="panel-section">
+        <label class="section-title">⚡ 2. 一键模板</label>
+        <select id="template-select"><option value="">— 选择模板套用 —</option></select>
+      </div>
+
       <!-- 图片滤镜与操作 -->
       <div class="panel-section">
-        <label class="section-title">📷 2. 图片处理</label>
+        <label class="section-title">📷 3. 图片处理</label>
         <select id="img-filter">
           <option value="none">原图</option>
           <option value="grayscale(100%)">黑白 (经典)</option>
@@ -47,9 +54,12 @@
           <option value="invert(100%)">反色</option>
           <option value="hue-rotate(90deg)">色相旋转</option>
           <option value="blur(2px)">模糊 (防晕图)</option>
-          <option value="url(#pixelate)">像素化 (需 Canvas 支持)</option>
+          <option value="brightness(120%) contrast(110%)">提亮</option>
+          <option value="saturate(0%)">去色 (灰度)</option>
+          <option value="contrast(200%) grayscale(100%)">硬核黑白</option>
+          <option value="url(#pixelate)">像素化</option>
         </select>
-        
+
         <div class="btn-grid">
           <button class="op-btn" id="btn-rotate-left">↺ 左转</button>
           <button class="op-btn" id="btn-rotate-right">↻ 右转</button>
@@ -60,7 +70,7 @@
 
       <!-- 文字输入 -->
       <div class="panel-section">
-        <label class="section-title">📝 3. 梗图文字</label>
+        <label class="section-title">📝 4. 梗图文字</label>
         <div class="slider-group">
           <label>顶部文字</label>
           <textarea id="text-top" rows="2" placeholder="输入顶部文字..."></textarea>
@@ -73,12 +83,14 @@
           <label>底部文字</label>
           <textarea id="text-bottom" rows="2" placeholder="输入底部文字..."></textarea>
         </div>
+        <button class="ghost-btn" id="btn-add-text" type="button">➕ 添加可拖动文字块</button>
+        <div class="extra-list" id="extra-list"><span class="extra-empty">暂无额外元素</span></div>
       </div>
 
       <!-- 文字样式 -->
-      <div class="panel-section">
-        <label class="section-title">🎨 4. 文字样式</label>
-        
+      <details class="panel-section mg-fold" open>
+        <summary>🎨 5. 文字样式</summary>
+
         <div class="slider-group">
           <label>字体</label>
           <select id="font-family">
@@ -86,6 +98,7 @@
             <option value="'Microsoft YaHei', sans-serif">微软雅黑 (粗)</option>
             <option value="'SimSun', serif">宋体</option>
             <option value="'KaiTi', serif">楷体</option>
+            <option value="'SimHei', sans-serif">黑体</option>
             <option value="system-ui, sans-serif">系统默认</option>
           </select>
           <div class="row" style="margin-top: 6px;">
@@ -96,10 +109,9 @@
 
         <div class="row">
           <div class="col">
-            <label>字号比例</label>
+            <label>字号比例 <span id="font-size-val">40</span></label>
             <div class="range-row">
               <input type="range" id="font-size" min="10" max="100" value="40">
-              <span id="font-size-val">40</span>
             </div>
           </div>
         </div>
@@ -112,6 +124,12 @@
               <option value="left">左对齐</option>
               <option value="right">右对齐</option>
             </select>
+          </div>
+          <div class="col">
+            <label>文字整体旋转 <span id="text-rotate-val">0°</span></label>
+            <div class="range-row">
+              <input type="range" id="text-rotate" min="-45" max="45" value="0">
+            </div>
           </div>
         </div>
 
@@ -159,28 +177,87 @@
             <input type="color" id="shadow-color" value="#000000" style="margin-top:4px;">
           </div>
         </div>
-      </div>
+      </details>
+
+      <!-- 贴纸 -->
+      <details class="panel-section mg-fold">
+        <summary>⭐ 6. 贴纸与标记</summary>
+        <div class="sticker-grid">
+          <button class="sticker-btn" id="sticker-star" type="button" title="星星">⭐</button>
+          <button class="sticker-btn" id="sticker-heart" type="button" title="爱心">❤️</button>
+          <button class="sticker-btn" id="sticker-arrow" type="button" title="箭头">➤</button>
+          <button class="sticker-btn" id="sticker-fire" type="button" title="火花">🔥</button>
+          <button class="sticker-btn" id="sticker-box" type="button" title="色块">▪</button>
+          <button class="sticker-btn" id="sticker-circle" type="button" title="圆点">●</button>
+        </div>
+        <div class="sticker-color">
+          <label style="font-size:0.85rem;color:#6b5d47;font-weight:600;">贴纸颜色</label>
+          <input type="color" id="sticker-color" value="#ffd400">
+        </div>
+        <small style="font-size:0.72rem;color:#8a7a5f;line-height:1.5;">
+          添加后在画布上拖动定位，选中后按 Delete 删除，双击可拖动文字块改内容。
+        </small>
+      </details>
 
       <!-- 导出设置 -->
       <div class="panel-section">
-        <label class="section-title">💾 5. 导出设置</label>
+        <label class="section-title">💾 7. 导出设置</label>
         <div class="row">
           <div class="col">
             <label>格式</label>
             <select id="export-format">
-              <option value="image/png">PNG</option>
-              <option value="image/jpeg">JPG</option>
-              <option value="image/webp">WebP</option>
+              <option value="image/png">PNG（无损 / 可降色压缩）</option>
+              <option value="image/jpeg">JPG（按质量压缩）</option>
+              <option value="image/webp">WebP（按质量压缩）</option>
             </select>
           </div>
           <div class="col">
             <label>质量 <span id="quality-val">92</span>%</label>
-            <input type="range" id="export-quality" min="30" max="100" value="92">
+            <div class="range-row">
+              <input type="range" id="export-quality" min="1" max="100" value="92">
+            </div>
           </div>
         </div>
-        
+
+        <div class="row">
+          <div class="col">
+            <label>导出倍率</label>
+            <select id="export-scale">
+              <option value="100">原始尺寸 1x</option>
+              <option value="150">放大 1.5x</option>
+              <option value="200">高清 2x</option>
+              <option value="300">超清 3x</option>
+            </select>
+          </div>
+          <div class="col">
+            <label>文件名前缀</label>
+            <input type="text" id="name-prefix" value="meme" placeholder="meme">
+          </div>
+        </div>
+
         <button id="btn-download" class="primary-btn" disabled>💾 下载表情包</button>
+        <div class="btn-row2">
+          <button class="ghost-btn" id="btn-export-all" type="button" disabled>📦 导出全部格式</button>
+          <button class="ghost-btn" id="btn-copy" type="button" disabled>📋 复制到剪贴板</button>
+          <button class="ghost-btn" id="btn-preview" type="button" disabled>👁 新标签预览</button>
+          <button class="ghost-btn" id="btn-batch-export" type="button">🗂 批量导出</button>
+        </div>
+        <small style="font-size:0.72rem;color:#8a7a5f;line-height:1.5;">
+          质量 1–100：JPG/WebP 按质量编码；PNG 低于 100 时按质量降低色彩数（降色压缩），100 为无损。结果比原图大时自动保留原文件。
+        </small>
       </div>
+
+      <!-- 批量 -->
+      <details class="panel-section mg-fold">
+        <summary>🗂 8. 批量套用</summary>
+        <div class="upload-box" id="batch-zone" style="padding:16px 8px;">
+          <span style="font-size:0.85rem;">📁 点击 / 拖拽添加多张图</span>
+          <small>套用当前文字与样式后逐张导出</small>
+          <input type="file" id="batch-input" accept="image/*" multiple hidden>
+        </div>
+        <div class="extra-list" id="batch-list"></div>
+        <div style="font-size:0.75rem;color:#8a7a5f;" id="batch-count"></div>
+      </details>
     </div>
   </div>
 
@@ -194,6 +271,7 @@
 </main>
 
 <div id="toast" class="toast"></div>
+<script src="../../js/libs/FileSaver.min.js"></script>
 <script src="../../js/meme-generator.js"></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

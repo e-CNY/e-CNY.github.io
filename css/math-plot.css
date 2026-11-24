@@ -1,20 +1,100 @@
 .mp-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
 .mp-card { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
-.mp-toolbar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-.mp-select { padding: 10px 16px; border: 1px solid #d5c7a8; border-radius: 8px; font-size: 1rem; background: #fff; outline: none; font-weight: bold; color: #4b3f2f; }
-.mp-btn { padding: 10px 24px; border-radius: 8px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: 1rem; font-weight: bold; }
-.mp-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
-.mp-btn:hover { opacity: 0.9; }
 
+/* ---------- 工具栏 ---------- */
+.mp-toolbar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+.mp-select {
+  padding: 10px 16px; border: 1px solid #d5c7a8; border-radius: 8px;
+  font-size: 1rem; background: #fff; outline: none; font-weight: bold; color: #4b3f2f;
+  cursor: pointer;
+}
+.mp-select:focus { border-color: #8a5a2b; box-shadow: 0 0 0 2px rgba(138,90,43,.2); }
+.mp-btn {
+  padding: 10px 20px; border-radius: 8px; border: 1px solid #d5c7a8;
+  background: #fdf8ec; color: #3d3226; cursor: pointer;
+  font-size: 1rem; font-weight: bold; transition: opacity .15s;
+}
+.mp-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
+.mp-btn:hover { opacity: .88; }
+.mp-btn:active { transform: translateY(1px); }
+
+/* ---------- 曲线卡片 ---------- */
+.mp-curves { display: flex; flex-direction: column; gap: 12px; margin-bottom: 14px; }
+.mp-curve {
+  display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap;
+  border: 1px solid #e5dcc5; border-radius: 10px;
+  padding: 12px 14px; background: #fdf8ec;
+}
+.mp-curve-body { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 8px; }
+.mp-curve-opts { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+/* ---------- 表达式输入 ---------- */
 .mp-inputs { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-.mp-input-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.mp-input-row label { font-weight: bold; color: #6b5d47; font-family: monospace; font-size: 1.1rem; }
-.mp-input { flex: 1; padding: 10px 12px; border: 1px solid #d5c7a8; border-radius: 8px; font-family: monospace; font-size: 1rem; min-width: 200px; outline: none; }
+.mp-input-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.mp-input-row label {
+  font-weight: bold; color: #6b5d47;
+  font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1rem;
+  white-space: nowrap;
+}
+.mp-input {
+  flex: 1; padding: 9px 12px; border: 1px solid #d5c7a8; border-radius: 8px;
+  font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .95rem;
+  min-width: 160px; outline: none; background: #fff; color: #3d3226;
+}
 .mp-input:focus { border-color: #8a5a2b; box-shadow: 0 0 0 2px rgba(138,90,43,.2); }
 
-/* 范围输入 */
-.mp-range-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: #fdf8ec; padding: 12px; border-radius: 8px; border: 1px dashed #d5c7a8; }
-.mp-range-row label { font-size: .85rem; color: #6b5d47; font-weight: bold; }
-.mp-range-input { width: 80px; padding: 6px 8px; border: 1px solid #d5c7a8; border-radius: 6px; font-family: monospace; outline: none; }
+/* 颜色 / 线宽 / 删除 */
+.mp-color {
+  width: 38px; height: 38px; padding: 2px; cursor: pointer;
+  border: 1px solid #d5c7a8; border-radius: 8px; background: #fff;
+}
+.mp-width {
+  width: 62px; padding: 8px; border: 1px solid #d5c7a8; border-radius: 8px;
+  font-size: .9rem; outline: none;
+}
+.mp-select-sm {
+  padding: 6px 8px; border: 1px solid #d5c7a8; border-radius: 8px;
+  font-size: .88rem; background: #fff; outline: none; cursor: pointer;
+}
+.mp-btn-icon {
+  padding: 4px 12px; font-size: 1.15rem; line-height: 1;
+  background: #f0e6d2; border: 1px solid #d5c7a8; color: #a44a3f;
+}
+.mp-btn-icon:hover { background: #e8dcc4; }
 
-.mp-plot-area { width: 100%; height: 600px; background: #fff; border: 1px solid #d5c7a8; border-radius: 8px; }
+/* ---------- 范围输入 ---------- */
+.mp-range-row {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  background: #fdf8ec; padding: 12px; border-radius: 10px;
+  border: 1px dashed #d5c7a8;
+}
+.mp-range-row label { font-size: .85rem; color: #6b5d47; font-weight: bold; }
+.mp-range-row span  { font-size: .85rem; color: #8a7a62; }
+.mp-range-input {
+  width: 86px; padding: 6px 8px; border: 1px solid #d5c7a8;
+  border-radius: 6px; font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: .88rem; outline: none; background: #fff;
+}
+.mp-range-input:focus { border-color: #8a5a2b; box-shadow: 0 0 0 2px rgba(138,90,43,.18); }
+
+/* ---------- 选项行 ---------- */
+.mp-options-row {
+  display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+  margin-top: -6px; margin-bottom: 12px;
+  font-size: .88rem; color: #6b5d47; font-weight: bold;
+}
+.mp-options-row label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+
+/* ---------- 绘图区 ---------- */
+.mp-plot-area {
+  width: 100%; height: 620px; background: #fff;
+  border: 1px solid #d5c7a8; border-radius: 10px;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 640px) {
+  .mp-layout { padding: 16px 10px 40px; }
+  .mp-card { padding: 16px; }
+  .mp-plot-area { height: 460px; }
+  .mp-range-input { width: 72px; }
+}

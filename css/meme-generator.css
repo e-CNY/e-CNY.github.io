@@ -27,7 +27,7 @@
   min-width: 0;
 }
 .settings-panel.active {
-  display: flex; 
+  display: flex;
 }
 
 .panel-section {
@@ -45,6 +45,19 @@
   padding-bottom: 6px;
   white-space: nowrap;
 }
+
+/* 折叠分组 */
+.mg-fold > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #3d3226;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #ddcfb3;
+  padding-bottom: 6px;
+  list-style: none;
+}
+.mg-fold > summary::-webkit-details-marker { display: none; }
+.mg-fold[open] > summary { margin-bottom: 10px; }
 
 /* 上传框 */
 .upload-box {
@@ -140,7 +153,7 @@ input[type="range"] {
   cursor: pointer;
 }
 
-select, input[type="color"] {
+select, input[type="color"], input[type="text"] {
   width: 100%;
   padding: 8px;
   border: 1px solid #ddcfb3;
@@ -156,6 +169,7 @@ input[type="color"] {
   height: 36px;
   cursor: pointer;
 }
+input[type="text"]:focus { border-color: #b08a5a; }
 
 /* 图片操作按钮网格 */
 .btn-grid {
@@ -233,6 +247,81 @@ input[type="color"] {
 .primary-btn:hover:not(:disabled) { background: #6b4420; }
 .primary-btn:disabled { background: #c4b48f; cursor: not-allowed; }
 
+.ghost-btn {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ddcfb3;
+  background: #fdf8ec;
+  color: #3d3226;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.ghost-btn:hover:not(:disabled) { background: #efe6d0; border-color: #8a5a2b; }
+.ghost-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* 贴纸选择 */
+.sticker-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+.sticker-btn {
+  padding: 6px 0;
+  border: 1px solid #ddcfb3;
+  border-radius: 6px;
+  background: #fdf8ec;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  text-align: center;
+  transition: all 0.15s;
+}
+.sticker-btn:hover { background: #efe6d0; border-color: #8a5a2b; }
+.sticker-color { display: flex; align-items: center; gap: 8px; }
+.sticker-color input[type="color"] { flex: 1; }
+
+/* 额外元素列表 */
+.extra-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 24px;
+}
+.extra-empty { font-size: 0.75rem; color: #a8977a; }
+.extra-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border: 1px solid #ddcfb3;
+  border-radius: 999px;
+  background: #fdf8ec;
+  font-size: 0.72rem;
+  color: #3d3226;
+  max-width: 100%;
+  cursor: pointer;
+}
+.extra-chip b {
+  cursor: pointer;
+  color: #a05a2a;
+  font-weight: 700;
+  padding: 0 2px;
+}
+.extra-chip.active {
+  background: #8a5a2b;
+  color: #fff;
+  border-color: #6b4420;
+}
+.extra-chip.active b { color: #ffe3b0; }
+
 /* 预览区 */
 .preview-panel {
   background: #e5d9bd;
@@ -255,12 +344,22 @@ input[type="color"] {
   align-items: center;
   justify-content: center;
 }
+/* 透明底棋盘格，便于查看带透明通道的 PNG */
+.canvas-container.has-img {
+  background-image:
+    linear-gradient(45deg, #d8d8d8 25%, transparent 25%, transparent 75%, #d8d8d8 75%),
+    linear-gradient(45deg, #d8d8d8 25%, transparent 25%, transparent 75%, #d8d8d8 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 8px 8px;
+  background-color: #f3f3f3;
+}
 #meme-canvas {
   display: none;
   max-width: 100%;
-  max-height: 75vh; 
+  max-height: 75vh;
   object-fit: contain;
   border-radius: 4px;
+  cursor: crosshair;
 }
 .empty-hint {
   color: #8a7a5f;
@@ -295,4 +394,5 @@ input[type="color"] {
 @media (max-width: 800px) {
   .mg-wrap { grid-template-columns: 1fr; }
   .preview-panel { min-height: 300px; }
+  .sticker-grid { grid-template-columns: repeat(6, 1fr); }
 }

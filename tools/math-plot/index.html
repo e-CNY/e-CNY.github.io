@@ -18,7 +18,7 @@
 <!-- __THEME_INJECT_END__ -->
 
   <h1>📈 全功能数学绘图</h1>
-  <p>支持显函数、参数方程、极坐标、隐函数及 3D 曲面。</p>
+  <p>支持显函数、参数方程、极坐标、隐函数、向量场及 3D 曲面。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
@@ -30,18 +30,23 @@
         <option value="parametric">2D 参数方程 (x(t), y(t))</option>
         <option value="polar">2D 极坐标 (r = f(θ))</option>
         <option value="implicit">2D 隐函数 (f(x,y) = 0)</option>
+        <option value="vector">2D 向量场 (F(x,y))</option>
         <option value="surface">3D 曲面 (z = f(x,y))</option>
       </select>
-      <button id="btn-plot" class="mp-btn primary">绘图</button>
+      <button id="btn-plot" class="mp-btn primary" type="button">绘图</button>
+      <button id="btn-add" class="mp-btn" type="button">＋ 添加</button>
+      <button id="btn-reset" class="mp-btn" type="button">重置</button>
+      <button id="btn-export" class="mp-btn" type="button">导出 PNG</button>
     </div>
 
     <div id="mp-inputs" class="mp-inputs">
-      <!-- 动态渲染输入框 -->
+      <!-- 动态渲染 -->
     </div>
 
     <div id="plot-area" class="mp-plot-area"></div>
   </div>
 </main>
+
 <script src="../../js/libs/plotly.min.js"></script>
 <script src="../../js/math-plot.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

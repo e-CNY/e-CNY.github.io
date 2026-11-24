@@ -11,7 +11,7 @@
     // === 继续图像分类 ===
     { name: '图片取色与配色', emoji: '🖍️', desc: '智能提取主色调+中位切分调色板，支持放大镜吸管', href: 'tools/color-extractor/index.html', category: '图像' },
     { name: '照片处理与排版', emoji: '📸', desc: '加水印、换底色、抠图、裁剪旋转、压缩转换、排版', href: 'tools/watermark/index.html', category: '图像' },
-    { name: 'Meme 梗图生成', emoji: '😂', desc: '一键生成梗图，三段式文字、图片滤镜与自定义字体', href: 'tools/meme-generator/index.html', category: '图像' },
+    { name: 'Meme 梗图生成', emoji: '😂', desc: '生成经典梗图，支持三段式文字、图片滤镜、贴纸拖拽', href: 'tools/meme-generator/index.html', category: '图像' },
     { name: '图片切图与拼接', emoji: '🧩', desc: '支持网格切图、长图拼接、网格拼图', href: 'tools/image-slicer/index.html', category: '图像' },
     { name: '图片处理全家桶', emoji: '🖼️', desc: '格式转换、压缩、EXIF 查看与清理', href: 'tools/image-toolbox/index.html', category: '图像' },
     { name: '图片Base64互转', emoji: '🖇️', desc: '极速将图片转换为Base64代码或将Base64代码还原', href: 'tools/base64-image/index.html', category: '图像' },
@@ -111,7 +111,7 @@
 
     // === 11. 趣味 ===
     { name: '幸运抽奖大转盘', emoji: '🎡', desc: '输入名单 · 一键抽奖 · 多人抽取', href: 'tools/wheel/index.html', category: '趣味' },
-    { name: '全功能数学绘图', emoji: '📈', desc: '输入表达式渲染 2D 曲线', href: 'tools/math-plot/index.html', category: '趣味' },
+    { name: '全功能数学绘图', emoji: '📈', desc: '显函数、参数方程、极坐标、隐函数、向量场、曲面', href: 'tools/math-plot/index.html', category: '趣味' },
     { name: '图标符号Emoji', emoji: '🔣', desc: '一键检索复制符号', href: 'tools/icon-tool/index.html', category: '趣味' },
     { name: '生辰历法计算器', emoji: '📆', desc: '公历农历转换 / 天干地支查询', href: 'tools/calculate/index.html', category: '趣味' }
   ];
