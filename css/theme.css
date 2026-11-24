@@ -1,0 +1,116 @@
+/* ============================================================
+   theme.css —— 全站通用暗色主题（所有工具共用一份）
+   用法：在工具 index.html 的 <head> 里引用（务必放在工具自己的 css 之后）：
+        <link rel="stylesheet" href="../../css/theme.css">
+
+   约定（全站唯一，勿改）：
+     · 按钮 id 固定为 btn-theme，一个页面只保留一个；
+     · 图标由本文件统一控制，按钮内部留空，不要在按钮里手写 emoji；
+     · 语义：浅色显示 🌙（点它进深色），深色显示 ☀️（点它回浅色）。
+   ============================================================ */
+
+/* ---- 过渡：切换时颜色和背景平滑变化（可选，不想要可删这段）---- */
+body,
+body *:not(svg):not(svg *) {
+  transition: background-color .25s ease, border-color .25s ease, color .25s ease;
+}
+
+/* ---- 暗色主题变量覆盖（护眼：暖深灰底 + 柔白字，非纯黑纯白）---- */
+body.theme-dark {
+  --cs-bg: #1a1815;
+  --cs-surface: #24211c;
+  --cs-surface-2: #2e2a23;
+  --cs-surface-3: #26231d;
+  --cs-surface-4: #38332a;
+  --cs-border: #3a352c;
+  --cs-border-2: #484136;
+  --cs-border-3: #484136;
+  --cs-text: #dcd6c9;
+  --cs-text-muted: #b3ab99;
+  --cs-text-faint: #8a8172;
+  --cs-accent: #c99a5b;
+  --cs-accent-2: #86b06a;
+  --cs-danger: #d4705c;
+
+  background: var(--cs-bg);
+  color: var(--cs-text);
+}
+
+/* ---- 暗色下把工具里写死的浅色拉回暗色（元素选择器兜底）---- */
+body.theme-dark .tool-page-header,
+body.theme-dark .tool-page-header h1,
+body.theme-dark .tool-page-header p { color: var(--cs-text); }
+body.theme-dark .tool-page-header a { color: var(--cs-accent); }
+
+body.theme-dark input,
+body.theme-dark textarea,
+body.theme-dark select,
+body.theme-dark .tt-input,
+body.theme-dark .tt-table,
+body.theme-dark .tt-sidebar,
+body.theme-dark .tt-toolbar,
+body.theme-dark .tt-preview-wrap,
+body.theme-dark .tt-empty-state,
+body.theme-dark .tt-drop-zone {
+  background-color: var(--cs-surface);
+  color: var(--cs-text);
+  border-color: var(--cs-border);
+}
+
+body.theme-dark .tt-btn,
+body.theme-dark .tt-mini-btn,
+body.theme-dark .tt-badge,
+body.theme-dark .tt-context-menu,
+body.theme-dark .ctx-item {
+  background-color: var(--cs-surface-2);
+  color: var(--cs-text);
+  border-color: var(--cs-border);
+}
+
+body.theme-dark .tt-context-menu .ctx-divider { border-color: var(--cs-border); }
+body.theme-dark .tt-context-menu .ctx-item.danger { color: var(--cs-danger); }
+body.theme-dark input:disabled,
+body.theme-dark button:disabled { opacity: .55; }
+
+/* ============================================================
+   右上角按钮区（全站位置统一）
+   给 header 加 theme-header 类后，.theme-actions 绝对定位到右上角，
+   脱离文档流，不影响标题、返回链接等原有布局。
+   ============================================================ */
+.theme-header { position: relative; }
+
+.theme-actions {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;         /* 以后加中英切换等按钮会自动横向排列 */
+}
+
+/* 通用图标按钮基础样式 */
+.cs-icon-btn {
+  cursor: pointer;
+  line-height: 1;
+  user-select: none;
+  border: 1px solid var(--cs-border, #ccc);
+  background: var(--cs-surface, #fff);
+  color: var(--cs-text, #333);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 15px;
+}
+.cs-icon-btn:hover { border-color: var(--cs-accent, #d4a05f); }
+
+/* ============================================================
+   主题图标（唯一规则，避免新旧两套并存导致显示反了/显示两个）
+   浅色 → 🌙（点击进深色）；深色 → ☀️（点击回浅色）
+   ============================================================ */
+/* 按钮内文本一律压成 0，彻底藏掉旧按钮里残留的文本 emoji（<button>🌙</button>） */
+#btn-theme { font-size: 0; }
+#btn-theme::before { content: '🌙'; font-size: 15px; }
+body.theme-dark #btn-theme::before { content: '☀️'; }
+
+/* 兜底：万一旧按钮里残留的是元素节点（<span>🌙</span>），一并隐藏 */
+#btn-theme > * { display: none !important; }
