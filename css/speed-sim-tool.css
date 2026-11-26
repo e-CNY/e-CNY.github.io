@@ -5,13 +5,27 @@
 @media (max-width: 800px) { .ss-container { flex-direction: column; } }
 
 /* 左侧侧边栏 */
-.ss-sidebar { width: 320px; flex-shrink: 0; background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.ss-sidebar { width: 320px; flex-shrink: 0; background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box; }
 .ss-section { display: flex; flex-direction: column; }
 .ss-sidebar h3 { font-size: .95rem; margin: 0 0 12px 0; color: #4b3f2f; border-bottom: 1px solid #e5d9bd; padding-bottom: 6px; font-weight: 600; }
 
+/* 表单行：label 固定宽度 + 控件占满剩余轨道，保证四行左右都对齐 */
 .ss-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.ss-row label { width: 85px; font-size: .85rem; color: #6b5d47; font-weight: 600; flex-shrink: 0; }
-.ss-row select, .ss-row input { flex: 1; padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fff; font-size: .85rem; outline: none; transition: border-color 0.15s; }
+.ss-row label { flex: 0 0 88px; width: 88px; min-width: 0; font-size: .8rem; color: #6b5d47; font-weight: 600; white-space: nowrap; }
+.ss-row select,
+.ss-row input {
+  flex: 1 1 0;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  border: 1px solid #d5c7a8;
+  border-radius: 6px;
+  background: #fff;
+  font-size: .85rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
 .ss-row select:focus, .ss-row input:focus { border-color: #8a5a2b; }
 
 /* 资源列表 */
