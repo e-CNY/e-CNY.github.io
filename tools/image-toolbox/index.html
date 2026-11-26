@@ -1,3 +1,4 @@
+<!-- 文件: tools/image-toolbox/index.html -->
 <!doctype html>
 <html lang="zh-CN">
 <head>
@@ -23,7 +24,6 @@
 </div>
 
 <main class="ic-tool" style="margin-top: 0;">
-  <!-- Tab 切换 -->
   <div class="ic-tabs">
     <button class="ic-tab active" data-target="panel-convert">📦 格式转换与压缩</button>
     <button class="ic-tab" data-target="panel-exif">🕵️ EXIF 查看与清除</button>
@@ -59,7 +59,7 @@
           </select>
         </div>
         <div class="ic-param-row" id="quality-row">
-          <label>压缩质量</label>
+          <label>压缩质量 <span class="ic-hint" style="font-weight:normal;"></span></label>
           <input type="range" id="ic-quality" min="10" max="100" value="80">
           <span id="ic-quality-val">80%</span>
         </div>
@@ -83,6 +83,10 @@
             <input type="number" id="ic-max-height" placeholder="高" value="1080" style="width:50%;">
           </div>
         </div>
+        <div class="ic-checkbox-row">
+          <input type="checkbox" id="ic-sharpen" checked>
+          <label for="ic-sharpen">锐化 <span class="ic-hint"></span></label>
+        </div>
       </div>
 
       <div class="ic-section">
@@ -103,6 +107,7 @@
     <div class="ic-layout" style="grid-template-columns: 1fr;">
       <div class="ic-drop-zone" id="exif-drop-zone" style="margin-bottom:20px;">
         <span>📁 点击 / 拖拽 / 粘贴一张图片查看 EXIF</span>
+        <span class="ic-hint">支持 GPS、相机参数等完整元数据查看</span>
       </div>
       <input id="exif-input" type="file" accept="image/*" hidden>
 
@@ -110,8 +115,9 @@
         <div class="exif-header">
           <div id="exif-preview"></div>
           <div class="exif-actions">
-            <p class="ic-hint">包含 GPS、相机型号、拍摄参数等隐私信息。</p>
+            <p class="ic-hint">包含 GPS、相机型号、拍摄参数等隐私信息。清理后重新导出可彻底移除。</p>
             <button id="btn-clean-exif" class="btn-clean-exif">🧹 一键清理元数据并下载</button>
+            <button id="btn-copy-exif" class="btn-copy-exif" disabled>📋 复制全部</button>
           </div>
         </div>
         <table class="exif-table" id="exif-table">
@@ -139,7 +145,7 @@
         <h2>2. 参数设置</h2>
         <div class="ic-param-row">
           <label>输出宽度 (字符数)</label>
-          <input type="range" id="ascii-width" min="40" max="200" value="100">
+          <input type="range" id="ascii-width" min="40" max="250" value="100">
           <span id="ascii-width-val">100</span>
         </div>
         <div class="ic-param-row">
@@ -148,6 +154,8 @@
             <option value="01">01 (黑白)</option>
             <option value="standard" selected>标准 ASCII</option>
             <option value="detailed">高精度 ASCII</option>
+            <option value="blocks">方块字符 █▓▒░</option>
+            <option value="blocks2">渐变字符 .:-=+*#%@</option>
             <option value="custom">自定义</option>
           </select>
         </div>
@@ -167,11 +175,12 @@
           <label style="margin:0;"><input type="checkbox" id="ascii-invert"> 反色</label>
           <label style="margin:0;"><input type="checkbox" id="ascii-color"> 彩色模式</label>
         </div>
-        
+
         <div style="display:flex; gap:8px; margin-top:12px;">
           <button id="ascii-btn-process" class="ic-btn-primary" style="flex:1;">▶️ 生成</button>
-          <button id="ascii-btn-copy" class="ic-btn-secondary" style="width:60px;" disabled>📋</button>
-          <button id="ascii-btn-download" class="ic-btn-secondary" style="width:60px;" disabled>💾</button>
+          <button id="ascii-btn-copy" class="ic-btn-secondary" style="width:52px;" disabled title="复制纯文本">📋</button>
+          <button id="ascii-btn-download" class="ic-btn-secondary" style="width:52px;" disabled title="下载 TXT">💾</button>
+          <button id="ascii-btn-html" class="ic-btn-secondary" style="width:52px;" disabled title="下载 HTML (保留颜色)">🌐</button>
         </div>
       </div>
     </aside>
@@ -192,6 +201,8 @@
 <script src="../../js/libs/UPNG.min.js"></script>
 <script src="../../js/libs/full.umd.js"></script>
 <script src="../../js/libs/jszip.min.js"></script>
+<script src="../../js/libs/pica.min.js"></script>
+<script src="../../js/libs/FileSaver.min.js"></script>
 <!-- 主体逻辑 -->
 <script src="../../js/image-toolbox.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

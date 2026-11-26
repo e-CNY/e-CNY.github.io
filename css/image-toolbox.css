@@ -1,3 +1,4 @@
+/* 文件: css/image-toolbox.css */
 .ic-tool { max-width: 1050px; margin: 0 auto; padding: 0 16px 56px; }
 .ic-header { text-align: center; margin-bottom: 28px; }
 .ic-header h1 { font-size: 1.6rem; margin: 0 0 8px; color: #3d3226; }
@@ -74,6 +75,12 @@
 .ic-param-row input[type="range"] { width: calc(100% - 40px); accent-color: #8a5a2b; vertical-align: middle; cursor: pointer; }
 .ic-param-row span { font-size: .85rem; color: #8a5a2b; display: inline-block; width: 35px; text-align: right; font-family: monospace; font-weight: 600; }
 
+/* 复选框样式 */
+.ic-checkbox-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+.ic-checkbox-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: #8a5a2b; cursor: pointer; margin: 0; }
+.ic-checkbox-row label { margin: 0; font-size: .85rem; color: #4b3f2f; cursor: pointer; font-weight: 600; }
+.ic-checkbox-row .ic-hint { font-size: .75rem; font-weight: normal; color: #8a7a5f; margin-left: 4px; }
+
 /* 按钮 */
 .ic-btn-primary, .ic-btn-secondary {
   width: 100%; padding: 10px 12px; border: none; border-radius: 8px;
@@ -99,6 +106,8 @@
 .ic-card-img { width: 100%; height: 140px; object-fit: contain; background: #fff; border-bottom: 1px solid #ddcfb3; }
 .ic-card-info { padding: 12px; font-size: .8rem; color: #3d3226; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
 .ic-card-info .name { font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 4px; }
+.ic-card-info .dim-info { font-size: .72rem; color: #8a7a5f; margin-bottom: 4px; font-family: monospace; }
+.ic-card-info .dim-info b { color: #4b7d3b; }
 .ic-card-info .size-diff { color: #7ba05b; font-weight: bold; }
 .ic-card-info .size-diff.up { color: #a8452a; }
 .ic-card-info a {
@@ -115,15 +124,23 @@
 .btn-clean-exif {
   display: inline-block; padding: 10px 20px; background: #a8452a; color: #fff;
   border: none; border-radius: 8px; font-size: .95rem; font-weight: bold;
-  cursor: pointer; margin-top: 12px; transition: background .15s;
+  cursor: pointer; margin-top: 12px; margin-right: 8px; transition: background .15s;
 }
 .btn-clean-exif:hover:not(:disabled) { background: #8c3620; }
 .btn-clean-exif:disabled { background: #c4b48f; cursor: not-allowed; }
+.btn-copy-exif {
+  display: inline-block; padding: 10px 20px; background: #fdf8ec; color: #3d3226;
+  border: 1px solid #d5c7a8; border-radius: 8px; font-size: .9rem; font-weight: 600;
+  cursor: pointer; margin-top: 12px; transition: background .15s;
+}
+.btn-copy-exif:hover:not(:disabled) { background: #f5ecd5; border-color: #b08a5a; }
+.btn-copy-exif:disabled { opacity: .5; cursor: not-allowed; }
 
 .exif-table { width: 100%; border-collapse: collapse; font-size: .85rem; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
 .exif-table th, .exif-table td { padding: 10px 14px; border: 1px solid #e5d9bd; text-align: left; word-break: break-all; }
 .exif-table thead th { background: #efe6d0; color: #4b3f2f; }
 .exif-table tbody th { background: #fdf8ec; color: #8a5a2b; width: 30%; }
+.exif-table tbody th.exif-category { background: #efe6d0; color: #4b3f2f; text-align: left; font-weight: bold; }
 .exif-table tr:hover td { background: #fcfcfc; }
 
 /* ASCII 专属样式 */

@@ -1,3 +1,4 @@
+<!-- 文件: tools/image-slicer/index.html -->
 <!doctype html>
 <html lang="zh-CN">
 <head>
@@ -44,6 +45,10 @@
       <input type="range" id="global-quality" min="30" max="100" value="92">
       <span id="global-quality-val">92%</span>
     </div>
+    <div class="setting-item">
+      <label>水印</label>
+      <input type="text" id="global-watermark" class="is-input" placeholder="留空则不添加" maxlength="60">
+    </div>
   </div>
 
   <div class="is-content">
@@ -55,15 +60,22 @@
           <input type="number" id="slice-rows" class="is-input" value="3" min="1" max="20" style="width:60px;">
           <span>列数：</span>
           <input type="number" id="slice-cols" class="is-input" value="3" min="1" max="20" style="width:60px;">
+          <span>倍率：</span>
+          <input type="number" id="slice-scale" class="is-input" value="100" min="10" max="400" step="10" style="width:64px;">%
+        </div>
+        <div class="toolbar-group">
+          <span>最大边长：</span>
+          <input type="number" id="slice-max-dim" class="is-input" value="0" min="0" step="10" style="width:80px;">
+          <small>0 表示不限制</small>
         </div>
         <button id="btn-slice" class="is-btn primary" disabled>✂️ 开始切图并打包下载</button>
       </div>
       <div id="slice-drop" class="is-drop-zone">
         <span>📁 点击 / 拖拽 / 粘贴一张大图到这里</span>
-        <small>支持 JPG / PNG / WebP</small>
+        <small>支持 JPG / PNG / WebP · 使用 pica 高质量缩放</small>
       </div>
       <input id="slice-input" type="file" accept="image/*" hidden>
-      
+
       <div class="is-preview-wrap">
         <div id="slice-preview" class="is-preview-grid"></div>
       </div>
@@ -87,19 +99,28 @@
           <span>背景：</span>
           <input type="color" id="long-bg" value="#ffffff" style="height:36px; padding:2px; border-radius:6px; border:1px solid #d5c7a8; cursor:pointer;">
         </div>
+        <div class="toolbar-group">
+          <label><input type="checkbox" id="long-unify"> 统一尺寸</label>
+          <input type="number" id="long-target" class="is-input" value="0" min="0" style="width:80px;" placeholder="0=自动" title="统一宽度(纵向) / 统一高度(横向)">
+          <span>圆角：</span>
+          <input type="number" id="long-radius" class="is-input" value="0" min="0" max="200" style="width:60px;">
+          <span>倍率：</span>
+          <input type="number" id="long-scale" class="is-input" value="100" min="10" max="400" step="10" style="width:64px;">%
+        </div>
         <button id="btn-long" class="is-btn primary" disabled>▶️ 开始拼接并下载</button>
         <button id="btn-long-clear" class="is-btn">🗑️ 清空</button>
       </div>
-      
+
       <div id="long-drop" class="is-drop-zone">
         <span>📁 点击 / 拖拽 / 粘贴多张图片 (支持多选)</span>
+        <small>支持统一尺寸 · 圆角 · 倍率缩放 · 水印</small>
       </div>
       <input id="long-input" type="file" accept="image/*" multiple hidden>
-      
+
       <div class="is-list-wrap">
         <ul id="long-list" class="is-file-list"></ul>
       </div>
-      
+
       <div class="is-preview-wrap">
         <canvas id="long-canvas"></canvas>
         <div id="long-empty" class="is-empty-hint">请上传图片以预览</div>
@@ -115,23 +136,34 @@
           <span>间距：</span>
           <input type="number" id="grid-gap" class="is-input" value="10" min="0" max="100" style="width:60px;">
           <span>圆角：</span>
-          <input type="number" id="grid-radius" class="is-input" value="0" min="0" max="100" style="width:60px;">
+          <input type="number" id="grid-radius" class="is-input" value="0" min="0" max="200" style="width:60px;">
           <span>背景：</span>
           <input type="color" id="grid-bg" value="#ffffff" style="height:36px; padding:2px; border-radius:6px; border:1px solid #d5c7a8; cursor:pointer;">
+        </div>
+        <div class="toolbar-group">
+          <span>格子：</span>
+          <select id="grid-cell-mode" class="is-select">
+            <option value="auto">自动（最大图片）</option>
+            <option value="fixed">固定尺寸</option>
+          </select>
+          <input type="number" id="grid-cell-size" class="is-input" value="400" min="20" style="width:80px; display:none;">
+          <span>倍率：</span>
+          <input type="number" id="grid-scale" class="is-input" value="100" min="10" max="400" step="10" style="width:64px;">%
         </div>
         <button id="btn-grid" class="is-btn primary" disabled>▶️ 开始拼图并下载</button>
         <button id="btn-grid-clear" class="is-btn">🗑️ 清空</button>
       </div>
-      
+
       <div id="grid-drop" class="is-drop-zone">
         <span>📁 点击 / 拖拽 / 粘贴多张图片 (按顺序拼接)</span>
+        <small>支持固定格子尺寸 · 圆角 · 倍率缩放 · 水印</small>
       </div>
       <input id="grid-input" type="file" accept="image/*" multiple hidden>
-      
+
       <div class="is-list-wrap">
         <ul id="grid-list" class="is-file-list"></ul>
       </div>
-      
+
       <div class="is-preview-wrap">
         <canvas id="grid-canvas"></canvas>
         <div id="grid-empty" class="is-empty-hint">请上传图片以预览</div>
@@ -142,6 +174,7 @@
 
 <div id="toast" class="toast"></div>
 
+<script src="../../js/libs/pica.min.js"></script>
 <script src="../../js/libs/jszip.min.js"></script>
 <script src="../../js/image-slicer.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

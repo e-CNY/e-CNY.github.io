@@ -1,3 +1,4 @@
+/* 文件: css/image-slicer.css */
 .is-layout { max-width: 1100px; margin: 0 auto; padding: 28px 16px 56px; }
 
 /* Tabs */
@@ -14,6 +15,7 @@
 .setting-item { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: #3d3226; font-weight: 600; }
 .setting-item input[type="range"] { accent-color: #8a5a2b; width: 100px; cursor: pointer; }
 .setting-item span { font-family: monospace; color: #8a5a2b; min-width: 36px; text-align: right; }
+.setting-item input[type="text"].is-input { width: 140px; }
 
 /* 主内容区 */
 .is-content { background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px; padding: 24px; }
@@ -25,6 +27,9 @@
 .is-toolbar { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
 .toolbar-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #fff; padding: 6px 12px; border-radius: 8px; border: 1px solid #e5d9bd; font-size: .85rem; font-weight: 600; color: #4b3f2f; }
 .toolbar-group input[type="number"] { text-align: center; }
+.toolbar-group label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; }
+.toolbar-group input[type="checkbox"] { width: 16px; height: 16px; accent-color: #8a5a2b; cursor: pointer; margin: 0; }
+.toolbar-group small { color: #8a7a5f; font-weight: normal; font-size: .75rem; }
 
 .is-select, .is-input { padding: 8px; border: 1px solid #d5c7a8; border-radius: 6px; background: #fff; font-size: .85rem; outline: none; box-sizing: border-box; }
 .is-select:focus, .is-input:focus { border-color: #8a5a2b; }
