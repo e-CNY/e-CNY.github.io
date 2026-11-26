@@ -18,28 +18,74 @@
 <!-- __THEME_INJECT_END__ -->
 
   <h1>🔣 图标符号Emoji</h1>
-  <p>收录常用开发与设计 Emoji，一键检索并复制 Unicode 或 HTML 代码。</p>
+  <p>收录 300+ 常用开发与设计 Emoji，支持检索、多种格式一键复制、收藏与最近使用。</p>
   <a href="../../index.html">← 返回工具站</a>
 </header>
 
 <main class="ic-layout" style="padding-top: 0;">
-  <div class="ic-search-wrap">
-    <input type="text" id="ic-search" class="ic-search" placeholder="搜索图标名称（如 笑脸, 代码, 箭头）或直接输入字符...">
+
+  <!-- 工具栏 -->
+  <div class="ic-toolbar">
+    <div class="ic-search-wrap">
+      <input type="text" id="ic-search" class="ic-search"
+             placeholder="搜索名称 / 关键词 / Unicode 码点，或直接粘贴字符…">
+      <button type="button" class="ic-search-clear" id="ic-search-clear" title="清空">×</button>
+    </div>
+
+    <div class="ic-tools">
+      <div class="ic-tool-group">
+        <label>复制格式</label>
+        <select id="ic-copy-format" class="ic-select">
+          <option value="char">字符</option>
+          <option value="cp">Unicode 码点</option>
+          <option value="htmlD">HTML 十进制</option>
+          <option value="htmlH">HTML 十六进制</option>
+          <option value="css">CSS 转义</option>
+          <option value="js">JS 转义</option>
+          <option value="url">URL 编码</option>
+        </select>
+      </div>
+      <div class="ic-tool-group">
+        <label>视图</label>
+        <button type="button" class="ic-mini ic-view-btn active" data-view="grid">网格</button>
+        <button type="button" class="ic-mini ic-view-btn" data-view="list">列表</button>
+      </div>
+      <div class="ic-tool-group">
+        <label>大小</label>
+        <button type="button" class="ic-mini ic-size-btn" data-size="sm">小</button>
+        <button type="button" class="ic-mini ic-size-btn active" data-size="md">中</button>
+        <button type="button" class="ic-mini ic-size-btn" data-size="lg">大</button>
+      </div>
+      <button type="button" class="ic-btn" id="ic-random">🎲 随机</button>
+    </div>
   </div>
 
-  <div class="ic-tabs" id="ic-categories">
-    <button class="ic-cat active" data-cat="all">全部</button>
-    <button class="ic-cat" data-cat="face">表情</button>
-    <button class="ic-cat" data-cat="tech">开发与技术</button>
-    <button class="ic-cat" data-cat="nature">自然</button>
-    <button class="ic-cat" data-cat="symbol">符号</button>
-    <button class="ic-cat" data-cat="object">物品</button>
-  </div>
+  <div class="ic-stats">共 <b id="ic-count">0</b> 个图标</div>
 
-  <div class="ic-grid" id="ic-grid">
-    <!-- JS 生成图标卡片 -->
-  </div>
+  <div class="ic-tabs" id="ic-categories"></div>
+
+  <div class="ic-grid" id="ic-grid" data-size="md"></div>
 </main>
+
+<!-- 详情弹窗 -->
+<div class="ic-modal" id="ic-modal">
+  <div class="ic-modal-content" id="ic-modal-content">
+    <button type="button" class="ic-modal-close" id="ic-modal-close" title="关闭">×</button>
+    <div class="ic-modal-header">
+      <div class="ic-modal-char" id="ic-modal-char">?</div>
+      <div class="ic-modal-title">
+        <h3 id="ic-modal-name">—</h3>
+        <p id="ic-modal-cp">—</p>
+      </div>
+    </div>
+    <div class="ic-modal-actions">
+      <button type="button" id="ic-modal-fav">☆ 收藏</button>
+      <button type="button" id="ic-modal-png">📥 导出 PNG</button>
+    </div>
+    <div class="ic-fmt-list" id="ic-fmt-list"></div>
+  </div>
+</div>
+
 <script src="../../js/icon-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

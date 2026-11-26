@@ -112,7 +112,7 @@
     // === 11. 趣味 ===
     { name: '幸运抽奖大转盘', emoji: '🎡', desc: '输入名单 · 一键抽奖 · 多人抽取', href: 'tools/wheel/index.html', category: '趣味' },
     { name: '全功能数学绘图', emoji: '📈', desc: '显函数、参数方程、极坐标、隐函数、向量场、曲面', href: 'tools/math-plot/index.html', category: '趣味' },
-    { name: '图标符号Emoji', emoji: '🔣', desc: '一键检索复制符号', href: 'tools/icon-tool/index.html', category: '趣味' },
+    { name: '图标符号Emoji', emoji: '🔣', desc: '300+常用开设计，支持检索、多种格式一键复制、收藏', href: 'tools/icon-tool/index.html', category: '趣味' },
     { name: '生辰历法计算器', emoji: '📆', desc: '公历农历转换 / 天干地支查询', href: 'tools/calculate/index.html', category: '趣味' }
   ];
 

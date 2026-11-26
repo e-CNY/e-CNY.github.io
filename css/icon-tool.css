@@ -1,19 +1,236 @@
-.ic-layout { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+/* ==================== 布局 ==================== */
+.ic-layout { max-width: 1100px; margin: 0 auto; padding: 0 16px 56px; }
 
-.ic-search-wrap { margin-bottom: 20px; }
-.ic-search { width: 100%; padding: 14px 20px; border: 2px solid #d5c7a8; border-radius: 30px; font-size: 1rem; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.03); transition: all .2s; box-sizing: border-box; }
-.ic-search:focus { outline: none; border-color: #8a5a2b; box-shadow: 0 4px 16px rgba(138,90,43,.15); }
+/* ==================== 工具栏 ==================== */
+.ic-toolbar {
+  display: flex; flex-direction: column; gap: 12px;
+  background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 14px;
+  padding: 16px; margin-bottom: 14px;
+}
+.ic-search-wrap { position: relative; }
+.ic-search {
+  width: 100%; padding: 12px 44px 12px 18px;
+  border: 2px solid #d5c7a8; border-radius: 24px;
+  font-size: 1rem; background: #fff; box-sizing: border-box;
+  outline: none; transition: all .2s;
+}
+.ic-search:focus { border-color: #8a5a2b; box-shadow: 0 0 0 3px rgba(138,90,43,.15); }
+.ic-search-clear {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 28px; border-radius: 50%;
+  border: none; background: #efe6d0; color: #6b5d47;
+  cursor: pointer; font-size: 1rem; line-height: 1;
+  display: none; padding: 0;
+}
+.ic-search-wrap.has-value .ic-search-clear { display: flex; align-items: center; justify-content: center; }
 
-.ic-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
-.ic-cat { padding: 6px 16px; border-radius: 20px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #6b5d47; font-size: .85rem; cursor: pointer; transition: all .15s; }
-.ic-cat.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: bold; }
+.ic-tools {
+  display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+  font-size: .85rem; color: #6b5d47;
+}
+.ic-tool-group { display: flex; align-items: center; gap: 6px; }
+.ic-tool-group > label { font-weight: 600; font-size: .82rem; white-space: nowrap; }
+.ic-select {
+  padding: 6px 10px; border-radius: 6px; border: 1px solid #d5c7a8;
+  background: #fff; font-size: .85rem; outline: none; cursor: pointer;
+}
+.ic-mini {
+  padding: 5px 12px; border-radius: 6px; border: 1px solid #d5c7a8;
+  background: #fff; color: #6b5d47; cursor: pointer;
+  font-size: .82rem; font-weight: 600;
+}
+.ic-mini:hover { border-color: #b08a5a; }
+.ic-mini.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; }
+.ic-btn {
+  padding: 7px 14px; border-radius: 6px; border: none;
+  background: #7ba05b; color: #fff; cursor: pointer;
+  font-size: .85rem; font-weight: 600;
+}
+.ic-btn:hover { background: #6b8c4e; }
 
-.ic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; background: #f9f3e3; padding: 20px; border-radius: 14px; border: 1px solid #ddcfb3; }
+/* ==================== 统计 / 分类 ==================== */
+.ic-stats {
+  font-size: .85rem; color: #8a7a5f;
+  text-align: right; margin-bottom: 10px;
+}
+.ic-stats b { color: #8a5a2b; }
 
-.ic-card { background: #fff; border: 1px solid #e5d9bd; border-radius: 10px; aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all .2s; position: relative; }
-.ic-card:hover { border-color: #8a5a2b; box-shadow: 0 4px 12px rgba(138,90,43,.15); transform: translateY(-2px); }
-.ic-char { font-size: 2.2rem; line-height: 1; margin-bottom: 8px; }
-.ic-name { font-size: .7rem; color: #6b5d47; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 6px; }
+.ic-tabs {
+  display: flex; justify-content: center; flex-wrap: wrap;
+  gap: 6px; margin-bottom: 16px;
+}
+.ic-cat {
+  padding: 6px 14px; border-radius: 16px; border: 1px solid #d5c7a8;
+  background: #fdf8ec; color: #6b5d47; font-size: .84rem;
+  cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.ic-cat:hover { border-color: #b08a5a; }
+.ic-cat.active { background: #8a5a2b; color: #fff; border-color: #8a5a2b; font-weight: 600; }
 
-.ic-toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #3d3226; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: .9rem; opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 100; }
-.ic-toast.show { opacity: 1; }
+/* ==================== 网格 ==================== */
+.ic-grid {
+  display: grid; gap: 10px;
+  background: #f9f3e3; padding: 16px;
+  border-radius: 14px; border: 1px solid #ddcfb3;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  min-height: 200px;
+}
+.ic-grid[data-size="sm"] { grid-template-columns: repeat(auto-fill, minmax(74px, 1fr)); }
+.ic-grid[data-size="lg"] { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+
+.ic-grid.ic-list { grid-template-columns: 1fr; gap: 6px; }
+.ic-grid.ic-list .ic-card {
+  aspect-ratio: auto; flex-direction: row;
+  justify-content: flex-start; padding: 8px 16px;
+  gap: 12px; text-align: left;
+}
+.ic-grid.ic-list .ic-char { margin: 0; }
+.ic-grid.ic-list .ic-name { text-align: left; width: auto; }
+
+.ic-card {
+  background: #fff; border: 1px solid #e5d9bd; border-radius: 10px;
+  aspect-ratio: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer; position: relative; padding: 8px;
+  box-sizing: border-box;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+.ic-card:hover {
+  border-color: #8a5a2b;
+  box-shadow: 0 4px 14px rgba(138,90,43,.15);
+  transform: translateY(-2px);
+}
+.ic-card:active { transform: translateY(0); }
+
+.ic-char {
+  font-size: 2rem; line-height: 1; margin-bottom: 6px;
+  font-family: "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Segoe UI Symbol", sans-serif;
+  user-select: none;
+}
+.ic-grid[data-size="sm"] .ic-char { font-size: 1.5rem; }
+.ic-grid[data-size="lg"] .ic-char { font-size: 2.8rem; }
+
+.ic-name {
+  font-size: .68rem; color: #6b5d47; text-align: center;
+  width: 100%; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; padding: 0 4px;
+}
+.ic-grid[data-size="lg"] .ic-name { font-size: .78rem; }
+
+.ic-more {
+  position: absolute; top: 4px; right: 4px;
+  width: 22px; height: 22px; border-radius: 50%;
+  border: none; background: rgba(0,0,0,.06);
+  color: #6b5d47; font-size: .95rem; line-height: 1;
+  cursor: pointer; opacity: 0; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .15s, background .15s;
+}
+.ic-card:hover .ic-more { opacity: 1; }
+.ic-more:hover { background: #8a5a2b; color: #fff; }
+
+.ic-empty {
+  grid-column: 1 / -1;
+  text-align: center; padding: 60px 20px;
+  color: #8a7a5f; font-size: 1rem;
+}
+
+/* ==================== 弹窗 ==================== */
+.ic-modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5);
+  display: none; align-items: center; justify-content: center;
+  z-index: 1000; padding: 20px;
+}
+.ic-modal.open { display: flex; }
+.ic-modal-content {
+  background: #fdf8ec; border-radius: 14px; padding: 22px;
+  width: 100%; max-width: 500px; max-height: 88vh;
+  overflow-y: auto; box-sizing: border-box;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  position: relative;
+}
+.ic-modal-close {
+  position: absolute; top: 10px; right: 12px;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: none; background: #efe6d0; color: #6b5d47;
+  font-size: 1.2rem; cursor: pointer; padding: 0; line-height: 1;
+}
+.ic-modal-close:hover { background: #d5c7a8; }
+
+.ic-modal-header {
+  display: flex; align-items: center; gap: 18px;
+  margin-bottom: 16px; padding-bottom: 16px;
+  border-bottom: 1px solid #ddcfb3;
+}
+.ic-modal-char {
+  font-size: 4.5rem; line-height: 1;
+  font-family: "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji", sans-serif;
+  user-select: none;
+}
+.ic-modal-title h3 { margin: 0 0 4px; font-size: 1.15rem; color: #3d3226; }
+.ic-modal-title p {
+  margin: 0; font-size: .82rem; color: #8a7a5f;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  word-break: break-all;
+}
+
+.ic-modal-actions {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.ic-modal-actions button {
+  padding: 8px 16px; border-radius: 8px; border: 1px solid #d5c7a8;
+  background: #fff; color: #6b5d47; cursor: pointer;
+  font-size: .88rem; font-weight: 600;
+}
+.ic-modal-actions button:hover { border-color: #b08a5a; }
+.ic-modal-actions button.active {
+  background: #f5c518; color: #3d3226; border-color: #d4a017;
+}
+
+.ic-fmt-list { display: flex; flex-direction: column; gap: 6px; }
+.ic-fmt-row {
+  display: flex; align-items: center; gap: 8px;
+  background: #fff; border: 1px solid #e5d9bd;
+  border-radius: 8px; padding: 8px 10px;
+}
+.ic-fmt-label {
+  font-size: .8rem; font-weight: 600; color: #6b5d47;
+  min-width: 96px; flex-shrink: 0;
+}
+.ic-fmt-val {
+  flex: 1; min-width: 0;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: .82rem; color: #3d3226;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ic-fmt-copy {
+  padding: 5px 12px; border-radius: 6px; border: 1px solid #7ba05b;
+  background: #7ba05b; color: #fff; cursor: pointer;
+  font-size: .8rem; font-weight: 600; flex-shrink: 0;
+}
+.ic-fmt-copy:hover { background: #6b8c4e; }
+
+/* ==================== Toast ==================== */
+.ic-toast {
+  position: fixed; bottom: 30px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #3d3226; color: #fff;
+  padding: 10px 22px; border-radius: 20px;
+  font-size: .88rem; max-width: 80vw;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s, transform .25s;
+  z-index: 2000;
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+}
+.ic-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 640px) {
+  .ic-layout { padding: 0 10px 40px; }
+  .ic-tools { gap: 8px; }
+  .ic-modal-header { flex-direction: column; text-align: center; gap: 8px; }
+  .ic-modal-char { font-size: 3.5rem; }
+  .ic-fmt-label { min-width: 70px; font-size: .75rem; }
+}
