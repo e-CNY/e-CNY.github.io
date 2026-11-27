@@ -38,6 +38,18 @@
 }
 .sv-textarea:focus { border-color: #8a5a2b; box-shadow: 0 0 0 2px rgba(138,90,43,.1); }
 
+/* 调色板 */
+.sv-palette-container {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  background: #f9f3e3; border: 1px solid #ddcfb3; border-radius: 8px; padding: 8px 12px;
+}
+.sv-palette { display: flex; flex-wrap: wrap; gap: 6px; }
+.sv-color-swatch {
+  width: 24px; height: 24px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.1);
+  cursor: pointer; transition: transform 0.1s; box-sizing: border-box;
+}
+.sv-color-swatch:hover { transform: scale(1.2); box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+
 .sv-preview-wrap { 
   flex: 1; background: #fff; border: 1px solid #d5c7a8; border-radius: 12px; padding: 20px; 
   overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; 

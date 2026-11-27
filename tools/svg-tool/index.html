@@ -29,8 +29,10 @@
       <div class="sv-panel-header">
         <h2>📝 代码编辑</h2>
         <div class="sv-toolbar">
-          <button id="btn-format" class="sv-btn">格式化</button>
-          <button id="btn-minify" class="sv-btn">压缩</button>
+          <button id="btn-format" class="sv-btn" title="格式化代码并美化内联 CSS">格式化</button>
+          <button id="btn-minify" class="sv-btn" title="移除注释、换行和多余空格">压缩</button>
+          <button id="btn-optimize" class="sv-btn" title="使用 Snap.svg 移除无用属性和节点">清理优化</button>
+          <button id="btn-datauri" class="sv-btn" title="转为 Base64 Data URI 并复制">转 DataURI</button>
           <button id="btn-copy" class="sv-btn">复制</button>
           <button id="btn-clear" class="sv-btn danger">清空</button>
         </div>
@@ -45,12 +47,19 @@
       <div class="sv-panel-header">
         <h2>👁️ 实时预览</h2>
         <div class="sv-toolbar">
+          <button id="btn-extract-color" class="sv-btn" title="提取 SVG 中使用的所有颜色">🎨 提取颜色</button>
           <select id="sv-bg-mode" class="sv-select">
             <option value="transparent">棋盘格背景</option>
             <option value="white">纯白背景</option>
             <option value="black">纯黑背景</option>
           </select>
         </div>
+      </div>
+
+      <!-- 颜色调色板展示区 -->
+      <div id="sv-palette-container" class="sv-palette-container" style="display: none;">
+        <span style="font-size: 0.8rem; font-weight: bold; color: #6b5d47; margin-right: 8px;">点击复制:</span>
+        <div id="sv-palette" class="sv-palette"></div>
       </div>
 
       <div class="sv-preview-wrap" id="sv-preview-wrap">
@@ -90,6 +99,9 @@
 
 <div id="toast" class="toast"></div>
 
+<!-- 依赖库 -->
+<script src="../../js/libs/snap.svg-min.js"></script>
+<script src="../../js/libs/beautify-css.min.js"></script>
 <script src="../../js/svg-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

@@ -1,6 +1,10 @@
 (function () {
   'use strict';
 
+  // ================== 依赖检测 ==================
+  var pica = window.pica ? window.pica() : null;
+  if (!window.saveAs) console.warn('FileSaver 未加载');
+
   // ================== 通用工具 ==================
   var toastEl = document.getElementById('toast');
   var toastTimer = null;
@@ -9,17 +13,33 @@
     toastEl.textContent = msg;
     toastEl.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1600);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function(resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? resolve() : reject(); }
+      catch(e) { reject(e); }
+      document.body.removeChild(ta);
+    });
   }
 
   function downloadBlob(blob, filename) {
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url; a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+    if (window.saveAs) {
+      window.saveAs(blob, filename);
+    } else {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+    }
   }
 
   // ================== 尺寸定义 ==================
@@ -45,6 +65,7 @@
 
   // 图片控件
   var imgFitMode = document.getElementById('imgFitMode');
+  var imgFilter = document.getElementById('imgFilter');
   var imgBgColor = document.getElementById('imgBgColor');
   var imgBgColorVal = document.getElementById('imgBgColorVal');
   var imgBgTransparent = document.getElementById('imgBgTransparent');
@@ -58,6 +79,7 @@
   var fontName = document.getElementById('fontName');
   var bgColor = document.getElementById('bgColor');
   var fgColor = document.getElementById('fgColor');
+  var textEffect = document.getElementById('textEffect');
   var fontWeight = document.getElementById('fontWeight');
   var radiusEl = document.getElementById('radius');
   var radiusVal = document.getElementById('radiusVal');
@@ -76,6 +98,7 @@
   var currentCanvases = {};     // { 16: canvas, 32: canvas, ... }
   var customFontName = '';      
   var icoBlobCache = null;      // 缓存生成的 ICO 文件 Blob
+  var isRendering = false;
 
   // ================== 1. Tab 切换 ==================
   tabs.forEach(function (tab) {
@@ -167,17 +190,20 @@
     reader.readAsArrayBuffer(file);
   });
 
-  // ================== 4. 实时预览与渲染逻辑 ==================
+  // ================== 4. 实时预览与渲染逻辑 (Pica) ==================
   var debounceTimer;
   function updateUI() {
     clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(renderAll, 50);
+    debounceTimer = setTimeout(function() {
+      if (!isRendering) renderAll();
+    }, 100);
   }
 
-  function renderAll() {
-    previewGrid.innerHTML = '';
+  async function renderAll() {
+    isRendering = true;
+    previewGrid.innerHTML = '<div style="padding:20px;color:#8a5a2b;font-weight:bold;">⏳ 正在高质量渲染中...</div>';
     currentCanvases = {};
-    icoBlobCache = null; // 重置缓存
+    icoBlobCache = null; 
     
     var hasData = (currentMode === 'image') ? !!sourceImage : true;
     downloadZipBtn.disabled = !hasData;
@@ -186,34 +212,56 @@
     if (!hasData) {
       emptyHint.style.display = 'block';
       codeSection.hidden = true;
+      isRendering = false;
       return;
     }
+    
     emptyHint.style.display = 'none';
     codeSection.hidden = false;
 
-    // 循环生成所有预览尺寸
-    PREVIEW_SIZES.forEach(function (size) {
-      var canvas = generateCanvas(size);
+    // 1. 生成基础的高清主画布 (使用最大的 512)
+    var highResCanvas = generateHighResCanvas(512);
+
+    // 2. 使用 Pica 批量缩小到目标尺寸
+    var renderPromises = PREVIEW_SIZES.map(async function (size) {
+      var canvas = await resizeWithPica(highResCanvas, size);
       currentCanvases[size] = canvas;
-      previewGrid.appendChild(makePreviewItem(canvas, size, false));
+      return { canvas: canvas, size: size };
     });
 
-    // 生成用于下载的完整尺寸
-    SIZES.forEach(function (s) {
-      if (!currentCanvases[s.width]) {
-        currentCanvases[s.width] = generateCanvas(s.width);
+    try {
+      var results = await Promise.all(renderPromises);
+      
+      previewGrid.innerHTML = '';
+      // 渲染预览区
+      results.forEach(function (res) {
+        previewGrid.appendChild(makePreviewItem(res.canvas, res.size, false));
+      });
+
+      // ICO 预览
+      if (currentCanvases[48]) {
+        previewGrid.appendChild(makePreviewItem(currentCanvases[48], 'ICO 格式', true));
       }
-    });
 
-    // 生成 ICO 预览（借用 48 尺寸的图标作为预览，但点击下载 ICO）
-    if (currentCanvases[48]) {
-      previewGrid.appendChild(makePreviewItem(currentCanvases[48], 'ICO 格式', true));
+      // 异步生成所有完整尺寸用于下载
+      var allSizesPromises = SIZES.map(async function (s) {
+        if (!currentCanvases[s.width]) {
+          currentCanvases[s.width] = await resizeWithPica(highResCanvas, s.width);
+        }
+      });
+      await Promise.all(allSizesPromises);
+
+      renderCode();
+    } catch (err) {
+      console.error(err);
+      previewGrid.innerHTML = '<div style="padding:20px;color:#a8452a;">渲染失败，请检查控制台</div>';
+    } finally {
+      isRendering = false;
     }
-
-    renderCode();
   }
 
-  function generateCanvas(size) {
+  // 统一绘制大图 (512x512)
+  function generateHighResCanvas(size) {
     var canvas = document.createElement('canvas');
     canvas.width = size; canvas.height = size;
     var ctx = canvas.getContext('2d');
@@ -222,6 +270,12 @@
       if (!imgBgTransparent.checked) {
         ctx.fillStyle = imgBgColor.value;
         ctx.fillRect(0, 0, size, size);
+      }
+      
+      // 应用滤镜
+      var filterVal = imgFilter.value;
+      if (filterVal !== 'none') {
+        ctx.filter = filterVal;
       }
       
       var fit = imgFitMode.value;
@@ -270,13 +324,59 @@
 
       var fontSize = size * (text.length === 1 ? 0.6 : 0.45);
       ctx.font = fw + ' ' + fontSize + 'px ' + ff;
-      ctx.fillStyle = fg;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+      
+      var effect = textEffect.value;
+      
+      if (effect === 'shadow' || effect === 'both') {
+        ctx.shadowColor = 'rgba(0,0,0,0.4)';
+        ctx.shadowBlur = size * 0.08;
+        ctx.shadowOffsetX = size * 0.02;
+        ctx.shadowOffsetY = size * 0.04;
+      }
+      
+      if (effect === 'stroke' || effect === 'both') {
+        ctx.strokeStyle = bg;
+        ctx.lineWidth = size * 0.06;
+        ctx.lineJoin = 'round';
+        ctx.strokeText(text, size / 2, size / 2 + fontSize * 0.05);
+      }
+      
+      ctx.fillStyle = fg;
       ctx.fillText(text, size / 2, size / 2 + fontSize * 0.05);
     }
     
     return canvas;
+  }
+
+  // 使用 Pica 高质量缩放
+  function resizeWithPica(sourceCanvas, targetSize) {
+    return new Promise(function(resolve) {
+      var targetCanvas = document.createElement('canvas');
+      targetCanvas.width = targetSize;
+      targetCanvas.height = targetSize;
+
+      if (!pica) {
+        // 降级方案
+        var ctx = targetCanvas.getContext('2d');
+        ctx.drawImage(sourceCanvas, 0, 0, targetSize, targetSize);
+        return resolve(targetCanvas);
+      }
+
+      pica.resize(sourceCanvas, targetCanvas, {
+        unsharpAmount: 80,
+        unsharpRadius: 0.6,
+        unsharpThreshold: 2
+      }).then(function() {
+        resolve(targetCanvas);
+      }).catch(function() {
+        // 降级方案
+        var ctx = targetCanvas.getContext('2d');
+        ctx.drawImage(sourceCanvas, 0, 0, targetSize, targetSize);
+        resolve(targetCanvas);
+      });
+    });
   }
 
   function drawRoundedRect(ctx, x, y, w, h, r) {
@@ -295,7 +395,6 @@
     wrap.className = 'preview-item' + (isIco ? ' ico-item' : '');
     wrap.title = isIco ? '点击下载 favicon.ico (内含多尺寸)' : '点击下载 ' + sizeLabel + 'x' + sizeLabel;
     
-    // 修复：每次生成一个全新的 canvas 副本用于显示，防止原 canvas 被 DOM 移走
     var displayCanvas = document.createElement('canvas');
     var maxDisplay = 128;
     
@@ -334,7 +433,6 @@
 
   // ================== 5. 核心：生成 ICO 格式 ==================
   function generateIcoBlob(canvases) {
-    // ICO 标准容器，通常包含 16, 32, 48, 64
     var icoSizes = [16, 32, 48, 64];
     var pngBuffers = [];
     
@@ -363,26 +461,23 @@
       var icoView = new DataView(icoBuffer);
       var icoBytes = new Uint8Array(icoBuffer);
 
-      // 1. ICONDIR (文件头)
-      icoView.setUint16(0, 0, true); // Reserved
-      icoView.setUint16(2, 1, true); // Type (1 = ICO)
-      icoView.setUint16(4, validImages.length, true); // Count
+      icoView.setUint16(0, 0, true);
+      icoView.setUint16(2, 1, true);
+      icoView.setUint16(4, validImages.length, true);
 
       var offset = 6;
       var imageOffset = 6 + validImages.length * 16;
 
-      // 2. ICONDIRENTRY (每个图片的目录信息) 和 实际数据
       validImages.forEach(function(img) {
         icoView.setUint8(offset, img.size === 256 ? 0 : img.size);
         icoView.setUint8(offset + 1, img.size === 256 ? 0 : img.size);
-        icoView.setUint8(offset + 2, 0); // ColorCount
-        icoView.setUint8(offset + 3, 0); // Reserved
-        icoView.setUint16(offset + 4, 1, true); // Planes
-        icoView.setUint16(offset + 6, 32, true); // BitCount
-        icoView.setUint32(offset + 8, img.buffer.byteLength, true); // BytesInRes
-        icoView.setUint32(offset + 12, imageOffset, true); // ImageOffset
+        icoView.setUint8(offset + 2, 0);
+        icoView.setUint8(offset + 3, 0);
+        icoView.setUint16(offset + 4, 1, true);
+        icoView.setUint16(offset + 6, 32, true);
+        icoView.setUint32(offset + 8, img.buffer.byteLength, true);
+        icoView.setUint32(offset + 12, imageOffset, true);
 
-        // 写入 PNG 二进制数据
         icoBytes.set(new Uint8Array(img.buffer), imageOffset);
 
         offset += 16;
@@ -397,6 +492,7 @@
     if (icoBlobCache) {
       downloadBlob(icoBlobCache, 'favicon.ico');
       showToast('favicon.ico 已下载');
+      copyIcoBase64(icoBlobCache);
       return;
     }
     
@@ -406,7 +502,21 @@
       icoBlobCache = blob;
       downloadBlob(blob, 'favicon.ico');
       showToast('favicon.ico 已下载');
+      copyIcoBase64(blob);
     });
+  }
+
+  function copyIcoBase64(blob) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var b64 = e.target.result;
+      copyText(b64).then(function() {
+        showToast('ICO 下载成功，Base64 已复制到剪贴板');
+      }).catch(function(){
+        showToast('ICO 下载成功 (Base64 复制失败)');
+      });
+    };
+    reader.readAsDataURL(blob);
   }
 
   // ================== 6. 代码与清单 ==================
@@ -422,7 +532,7 @@
   }
 
   copyCodeBtn.addEventListener('click', function () {
-    navigator.clipboard.writeText(htmlCodeEl.textContent).then(function () {
+    copyText(htmlCodeEl.textContent).then(function () {
       showToast('代码已复制');
     }).catch(function() {
       showToast('复制失败');
@@ -440,7 +550,6 @@
 
     var tasks = [];
 
-    // 1. 添加 PNG 尺寸
     SIZES.forEach(function (s) {
       var canvas = currentCanvases[s.width];
       if (!canvas) return;
@@ -448,7 +557,6 @@
       folder.file(s.name, dataUrl.split(',')[1], { base64: true });
     });
 
-    // 2. 添加 WebP 格式
     var webpCanvas = currentCanvases[128] || currentCanvases[48];
     if (webpCanvas) {
       tasks.push(new Promise(function(resolve) {
@@ -459,7 +567,6 @@
       }));
     }
 
-    // 3. 添加 ICO 格式
     tasks.push(new Promise(function(resolve) {
       generateIcoBlob(currentCanvases).then(function(blob) {
         if (blob) folder.file('favicon.ico', blob);
@@ -467,7 +574,6 @@
       });
     }));
 
-    // 4. manifest & 测试页
     var manifest = {
       "name": "My App",
       "short_name": "App",
@@ -491,7 +597,6 @@
     testHtml += '</body>\n</html>';
     folder.file('index.html', testHtml);
 
-    // 打包所有任务
     Promise.all(tasks).then(function() {
       zip.generateAsync({ type: 'blob' }).then(function (blob) {
         downloadBlob(blob, 'favicon-package.zip');
@@ -502,7 +607,6 @@
     });
   });
 
-  // 逐个下载 (仅 PNG)
   downloadSizesBtn.addEventListener('click', function () {
     if (!hasData()) return;
     showToast('开始逐个下载...');
@@ -523,7 +627,7 @@
   }
 
   // ================== 8. 事件绑定 ==================
-  [imgFitMode, imgBgColor, imgBgTransparent, imgRadius].forEach(function(el) {
+  [imgFitMode, imgFilter, imgBgColor, imgBgTransparent, imgRadius].forEach(function(el) {
     el.addEventListener('input', function() {
       if (el === imgBgColor) imgBgColorVal.textContent = el.value.toUpperCase();
       if (el === imgRadius) imgRadiusVal.textContent = el.value;
@@ -531,7 +635,7 @@
     });
   });
 
-  [textInput, fontFamily, bgColor, fgColor, fontWeight, radiusEl].forEach(function(el) {
+  [textInput, fontFamily, bgColor, fgColor, textEffect, fontWeight, radiusEl].forEach(function(el) {
     el.addEventListener('input', function() {
       if (el === radiusEl) radiusVal.textContent = el.value;
       if (currentMode === 'text') updateUI();

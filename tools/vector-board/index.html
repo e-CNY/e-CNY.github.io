@@ -27,51 +27,79 @@
   <div class="vb-toolbar">
     <div class="vb-tool-group">
       <button id="btn-pen" class="vb-btn">🖌️ 涂鸦</button>
+      <button id="btn-pen-bezier" class="vb-btn" title="贝塞尔钢笔：单击落点、拖拽调曲线、Enter 结束、Esc 取消">✒️ 钢笔</button>
       <button id="btn-rect" class="vb-btn">⬜ 矩形</button>
       <button id="btn-circle" class="vb-btn">⭕ 圆形</button>
       <button id="btn-triangle" class="vb-btn">🔺 三角</button>
       <button id="btn-line" class="vb-btn">📏 直线</button>
       <button id="btn-text" class="vb-btn">🔤 文字</button>
     </div>
-    
+
     <div class="vb-tool-group">
       <label class="vb-btn" style="cursor: pointer; margin: 0;">
         🖼️ 图片
         <input type="file" id="image-input" accept="image/*" hidden>
+      </label>
+      <label class="vb-btn" style="cursor: pointer; margin: 0;" title="导入 SVG 矢量文件">
+        📥 SVG
+        <input type="file" id="svg-input" accept=".svg,image/svg+xml" hidden>
       </label>
       <button id="btn-undo" class="vb-btn" title="撤销 (Ctrl+Z)">↩️</button>
       <button id="btn-redo" class="vb-btn" title="重做 (Ctrl+Y)">↪️</button>
       <button id="btn-delete" class="vb-btn danger" title="删除选中对象">🗑️</button>
     </div>
 
+    <div class="vb-tool-group" style="border-right: none;">
+      <span style="font-size:0.75rem;color:#8a7a5f;font-weight:bold;">布尔：</span>
+      <button class="vb-btn icon-btn" data-bool="unite" title="合并">∪</button>
+      <button class="vb-btn icon-btn" data-bool="subtract" title="减去">−</button>
+      <button class="vb-btn icon-btn" data-bool="intersect" title="相交">∩</button>
+      <button class="vb-btn icon-btn" data-bool="exclude" title="排除">⊕</button>
+      <button id="btn-smooth-path" class="vb-btn" title="平滑选中路径">〰️ 平滑</button>
+    </div>
+
     <div class="vb-tool-group">
-      <button id="btn-grid" class="vb-btn">🔲 网格背景</button>
+      <button id="btn-grid" class="vb-btn">🔲 网格</button>
       <button id="btn-fullscreen" class="vb-btn">⛶ 全屏</button>
       <button id="btn-export" class="vb-btn primary">⬇️ 导出</button>
     </div>
   </div>
-  
+
   <!-- 主体区域：画布 + 属性面板 -->
   <div class="vb-main">
     <div class="vb-canvas-wrap" id="canvas-wrap">
       <canvas id="c"></canvas>
+
+      <!-- 浮动视图工具栏（interact.js 可拖拽） -->
+      <div class="vb-float-tools" id="float-tools" title="可拖拽">
+        <button class="vb-float-btn" id="float-zoom-out" title="缩小">−</button>
+        <span class="vb-zoom-label" id="float-zoom-label">100%</span>
+        <button class="vb-float-btn" id="float-zoom-in" title="放大">+</button>
+        <button class="vb-float-btn" id="float-reset" title="重置视图">⟲</button>
+        <button class="vb-float-btn" id="float-fit" title="适应窗口">⛶</button>
+      </div>
     </div>
 
     <aside class="vb-sidebar" id="sidebar">
       <div class="vb-sidebar-empty" id="sidebar-empty">
         <p>👈 选择画布上的对象<br>或点击上方工具添加</p>
-        <p style="font-size:0.75rem; color:#8a7a5f; margin-top:20px;">
+        <p style="font-size:0.75rem; color:#8a7a5f; margin-top:20px; line-height:1.6;">
           💡 快捷键：<br>
           空格+拖拽 平移画布<br>
           滚轮 缩放<br>
           Delete 删除<br>
-          Ctrl+C/V 复制粘贴
+          Ctrl+C/V 复制粘贴<br>
+          Ctrl+Z/Y 撤销重做<br>
+          <br>
+          ✒️ 钢笔模式：<br>
+          单击落点 / 拖拽调曲线<br>
+          Enter 结束 / Esc 取消
         </p>
       </div>
 
       <div class="vb-sidebar-content" id="sidebar-content" style="display: none;">
         <h3 id="prop-title">对象属性</h3>
-        
+
         <div class="prop-group">
           <label>填充颜色</label>
           <div class="prop-row">
@@ -103,7 +131,7 @@
 
         <div class="prop-group" id="prop-text-group" style="display: none;">
           <label>字体大小</label>
-          <input type="number" id="prop-font-size" min="10" max="200" value="24" style="width:100%;">
+          <input type="number" id="prop-font-size" min="10" max="200" value="24">
         </div>
 
         <div class="prop-group">
@@ -128,17 +156,22 @@
         <select id="export-format" class="vb-select">
           <option value="image/png">PNG (支持透明)</option>
           <option value="image/jpeg">JPG</option>
+          <option value="image/svg+xml">SVG (矢量图, Snap.svg)</option>
         </select>
       </div>
       <div class="prop-group">
-        <label>导出倍数 (分辨率)</label>
+        <label>导出倍数 (PNG/JPG)</label>
         <select id="export-scale" class="vb-select">
           <option value="1">1x 原始大小</option>
           <option value="2" selected>2x 高清</option>
           <option value="3">3x 超清</option>
         </select>
       </div>
-      <div class="prop-group" style="margin-top: 12px; margin-bottom: 0;">
+      <div class="prop-group">
+        <label class="checkbox-label" style="display:flex; align-items:center; gap:6px; font-size:0.85rem; font-weight:normal; cursor:pointer; color:#3d3226; margin-bottom:4px;">
+          <input type="checkbox" id="export-include-bg" checked style="accent-color: #8a5a2b; width:16px; height:16px;">
+          导出包含白色背景
+        </label>
         <label class="checkbox-label" style="display:flex; align-items:center; gap:6px; font-size:0.85rem; font-weight:normal; cursor:pointer; color:#3d3226;">
           <input type="checkbox" id="export-include-grid" style="accent-color: #8a5a2b; width:16px; height:16px;">
           导出包含网格背景
@@ -152,9 +185,15 @@
   </div>
 </main>
 
+<!-- 钢笔纸画布（fixed 定位，仅钢笔激活时显示） -->
+<canvas id="pen-canvas"></canvas>
+
 <div id="toast" class="toast"></div>
 
 <script src="../../js/libs/fabric.min.js"></script>
+<script src="../../js/libs/paper-full.min.js"></script>
+<script src="../../js/libs/snap.svg-min.js"></script>
+<script src="../../js/libs/interact.min.js"></script>
 <script src="../../js/vector-board.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

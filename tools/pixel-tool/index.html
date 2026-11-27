@@ -39,17 +39,26 @@
         <label class="px-checkbox-label" style="margin-top: 4px;">
           <input type="checkbox" id="px-show-grid" checked> 显示网格线
         </label>
+        <label class="px-checkbox-label">
+          <input type="checkbox" id="px-show-checker"> 透明棋盘背景
+        </label>
       </div>
 
       <!-- 2. 工具箱 -->
       <div class="px-section">
         <label>工具箱</label>
         <div class="px-tools">
-          <button class="px-tool-btn active" data-tool="pen" title="画笔 (左键绘制, 右键擦除)">🖌️</button>
+          <button class="px-tool-btn active" data-tool="pen" title="画笔 (Shift+点击从上次落笔处画直线)">🖌️</button>
           <button class="px-tool-btn" data-tool="eraser" title="橡皮擦">🧽</button>
           <button class="px-tool-btn" data-tool="fill" title="油漆桶 (填充相同颜色区域)">🪣</button>
           <button class="px-tool-btn" data-tool="picker" title="吸管 (提取画布颜色)">💉</button>
+          <button class="px-tool-btn" data-tool="line" title="直线 (拖拽绘制)">📏</button>
+          <button class="px-tool-btn" data-tool="rect" title="矩形 (拖拽绘制)">▭</button>
+          <button class="px-tool-btn" data-tool="ellipse" title="椭圆 (拖拽绘制)">◯</button>
         </div>
+        <label class="px-checkbox-label" style="margin-top: 6px;">
+          <input type="checkbox" id="px-shape-fill"> 形状填充
+        </label>
         <label style="margin-top: 6px;">笔刷大小</label>
         <select id="px-brush-size" class="px-select">
           <option value="1" selected>1 x 1 px</option>
@@ -59,7 +68,21 @@
         </select>
       </div>
 
-      <!-- 3. 颜色 -->
+      <!-- 3. 镜像 -->
+      <div class="px-section">
+        <label>镜像对称绘制</label>
+        <select id="px-mirror-mode" class="px-select">
+          <option value="none" selected>关闭</option>
+          <option value="x">左右对称</option>
+          <option value="y">上下对称</option>
+          <option value="xy">四向对称</option>
+        </select>
+        <div style="font-size:0.72rem;color:#8a8172;line-height:1.4;margin-top:2px;">
+          开启后，画布会显示对称参考线；每次落笔会同时镜像到对称位置。
+        </div>
+      </div>
+
+      <!-- 4. 颜色 -->
       <div class="px-section">
         <label>当前颜色</label>
         <div class="px-color-wrap">
@@ -80,7 +103,7 @@
         </div>
       </div>
 
-      <!-- 4. 操作与导入 -->
+      <!-- 5. 操作 & 导入 -->
       <div class="px-section">
         <label>操作</label>
         <div class="px-btn-group">
@@ -92,9 +115,16 @@
           🖼️ 导入底图转像素
           <input type="file" id="px-import-img" accept="image/*" hidden>
         </label>
+        <div class="px-btn-group" style="margin-top: 8px;">
+          <button id="btn-save-json" class="px-btn" title="保存为 JSON 工程文件">💾 保存工程</button>
+          <label class="px-btn upload-btn" title="载入 JSON 工程文件">
+            📂 载入工程
+            <input type="file" id="px-load-json" accept=".json,application/json" hidden>
+          </label>
+        </div>
       </div>
 
-      <!-- 5. 导出 -->
+      <!-- 6. 导出 -->
       <div class="px-section">
         <label>导出设置</label>
         <div class="px-export-row">
@@ -118,6 +148,7 @@
     <div class="px-main">
       <div class="px-canvas-wrap">
         <canvas id="px-canvas"></canvas>
+        <div id="px-konva-container"></div>
       </div>
     </div>
   </div>
@@ -125,6 +156,7 @@
 
 <div id="toast" class="toast"></div>
 
+<script src="../../js/libs/konva.min.js"></script>
 <script src="../../js/pixel-tool.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>
 </body>

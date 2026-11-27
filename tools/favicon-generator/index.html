@@ -48,6 +48,16 @@
             <option value="contain">等比留白 (显示完整)</option>
             <option value="fill">拉伸变形</option>
           </select>
+
+          <label class="fg-label" style="margin-top: 10px;">滤镜效果</label>
+          <select id="imgFilter" class="fg-input">
+            <option value="none">无滤镜</option>
+            <option value="grayscale(100%)">黑白</option>
+            <option value="sepia(100%)">复古</option>
+            <option value="invert(100%)">反色</option>
+            <option value="brightness(1.3)">提亮</option>
+            <option value="contrast(1.5)">高对比</option>
+          </select>
           
           <label class="fg-label" style="margin-top: 10px;">背景颜色</label>
           <div class="fg-color-row">
@@ -92,6 +102,14 @@
             </div>
           </div>
 
+          <label class="fg-label" style="margin-top: 10px;">文字特效</label>
+          <select id="textEffect" class="fg-input">
+            <option value="none">无特效</option>
+            <option value="shadow">柔和投影</option>
+            <option value="stroke">内描边</option>
+            <option value="both">描边+投影</option>
+          </select>
+
           <label class="fg-label" style="margin-top: 10px;">字重</label>
           <select id="fontWeight" class="fg-input">
             <option value="normal">正常</option>
@@ -115,7 +133,7 @@
     <!-- 右侧预览区 -->
     <div class="fg-main">
       <div class="fg-preview-header">
-        <h2>👁️ 实时预览</h2>
+        <h2>👁️ 实时预览 </h2>
         <span class="fg-hint">点击下方图标可直接下载对应尺寸 PNG</span>
       </div>
       
@@ -138,6 +156,9 @@
 
 <div id="toast" class="toast"></div>
 
+<!-- 引入库 -->
+<script src="../../js/libs/pica.min.js"></script>
+<script src="../../js/libs/FileSaver.min.js"></script>
 <script src="../../js/libs/jszip.min.js"></script>
 <script src="../../js/favicon-generator.js" defer></script>
 <script src="../../js/traffic-guard.js"></script>

@@ -9,7 +9,7 @@
     toastEl.textContent = msg;
     toastEl.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1600);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
   }
 
   function copyText(text) {
@@ -34,8 +34,14 @@
   
   var btnFormat = document.getElementById('btn-format');
   var btnMinify = document.getElementById('btn-minify');
+  var btnOptimize = document.getElementById('btn-optimize');
+  var btnDataUri = document.getElementById('btn-datauri');
   var btnCopy = document.getElementById('btn-copy');
   var btnClear = document.getElementById('btn-clear');
+  
+  var btnExtractColor = document.getElementById('btn-extract-color');
+  var paletteContainer = document.getElementById('sv-palette-container');
+  var paletteDiv = document.getElementById('sv-palette');
   
   var bgModeSelect = document.getElementById('sv-bg-mode');
   var exportScaleSelect = document.getElementById('sv-export-scale');
@@ -46,8 +52,12 @@
 
   // 默认示例 SVG
   var defaultSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="200" height="200">
-  <circle cx="50" cy="50" r="40" stroke="#8a5a2b" stroke-width="4" fill="#7ba05b" />
-  <path d="M 30 50 L 45 65 L 70 35" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <style>
+    .bg { fill: #7ba05b; stroke: #8a5a2b; stroke-width: 4; }
+    .check { stroke: #ffffff; stroke-width: 6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <circle cx="50" cy="50" r="40" class="bg" />
+  <path d="M 30 50 L 45 65 L 70 35" class="check" />
 </svg>`;
   input.value = defaultSvg;
 
@@ -63,12 +73,10 @@
       return;
     }
 
-    // 清理上一次的 ObjectURL
     if (currentSvgBlobUrl) {
       URL.revokeObjectURL(currentSvgBlobUrl);
     }
 
-    // 使用 Blob URL 渲染到 img 标签中（安全且不会污染页面样式）
     var blob = new Blob([code], { type: 'image/svg+xml;charset=utf-8' });
     currentSvgBlobUrl = URL.createObjectURL(blob);
 
@@ -88,7 +96,6 @@
     img.src = currentSvgBlobUrl;
   }
 
-  // 防抖渲染
   input.addEventListener('input', function () {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(renderPreview, 300);
@@ -100,20 +107,27 @@
     if (!code) return;
     
     try {
-      // 采用原生 DOMParser 进行健壮的格式化
       var parser = new DOMParser();
       var doc = parser.parseFromString(code, 'image/svg+xml');
       
-      // 检查解析错误
       if (doc.querySelector('parsererror')) {
         showToast('SVG 语法错误，无法格式化');
         return;
       }
 
+      // 利用 beautify-css 美化内部样式
+      if (window.css_beautify) {
+        var styles = doc.querySelectorAll('style');
+        for (var i = 0; i < styles.length; i++) {
+          var cssText = styles[i].textContent;
+          styles[i].textContent = '\n' + window.css_beautify(cssText, { indent_size: 2 }) + '\n';
+        }
+      }
+
       var serializer = new XMLSerializer();
       var formatted = serializer.serializeToString(doc);
       
-      // 简单的自动缩进
+      // 简易 XML 缩进
       var reg = /(>)(<)(\/*)/g;
       formatted = formatted.replace(reg, '$1\r\n$2$3');
       
@@ -157,16 +171,23 @@
         return;
       }
 
-      // 移除注释
       var comments = doc.createTreeWalker(doc, NodeFilter.SHOW_COMMENT);
       var arr = [];
       while (comments.nextNode()) { arr.push(comments.currentNode); }
       arr.forEach(function (c) { c.parentNode.removeChild(c); });
 
+      // 压缩内部 CSS
+      var styles = doc.querySelectorAll('style');
+      for (var i = 0; i < styles.length; i++) {
+        var cssText = styles[i].textContent;
+        cssText = cssText.replace(/\/\*[\s\S]*?\*\//g, '') // 去注释
+                         .replace(/\s+/g, ' ')             // 合并空白
+                         .replace(/\s*([\{\}:;,])\s*/g, '$1'); // 去标点两侧空白
+        styles[i].textContent = cssText;
+      }
+
       var serializer = new XMLSerializer();
       var minified = serializer.serializeToString(doc);
-
-      // 简单的空格清理（仅在标签之间）
       minified = minified.replace(/>\s+</g, '><').trim();
 
       input.value = minified;
@@ -174,6 +195,130 @@
       showToast('压缩完成');
     } catch (e) {
       showToast('压缩失败');
+    }
+  });
+
+  // ================== 3. Snap.svg 优化清理 ==================
+  btnOptimize.addEventListener('click', function () {
+    var code = input.value.trim();
+    if (!code) return;
+
+    if (typeof Snap === 'undefined') {
+      showToast('Snap.svg 未加载，无法进行优化');
+      return;
+    }
+
+    try {
+      var snapSvg = Snap.parse(code);
+      
+      // 1. 移除无用标签
+      snapSvg.selectAll('metadata, title, desc, sodipodi\\:namedview').forEach(function (el) {
+        el.remove();
+      });
+
+      // 2. 移除无用属性
+      snapSvg.selectAll('*').forEach(function (el) {
+        var node = el.node;
+        var attrs = node.attributes;
+        for (var i = attrs.length - 1; i >= 0; i--) {
+          var name = attrs[i].name;
+          if (name.startsWith('data-') || 
+              name.startsWith('inkscape:') || 
+              name.startsWith('sodipodi:') || 
+              name === 'xmlns:inkscape' || 
+              name === 'xmlns:sodipodi') {
+            node.removeAttribute(name);
+          }
+        }
+      });
+
+      // 3. 尝试恢复被某些解析器丢掉的 xmlns
+      if (!snapSvg.attr('xmlns')) {
+        snapSvg.attr('xmlns', 'http://www.w3.org/2000/svg');
+      }
+
+      input.value = snapSvg.toString();
+      renderPreview();
+      showToast('SVG 清理优化完成');
+    } catch (e) {
+      console.error(e);
+      showToast('优化失败：XML 格式不合法');
+    }
+  });
+
+  // ================== 4. 颜色提取 ==================
+  btnExtractColor.addEventListener('click', function () {
+    var code = input.value.trim();
+    if (!code) return;
+
+    var colors = {};
+    
+    // 1. 正则提取基础属性
+    var fillRegex = /fill\s*[:=]\s*["']?([^"';}\s]+)/gi;
+    var strokeRegex = /stroke\s*[:=]\s*["']?([^"';}\s]+)/gi;
+    
+    var match;
+    while ((match = fillRegex.exec(code)) !== null) {
+      var c = match[1];
+      if (c !== 'none' && c !== 'transparent' && !c.startsWith('url(')) colors[c] = true;
+    }
+    while ((match = strokeRegex.exec(code)) !== null) {
+      var c = match[1];
+      if (c !== 'none' && c !== 'transparent' && !c.startsWith('url(')) colors[c] = true;
+    }
+
+    // 2. 如果 Snap 可用，遍历 DOM 确保准确性
+    if (typeof Snap !== 'undefined') {
+      try {
+        var s = Snap.parse(code);
+        s.selectAll('*').forEach(function (el) {
+          var fill = el.attr('fill');
+          if (fill && fill !== 'none' && !fill.startsWith('url(')) colors[fill] = true;
+          var stroke = el.attr('stroke');
+          if (stroke && stroke !== 'none' && !stroke.startsWith('url(')) colors[stroke] = true;
+        });
+      } catch(e) { /* 忽略解析错误 */ }
+    }
+
+    var colorList = Object.keys(colors);
+    if (colorList.length === 0) {
+      showToast('未找到任何颜色');
+      paletteContainer.style.display = 'none';
+      return;
+    }
+
+    paletteDiv.innerHTML = '';
+    colorList.forEach(function (color) {
+      var swatch = document.createElement('div');
+      swatch.className = 'sv-color-swatch';
+      swatch.style.backgroundColor = color;
+      swatch.title = color + ' (点击复制)';
+      swatch.addEventListener('click', function () {
+        copyText(color).then(function () {
+          showToast('已复制: ' + color);
+        });
+      });
+      paletteDiv.appendChild(swatch);
+    });
+
+    paletteContainer.style.display = 'flex';
+    showToast('提取了 ' + colorList.length + ' 种颜色');
+  });
+
+  // ================== 5. 其他功能 ==================
+  btnDataUri.addEventListener('click', function () {
+    var code = input.value.trim();
+    if (!code) return;
+    try {
+      var b64 = btoa(unescape(encodeURIComponent(code)));
+      var dataUri = 'data:image/svg+xml;base64,' + b64;
+      copyText(dataUri).then(function () {
+        showToast('Data URI 已复制到剪贴板');
+      }).catch(function () {
+        showToast('复制失败');
+      });
+    } catch (e) {
+      showToast('转换失败');
     }
   });
 
@@ -189,9 +334,9 @@
   btnClear.addEventListener('click', function () {
     input.value = '';
     renderPreview();
+    paletteContainer.style.display = 'none';
   });
 
-  // ================== 3. 预览背景切换 ==================
   bgModeSelect.addEventListener('change', function () {
     previewWrap.className = 'sv-preview-wrap';
     if (this.value === 'white') previewWrap.classList.add('bg-white');
@@ -199,7 +344,7 @@
     else previewWrap.classList.add('bg-transparent');
   });
 
-  // ================== 4. 导入功能（拖拽与粘贴） ==================
+  // ================== 6. 导入与导出 ==================
   input.addEventListener('dragover', function (e) {
     e.preventDefault();
     this.style.borderColor = '#8a5a2b';
@@ -227,7 +372,6 @@
     }
   });
 
-  // ================== 5. 下载功能 ==================
   btnDownloadSvg.addEventListener('click', function () {
     var code = input.value.trim();
     if (!code) return;
@@ -247,7 +391,6 @@
     var code = input.value.trim();
     if (!code) return;
 
-    // 1. 解析 SVG 尺寸
     var parser = new DOMParser();
     var doc = parser.parseFromString(code, 'image/svg+xml');
     var svgEl = doc.querySelector('svg');
@@ -259,7 +402,6 @@
     var width = parseFloat(svgEl.getAttribute('width'));
     var height = parseFloat(svgEl.getAttribute('height'));
     
-    // 如果没有明确宽高，尝试提取 viewBox
     if (!width || !height) {
       var viewBox = svgEl.getAttribute('viewBox');
       if (viewBox) {
@@ -271,7 +413,6 @@
       }
     }
     
-    // 兜底默认尺寸
     if (!width || !height || isNaN(width) || isNaN(height)) {
       width = 800; height = 800;
     }
@@ -311,12 +452,11 @@
       }, 'image/png');
     };
     img.onerror = function () {
-      showToast('SVG 渲染失败，可能包含不支持的资源');
+      showToast('SVG 渲染失败，可能包含外部资源');
       URL.revokeObjectURL(url);
     };
     img.src = url;
   });
 
-  // 初始化渲染
   renderPreview();
 })();

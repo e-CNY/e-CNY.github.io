@@ -1,6 +1,6 @@
 .px-layout { max-width: 1050px; margin: 0 auto; padding: 28px 16px 56px; }
 .px-container { display: flex; gap: 24px; height: calc(100vh - 150px); min-height: 500px; }
-@media (max-width: 768px) { 
+@media (max-width: 768px) {
   .px-container { flex-direction: column; height: auto; }
   .px-main { min-height: 400px; }
 }
@@ -36,7 +36,7 @@
 
 .px-btn-group { display: flex; gap: 8px; }
 .px-btn-group .px-btn { flex: 1; }
-.px-btn { padding: 8px; border-radius: 6px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .85rem; transition: all .15s; text-align: center; font-weight: 600; outline: none; }
+.px-btn { padding: 8px; border-radius: 6px; border: 1px solid #d5c7a8; background: #fdf8ec; color: #3d3226; cursor: pointer; font-size: .85rem; transition: all .15s; text-align: center; font-weight: 600; outline: none; box-sizing: border-box; }
 .px-btn.primary { background: #7ba05b; color: #fff; border-color: #7ba05b; }
 .px-btn.danger { color: #a8452a; border-color: #e4b8a8; }
 .px-btn.danger:hover { background: #fbeee6; }
@@ -50,8 +50,19 @@
 
 /* 画板 */
 .px-main { flex: 1; background: #e5d9bd; border: 1px solid #ddcfb3; border-radius: 14px; display: flex; align-items: center; justify-content: center; padding: 20px; overflow: hidden; }
-.px-canvas-wrap { background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.1); position: relative; }
+.px-canvas-wrap { background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.1); position: relative; display: inline-block; line-height: 0; }
 #px-canvas { display: block; cursor: crosshair; image-rendering: pixelated; }
+
+/* Konva 浮层：只做视觉展示，不接收事件 */
+#px-konva-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
 
 /* Toast */
 .toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); background: rgba(61, 50, 38, 0.92); color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; z-index: 9999; max-width: 80vw; text-align: center; word-break: break-all; }
